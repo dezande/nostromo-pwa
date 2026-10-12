@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Nostromo II</title>
 <meta name="description" content="Nostromo II Training Base : plan du vaisseau, fermeture des salles, compte à rebours et ambiance sonore.">
-<meta name="theme-color" content="#07090a">
+<meta name="theme-color" content="#07090a" id="themeColor">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=IBM+Plex+Mono&family=Press+Start+2P&family=JetBrains+Mono&family=Fira+Code&family=Source+Code+Pro&display=swap">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -16,16 +18,19 @@
   --bg:#07090a; --panel:#0e1312; --line:#1f2a27; --ink:#cfe9d9; --dim:#6f8a7e;
   --green:#5cff9d; --amber:#ffb238; --red:#ff3b3b; --blood:#7a0d12;
   --room:#0f1a17; --room-hi:#16302a;
+  --glow:#12221d; --wall:#2f4a41; --deco:#0b1210; --rstroke:#3f6a5c; --vent:#4f7f70;
+  --veil:rgba(3,5,5,.88);
+  --scan:1; --flick:0; --noise:0; --curve:0; --bloom:0; --rgb:0; --amb:0; --jit:0; --hs:0;
   color-scheme:dark;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--mono);
+body{background:var(--bg);color:var(--ink);font-family:var(--font);
   -webkit-tap-highlight-color:transparent;overflow-x:hidden;
-  background-image:radial-gradient(ellipse at 50% -10%, #12221d 0%, transparent 60%);}
+  background-image:radial-gradient(ellipse at 50% -10%, var(--glow) 0%, transparent 60%);}
 body::after{content:"";pointer-events:none;position:fixed;inset:0;z-index:50;
-  background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);mix-blend-mode:multiply}
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);mix-blend-mode:multiply;opacity:var(--scan)}
 button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:6px;padding:10px 14px;cursor:pointer}
 button:disabled{opacity:.35;cursor:default}
 header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
@@ -40,10 +45,10 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;padding:16p
 .deck{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:8px}
 .deck h2{font-size:11px;letter-spacing:.25em;color:var(--dim);margin:2px 4px 6px;font-weight:normal}
 svg{width:100%;height:auto;display:block;touch-action:manipulation}
-.wall{fill:none;stroke:#2f4a41;stroke-width:2}
-.deco{fill:#0b1210;stroke:#2f4a41;stroke-width:2}
-.hatch{stroke:#2f4a41;stroke-width:1.5}
-.room path,.room rect,.room polygon{fill:var(--room);stroke:#3f6a5c;stroke-width:2;transition:fill .25s}
+.wall{fill:none;stroke:var(--wall);stroke-width:2}
+.deco{fill:var(--deco);stroke:var(--wall);stroke-width:2}
+.hatch{stroke:var(--wall);stroke-width:1.5}
+.room path,.room rect,.room polygon{fill:var(--room);stroke:var(--rstroke);stroke-width:2;transition:fill .25s}
 .room text{fill:var(--ink);font-size:10px;text-anchor:middle;pointer-events:none;letter-spacing:.05em}
 .room{outline:none}
 .room:focus-visible path,.room:focus-visible rect,.room:focus-visible polygon{stroke:var(--amber);stroke-width:3}
@@ -59,9 +64,9 @@ svg{width:100%;height:auto;display:block;touch-action:manipulation}
 .room.flash path,.room.flash rect,.room.flash polygon{animation:slam .9s ease-out}
 @keyframes slam{0%{fill:#ff3b3b}100%{fill:#3a0a0c}}
 .door{stroke:var(--amber);stroke-width:2}
-.vent{stroke:#4f7f70;stroke-width:1.5;stroke-dasharray:3 3;fill:none}
+.vent{stroke:var(--vent);stroke-width:1.5;stroke-dasharray:3 3;fill:none}
 .vent-label{fill:var(--dim);font-size:7px;text-anchor:middle}
-.lift{fill:#0b1210;stroke:var(--amber);stroke-width:1.5}
+.lift{fill:var(--deco);stroke:var(--amber);stroke-width:1.5}
 #pawn,#pawn2{pointer-events:none;transition:transform .35s ease}
 .pawn-core{fill:var(--green)}
 .pawn-ring{fill:none;stroke:var(--green);stroke-width:2;animation:ping 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
@@ -83,7 +88,7 @@ ol.aip li.done{color:#7d4a4a;text-decoration:line-through}
 ol.aip li.next{color:var(--amber)}
 .mini{padding:4px 8px;font-size:11px}
 /* overlays */
-.overlay{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:rgba(3,5,5,.88);padding:16px}
+.overlay{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:var(--veil);padding:16px}
 .overlay.show{display:grid}
 .panel{max-width:720px;width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px;max-height:calc(100vh - 32px);overflow:auto}
 .panel h2{margin:0 0 6px;letter-spacing:.2em;font-size:16px}
@@ -100,27 +105,47 @@ ol.aip li.next{color:var(--amber)}
 .end h2{font-size:clamp(22px,7vw,40px);text-align:center;margin:10px 0}
 .end p{text-align:center}
 .dead h2{color:var(--red);text-shadow:0 0 18px #f00}
-.win h2{color:var(--green);text-shadow:0 0 18px #2f8}
+.win h2{color:var(--green);text-shadow:0 0 18px var(--green)}
 label.set{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px dashed var(--line)}
 label.set input[type=range]{flex:1;accent-color:var(--red)}
 .shake{animation:shake .5s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-#home{z-index:45;grid-template-columns:minmax(0,1fr);background:radial-gradient(ellipse at 50% 40%, #12221d 0%, var(--bg) 70%);text-align:center}
+#home{z-index:45;grid-template-columns:minmax(0,1fr);background:radial-gradient(ellipse at 50% 40%, var(--glow) 0%, var(--bg) 70%);text-align:center}
 #settings{z-index:46}
 .home{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:520px;width:100%}
-.home svg{width:110px;height:auto}
+.home svg{width:110px;height:auto;color:var(--green)}
 .home .corp{font-size:11px;letter-spacing:.4em;color:var(--dim)}
-.home h2{margin:0;white-space:nowrap;font-size:clamp(28px,9vw,64px);letter-spacing:.12em;font-weight:normal;text-shadow:0 0 18px rgba(92,255,157,.35)}
+.home h2{margin:0;white-space:nowrap;font-size:clamp(28px,9vw,64px);letter-spacing:.12em;font-weight:normal;text-shadow:0 0 18px color-mix(in srgb, var(--green) 35%, transparent)}
 .home .base{color:var(--green);letter-spacing:.3em;font-size:13px}
 .home p{color:var(--dim);font-size:13px;line-height:1.6;margin:0}
 .home .big{max-width:360px}
 .link{border:none;color:var(--dim);text-decoration:underline;padding:4px 8px}
 .blink{font-size:11px;letter-spacing:.3em;color:var(--green);animation:blink 1.2s steps(2) infinite}
 @keyframes blink{50%{opacity:0}}
+/* effets d'écran (styles cool-retro-term) */
+body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55%, transparent),
+  calc(var(--rgb) * 2px) 0 rgba(255,0,60,calc(var(--rgb) * 4)), calc(var(--rgb) * -2px) 0 rgba(0,140,255,calc(var(--rgb) * 4))}
+#crt,#crt::before,#crt::after{content:"";position:fixed;inset:0;pointer-events:none}
+#crt{z-index:51;background:radial-gradient(ellipse at 50% 45%, rgba(255,255,255,calc(var(--amb) * .07)), transparent 65%),
+  radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,calc(var(--curve) * 1.1)) 100%)}
+#crt::before{background:#000;opacity:0;animation:flick .12s steps(2) infinite}
+@keyframes flick{0%{opacity:0}100%{opacity:calc(var(--flick) * .5)}}
+#crt::after{opacity:calc(var(--noise) * .55);mix-blend-mode:screen;animation:noise .25s steps(3) infinite;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
+@keyframes noise{0%{background-position:0 0}33%{background-position:-40px 60px}66%{background-position:70px -30px}100%{background-position:0 0}}
+.glitch header,.glitch main:not(.shake){animation:glitch 3.7s infinite}
+@keyframes glitch{0%,93%,100%{transform:none}94%{transform:translateX(calc(var(--jit) * 6px)) skewX(calc(var(--hs) * -6deg))}
+  96%{transform:translateX(calc(var(--jit) * -4px))}98%{transform:translateY(calc(var(--hs) * 4px))}}
+.retro-font{font-size-adjust:.52}
+.themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:6px 0 14px}
+.theme{padding:12px 10px;text-align:left;font-size:12px;border-radius:6px;font-size-adjust:.52}
+.theme[aria-pressed="true"]{outline:2px solid var(--amber);outline-offset:2px}
+.set-title{font-size:11px;letter-spacing:.25em;color:var(--dim);margin-top:12px}
 @keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-2px)}}
 </style>
 </head>
 <body>
+<div id="crt" aria-hidden="true"></div>
 <header>
   <h1>NOSTROMO II <small>· TRAINING BASE</small></h1>
   <button class="icon-btn" id="menuBtn">☰ Menu</button>
@@ -165,7 +190,7 @@ label.set input[type=range]{flex:1;accent-color:var(--red)}
 <!-- menu d'accueil -->
 <div class="overlay show" id="home">
   <div class="home">
-    <svg viewBox="0 0 120 160" fill="none" stroke="#5cff9d" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+    <svg viewBox="0 0 120 160" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
       <line x1="60" y1="4" x2="60" y2="18"/>
       <path d="M48 50 L60 18 L72 50 Z"/>
       <rect x="48" y="50" width="24" height="80"/>
@@ -219,6 +244,8 @@ label.set input[type=range]{flex:1;accent-color:var(--red)}
 <div class="overlay" id="settings">
   <div class="panel">
     <h2>RÉGLAGES</h2>
+    <div class="set-title">STYLE D'ÉCRAN</div>
+    <div class="themes" id="themes"></div>
     <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
     <label class="set">Annonce vocale du nom de la salle <input type="checkbox" id="voiceChk" checked></label>
     <label class="set">Volume musique <input type="range" id="volRange" min="0" max="100" value="60"></label>
@@ -297,7 +324,7 @@ function drawDeck1(svg){
   for (let x=80;x<152;x+=6){ el("line",{x1:x,y1:136,x2:x,y2:148,class:"hatch"},svg); el("line",{x1:x+170,y1:136,x2:x+170,y2:148,class:"hatch"},svg); }
   el("polygon",{points:"155,100 200,46 245,100",class:"deco"},svg);
   for (let i=0;i<5;i++) el("line",{x1:200,y1:50,x2:165+i*17.5,y2:98,class:"hatch"},svg);
-  el("line",{x1:200,y1:46,x2:200,y2:14,stroke:"#3f6a5c","stroke-width":3},svg);
+  el("line",{x1:200,y1:46,x2:200,y2:14,style:"stroke:var(--rstroke)","stroke-width":3},svg);
   // tuyères
   for (const x of [56,250]){
     el("polygon",{points:`${x},480 ${x+94},480 ${x+100},500 ${x-6},500`,class:"deco"},svg);
@@ -309,14 +336,14 @@ function drawDeck1(svg){
   // conduits d'aération
   for (const [x,dir] of [[64,1],[336,-1]]){
     el("line",{x1:x,y1:336,x2:x,y2:396,class:"vent"},svg);
-    el("polygon",{points:`${x-4},342 ${x},334 ${x+4},342`,fill:"#4f7f70"},svg);
-    el("polygon",{points:`${x-4},390 ${x},398 ${x+4},390`,fill:"#4f7f70"},svg);
+    el("polygon",{points:`${x-4},342 ${x},334 ${x+4},342`,style:"fill:var(--vent)"},svg);
+    el("polygon",{points:`${x-4},390 ${x},398 ${x+4},390`,style:"fill:var(--vent)"},svg);
   }
   el("text",{x:30,y:505,class:"vent-label"},svg).textContent="VENTILATION";
   el("text",{x:370,y:505,class:"vent-label"},svg).textContent="VENTILATION";
   // ascenseurs
   el("rect",{x:186,y:290,width:28,height:26,class:"lift"},svg);
-  el("path",{d:"M192 296 h16 v12 h-16 z M196 300 h8",stroke:"#ffb238",fill:"none","stroke-width":1.2},svg);
+  el("path",{d:"M192 296 h16 v12 h-16 z M196 300 h8",style:"stroke:var(--amber)",fill:"none","stroke-width":1.2},svg);
   el("text",{x:200,y:326,class:"vent-label"},svg).textContent="ASCENSEURS";
   drawDoors(svg,[
     [155,190,"v"],[245,190,"v"],[200,205,"h"],
@@ -328,7 +355,7 @@ function drawDeck1(svg){
 function drawDeck2(svg){
   drawRooms(svg,2);
   el("rect",{x:145,y:44,width:30,height:30,class:"lift"},svg);
-  el("path",{d:"M152 51 h16 v12 h-16 z M156 55 h8",stroke:"#ffb238",fill:"none","stroke-width":1.2},svg);
+  el("path",{d:"M152 51 h16 v12 h-16 z M156 55 h8",style:"stroke:var(--amber)",fill:"none","stroke-width":1.2},svg);
   el("line",{x1:135,y1:59,x2:145,y2:59,class:"door"},svg); el("line",{x1:175,y1:59,x2:185,y2:59,class:"door"},svg);
   el("line",{x1:160,y1:74,x2:160,y2:130,class:"vent"},svg);
   el("text",{x:160,y:24,class:"vent-label"},svg).textContent="↑ VERS SALLE DE VIE";
@@ -603,6 +630,58 @@ function showHome(){ if(S.busy) return; $("home").classList.add("show"); }
 $("menuBtn").onclick=showHome;
 $("pickMenuBtn").onclick=showHome;
 $("homeSetBtn").onclick=()=>$("settings").classList.add("show");
+
+/* ---------- Styles d'écran (profils de cool-retro-term) ---------- */
+// [nom, police, couleur texte, fond, scintillement, synchro horizontale, gigue, bruit, courbure, halo, décalage RVB, trame (0 légère, 1 lignes, 4 aucune), lumière ambiante]
+const THEMES = [
+  ["Nostromo (origine)", null, null, null],
+  ["Default Amber",     "VT323",          "#ff8100","#000000", .1,.1,.2,.1,.2,.6,0,0,.3],
+  ["Monochrome Green",  "Share Tech Mono","#0ccc68","#000000", .1,.1,.2,.1,.3,.5,0,0,.3],
+  ["Deep Blue",         "IBM Plex Mono",  "#7fb4ff","#000000", .1,.1,.2,.1,.4,.6,0,0,0],
+  ["Commodore 64",      "Press Start 2P", "#a9a7ff","#3b3b8f", .1,0,0,.1,.5,.4,0,1,.4],
+  ["Commodore PET",     "Press Start 2P", "#ffffff","#000000", .2,.2,.15,.2,.7,.4,0,1,0],
+  ["Apple ][",          "Press Start 2P", "#4dff6b","#001100", .2,.2,.2,.2,.5,.3,0,1,1],
+  ["Atari 400",         "Press Start 2P", "#8ed6ff","#0f1f5a", .1,0,0,.1,.4,.1,0,1,.1],
+  ["IBM VGA 8x16",      "VT323",          "#c0c0c0","#000000", .1,0,0,0,.3,.2,.1,1,.2],
+  ["IBM 3278 Reborn",   "IBM Plex Mono",  "#3cff7a","#000000", 0,0,0,0,0,.2,0,4,.2],
+  ["Neon Cyan",         "JetBrains Mono", "#52f7ff","#001018", .1,0,.1,.1,0,.6,0,4,.1],
+  ["Ghost Terminal",    "JetBrains Mono", "#a6b3c0","#0b1014", 0,0,0,.1,0,.3,0,4,.3],
+  ["Plasma",            "Fira Code",      "#ff9bd6","#070014", .1,0,.1,.1,0,.7,.1,4,.1],
+  ["Boring",            "JetBrains Mono", "#ffffff","#000000", 0,0,0,0,0,.5,0,4,.1],
+  ["E-Ink",             "Source Code Pro","#101010","#f2f2ec", 0,0,0,0,0,0,0,4,.6],
+];
+const hex2rgb = h => [1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const mix = (a,b,t) => "#"+hex2rgb(a).map((v,i)=>Math.round(v*t+hex2rgb(b)[i]*(1-t)).toString(16).padStart(2,"0")).join("");
+const isLight = h => { const [r,g,b]=hex2rgb(h); return r*.3+g*.59+b*.11 > 140; };
+const fontStack = f => `"${f}", ui-monospace, Menlo, Consolas, monospace`;
+function applyTheme(i){
+  const t = THEMES[i] || THEMES[0], st = document.documentElement.style, root = document.documentElement;
+  ["--bg","--panel","--line","--ink","--dim","--green","--room","--room-hi","--glow","--wall","--deco","--rstroke","--vent","--veil","--font",
+   "--scan","--flick","--noise","--curve","--bloom","--rgb","--amb","--jit","--hs","color-scheme"].forEach(k=>st.removeProperty(k));
+  root.classList.remove("glitch","retro-font");
+  let bg = "#07090a";
+  if (t[1]){
+    const [, font, fg, b, flick, hs, jit, noise, curve, bloom, rgb, raster, amb] = t; bg = b;
+    const pole = isLight(bg) ? "#000000" : "#ffffff";
+    const v = { "--bg":bg, "--green":fg, "--ink":mix(fg,pole,.55), "--dim":mix(fg,bg,.62), "--panel":mix(fg,bg,.06), "--line":mix(fg,bg,.16),
+      "--room":mix(fg,bg,.08), "--room-hi":mix(fg,bg,.2), "--glow":mix(fg,bg,.12), "--wall":mix(fg,bg,.28), "--deco":mix(fg,bg,.04),
+      "--rstroke":mix(fg,bg,.4), "--vent":mix(fg,bg,.5), "--veil":bg+"e0", "--font":fontStack(font),
+      "--scan":raster===1?1.6:raster===0?.8:0, "--flick":flick, "--noise":noise, "--curve":curve, "--bloom":bloom, "--rgb":rgb, "--amb":amb, "--jit":jit, "--hs":hs,
+      "color-scheme":isLight(bg)?"light":"dark" };
+    for (const k in v) st.setProperty(k, v[k]);
+    root.classList.add("retro-font");
+    if (jit || hs) root.classList.add("glitch");
+  }
+  $("themeColor").content = bg;
+  document.querySelectorAll(".theme").forEach((b,j)=>b.setAttribute("aria-pressed", String(j===i)));
+}
+THEMES.forEach((t,i)=>{
+  const b=document.createElement("button"); b.className="theme"; b.textContent=t[0];
+  if (t[1]) b.style.cssText=`background:${t[3]};color:${t[2]};border-color:${mix(t[2],t[3],.4)};font-family:${fontStack(t[1]).replace(/"/g,"'")}`;
+  b.onclick=()=>{ settings.theme=i; applyTheme(i); saveSettings(); };
+  $("themes").appendChild(b);
+});
+applyTheme(settings.theme|0);
 
 $("setBtn").onclick=()=>$("settings").classList.add("show");
 $("setClose").onclick=()=>$("settings").classList.remove("show");
