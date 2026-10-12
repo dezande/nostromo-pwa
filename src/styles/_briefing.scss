@@ -22,6 +22,7 @@
   }
 
   .briefing-sign { color: var(--accent); letter-spacing: .1em; }
-  .briefing-actions { margin-top: 18px; }
+  // Bonne respiration entre le dernier paragraphe et les boutons
+  .briefing-actions { margin-top: 40px; }
   .briefing-actions .big { flex: 2; }
 }
