@@ -181,6 +181,15 @@ test("faux écrans de transition au démarrage et au choix du protocole", async 
   expect(errors).toEqual([]);
 });
 
+test("le numéro de build est affiché dans les réglages", async ({ page }) => {
+  await open(page);
+  const v = await page.evaluate(() => self.APP_VERSION);
+  expect(Number.isInteger(v.build)).toBe(true);
+  expect(v.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  await page.locator("#homeSetBtn").click();
+  await expect(page.locator("#versionInfo")).toContainText(`BUILD ${v.build} DU `);
+});
+
 test("taille du texte et lignes horizontales", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
