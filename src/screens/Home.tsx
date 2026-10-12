@@ -1,11 +1,10 @@
-// Menu d'accueil, qui sert aussi de menu pause pendant une partie.
+// Écran d'accueil. On y revient par les Réglages (« Retour à l'accueil »), ce qui abandonne la partie.
 import { Overlay } from "../components/Overlay";
 import { Icon } from "../components/Icon";
-import { useConfirm } from "../components/useConfirm";
 import { audio } from "../audio/audio";
 import { BOOT } from "../data/terminal";
 import { keepAwake } from "../state/device";
-import { inGame, showIntro } from "../state/game";
+import { showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
 import { briefing, homeOpen, settingsOpen } from "../state/ui";
 
@@ -20,10 +19,6 @@ async function startSimulation() {
 }
 
 export function Home() {
-  const playing = inGame.value;
-  const [confirm, run] = useConfirm();
-  const startLabel = confirm ? "CONFIRMER : ABANDONNER LA PARTIE ?" : playing ? "NOUVELLE SIMULATION" : "DÉMARRER LA SIMULATION";
-
   return (
     <Overlay id="home" show={homeOpen.value}>
       <div class="home">
@@ -32,14 +27,8 @@ export function Home() {
         <h2>NOSTROMO&nbsp;II</h2>
         <div class="base">TRAINING BASE · LUNE</div>
         <p>Simulation d'intrusion alien pour Psychic Agents.</p>
-        {playing && (
-          <button class="big" id="resumeBtn" onClick={() => { homeOpen.value = false; }}>
-            <Icon name="play" /> REPRENDRE LA PARTIE
-          </button>
-        )}
-        {/* Partie en cours : il faut confirmer avant de l'abandonner, comme « Nouvelle partie ». */}
-        <button class="big" id="startBtn" onClick={() => run(playing, startSimulation)}>
-          <Icon name={playing ? "reset" : "play"} /> <span id="startLbl">{startLabel}</span>
+        <button class="big" id="startBtn" onClick={startSimulation}>
+          <Icon name="play" /> <span id="startLbl">DÉMARRER LA SIMULATION</span>
         </button>
         <button class="icon-btn" id="homeSetBtn" onClick={() => { settingsOpen.value = true; }}>
           <Icon name="gear" /><span>Réglages</span>
