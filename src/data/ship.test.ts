@@ -71,6 +71,21 @@ describe("plan du vaisseau", () => {
     expect(ventBetween("cuisine", "entrepot1")).toBeUndefined();
   });
 
+  test("chaque conduit est une bande étroite dans la coque, entre le dortoir et l'entrepôt, à côté de la salle toxique", () => {
+    const [left, right] = VENTS;
+    const armurerie = room("armurerie").rect!, labo = room("labo").rect!;
+    // Gauche : bande puis double mur puis Armurerie ; droite : Labo puis double mur puis bande.
+    expect(left.rect[0] + left.rect[2]).toBeLessThan(armurerie[0]);
+    expect(labo[0] + labo[2]).toBeLessThan(right.rect[0]);
+    for (const v of VENTS) {
+      const [, y, w, h] = v.rect;
+      expect(w).toBeLessThanOrEqual(20);
+      expect(y).toBe(room(v.rooms[0]).rect![1] + room(v.rooms[0]).rect![3]); // collée au dortoir
+      expect(v.ends[0][1]).toBe(y);
+      expect(v.ends[1][1]).toBe(y + h);
+    }
+  });
+
   test("tracé du chemin : par un conduit d'aération, le trait passe dans le couloir", () => {
     const [top, bottom] = VENTS[0].ends;
     expect(pathSegments(["dortoir1", "entrepot1"])).toEqual([

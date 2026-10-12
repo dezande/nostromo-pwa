@@ -33,9 +33,9 @@ export const ROOMS = {
   vie:        { name: "Salle de vie",       deck: 1, rect: [155, 205, 90, 125], center: [200, 240], label: ["Salle", "de vie"], labelY: 228, pawnY: 262 },
   dortoir1:   { name: "Dortoir 1",          deck: 1, rect: [75, 250, 80, 80],   center: [115, 290] },
   dortoir2:   { name: "Dortoir 2",          deck: 1, rect: [245, 250, 80, 80],  center: [285, 290] },
-  armurerie:  { name: "Armurerie",          deck: 1, rect: [75, 330, 80, 70],   center: [115, 365], toxic: true },
+  armurerie:  { name: "Armurerie",          deck: 1, rect: [95, 330, 60, 70],   center: [125, 365], label: ["Armu-", "rerie"], toxic: true },
   cuisine:    { name: "Cuisine",            deck: 1, rect: [155, 330, 90, 100], center: [200, 380], label: ["Cuisine &", "salle à", "manger"] },
-  labo:       { name: "Labo",               deck: 1, rect: [245, 330, 80, 70],  center: [285, 365], toxic: true },
+  labo:       { name: "Labo",               deck: 1, rect: [245, 330, 60, 70],  center: [275, 365], toxic: true },
   entrepot1:  { name: "Entrepôt 1",         deck: 1, points: "75,400 155,400 155,480 50,480 50,425", center: [105, 445] },
   entrepot2:  { name: "Entrepôt 2",         deck: 1, points: "245,400 325,400 350,425 350,480 245,480", center: [295, 445] },
   atelier:    { name: "Atelier",            deck: 2, rect: [40, 40, 95, 90],    center: [87, 85] },
@@ -71,18 +71,27 @@ export const roomLines = (id: RoomId): string[] => room(id).label || [room(id).n
 export const stepLabel = (rooms: RoomId[]): string => rooms.map(k => room(k).name).join(" + ");
 
 /**
- * Conduits d'aération du pont 1 : couloirs étroits le long de l'Armurerie et du Labo,
- * entre un dortoir et un entrepôt. `ends` = ouvertures [côté dortoir, côté entrepôt].
+ * Conduits d'aération du pont 1 (d'après le plan du manuel) : une bande étroite à l'intérieur de
+ * la coque, à côté de l'Armurerie (ou du Labo), entre un dortoir et un entrepôt.
+ * Ce n'est pas une salle : on la traverse en un seul déplacement.
+ * `ends` = portes [côté dortoir, côté entrepôt] ; `label` = étiquette extérieure et son trait.
  */
 export interface VentCorridor {
   rooms: [RoomId, RoomId];
   rect: [number, number, number, number];
   ends: [[number, number], [number, number]];
+  label: { x: number; y: number; pointer: [number, number, number, number] };
 }
 
 export const VENTS: VentCorridor[] = [
-  { rooms: ["dortoir1", "entrepot1"], rect: [56, 312, 18, 100], ends: [[65, 318], [65, 410]] },
-  { rooms: ["dortoir2", "entrepot2"], rect: [326, 312, 18, 100], ends: [[335, 318], [335, 410]] },
+  {
+    rooms: ["dortoir1", "entrepot1"], rect: [75, 330, 18, 70], ends: [[84, 330], [84, 400]],
+    label: { x: 26, y: 412, pointer: [38, 406, 79, 372] },
+  },
+  {
+    rooms: ["dortoir2", "entrepot2"], rect: [307, 330, 18, 70], ends: [[316, 330], [316, 400]],
+    label: { x: 374, y: 412, pointer: [362, 406, 321, 372] },
+  },
 ];
 
 /** Conduit d'aération entre deux salles, s'il y en a un. */

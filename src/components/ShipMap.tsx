@@ -47,7 +47,8 @@ function Deck1() {
           {range(150, 370, 26).map(y => <line key={y} x1={x + 4} y1={y} x2={x + 32} y2={y + 20} class="hatch" />)}
         </g>
       ))}
-      {[[48, 160], [325, 160]].map(([x, y]) => (
+      {/* Barres qui relient les propulseurs à la coque */}
+      {[[48, 160], [325, 160], [48, 335], [325, 335]].map(([x, y]) => (
         <rect key={`${x}-${y}`} x={x} y={y} width="27" height="14" class="deco" />
       ))}
 
@@ -88,8 +89,11 @@ function Deck1() {
         [115, 250, "h"], [285, 250, "h"],
         [155, 290, "v"], [245, 290, "v"], [200, 330, "h"],
         [155, 412, "v"], [245, 412, "v"],
-        // ouvertures des conduits d'aération
-        [75, 318, "v"], [65, 410, "h"], [325, 318, "v"], [335, 410, "h"],
+        // portes de l'Armurerie et du Labo (contaminés : on n'y entre pas)
+        [125, 330, "h"], [155, 365, "v"], [125, 400, "h"],
+        [275, 330, "h"], [245, 365, "v"], [275, 400, "h"],
+        // portes des conduits d'aération
+        [84, 330, "h"], [84, 400, "h"], [316, 330, "h"], [316, 400, "h"],
       ]} />
       <PathTrace deck={1} />
       <Pawn deck={1} />
@@ -186,19 +190,30 @@ function ToxicCross({ rect: [x, y, w, h] }: { rect: [number, number, number, num
   );
 }
 
-/** Conduit d'aération : couloir étroit, grille, étiquette ; mis en avant quand on peut l'emprunter. */
+/**
+ * Conduit d'aération : bande étroite à côté de l'Armurerie / du Labo, séparée par un double mur,
+ * avec une flèche ↕ entre ses deux portes et l'étiquette « PASSAGE VENTILATION » à l'extérieur.
+ * Mis en avant quand on peut l'emprunter depuis la salle du pion.
+ */
 function Vent({ vent }: { vent: VentCorridor }) {
   const [x, y, w, h] = vent.rect;
   const [a, b] = vent.rooms;
   const here = position.value;
   const usable = phase.value === "move" && !!here &&
     ((here === a && reachable.value.has(b)) || (here === b && reachable.value.has(a)));
-  const cx = x + w / 2, cy = y + h / 2;
+  const cx = x + w / 2;
+  const top = y + 8, bottom = y + h - 8;
+  const [px1, py1, px2, py2] = vent.label.pointer;
   return (
     <g class={`vent-corridor ${usable ? "open" : ""}`} data-vent={`${a}-${b}`}>
-      <rect x={x} y={y} width={w} height={h} rx="3" />
-      {range(y + 8, y + h - 4, 8).map(gy => <line key={gy} x1={x + 3} y1={gy} x2={x + w - 3} y2={gy} class="grate" />)}
-      <text x={cx} y={cy} transform={`rotate(-90 ${cx} ${cy})`} dy="2.5">VENTILATION</text>
+      <rect x={x} y={y} width={w} height={h} />
+      {/* flèche à double pointe entre les deux portes */}
+      <path class="vent-arrow" d={`M${cx} ${top} V${bottom} M${cx - 3} ${top + 4} L${cx} ${top} L${cx + 3} ${top + 4} M${cx - 3} ${bottom - 4} L${cx} ${bottom} L${cx + 3} ${bottom - 4}`} />
+      <line class="vent-pointer" x1={px1} y1={py1} x2={px2} y2={py2} />
+      <text class="vent-label" x={vent.label.x} y={vent.label.y}>
+        <tspan x={vent.label.x}>PASSAGE</tspan>
+        <tspan x={vent.label.x} dy="8">VENTILATION</tspan>
+      </text>
     </g>
   );
 }

@@ -123,7 +123,7 @@ test("conduit d'aération : couloir visible, praticable entre dortoir et entrep�
   await page.locator("#protos .proto").nth(2).click(); // le protocole n°3 ne ferme les entrepôts qu'à la fin
   const vent = page.locator('[data-vent="dortoir1-entrepot1"]');
   await expect(vent).toBeVisible();
-  await expect(vent).toHaveText("VENTILATION");
+  await expect(vent.locator("tspan")).toHaveText(["PASSAGE", "VENTILATION"]);
   await placeAgent(page, "dortoir1");
   await expect(vent).toHaveClass(/open/);
   expect(await reachableRooms(page)).toContain("entrepot1");
