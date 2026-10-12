@@ -117,6 +117,11 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
   await page.locator("#protos .proto").first().click();
   await expect(page.locator("#deck1")).toBeVisible();
   await expect(page.locator("#deck2")).toBeVisible();
+  // Fenêtre d'informations au-dessus du pont 2.
+  await expect(page.locator("#infoPanel")).toBeVisible();
+  const info = (await page.locator("#infoPanel").boundingBox())!;
+  const deck2 = (await page.locator("#deck2").boundingBox())!;
+  expect(info.y + info.height).toBeLessThanOrEqual(deck2.y);
   await expect(page.locator(".coordinator")).toHaveCount(0);
   await expect(page.locator("#status, #aip, #resetBtn")).toHaveCount(0);
   await expect(page.locator(".action-bar #closeBtn")).toHaveText("VALIDER");

@@ -8,6 +8,20 @@
   @media (max-width: 520px) { grid-template-columns: 1fr; }
 }
 
+// Colonne de droite : fenêtre d'informations puis pont 2
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.info-panel {
+  min-height: 120px;
+  .info-body { padding: 4px 6px 8px; font-size: fs(13px); line-height: 1.5; }
+  .info-empty { margin: 0; color: var(--dim); letter-spacing: .2em; font-size: fs(11px); }
+}
+
 .deck {
   border: 1px solid var(--line);
   border-radius: 10px;
