@@ -84,6 +84,15 @@ describe("déplacements", () => {
     expect(game.moves.value).toBe(0);
   });
 
+  test("le chemin suit les déplacements depuis la validation", () => {
+    expect(game.path.value).toEqual(["cockpit"]);
+    game.touchRoom("vie");
+    game.touchRoom("cuisine");
+    expect(game.path.value).toEqual(["cockpit", "vie", "cuisine"]);
+    game.undo();
+    expect(game.path.value).toEqual(["cockpit", "vie"]);
+  });
+
   test("Annuler ramène à la salle précédente", () => {
     game.touchRoom("vie");
     game.touchRoom("cuisine");
@@ -106,6 +115,7 @@ describe("fermetures", () => {
     expect(game.step.value).toBe(1);
     expect(game.moves.value).toBe(0);
     expect(game.busy.value).toBe(false);
+    expect(game.path.value).toEqual(["vie"]); // tracé remis à zéro après la validation
   });
 
   test("pendant le compte à rebours, rien ne bouge", async () => {

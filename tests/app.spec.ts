@@ -241,6 +241,24 @@ test("fenêtre du protocole : choix de la salle de départ puis position enregis
   expect(errors).toEqual([]);
 });
 
+test("chemin du pion : tracé, trajet en texte, annulation et remise à zéro après validation", async ({ page }) => {
+  const errors = await open(page);
+  await startSimulation(page);
+  await page.locator("#protos .proto").first().click(); // le protocole n°1 ferme d'abord l'atelier
+  await placeAgent(page, "vie");
+  await clickRoom(page, "dortoir1");
+  await clickRoom(page, "reunion");
+  await expect(page.locator(".path-line")).toHaveCount(2);
+  await expect(page.locator(".path-step")).toHaveText(["1", "2"]);
+  await page.clock.runFor(5000);
+  await expect(page.locator("#protocolMessage")).toHaveText("SALLE DE VIE → DORTOIR 1 → SALLE DE RÉUNION · 2 DÉPLACEMENTS");
+  await page.locator("#undoBtn").click();
+  await expect(page.locator(".path-line")).toHaveCount(1);
+  await closeRoom(page);
+  await expect(page.locator(".path-line")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();

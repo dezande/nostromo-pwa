@@ -47,6 +47,17 @@ test("toucher une salle pose le pion ; après validation, les salles voisines so
   expect(reach).toEqual(["infirmerie", "reunion", "vie"]);
 });
 
+test("trace le chemin du pion, avec l'ascenseur entre les ponts", () => {
+  act(() => { game.touchRoom("cockpit"); game.confirmStart(); });
+  expect(root.querySelectorAll(".path-line")).toHaveLength(0);
+  act(() => { game.touchRoom("vie"); game.touchRoom("serre"); });
+  expect(root.querySelectorAll("#deck1 .path-line")).toHaveLength(2); // cockpit → vie, vie → ascenseur
+  expect(root.querySelectorAll("#deck2 .path-line")).toHaveLength(1); // ascenseur → serre
+  expect([...root.querySelectorAll(".path-step text")].map(t => t.textContent)).toEqual(["1", "2"]);
+  act(() => { game.undo(); });
+  expect(root.querySelectorAll("#deck2 .path-line")).toHaveLength(0);
+});
+
 test("les salles fermées sont hachurées", () => {
   act(() => { game.closed.value = new Set(["atelier"]); });
   expect(roomEl("atelier").classList.contains("closed")).toBe(true);

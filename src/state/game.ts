@@ -35,6 +35,10 @@ export const ending = signal<{ win: boolean; text: string } | null>(null);
 
 export const inGame = computed(() => phase.value === "place" || phase.value === "move");
 
+/** Chemin depuis la dernière validation : salles visitées puis salle actuelle. */
+export const path = computed((): RoomId[] =>
+  position.value && phase.value === "move" ? [...trail.value, position.value] : []);
+
 export const isOpen = (id: RoomId): boolean => !room(id).toxic && !closed.value.has(id);
 
 /** Salles que l'on peut toucher maintenant. */

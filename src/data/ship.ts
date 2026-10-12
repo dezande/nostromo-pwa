@@ -70,6 +70,36 @@ export const roomLines = (id: RoomId): string[] => room(id).label || [room(id).n
 /** « Cuisine + Labo » pour une étape qui ferme plusieurs salles. */
 export const stepLabel = (rooms: RoomId[]): string => rooms.map(k => room(k).name).join(" + ");
 
+/** Centre de la cabine d'ascenseur sur chaque pont (passage entre les ponts). */
+export const LIFT_POSITION: Record<1 | 2, [number, number]> = { 1: [200, 303], 2: [160, 59] };
+
+export interface PathSegment {
+  deck: 1 | 2;
+  from: [number, number];
+  to: [number, number];
+  /** numéro du pas (1, 2, 3…) affiché sur ce segment, s'il y en a un */
+  step?: number;
+}
+
+/**
+ * Segments à tracer pour un chemin de salles. Quand on change de pont, le trait va
+ * jusqu'à l'ascenseur sur chaque pont ; le numéro du pas est mis du côté de l'arrivée.
+ */
+export function pathSegments(path: RoomId[]): PathSegment[] {
+  const segments: PathSegment[] = [];
+  for (let i = 1; i < path.length; i++) {
+    const a = room(path[i - 1]), b = room(path[i]);
+    const from = pawnPosition(path[i - 1]), to = pawnPosition(path[i]);
+    if (a.deck === b.deck) {
+      segments.push({ deck: a.deck, from, to, step: i });
+    } else {
+      segments.push({ deck: a.deck, from, to: LIFT_POSITION[a.deck] });
+      segments.push({ deck: b.deck, from: LIFT_POSITION[b.deck], to, step: i });
+    }
+  }
+  return segments;
+}
+
 /** Position du pion dans une salle (sous le nom). */
 export function pawnPosition(id: RoomId): [number, number] {
   const r = room(id);
