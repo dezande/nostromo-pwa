@@ -25,6 +25,7 @@
   --font: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html,body{margin:0;height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:calc(16px * var(--fs));
   -webkit-tap-highlight-color:transparent;overflow-x:hidden;
@@ -37,7 +38,12 @@ button:disabled{opacity:.35;cursor:default}
 header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
 header h1{font-size:calc(15px * var(--fs));letter-spacing:.18em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 header h1 small{color:var(--dim);letter-spacing:.1em;font-weight:normal}
-.icon-btn{padding:8px 10px;font-size:calc(13px * var(--fs))}
+.icon-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px;font-size:calc(13px * var(--fs))}
+.ic{font-size:1.6em;line-height:1;display:inline-block}
+.icon-btn .ic{font-size:calc(24px * var(--fs))}
+@media (max-width:560px){.icon-btn .lbl{display:none}.icon-btn{min-width:48px;justify-content:center}}
+button .ic + *{margin-left:0}
+.home .resume{max-width:360px}
 .icon-btn.on{border-color:var(--green);color:var(--green)}
 main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;padding:16px;max-width:1200px;margin:0 auto}
 @media (max-width:860px){main{grid-template-columns:1fr}}
@@ -161,8 +167,8 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
 <div id="crt" aria-hidden="true"></div>
 <header>
   <h1>NOSTROMO II <small>· TRAINING BASE</small></h1>
-  <button class="icon-btn" id="menuBtn">☰ Menu</button>
-  <button class="icon-btn" id="setBtn" aria-label="Réglages">⚙</button>
+  <button class="icon-btn" id="menuBtn" aria-label="Menu" title="Menu"><span class="ic" aria-hidden="true">☰</span><span class="lbl">Menu</span></button>
+  <button class="icon-btn" id="setBtn" aria-label="Réglages" title="Réglages"><span class="ic" aria-hidden="true">⚙</span><span class="lbl">Réglages</span></button>
 </header>
 
 <main id="main">
@@ -186,10 +192,10 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
         <span>Fermeture <b id="step">0/8</b></span>
       </div>
     </div>
-    <button class="big" id="closeBtn" disabled>⚠ FERMETURE DE SALLE</button>
+    <button class="big" id="closeBtn" disabled><span class="ic" aria-hidden="true">⚠</span> FERMETURE DE SALLE</button>
     <div class="row">
-      <button id="undoBtn" disabled>↶ Annuler</button>
-      <button id="resetBtn">⟲ Nouvelle partie</button>
+      <button id="undoBtn" disabled><span class="ic" aria-hidden="true">↶</span> Annuler</button>
+      <button id="resetBtn"><span class="ic" aria-hidden="true">⟲</span> <span id="resetLbl">Nouvelle partie</span></button>
     </div>
     <div class="card">
       <h3>FICHE A.I.P. <span id="protoName"></span>
@@ -233,8 +239,9 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     <h2>NOSTROMO&nbsp;II</h2>
     <div class="base">TRAINING BASE · LUNE</div>
     <p>Simulation d'intrusion alien pour Psychic Agents.</p>
-    <button class="big" id="startBtn">▶ DÉMARRER LA SIMULATION</button>
-    <button class="link" id="homeSetBtn">Réglages</button>
+    <button class="big resume" id="resumeBtn" hidden><span class="ic" aria-hidden="true">▶</span> REPRENDRE LA PARTIE</button>
+    <button class="big" id="startBtn"><span class="ic" id="startIc" aria-hidden="true">▶</span> <span id="startLbl">DÉMARRER LA SIMULATION</span></button>
+    <button class="icon-btn" id="homeSetBtn"><span class="ic" aria-hidden="true">⚙</span><span>Réglages</span></button>
     <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
   </div>
 </div>
@@ -245,7 +252,7 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     <h2>ALIEN INTRUSION PROTOCOL</h2>
     <p>Le Psychic Agent choisit le protocole. Il établit l'ordre de fermeture des salles du vaisseau-base. Seuls les agents présents dans la dernière salle survivent.</p>
     <div class="protos" id="protos"></div>
-    <div class="row" style="margin-top:14px"><button id="pickMenuBtn">← Menu</button></div>
+    <div class="row" style="margin-top:14px"><button id="pickMenuBtn"><span class="ic" aria-hidden="true">☰</span> Menu</button></div>
   </div>
 </div>
 
@@ -263,7 +270,7 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
   <div class="panel end" id="endPanel">
     <h2 id="endTitle"></h2>
     <p id="endText"></p>
-    <div class="row"><button id="againBtn">⟲ Rejouer</button></div>
+    <div class="row"><button id="endMenuBtn"><span class="ic" aria-hidden="true">☰</span> Menu</button><button id="againBtn"><span class="ic" aria-hidden="true">⟲</span> Rejouer</button></div>
   </div>
 </div>
 
@@ -705,8 +712,8 @@ function newGame(){ Object.assign(S,{proto:null, step:0, pos:null, trail:[], mov
 let resetArmed=null;
 $("resetBtn").onclick=()=>{
   if(S.busy) return;
-  if (S.phase==="move" && !resetArmed){ $("resetBtn").textContent="Confirmer ?"; resetArmed=setTimeout(()=>{resetArmed=null; $("resetBtn").textContent="⟲ Nouvelle partie";},3000); return; }
-  clearTimeout(resetArmed); resetArmed=null; $("resetBtn").textContent="⟲ Nouvelle partie"; newGame();
+  if (S.phase==="move" && !resetArmed){ $("resetLbl").textContent="Confirmer ?"; resetArmed=setTimeout(()=>{resetArmed=null; $("resetLbl").textContent="Nouvelle partie";},3000); return; }
+  clearTimeout(resetArmed); resetArmed=null; $("resetLbl").textContent="Nouvelle partie"; newGame();
 };
 $("againBtn").onclick=newGame;
 $("peekBtn").onclick=()=>{ S.peek=!S.peek; render(); };
@@ -716,15 +723,33 @@ function setMusic(on){ if(on) Audio.startMusic(Audio.vol); else Audio.stopMusic(
 $("musicChk").checked=settings.music;
 $("musicChk").onchange=e=>{ settings.music=e.target.checked; setMusic(settings.music); saveSettings(); };
 
+let startArmed=null;
 $("startBtn").onclick=async()=>{
   if (transBusy) return;
+  // Partie en cours : on demande confirmation avant de l'abandonner, comme « Nouvelle partie ».
+  if (inGame() && !startArmed){
+    $("startLbl").textContent="CONFIRMER : ABANDONNER LA PARTIE ?";
+    startArmed=setTimeout(()=>{ startArmed=null; $("startLbl").textContent="NOUVELLE SIMULATION"; },3000);
+    return;
+  }
+  clearTimeout(startArmed); startArmed=null;
   Audio.init(); keepAwake();
   await transition("INITIALISATION DE LA SIMULATION", BOOT_LINES);
   $("home").classList.remove("show"); newGame();
 };
-function showHome(){ if(S.busy || transBusy) return; $("home").classList.add("show"); }
+// Le menu se comporte comme une pause : si une partie est en cours, on peut la reprendre.
+const inGame = () => S.phase==="place" || S.phase==="move";
+function showHome(){
+  if(S.busy || transBusy) return;
+  $("resumeBtn").hidden = !inGame();
+  $("startLbl").textContent = inGame() ? "NOUVELLE SIMULATION" : "DÉMARRER LA SIMULATION";
+  $("startIc").textContent = inGame() ? "⟲" : "▶";
+  $("home").classList.add("show");
+}
+$("resumeBtn").onclick=()=>{ $("home").classList.remove("show"); };
 $("menuBtn").onclick=showHome;
 $("pickMenuBtn").onclick=showHome;
+$("endMenuBtn").onclick=()=>{ $("end").classList.remove("show"); showHome(); };
 $("homeSetBtn").onclick=()=>{ showVersion(); $("settings").classList.add("show"); };
 
 /* ---------- Styles d'écran (profils de cool-retro-term) ---------- */

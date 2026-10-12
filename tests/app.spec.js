@@ -190,6 +190,44 @@ test("le numéro de build est affiché dans les réglages", async ({ page }) => 
   await expect(page.locator("#versionInfo")).toContainText(`BUILD ${v.build} DU `);
 });
 
+test("le menu met la partie en pause et permet de la reprendre", async ({ page }) => {
+  const errors = await open(page);
+  await startSimulation(page);
+  await page.locator("#protos .proto").first().click();
+  await clickRoom(page, "cockpit");
+  await page.locator("#menuBtn").click();
+  await expect(page.locator("#home")).toHaveClass(/show/);
+  await expect(page.locator("#resumeBtn")).toBeVisible();
+  await expect(page.locator("#startLbl")).toHaveText("NOUVELLE SIMULATION");
+  await page.locator("#resumeBtn").click();
+  await expect(page.locator("#home")).not.toHaveClass(/show/);
+  await expect(page.locator("#status")).toContainText("Cockpit");
+
+  // Nouvelle simulation pendant une partie : il faut confirmer.
+  await page.locator("#menuBtn").click();
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#startLbl")).toContainText("CONFIRMER");
+  await expect(page.locator("#home")).toHaveClass(/show/);
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#pick")).toHaveClass(/show/);
+  await expect(page.locator("#home")).not.toHaveClass(/show/);
+  expect(errors).toEqual([]);
+});
+
+test("menu depuis l'écran de fin, sans bouton Reprendre", async ({ page }) => {
+  await open(page);
+  const first = await page.evaluate(() => PROTOCOLS[0].steps[0][0]);
+  await startSimulation(page);
+  await page.locator("#protos .proto").first().click();
+  await clickRoom(page, first);
+  await closeRoom(page);
+  await page.clock.runFor(2_000);
+  await page.locator("#endMenuBtn").click();
+  await expect(page.locator("#home")).toHaveClass(/show/);
+  await expect(page.locator("#resumeBtn")).toBeHidden();
+  await expect(page.locator("#startLbl")).toHaveText("DÉMARRER LA SIMULATION");
+});
+
 test("taille du texte et lignes horizontales", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
