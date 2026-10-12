@@ -1,0 +1,27 @@
+@use "functions" as *;
+
+// Panneaux de bienvenue et d'explication du protocole (style terminal de la compagnie)
+.briefing { background: var(--bg); }
+
+.briefing-panel {
+  max-width: 680px;
+  line-height: 1.6;
+
+  .briefing-corp { color: var(--dim); font-size: fs(11px); letter-spacing: .25em; }
+  .briefing-motto { color: var(--dim); font-size: fs(11px); font-style: italic; margin: 4px 0 18px; }
+  h2 { color: var(--accent); margin: 0 0 14px; font-size: fs(18px); }
+  p { color: var(--ink); }
+  .briefing-intro { color: var(--accent); margin-top: 14px; }
+
+  .briefing-steps {
+    margin: 0 0 14px;
+    padding-left: 1.6em;
+    li::marker { color: var(--amber); font-weight: bold; }
+    h3 { margin: 0 0 4px; font-size: fs(13px); letter-spacing: .2em; color: var(--amber); font-weight: normal; }
+    p { margin: 0 0 12px; }
+  }
+
+  .briefing-sign { color: var(--accent); letter-spacing: .1em; }
+  .briefing-actions { margin-top: 18px; }
+  .briefing-actions .big { flex: 2; }
+}

@@ -1,7 +1,8 @@
 # Nostromo II – partie fusée (PWA)
 
 Application web installable qui accompagne l'effet *Nostromo II* (Fred Darevil, Marchand de Trucs) :
-plan du vaisseau-base sur deux ponts, les 4 protocoles A.I.P., compte à rebours avant chaque
+plan du vaisseau-base sur deux ponts, panneaux d'accueil, choix des salles à fermer par le Coordinateur
+(qui suit sa fiche de protocole papier), compte à rebours avant chaque
 fermeture de salle, annonce vocale, musique d'ambiance et bruitages, styles d'écran rétro.
 
 La musique et les bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
@@ -30,7 +31,6 @@ src/
   App.tsx               assemblage de l'écran
   data/                 données, sans code d'affichage
     ship.ts             salles, liaisons, positions sur le plan
-    protocols.ts        les 4 protocoles A.I.P.
     themes.ts           styles d'écran (cool-retro-term)
     terminal.ts         textes des écrans de transition
   state/                état et actions
@@ -42,14 +42,15 @@ src/
     pwa.ts              mode hors ligne et numéro de build
   audio/audio.ts        musique et bruitages
   components/           morceaux d'interface (plan, en-tête, coordinateur, icônes…)
-  screens/              écrans superposés (accueil, protocoles, compte à rebours, fin, réglages…)
+  screens/              écrans superposés (accueil, bienvenue et protocole, compte à rebours, fin, réglages…)
   styles/               Sass : un fichier par partie, réunis dans main.scss
   **/*.test.ts(x)       tests unitaires Jest, à côté du code testé
 tests/                  tests de bout en bout Playwright
 public/icons/           icônes de l'app
 ```
 
-Pour changer un protocole ou une salle, il suffit de modifier `src/data/`.
+Pour changer une salle ou une liaison, il suffit de modifier `src/data/ship.ts`. Les protocoles ne sont pas dans
+l'app : le Coordinateur utilise ses fiches papier et touche sur le plan la ou les salles à fermer.
 
 ## Version
 
@@ -60,7 +61,7 @@ La version (`1.0.0`) se change dans `package.json`.
 ## Tests
 
 - **Jest** (`npm run test:unit`, fichiers `src/**/*.test.ts(x)`) : tests unitaires rapides des données
-  (plan, liaisons, protocoles, styles), de la logique de jeu (pose du pion, déplacements, fermetures,
+  (plan, liaisons, styles), de la logique de jeu (pose du pion, déplacements, fermetures,
   victoire, élimination), des réglages enregistrés, des transitions et de composants Preact.
 - **Playwright** (`npm run test:e2e`, dossier `tests/`) : parcours complets dans un vrai navigateur, sur la
   version compilée, sur ordinateur et téléphone. En local, ils utilisent le Chrome installé.

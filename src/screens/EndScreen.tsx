@@ -1,7 +1,7 @@
 // Fin de partie : agent survivant ou éliminé.
 import { Overlay } from "../components/Overlay";
 import { Icon } from "../components/Icon";
-import { ending, newGame } from "../state/game";
+import { ending, startGame } from "../state/game";
 import { openMenu } from "../state/ui";
 
 export function EndScreen() {
@@ -13,7 +13,7 @@ export function EndScreen() {
         <p id="endText">{end?.text}</p>
         <div class="row">
           <button id="endMenuBtn" onClick={() => { ending.value = null; openMenu(); }}><Icon name="menu" /> Menu</button>
-          <button id="againBtn" onClick={newGame}><Icon name="reset" /> Rejouer</button>
+          <button id="againBtn" onClick={startGame}><Icon name="reset" /> Rejouer</button>
         </div>
       </div>
     </Overlay>

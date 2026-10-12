@@ -1,30 +1,34 @@
-// État de la partie et actions du coordinateur.
+// État de la partie et actions.
+// Il n'y a pas de protocole dans l'app : le Coordinateur suit sa fiche papier et touche
+// lui-même, sur le plan, la ou les salles à fermer.
 import { signal, computed, batch } from "@preact/signals";
 import { ADJ, ROOM_IDS, room, stepLabel, type RoomId } from "../data/ship";
-import { STEP_COUNT, type Protocol } from "../data/protocols";
 import { audio } from "../audio/audio";
 import { settings } from "./settings";
 import { keepAwake, say, sleep } from "./device";
 
-export type Phase = "pick" | "place" | "move" | "dead" | "win";
+/** Nombre de fermetures d'un entraînement. */
+export const STEP_COUNT = 8;
 
 /**
  * Phases :
- * - "pick"  : choix du protocole
+ * - "intro" : panneaux de bienvenue et d'explication (pas encore de partie)
  * - "place" : le Psychic Agent pose son pion ; il peut changer de salle jusqu'à « Valider »
- * - "move"  : déplacements puis fermeture
+ * - "move"  : déplacements ; « Valider » quand ils sont faits
+ * - "close" : le Coordinateur touche la ou les salles à fermer, puis « Valider »
  * - "dead" / "win" : fin de partie
  */
-export const phase = signal<Phase>("pick");
-export const protocol = signal<Protocol | null>(null);
+export type Phase = "intro" | "place" | "move" | "close" | "dead" | "win";
+
+export const phase = signal<Phase>("intro");
 export const step = signal(0);                         // nombre de fermetures déjà faites
 export const position = signal<RoomId | null>(null);   // salle du pion
 export const startRoom = signal<RoomId | null>(null);  // salle de départ choisie
 export const trail = signal<RoomId[]>([]);             // salles précédentes, pour « Annuler »
 export const moves = signal(0);
 export const closed = signal(new Set<RoomId>());       // salles fermées
-export const busy = signal(false);         // compte à rebours en cours
-export const peek = signal(false);         // fiche A.I.P. visible
+export const toClose = signal(new Set<RoomId>());      // salles choisies par le Coordinateur
+export const busy = signal(false);                     // compte à rebours en cours
 
 // Effets visuels pendant une fermeture.
 export const countdown = signal<{ n: number; room: string } | null>(null);
@@ -33,48 +37,57 @@ export const flashing = signal(new Set<RoomId>());  // salles qui viennent de se
 export const shake = signal(false);
 export const ending = signal<{ win: boolean; text: string } | null>(null);
 
-export const inGame = computed(() => phase.value === "place" || phase.value === "move");
+export const inGame = computed(() => ["place", "move", "close"].includes(phase.value));
+
+export const isOpen = (id: RoomId): boolean => !room(id).toxic && !closed.value.has(id);
+export const openRooms = (): RoomId[] => ROOM_IDS.filter(isOpen);
 
 /** Chemin depuis la dernière validation : salles visitées puis salle actuelle. */
 export const path = computed((): RoomId[] =>
-  position.value && phase.value === "move" ? [...trail.value, position.value] : []);
+  position.value && (phase.value === "move" || phase.value === "close") ? [...trail.value, position.value] : []);
 
-export const isOpen = (id: RoomId): boolean => !room(id).toxic && !closed.value.has(id);
-
-/** Salles que l'on peut toucher maintenant. */
+/** Salles où le pion peut aller maintenant. */
 export const reachable = computed((): Set<RoomId> => {
   if (busy.value) return new Set();
-  if (phase.value === "place") return new Set(ROOM_IDS.filter(isOpen));
+  if (phase.value === "place") return new Set(openRooms());
   if (phase.value !== "move" || !position.value) return new Set();
   return new Set([...ADJ[position.value]].filter(isOpen));
 });
 
-function reset(newPhase: Phase, proto: Protocol | null = null) {
+/** Salles que le Coordinateur peut choisir de fermer (au moins une salle doit rester ouverte). */
+export const closable = computed((): Set<RoomId> => {
+  if (busy.value || phase.value !== "close") return new Set();
+  const open = openRooms();
+  if (toClose.value.size >= open.length - 1) return new Set(toClose.value); // on peut seulement désélectionner
+  return new Set(open);
+});
+
+function reset(newPhase: Phase) {
   batch(() => {
     phase.value = newPhase;
-    protocol.value = proto;
     step.value = 0;
     position.value = null;
     startRoom.value = null;
     trail.value = [];
     moves.value = 0;
     closed.value = new Set();
+    toClose.value = new Set();
     busy.value = false;
     ending.value = null;
   });
 }
 
-/** Retour au choix du protocole. */
-export const newGame = () => reset("pick");
+/** Avant la partie : panneaux d'accueil. */
+export const showIntro = () => reset("intro");
 
-/** Démarre la partie avec un protocole. */
-export function startGame(proto: Protocol) {
+/** Démarre la partie : le Psychic Agent choisit sa salle de départ. */
+export function startGame() {
   audio.init();
   keepAwake();
-  reset("place", proto);
+  reset("place");
 }
 
-/** Toucher une salle : choisir (ou changer) la salle de départ, ou déplacer le pion vers une salle voisine. */
+/** Toucher une salle : salle de départ, déplacement, ou choix d'une salle à fermer. */
 export function touchRoom(id: RoomId) {
   if (busy.value) return;
   audio.init();
@@ -85,27 +98,51 @@ export function touchRoom(id: RoomId) {
   } else if (phase.value === "move" && from && ADJ[from].has(id) && isOpen(id)) {
     batch(() => { trail.value = [...trail.value, from]; position.value = id; moves.value++; });
     audio.beep(false);
+  } else if (phase.value === "close" && closable.value.has(id)) {
+    const next = new Set(toClose.value);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    toClose.value = next;
+    audio.beep(false);
   }
 }
 
-/** Confirme la salle de départ : la partie commence. */
+/** Confirme la salle de départ : les déplacements commencent. */
 export function confirmStart() {
   if (phase.value !== "place" || !position.value) return;
   batch(() => { phase.value = "move"; trail.value = []; moves.value = 0; });
   audio.beep(true);
 }
 
-/** Bouton « Valider » : confirme la salle de départ, puis lance les fermetures. */
-export function validate() {
-  if (phase.value === "place") confirmStart();
-  else void closeRooms();
+/** Déplacements terminés : le Coordinateur va choisir la salle à fermer. */
+export function finishMoves() {
+  if (phase.value !== "move") return;
+  batch(() => { phase.value = "close"; toClose.value = new Set(); });
+  audio.beep(true);
 }
 
-export const canValidate = computed(() =>
-  !busy.value && ((phase.value === "place" && !!position.value) || phase.value === "move"));
+/** Bouton « Valider » : salle de départ, fin des déplacements, puis fermeture. */
+export function validate() {
+  if (phase.value === "place") confirmStart();
+  else if (phase.value === "move") finishMoves();
+  else if (phase.value === "close") void closeRooms();
+}
 
+export const canValidate = computed(() => {
+  if (busy.value) return false;
+  if (phase.value === "place") return !!position.value;
+  if (phase.value === "move") return true;
+  if (phase.value === "close") return toClose.value.size > 0;
+  return false;
+});
+
+/** « Annuler » : dernier déplacement, ou retour aux déplacements pendant le choix de la salle à fermer. */
 export function undo() {
-  if (!trail.value.length) return;
+  if (busy.value) return;
+  if (phase.value === "close") {
+    batch(() => { phase.value = "move"; toClose.value = new Set(); });
+    return;
+  }
+  if (phase.value !== "move" || !trail.value.length) return;
   batch(() => {
     position.value = trail.value[trail.value.length - 1];
     trail.value = trail.value.slice(0, -1);
@@ -113,18 +150,18 @@ export function undo() {
   });
 }
 
-/** Fermeture de salle : compte à rebours, annonce, claquement, puis victoire ou élimination. */
+export const canUndo = computed(() =>
+  !busy.value && (phase.value === "close" || (phase.value === "move" && trail.value.length > 0)));
+
+/** Fermeture des salles choisies : compte à rebours, annonce, claquement, puis suite ou fin. */
 export async function closeRooms() {
-  const proto = protocol.value;
-  if (phase.value !== "move" || busy.value || !proto) return;
+  const rooms = ROOM_IDS.filter(id => toClose.value.has(id));
+  if (phase.value !== "close" || busy.value || !rooms.length) return;
   audio.init();
   keepAwake();
   busy.value = true;
 
-  const rooms = proto.steps[step.value];
-  const last = step.value === STEP_COUNT - 1;
   const label = stepLabel(rooms);
-
   audio.duck(true);
   for (let n = settings.countdown.value; n > 0; n--) {
     countdown.value = { n, room: "" };
@@ -141,20 +178,22 @@ export async function closeRooms() {
     countdown.value = null;
     closing.value = new Set();
     closed.value = new Set([...closed.value, ...rooms]);
+    toClose.value = new Set();
     flashing.value = new Set(rooms);
     shake.value = true;
     step.value++;
     moves.value = 0;
     trail.value = [];
   });
+  const agent = position.value!;
+  const dead = rooms.includes(agent);
+  const finished = step.value >= STEP_COUNT || openRooms().length <= 1;
   audio.slam();
-  audio.alien(last);
+  audio.alien(finished || dead);
   setTimeout(() => { shake.value = false; }, 600);
   setTimeout(() => { flashing.value = new Set(); }, 1000);
 
-  const agent = position.value!;
-  const dead = rooms.includes(agent);
-  await sleep(last ? 2600 : 1400);
+  await sleep(finished || dead ? 2600 : 1400);
   busy.value = false;
   audio.duck(false);
 
@@ -162,10 +201,12 @@ export async function closeRooms() {
   if (dead) {
     phase.value = "dead";
     showEnding(false, `Un xénomorphe a été introduit en ${name}. L'agent s'y trouvait.`);
-  } else if (step.value === STEP_COUNT) {
+  } else if (finished) {
     phase.value = "win";
     audio.victory();
-    showEnding(true, `Seule la ${name} reste ouverte. Le Psychic Agent a ressenti chaque présence alien.`);
+    showEnding(true, `L'agent a survécu en ${name}. Le Psychic Agent a ressenti chaque présence alien.`);
+  } else {
+    phase.value = "move";
   }
 }
 

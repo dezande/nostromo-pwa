@@ -2,7 +2,6 @@ jest.mock("../audio/audio", () => require("../test/audioMock"));
 
 import { render } from "preact";
 import { act } from "preact/test-utils";
-import { PROTOCOLS } from "../data/protocols";
 import { ROOM_IDS } from "../data/ship";
 import * as game from "../state/game";
 import { ShipMap } from "./ShipMap";
@@ -11,7 +10,7 @@ let root: HTMLElement;
 beforeEach(() => {
   root = document.createElement("div");
   document.body.append(root);
-  act(() => { render(<ShipMap />, root); game.startGame(PROTOCOLS[0]); });
+  act(() => { render(<ShipMap />, root); game.startGame(); });
 });
 afterEach(() => { render(null, root); root.remove(); });
 
@@ -75,4 +74,13 @@ test("les conduits d'aération sont dessinés et mis en avant quand on peut les 
 test("les salles fermées sont hachurées", () => {
   act(() => { game.closed.value = new Set(["atelier"]); });
   expect(roomEl("atelier").classList.contains("closed")).toBe(true);
+});
+
+test("choix du Coordinateur : salles possibles encadrées, salle choisie en rouge", () => {
+  act(() => { game.touchRoom("cockpit"); game.confirmStart(); game.validate(); });
+  expect(roomEl("cuisine").classList.contains("target")).toBe(true);
+  expect(roomEl("labo").classList.contains("target")).toBe(false);
+  act(() => { roomEl("cuisine").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+  expect(roomEl("cuisine").classList.contains("selected")).toBe(true);
+  expect(root.querySelectorAll(".room.selected")).toHaveLength(1);
 });

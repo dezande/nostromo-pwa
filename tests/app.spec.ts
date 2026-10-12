@@ -1,7 +1,6 @@
 // @ts-check
 import { test, expect, type Page } from "@playwright/test";
 import { ADJ, ROOM_IDS, room, type RoomId } from "../src/data/ship";
-import { PROTOCOLS } from "../src/data/protocols";
 import { THEMES, DEFAULT_BG } from "../src/data/themes";
 import type { Settings } from "../src/state/settings";
 
@@ -22,10 +21,14 @@ async function open(page: Page, settings = FAST) {
   return errors;
 }
 
+/** « Démarrer la simulation », puis les panneaux Bienvenue et Protocole : la partie commence. */
 async function startSimulation(page: Page) {
   await page.locator("#startBtn").click();
   await expect(page.locator("#home")).not.toHaveClass(/show/);
-  await expect(page.locator("#pick")).toHaveClass(/show/);
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
+  await page.locator("#welcomeNext").click();
+  await page.locator("#briefingNext").click();
+  await expect(page.locator("#briefing")).not.toHaveClass(/show/);
 }
 
 /** Salles mises en avant (accessibles) sur le plan. */
@@ -39,22 +42,38 @@ async function placeAgent(page: Page, k: RoomId) {
   await page.locator("#closeBtn").click();
 }
 
-async function closeRoom(page: Page) {
+/** Fin des déplacements, le Coordinateur touche la ou les salles à fermer, puis « Valider ». */
+async function closeRoom(page: Page, ...rooms: RoomId[]) {
+  await page.locator("#closeBtn").click();
+  for (const k of rooms) await clickRoom(page, k);
   await page.locator("#closeBtn").click();
   await page.clock.runFor(15_000);
   await expect(page.locator("#count")).not.toHaveClass(/show/);
 }
 
-test("l'écran d'accueil s'affiche et mène au choix du protocole", async ({ page }) => {
+test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de départ", async ({ page }) => {
   const errors = await open(page);
   await expect(page.locator("#home")).toHaveClass(/show/);
   await expect(page.locator("#home h2")).toHaveText("NOSTROMO II");
-  await expect(page.locator("#pick")).not.toHaveClass(/show/);
 
-  await startSimulation(page);
-  await expect(page.locator("#protos .proto")).toHaveCount(4);
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
+  await expect(page.locator("#welcome h2")).toHaveText("BIENVENUE À BORD, AGENT.");
+  await page.locator("#welcomeNext").click();
+  await expect(page.locator("#briefing")).toHaveClass(/show/);
+  await expect(page.locator("#briefing .briefing-steps li")).toHaveCount(4);
+  await expect(page.locator("#briefing")).toContainText("Seul le Coordinateur en connaît l'ordre de fermeture.");
+  await expect(page.locator("#briefing")).not.toContainText("contamin");
+  await page.locator("#briefingBack").click();
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
+  await page.locator("#welcomeNext").click();
+  await page.locator("#briefingNext").click();
+  await expect(page.locator("#briefing")).not.toHaveClass(/show/);
+  await expect(page.locator(".room.reach")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
+  // Plus de choix de protocole dans l'app.
+  await expect(page.locator("#pick, #protos")).toHaveCount(0);
 
-  await page.locator("#pickMenuBtn").click();
+  await page.locator("#menuBtn").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#settings")).toHaveClass(/show/);
@@ -63,37 +82,49 @@ test("l'écran d'accueil s'affiche et mène au choix du protocole", async ({ pag
   expect(errors).toEqual([]);
 });
 
-for (const id of [0, 1, 2, 3]) {
-  test(`protocole n°${id + 1} : l'agent resté dans la dernière salle survit`, async ({ page }) => {
-    const errors = await open(page);
-    // Salle jamais fermée par ce protocole (hors salles toxiques).
-    const closedRooms = new Set(PROTOCOLS[id].steps.flat());
-    const survivor = ROOM_IDS.find(k => !room(k).toxic && !closedRooms.has(k))!;
-    expect(survivor).toBeTruthy();
+test("le Coordinateur ferme les salles une par une ; après 8 fermetures, l'agent survit", async ({ page }) => {
+  const errors = await open(page);
+  await startSimulation(page);
+  await placeAgent(page, "serre");
+  const others = ROOM_IDS.filter(k => !room(k).toxic && k !== "serre");
+  for (let step = 1; step <= 8; step++) {
+    await closeRoom(page, others[step - 1]);
+    await expect(page.locator(".room.closed")).toHaveCount(step);
+  }
+  await page.clock.runFor(2_000);
+  await expect(page.locator("#end")).toHaveClass(/show/);
+  await expect(page.locator("#endTitle")).toHaveText("AGENT SURVIVANT");
+  expect(errors).toEqual([]);
+});
 
-    await startSimulation(page);
-    await page.locator("#protos .proto").nth(id).click();
-    await placeAgent(page, survivor);
-    await expect(page.locator("#pawn, #pawn2").locator("visible=true")).toHaveCount(1);
-
-    for (let step = 1; step <= 8; step++) {
-      await closeRoom(page);
-      await expect(page.locator(".room.closed")).toHaveCount(PROTOCOLS[id].steps.slice(0, step).flat().length);
-    }
-    await page.clock.runFor(2_000);
-    await expect(page.locator("#end")).toHaveClass(/show/);
-    await expect(page.locator("#endTitle")).toHaveText("AGENT SURVIVANT");
-    expect(errors).toEqual([]);
-  });
-}
+test("le Coordinateur choisit la salle à fermer : salles possibles, choix de deux salles, Annuler", async ({ page }) => {
+  await open(page);
+  await startSimulation(page);
+  await placeAgent(page, "vie");
+  await page.locator("#closeBtn").click(); // déplacements terminés
+  await page.clock.runFor(4000);
+  await expect(page.locator("#protocolMessage")).toHaveText("COORDINATEUR : TOUCHEZ LA SALLE À FERMER");
+  await expect(page.locator("#closeBtn")).toBeDisabled();
+  await expect(page.locator(".room.target")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
+  await expect(page.locator('[data-room="labo"]')).not.toHaveClass(/target/);
+  await clickRoom(page, "cuisine");
+  await clickRoom(page, "atelier");
+  await expect(page.locator(".room.selected")).toHaveCount(2);
+  await page.clock.runFor(4000);
+  await expect(page.locator("#protocolMessage")).toContainText("SALLE À FERMER : CUISINE + ATELIER");
+  // Annuler : retour aux déplacements, sans fermeture.
+  await page.locator("#undoBtn").click();
+  await expect(page.locator(".room.selected")).toHaveCount(0);
+  expect(await reachableRooms(page)).toEqual([...ADJ.vie].sort());
+  await closeRoom(page, "cuisine", "atelier");
+  await expect(page.locator(".room.closed")).toHaveCount(2);
+});
 
 test("l'agent dans une salle qui ferme est éliminé", async ({ page }) => {
   const errors = await open(page);
-  const first = PROTOCOLS[0].steps[0][0];
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
-  await placeAgent(page, first);
-  await closeRoom(page);
+  await placeAgent(page, "cockpit");
+  await closeRoom(page, "cockpit");
   await page.clock.runFor(2_000);
   await expect(page.locator("#endTitle")).toHaveText("AGENT ÉLIMINÉ");
   expect(errors).toEqual([]);
@@ -102,7 +133,6 @@ test("l'agent dans une salle qui ferme est éliminé", async ({ page }) => {
 test("déplacement vers une salle voisine puis annulation", async ({ page }) => {
   await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
   await placeAgent(page, "cockpit");
   expect(await reachableRooms(page)).toEqual([...ADJ.cockpit].sort());
   await expect(page.locator("#undoBtn")).toBeDisabled();
@@ -120,7 +150,6 @@ test("déplacement vers une salle voisine puis annulation", async ({ page }) => 
 test("conduit d'aération : couloir visible, praticable entre dortoir et entrepôt", async ({ page }) => {
   await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").nth(2).click(); // le protocole n°3 ne ferme les entrepôts qu'à la fin
   const vent = page.locator('[data-vent="dortoir1-entrepot1"]');
   await expect(vent).toBeVisible();
   await expect(vent.locator("tspan")).toHaveText(["PASSAGE", "VENTILATION"]);
@@ -135,7 +164,6 @@ test("conduit d'aération : couloir visible, praticable entre dortoir et entrep�
 test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau coordinateur", async ({ page }) => {
   await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
   await expect(page.locator("#deck1")).toBeVisible();
   await expect(page.locator("#deck2")).toBeVisible();
   // Fenêtre d'informations au-dessus du pont 2.
@@ -161,9 +189,10 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
 test("le bouton Menu est sans effet pendant le compte à rebours", async ({ page }) => {
   await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
   await placeAgent(page, "cockpit");
-  await page.locator("#closeBtn").click();
+  await page.locator("#closeBtn").click(); // déplacements terminés
+  await clickRoom(page, "atelier");
+  await page.locator("#closeBtn").click(); // fermeture
   await page.clock.runFor(500);
   await expect(page.locator("#count")).toHaveClass(/show/);
   await page.evaluate(() => document.getElementById("menuBtn")!.click());
@@ -213,30 +242,33 @@ test("musique coupée : pas d'écran « touchez pour commencer »", async ({ pag
   expect((await audioState(page)).playing).toBe(false);
 });
 
-test("faux écrans de transition au démarrage et au choix du protocole", async ({ page }) => {
+test("faux écran de transition au démarrage, puis panneau de bienvenue", async ({ page }) => {
   const errors = await open(page, { ...FAST, transitions: true });
   await page.locator("#startBtn").click();
   await expect(page.locator("#trans")).toHaveClass(/show/);
   await expect(page.locator("#transHd")).toHaveText("INITIALISATION DE LA SIMULATION");
   await page.clock.runFor(10_000);
   await expect(page.locator("#trans")).not.toHaveClass(/show/);
-  await expect(page.locator("#pick")).toHaveClass(/show/);
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
   await expect(page.locator("#transLines")).toContainText("CONNEXION AU VAISSEAU-BASE");
 
-  await page.locator("#protos .proto").nth(1).click();
+  await expect(page.locator("#welcome")).toContainText("Votre future mission");
+  expect(errors).toEqual([]);
+});
+
+test("toucher l'écran passe la transition", async ({ page }) => {
+  await open(page, { ...FAST, transitions: true });
+  await page.locator("#startBtn").click();
   await expect(page.locator("#trans")).toHaveClass(/show/);
-  // Toucher l'écran passe la transition.
+  await page.clock.runFor(100);
   await page.locator("#trans").click();
   await expect(page.locator("#trans")).not.toHaveClass(/show/);
-  await expect(page.locator(".room.reach")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
-  await expect(page.locator("#transLines")).toContainText("PROTOCOLE N°2");
-  expect(errors).toEqual([]);
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
 });
 
 test("fenêtre du protocole : choix de la salle de départ puis position enregistrée", async ({ page }) => {
   const errors = await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
   await expect(page.locator("#infoPanel h2")).toHaveText("PROTOCOLE A.I.P.");
   await page.clock.runFor(3000);
   await expect(page.locator("#protocolMessage")).toHaveText("AGENT, CHOISISSEZ VOTRE SALLE DE DÉPART");
@@ -259,7 +291,6 @@ test("fenêtre du protocole : choix de la salle de départ puis position enregis
 test("chemin du pion : tracé, trajet en texte, annulation et remise à zéro après validation", async ({ page }) => {
   const errors = await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click(); // le protocole n°1 ferme d'abord l'atelier
   await placeAgent(page, "vie");
   await clickRoom(page, "dortoir1");
   await clickRoom(page, "reunion");
@@ -269,7 +300,7 @@ test("chemin du pion : tracé, trajet en texte, annulation et remise à zéro ap
   await expect(page.locator("#protocolMessage")).toHaveText("SALLE DE VIE → DORTOIR 1 → SALLE DE RÉUNION · 2 DÉPLACEMENTS");
   await page.locator("#undoBtn").click();
   await expect(page.locator(".path-line")).toHaveCount(1);
-  await closeRoom(page);
+  await closeRoom(page, "atelier");
   await expect(page.locator(".path-line")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -283,7 +314,6 @@ test("le numéro de build est affiché dans les réglages", async ({ page }) => 
 test("le menu met la partie en pause et permet de la reprendre", async ({ page }) => {
   const errors = await open(page);
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
   await placeAgent(page, "cockpit");
   await page.locator("#menuBtn").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
@@ -300,18 +330,16 @@ test("le menu met la partie en pause et permet de la reprendre", async ({ page }
   await expect(page.locator("#startLbl")).toContainText("CONFIRMER");
   await expect(page.locator("#home")).toHaveClass(/show/);
   await page.locator("#startBtn").click();
-  await expect(page.locator("#pick")).toHaveClass(/show/);
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
   await expect(page.locator("#home")).not.toHaveClass(/show/);
   expect(errors).toEqual([]);
 });
 
 test("menu depuis l'écran de fin, sans bouton Reprendre", async ({ page }) => {
   await open(page);
-  const first = PROTOCOLS[0].steps[0][0];
   await startSimulation(page);
-  await page.locator("#protos .proto").first().click();
-  await placeAgent(page, first);
-  await closeRoom(page);
+  await placeAgent(page, "cockpit");
+  await closeRoom(page, "cockpit");
   await page.clock.runFor(2_000);
   await page.locator("#endMenuBtn").click();
   await expect(page.locator("#home")).toHaveClass(/show/);

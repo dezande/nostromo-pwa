@@ -100,6 +100,12 @@
     @include room-shape { fill: #1a0c0d; stroke: #6b2326; }
     text { fill: #c55; }
   }
+  // Choix du Coordinateur : salles à fermer
+  &.target { cursor: pointer; @include room-shape { stroke: var(--amber); } }
+  &.selected {
+    @include room-shape { fill: #3a0a0c; stroke: var(--red); stroke-width: 3; animation: alarm 1s steps(2) infinite; }
+    text { fill: #ffb3b3; }
+  }
   // Salles de départ possibles : clignotement doux
   &.pulse { @include room-shape { animation: pulse 1.6s ease-in-out infinite; } }
   &.closing { @include room-shape { animation: alarm .5s steps(2) infinite; } }

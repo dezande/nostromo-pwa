@@ -6,6 +6,8 @@ import { terminalOpen } from "./terminal";
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
 export const settingsOpen = signal(false);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
+/** Panneaux d'accueil après « Démarrer la simulation » : bienvenue puis explication du protocole. */
+export const briefing = signal<"welcome" | "protocol" | null>(null);
 
 /** Ouvre le menu, sauf pendant un compte à rebours ou une transition. */
 export function openMenu() {

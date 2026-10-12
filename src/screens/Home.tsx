@@ -5,9 +5,9 @@ import { useConfirm } from "../components/useConfirm";
 import { audio } from "../audio/audio";
 import { BOOT } from "../data/terminal";
 import { keepAwake } from "../state/device";
-import { inGame, newGame } from "../state/game";
+import { inGame, showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
-import { homeOpen, settingsOpen } from "../state/ui";
+import { briefing, homeOpen, settingsOpen } from "../state/ui";
 
 async function startSimulation() {
   if (terminalOpen.value) return;
@@ -15,7 +15,8 @@ async function startSimulation() {
   keepAwake();
   await runTerminal(BOOT);
   homeOpen.value = false;
-  newGame();
+  showIntro();
+  briefing.value = "welcome";
 }
 
 export function Home() {
