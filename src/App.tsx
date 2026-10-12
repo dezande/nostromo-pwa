@@ -1,6 +1,6 @@
 import { Header } from "./components/Header";
 import { ShipMap } from "./components/ShipMap";
-import { Coordinator } from "./components/Coordinator";
+import { ActionBar } from "./components/ActionBar";
 import { PressStart } from "./screens/PressStart";
 import { Home } from "./screens/Home";
 import { ProtocolPicker } from "./screens/ProtocolPicker";
@@ -19,8 +19,9 @@ export function App() {
       <Header />
       <main id="main" class={shake.value ? "shake" : ""}>
         <ShipMap />
-        <Coordinator />
       </main>
+      {/* Le panneau du coordinateur (components/Coordinator.tsx) n'est plus affiché pour l'instant. */}
+      <ActionBar />
 
       {/* Écrans superposés, du plus bas au plus haut. */}
       <ProtocolPicker />
