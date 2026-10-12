@@ -10,6 +10,10 @@ async function open(page, settings = FAST) {
   await page.addInitScript(s => localStorage.setItem("nostromo-settings", JSON.stringify(s)), settings);
   await page.clock.install();
   await page.goto("/");
+  // Écran « touchez pour commencer » si le navigateur bloque le son au chargement.
+  await page.clock.runFor(500);
+  if (await page.locator("#press").evaluate(e => e.classList.contains("show"))) await page.locator("#press").click();
+  await expect(page.locator("#press")).not.toHaveClass(/show/);
   return errors;
 }
 
@@ -34,7 +38,6 @@ test("l'écran d'accueil s'affiche et mène au choix du protocole", async ({ pag
   await expect(page.locator("#pick")).not.toHaveClass(/show/);
 
   await startSimulation(page);
-  await expect(page.locator("#musicBtn")).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator("#protos .proto")).toHaveCount(4);
 
   await page.locator("#pickMenuBtn").click();
@@ -131,6 +134,31 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
     expect(saved).toBe(i);
   }
   expect(errors).toEqual([]);
+});
+
+test("la musique démarre à l'ouverture et se règle dans les réglages", async ({ page }) => {
+  const errors = await open(page);
+  await expect(page.locator("#home")).toHaveClass(/show/);
+  expect(await page.evaluate(() => Audio.playing)).toBe(true);
+  await expect.poll(() => page.evaluate(() => Audio.state)).toBe("running");
+  await expect(page.locator("#musicBtn")).toHaveCount(0);
+
+  await page.locator("#homeSetBtn").click();
+  await expect(page.locator("#musicChk")).toBeChecked();
+  await page.locator("#musicChk").uncheck();
+  expect(await page.evaluate(() => Audio.playing)).toBe(false);
+  await page.locator("#sfxRange").fill("40");
+  await expect(page.locator("#sfxVal")).toHaveText("40 %");
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")));
+  expect(saved.music).toBe(false);
+  expect(saved.sfx).toBe(0.4);
+  expect(errors).toEqual([]);
+});
+
+test("musique coupée : pas d'écran « touchez pour commencer »", async ({ page }) => {
+  await open(page, { ...FAST, music: false });
+  await expect(page.locator("#press")).not.toHaveClass(/show/);
+  expect(await page.evaluate(() => Audio.playing)).toBe(false);
 });
 
 test("taille du texte et lignes horizontales", async ({ page }) => {
