@@ -15,34 +15,37 @@ npm install      # une seule fois
 npm run dev      # serveur de développement : http://localhost:5173 (se recharge à chaque modification)
 npm run build    # version finale dans dist/
 npm run preview  # sert dist/ pour la tester (avec le mode hors ligne)
-npm test         # tests automatiques
+npm test         # tous les tests (Jest puis Playwright)
+npm run typecheck # vérification TypeScript
 ```
 
 ## Organisation du code
 
-Le projet utilise [Vite](https://vite.dev), [Preact](https://preactjs.com) (composants),
+Le projet est écrit en [TypeScript](https://www.typescriptlang.org) et utilise [Vite](https://vite.dev), [Preact](https://preactjs.com) (composants),
 [@preact/signals](https://preactjs.com/guide/v10/signals/) (état) et [Sass](https://sass-lang.com) (styles).
 
 ```
 src/
-  main.jsx              point d'entrée
-  App.jsx               assemblage de l'écran
+  main.tsx              point d'entrée
+  App.tsx               assemblage de l'écran
   data/                 données, sans code d'affichage
-    ship.js             salles, liaisons, positions sur le plan
-    protocols.js        les 4 protocoles A.I.P.
-    themes.js           styles d'écran (cool-retro-term)
-    terminal.js         textes des écrans de transition
+    ship.ts             salles, liaisons, positions sur le plan
+    protocols.ts        les 4 protocoles A.I.P.
+    themes.ts           styles d'écran (cool-retro-term)
+    terminal.ts         textes des écrans de transition
   state/                état et actions
-    game.js             partie : pion, déplacements, fermetures, fin
-    settings.js         réglages enregistrés dans le navigateur
-    ui.js               écrans ouverts (menu, réglages…)
-    terminal.js         déroulement des écrans de transition
-    device.js           écran allumé, annonce vocale
-    pwa.js              mode hors ligne et numéro de build
-  audio/audio.js        musique et bruitages
+    game.ts             partie : pion, déplacements, fermetures, fin
+    settings.ts         réglages enregistrés dans le navigateur
+    ui.ts               écrans ouverts (menu, réglages…)
+    terminal.ts         déroulement des écrans de transition
+    device.ts           écran allumé, annonce vocale
+    pwa.ts              mode hors ligne et numéro de build
+  audio/audio.ts        musique et bruitages
   components/           morceaux d'interface (plan, en-tête, coordinateur, icônes…)
   screens/              écrans superposés (accueil, protocoles, compte à rebours, fin, réglages…)
   styles/               Sass : un fichier par partie, réunis dans main.scss
+  **/*.test.ts(x)       tests unitaires Jest, à côté du code testé
+tests/                  tests de bout en bout Playwright
 public/icons/           icônes de l'app
 ```
 
@@ -56,11 +59,14 @@ La version (`1.0.0`) se change dans `package.json`.
 
 ## Tests
 
-Tests automatiques avec [Playwright](https://playwright.dev), sur la version compilée : écran d'accueil,
-partie complète avec chacun des 4 protocoles, élimination, déplacements, menu pause, styles d'écran,
-réglages, transitions, sur ordinateur et téléphone. En local, ils utilisent le Chrome installé.
+- **Jest** (`npm run test:unit`, fichiers `src/**/*.test.ts(x)`) : tests unitaires rapides des données
+  (plan, liaisons, protocoles, styles), de la logique de jeu (pose du pion, déplacements, fermetures,
+  victoire, élimination), des réglages enregistrés, des transitions et de composants Preact.
+- **Playwright** (`npm run test:e2e`, dossier `tests/`) : parcours complets dans un vrai navigateur, sur la
+  version compilée, sur ordinateur et téléphone. En local, ils utilisent le Chrome installé.
 
-Sur GitHub, ils se lancent à chaque pull request (`.github/workflows/tests.yml`).
+Sur GitHub, la vérification TypeScript et les deux séries de tests se lancent à chaque pull request
+(`.github/workflows/tests.yml`).
 
 ## Publication sur GitHub Pages
 
