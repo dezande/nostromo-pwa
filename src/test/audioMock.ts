@@ -11,6 +11,7 @@ export const audio = {
   siren: jest.fn(),
   slam: jest.fn(),
   alien: jest.fn(),
+  xenomorph: jest.fn(),
   victory: jest.fn(),
   alarm: jest.fn(),
   startAlert: jest.fn(),

@@ -423,6 +423,56 @@ function alarm() {
   for (let i = 0; i < 4; i++) blip(musicBus, "sawtooth", 440, ctx.currentTime + i * 0.6, 0.3, 0.4);
 }
 
+/**
+ * Cri du xénomorphe à chaque fermeture : sifflement (bruit filtré), grondement grave et cri aigu.
+ * `volume` (0 → 1) dépend de la distance entre le pion et la salle fermée.
+ */
+function xenomorph(volume: number) {
+  const ctx = init();
+  const t = ctx.currentTime + 0.2;
+  const out = gain(Math.max(0, Math.min(1, volume)), sfxBus);
+
+  // Sifflement : bruit passe-haut qui enfle puis retombe.
+  const hiss = noise(2.2);
+  const hissGain = gain(0, out);
+  hissGain.gain.setValueAtTime(0, t);
+  hissGain.gain.linearRampToValueAtTime(0.35, t + 0.25);
+  hissGain.gain.linearRampToValueAtTime(0, t + 2.1);
+  hiss.connect(filter("bandpass", 4200, 1.5)).connect(hissGain);
+  hiss.start(t);
+
+  // Grondement grave, modulé.
+  const growl = osc("sawtooth", 62);
+  growl.frequency.setValueAtTime(62, t);
+  growl.frequency.linearRampToValueAtTime(48, t + 1.8);
+  const wobble = osc("sine", 9);
+  wobble.connect(gain(6, growl.frequency));
+  const growlGain = gain(0, out);
+  growlGain.gain.setValueAtTime(0, t);
+  growlGain.gain.linearRampToValueAtTime(0.5, t + 0.3);
+  growlGain.gain.linearRampToValueAtTime(0, t + 1.9);
+  growl.connect(filter("lowpass", 300, 4)).connect(growlGain);
+  growl.start(t); wobble.start(t);
+  growl.stop(t + 2); wobble.stop(t + 2);
+
+  // Cri aigu (même dessin que l'ancien cri d'alien), un peu après.
+  const shriek = osc("sawtooth", 300);
+  const s0 = t + 0.6, d = 1.6;
+  shriek.frequency.setValueAtTime(300, s0);
+  shriek.frequency.exponentialRampToValueAtTime(1700, s0 + d * 0.3);
+  shriek.frequency.exponentialRampToValueAtTime(800, s0 + d * 0.6);
+  shriek.frequency.exponentialRampToValueAtTime(220, s0 + d);
+  const vib = osc("sine", 28);
+  vib.connect(gain(90, shriek.frequency));
+  const shriekGain = gain(0, out);
+  shriekGain.gain.setValueAtTime(0, s0);
+  shriekGain.gain.linearRampToValueAtTime(0.3, s0 + 0.1);
+  shriekGain.gain.linearRampToValueAtTime(0, s0 + d);
+  shriek.connect(filter("bandpass", 1500, 3)).connect(shriekGain);
+  shriek.start(s0); vib.start(s0);
+  shriek.stop(s0 + d + 0.05); vib.stop(s0 + d + 0.05);
+}
+
 /** Petit accord de victoire. */
 function victory() {
   const ctx = init();
@@ -442,7 +492,7 @@ function victory() {
 
 export const audio = {
   init, startMusic, stopMusic, setMusicVolume, setSfxVolume, duck,
-  beep, tick, siren, slam, alien, victory, alarm,
+  beep, tick, siren, slam, alien, xenomorph, victory, alarm,
   startAlert, stopAlert, alertDuck, previewAlert,
   get musicVolume() { return musicVolume; },
   get playing() { return !!music; },

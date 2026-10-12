@@ -2,9 +2,8 @@
 // Il n'y a pas de protocole dans l'app : le Coordinateur suit sa fiche papier et touche
 // lui-même, sur le plan, la ou les salles à fermer.
 import { signal, computed, batch } from "@preact/signals";
-import { ADJ, ROOM_IDS, room, stepLabel, type RoomId } from "../data/ship";
+import { ADJ, ROOM_IDS, room, stepLabel, xenoVolume, type RoomId } from "../data/ship";
 import { audio } from "../audio/audio";
-import { settings } from "./settings";
 import { keepAwake, say, sleep } from "./device";
 import { startTimer, stopTimer } from "./timer";
 
@@ -32,8 +31,6 @@ export const toClose = signal(new Set<RoomId>());      // salles choisies par le
 export const busy = signal(false);                     // compte à rebours en cours
 
 // Effets visuels pendant une fermeture.
-export const countdown = signal<{ n: number; room: string } | null>(null);
-export const closing = signal(new Set<RoomId>());   // salles qui clignotent
 export const flashing = signal(new Set<RoomId>());  // salles qui viennent de se fermer
 export const shake = signal(false);
 export const ending = signal<{ win: boolean; text: string } | null>(null);
@@ -156,7 +153,7 @@ export function undo() {
 export const canUndo = computed(() =>
   !busy.value && (phase.value === "close" || (phase.value === "move" && trail.value.length > 0)));
 
-/** Fermeture des salles choisies : compte à rebours, annonce, claquement, puis suite ou fin. */
+/** Fermeture immédiate des salles choisies : claquement, annonce, croix, cri du xénomorphe, puis suite ou fin. */
 export async function closeRooms() {
   const rooms = ROOM_IDS.filter(id => toClose.value.has(id));
   if (phase.value !== "close" || busy.value || !rooms.length) return;
@@ -164,22 +161,9 @@ export async function closeRooms() {
   keepAwake();
   busy.value = true;
 
+  const agent = position.value!;
   const label = stepLabel(rooms);
-  audio.duck(true);
-  for (let n = settings.countdown.value; n > 0; n--) {
-    countdown.value = { n, room: "" };
-    audio.beep(n <= 3);
-    if (n === 3) audio.siren(3);
-    await sleep(1000);
-  }
-  countdown.value = { n: 0, room: label.toUpperCase() };
-  closing.value = new Set(rooms);
-  say((rooms.length > 1 ? "Fermeture des salles : " : "Fermeture de la salle : ") + label.replace("+", "et"));
-  await sleep(settings.voice.value ? 2200 : 900);
-
   batch(() => {
-    countdown.value = null;
-    closing.value = new Set();
     closed.value = new Set([...closed.value, ...rooms]);
     toClose.value = new Set();
     flashing.value = new Set(rooms);
@@ -188,17 +172,17 @@ export async function closeRooms() {
     moves.value = 0;
     trail.value = [];
   });
-  const agent = position.value!;
   const dead = rooms.includes(agent);
   const finished = step.value >= STEP_COUNT || openRooms().length <= 1;
   audio.slam();
-  audio.alien(finished || dead);
+  // Cri du xénomorphe, plus ou moins fort selon la distance entre le pion et la salle fermée.
+  audio.xenomorph(xenoVolume(agent, rooms));
+  say((rooms.length > 1 ? "Fermeture des salles : " : "Fermeture de la salle : ") + label.replace("+", "et"));
   setTimeout(() => { shake.value = false; }, 600);
   setTimeout(() => { flashing.value = new Set(); }, 1000);
 
   await sleep(finished || dead ? 2600 : 1400);
   busy.value = false;
-  audio.duck(false);
 
   const name = room(agent).name;
   if (dead) {

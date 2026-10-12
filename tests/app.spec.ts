@@ -6,13 +6,22 @@ import type { Settings } from "../src/state/settings";
 
 // Partie rapide : compte à rebours minimal et pas d'annonce vocale.
 // Musique coupée par défaut : les tests vont plus vite (sauf ceux qui testent la musique).
-const FAST: Partial<Settings> = { countdown: 3, voice: false, wakeLock: false, transitions: false, music: false };
+const FAST: Partial<Settings> = { voice: false, wakeLock: false, transitions: false, music: false };
 const audioState = (page: Page) => page.evaluate(() => ({ playing: window.nostromo!.audio.playing, state: window.nostromo!.audio.state }));
+
+/** Aucune voix réelle pendant les tests : la synthèse vocale de macOS passerait outre le mode muet. */
+async function silence(page: Page) {
+  await page.addInitScript(() => {
+    const fake = { speak() {}, cancel() {}, pause() {}, resume() {}, getVoices: () => [], speaking: false, pending: false, paused: false, addEventListener() {}, removeEventListener() {} };
+    Object.defineProperty(window, "speechSynthesis", { value: fake, configurable: true });
+  });
+}
 
 async function open(page: Page, settings = FAST) {
   const errors: string[] = [];
   page.on("pageerror", e => errors.push(e.message));
   await page.addInitScript(s => localStorage.setItem("nostromo-settings", JSON.stringify(s)), settings);
+  await silence(page);
   await page.clock.install();
   await page.goto("/");
   // Écran « touchez pour commencer » si le navigateur bloque le son au chargement.
@@ -49,8 +58,8 @@ async function closeRoom(page: Page, ...rooms: RoomId[]) {
   await page.locator("#closeBtn").click();
   for (const k of rooms) await clickRoom(page, k);
   await page.locator("#closeBtn").click();
-  await page.clock.runFor(15_000);
-  await expect(page.locator("#count")).not.toHaveClass(/show/);
+  await page.clock.runFor(3_000); // claquement et cri du xénomorphe
+  await expect(page.locator("#closeBtn")).not.toHaveText("");
 }
 
 test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de départ", async ({ page }) => {
@@ -195,17 +204,20 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
   await expect(page.locator(".action-bar #closeBtn")).toBeEnabled();
 });
 
-test("le bouton Menu est sans effet pendant le compte à rebours", async ({ page }) => {
-  await open(page);
+test("fermeture immédiate : pas de compte à rebours, la salle fermée garde une croix rouge", async ({ page }) => {
+  const errors = await open(page);
   await startSimulation(page);
   await placeAgent(page, "cockpit");
   await page.locator("#closeBtn").click(); // déplacements terminés
-  await clickRoom(page, "atelier");
+  await clickRoom(page, "cuisine");
   await page.locator("#closeBtn").click(); // fermeture
-  await page.clock.runFor(500);
-  await expect(page.locator("#count")).toHaveClass(/show/);
-  await page.evaluate(() => document.getElementById("menuBtn")!.click());
-  await expect(page.locator("#home")).not.toHaveClass(/show/);
+  // Fermée tout de suite, sans écran de compte à rebours.
+  await expect(page.locator('[data-room="cuisine"]')).toHaveClass(/closed/);
+  await expect(page.locator("#count")).toHaveCount(0);
+  await expect(page.locator('[data-room="cuisine"] .toxic-cross')).toHaveCount(2);
+  await page.clock.runFor(10_000);
+  await expect(page.locator('[data-room="cuisine"] .toxic-cross')).toHaveCount(2); // la croix reste
+  expect(errors).toEqual([]);
 });
 
 test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) => {

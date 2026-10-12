@@ -1,6 +1,7 @@
 jest.mock("../audio/audio", () => require("../test/audioMock"));
 
 import { ROOM_IDS, room, type RoomId } from "../data/ship";
+import { audio } from "../audio/audio";
 import { settings } from "./settings";
 import * as game from "./game";
 import { remaining } from "./timer";
@@ -9,7 +10,6 @@ const openCount = () => ROOM_IDS.filter(id => !room(id).toxic).length;
 
 beforeEach(() => {
   jest.useFakeTimers();
-  settings.countdown.value = 3;
   settings.voice.value = false;
   settings.wakeLock.value = false;
   game.startGame();
@@ -30,6 +30,30 @@ async function closeRooms(...rooms: RoomId[]) {
   await jest.advanceTimersByTimeAsync(20_000);
   await done;
 }
+
+describe("cri du xénomorphe selon la distance", () => {
+  const xeno = () => (audio.xenomorph as jest.Mock).mock.lastCall[0];
+
+  test("pion dans la salle fermée : volume maximal", async () => {
+    place("cockpit");
+    await closeRooms("cockpit");
+    expect(xeno()).toBe(1);
+  });
+
+  test("salle voisine, puis plus loin", async () => {
+    place("cockpit");
+    await closeRooms("vie");          // 1 déplacement
+    expect(xeno()).toBe(0.8);
+    await closeRooms("cuisine");      // cockpit → vie → cuisine : 2
+    expect(xeno()).toBe(0.55);
+  });
+
+  test("deux salles fermées : la plus proche compte", async () => {
+    place("cockpit");
+    await closeRooms("entrepot4", "infirmerie");
+    expect(xeno()).toBe(0.8);
+  });
+});
 
 test("avant la partie : panneaux d'accueil, pas de partie en cours", () => {
   game.showIntro();
@@ -154,13 +178,14 @@ describe("fermetures", () => {
     expect(game.path.value).toEqual(["vie"]); // tracé remis à zéro
   });
 
-  test("pendant le compte à rebours, rien ne bouge", async () => {
+  test("fermeture immédiate, sans compte à rebours ; le pion ne bouge pas pendant le cri", async () => {
     place("cockpit");
     game.validate();
     game.touchRoom("atelier");
     const done = game.closeRooms();
+    // La salle est fermée tout de suite.
+    expect(game.closed.value.has("atelier")).toBe(true);
     expect(game.busy.value).toBe(true);
-    expect(game.countdown.value).toEqual({ n: 3, room: "" });
     game.touchRoom("vie");
     expect(game.position.value).toBe("cockpit");
     await jest.advanceTimersByTimeAsync(20_000);

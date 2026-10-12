@@ -14,7 +14,6 @@ export interface Settings {
   textSize: number;
   scanlines: boolean;
   transitions: boolean;
-  countdown: number;
   wakeLock: boolean;
   alertVariant: AlertVariant;   // musique 2 pendant les 5 minutes
   alertVoice: boolean;          // voix toutes les 30 s
@@ -33,7 +32,6 @@ export const DEFAULTS: Settings = {
   textSize: 120,      // en %
   scanlines: true,    // lignes horizontales
   transitions: true,  // faux écrans de transition
-  countdown: 10,      // secondes
   wakeLock: true,     // écran toujours allumé
   alertVariant: "siren",
   alertVoice: true,

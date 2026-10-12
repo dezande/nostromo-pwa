@@ -15,12 +15,12 @@ test("valeurs par défaut", () => {
   const { settings, DEFAULTS } = loadWith(null);
   expect(settings.music.value).toBe(DEFAULTS.music);
   expect(settings.textSize.value).toBe(120);
-  expect(settings.countdown.value).toBe(10);
+  expect(settings.alertVariant.value).toBe("siren");
 });
 
 test("reprend les réglages enregistrés", () => {
-  const { settings } = loadWith({ countdown: 5, theme: 3 });
-  expect(settings.countdown.value).toBe(5);
+  const { settings } = loadWith({ textSize: 140, theme: 3 });
+  expect(settings.textSize.value).toBe(140);
   expect(settings.theme.value).toBe(3);
 });
 
@@ -37,13 +37,13 @@ test("ignore un enregistrement illisible", () => {
   localStorage.setItem(KEY, "{pas du json");
   let mod!: typeof import("./settings");
   jest.isolateModules(() => { mod = require("./settings"); });
-  expect(mod.settings.countdown.value).toBe(10);
+  expect(mod.settings.textSize.value).toBe(120);
 });
 
 test("enregistre chaque changement", () => {
   const { settings } = loadWith(null);
-  settings.countdown.value = 7;
-  expect(JSON.parse(localStorage.getItem(KEY)!).countdown).toBe(7);
+  settings.alertVariant.value = "klaxon";
+  expect(JSON.parse(localStorage.getItem(KEY)!).alertVariant).toBe("klaxon");
 });
 
 test("applique le style d'écran, la taille du texte et les lignes à la page", () => {

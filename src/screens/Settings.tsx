@@ -62,7 +62,6 @@ export function Settings() {
           {tab === "alert" && <AlertSettings />}
           {tab === "system" && (
             <>
-              <Slider id="cdRange" label="Compte à rebours avant fermeture" setting={settings.countdown} min={3} max={30} unit="s" />
               <Toggle id="wakeChk" label="Écran toujours allumé" setting={settings.wakeLock} />
               <VersionInfo />
             </>
