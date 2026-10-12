@@ -5,7 +5,8 @@ import { THEMES, DEFAULT_BG } from "../src/data/themes";
 import type { Settings } from "../src/state/settings";
 
 // Partie rapide : compte à rebours minimal et pas d'annonce vocale.
-const FAST: Partial<Settings> = { countdown: 3, voice: false, wakeLock: false, transitions: false };
+// Musique coupée par défaut : les tests vont plus vite (sauf ceux qui testent la musique).
+const FAST: Partial<Settings> = { countdown: 3, voice: false, wakeLock: false, transitions: false, music: false };
 const audioState = (page: Page) => page.evaluate(() => ({ playing: window.nostromo!.audio.playing, state: window.nostromo!.audio.state }));
 
 async function open(page: Page, settings = FAST) {
@@ -28,7 +29,8 @@ async function startSimulation(page: Page) {
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await page.locator("#welcomeNext").click();
   await page.locator("#briefingNext").click();
-  await expect(page.locator("#briefing")).not.toHaveClass(/show/);
+  await page.locator("#briefing2Next").click();
+  await expect(page.locator("#briefing2")).not.toHaveClass(/show/);
 }
 
 /** Salles mises en avant (accessibles) sur le plan. */
@@ -61,14 +63,21 @@ test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de d
   await expect(page.locator("#welcome h2")).toHaveText("BIENVENUE À BORD, AGENT.");
   await page.locator("#welcomeNext").click();
   await expect(page.locator("#briefing")).toHaveClass(/show/);
-  await expect(page.locator("#briefing .briefing-steps li")).toHaveCount(4);
+  await expect(page.locator("#briefing .briefing-steps li")).toHaveCount(2);
   await expect(page.locator("#briefing")).toContainText("Seul le Coordinateur en connaît l'ordre de fermeture.");
+  await page.locator("#briefingNext").click();
+  await expect(page.locator("#briefing2")).toHaveClass(/show/);
+  await expect(page.locator("#briefing2 .briefing-steps li")).toHaveCount(2);
+  await expect(page.locator("#briefing2")).toContainText("L'entraînement dure 5 minutes.");
   await expect(page.locator("#briefing")).not.toContainText("contamin");
+  await expect(page.locator("#briefing2")).not.toContainText("contamin");
+  await page.locator("#briefing2Back").click();
   await page.locator("#briefingBack").click();
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await page.locator("#welcomeNext").click();
   await page.locator("#briefingNext").click();
-  await expect(page.locator("#briefing")).not.toHaveClass(/show/);
+  await page.locator("#briefing2Next").click();
+  await expect(page.locator("#briefing2")).not.toHaveClass(/show/);
   await expect(page.locator(".room.reach")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
   // Plus de choix de protocole dans l'app.
   await expect(page.locator("#pick, #protos")).toHaveCount(0);
@@ -218,7 +227,7 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
 });
 
 test("la musique démarre à l'ouverture et se règle dans les réglages", async ({ page }) => {
-  const errors = await open(page);
+  const errors = await open(page, { ...FAST, music: true });
   await expect(page.locator("#home")).toHaveClass(/show/);
   expect((await audioState(page)).playing).toBe(true);
   await expect.poll(async () => (await audioState(page)).state).toBe("running");
@@ -302,6 +311,47 @@ test("chemin du pion : tracé, trajet en texte, annulation et remise à zéro ap
   await expect(page.locator(".path-line")).toHaveCount(1);
   await closeRoom(page, "atelier");
   await expect(page.locator(".path-line")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
+test("les panneaux d'accueil tiennent dans l'écran sans défilement (téléphones et ordinateurs portables)", async ({ page }) => {
+  await open(page);
+  await page.locator("#startBtn").click();
+  for (const size of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 412, height: 915 }, { width: 1280, height: 720 }, { width: 1366, height: 768 }]) {
+    await page.setViewportSize(size);
+    for (const [id, next] of [["welcome", "#welcomeNext"], ["briefing", "#briefingNext"], ["briefing2", "#briefing2Back"]] as const) {
+      await expect(page.locator(`#${id}`)).toHaveClass(/show/);
+      const fits = await page.locator(`#${id} .panel`).evaluate(el => ({
+        scroll: el.scrollHeight <= el.clientHeight + 1,
+        inside: el.getBoundingClientRect().bottom <= window.innerHeight + 1,
+      }));
+      expect(fits, `${id} à ${size.width}×${size.height}`).toEqual({ scroll: true, inside: true });
+      if (id !== "briefing2") await page.locator(next).click();
+    }
+    // retour au panneau de bienvenue pour la taille suivante
+    await page.locator("#briefing2Back").click();
+    await page.locator("#briefingBack").click();
+  }
+});
+
+test("minuteur de 5 minutes : démarre à la validation, alarme à zéro, la partie continue", async ({ page }) => {
+  const errors = await open(page);
+  await startSimulation(page);
+  await expect(page.locator("#trainingTimer")).toHaveCount(0);
+  await placeAgent(page, "vie");
+  await expect(page.locator("#trainingTimer")).toHaveText("05:00");
+  await page.clock.runFor(60_000);
+  await expect(page.locator("#trainingTimer")).toHaveText("04:00");
+  await page.clock.runFor(185_000);
+  await expect(page.locator("#trainingTimer")).toHaveText("00:55");
+  await expect(page.locator("#trainingTimer")).toHaveClass(/urgent/);
+  await page.clock.runFor(60_000);
+  await expect(page.locator("#trainingTimer")).toHaveText("00:00");
+  await expect(page.locator("#trainingTimer")).toHaveClass(/expired/);
+  // La partie n'est pas bloquée.
+  await clickRoom(page, "cuisine");
+  await expect(page.locator("#pawn")).toHaveAttribute("visibility", "visible");
+  await expect(page.locator("#closeBtn")).toBeEnabled();
   expect(errors).toEqual([]);
 });
 

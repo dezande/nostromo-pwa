@@ -19,23 +19,32 @@ afterEach(() => { render(null, root); root.remove(); briefing.value = null; });
 const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
 const shown = (id: string) => $(`#${id}`).classList.contains("show");
 
-test("bienvenue puis protocole, retour possible, puis la partie commence", () => {
+test("bienvenue, protocole 1/2, protocole 2/2, retours possibles, puis la partie commence", () => {
   expect(shown("welcome")).toBe(true);
   expect($("#welcome").textContent).toContain("BIENVENUE À BORD, AGENT.");
+  expect($("#welcome").textContent).toContain("Votre future mission");
   act(() => { $("#welcomeNext").click(); });
-  expect(shown("welcome")).toBe(false);
   expect(shown("briefing")).toBe(true);
+  expect($("#briefing").textContent).toContain("1/2");
   expect($("#briefing").textContent).toContain("Seul le Coordinateur en connaît l'ordre de fermeture.");
-  expect(root.querySelectorAll("#briefing .briefing-steps li")).toHaveLength(4);
+  expect([...root.querySelectorAll("#briefing h3")].map(h => h.textContent)).toEqual(["POSITION DE DÉPART", "DÉPLACEMENTS"]);
+  act(() => { $("#briefingNext").click(); });
+  expect(shown("briefing2")).toBe(true);
+  expect([...root.querySelectorAll("#briefing2 h3")].map(h => h.textContent)).toEqual(["FERMETURE", "FIN DE L'ENTRAÎNEMENT"]);
+  expect($("#briefing2").textContent).toContain("L'entraînement dure 5 minutes.");
+  expect($("#briefing2").textContent).toContain("Fiez-vous à votre instinct, Agent.");
   // Un dessin animé par étape
-  expect([...root.querySelectorAll("#briefing .step-anim")].map(e => e.getAttribute("class"))).toEqual([
+  expect([...root.querySelectorAll(".step-anim")].map(e => e.getAttribute("class"))).toEqual([
     "step-anim step-start", "step-anim step-moves", "step-anim step-close", "step-anim step-end",
   ]);
+  act(() => { $("#briefing2Back").click(); });
+  expect(shown("briefing")).toBe(true);
   act(() => { $("#briefingBack").click(); });
   expect(shown("welcome")).toBe(true);
   act(() => { $("#welcomeNext").click(); });
   act(() => { $("#briefingNext").click(); });
-  expect(shown("briefing")).toBe(false);
+  act(() => { $("#briefing2Next").click(); });
+  expect(shown("briefing2")).toBe(false);
   expect(game.phase.value).toBe("place");
 });
 
