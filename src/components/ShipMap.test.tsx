@@ -1,0 +1,43 @@
+jest.mock("../audio/audio", () => require("../test/audioMock"));
+
+import { render } from "preact";
+import { act } from "preact/test-utils";
+import { PROTOCOLS } from "../data/protocols";
+import { ROOM_IDS } from "../data/ship";
+import * as game from "../state/game";
+import { ShipMap } from "./ShipMap";
+
+let root: HTMLElement;
+beforeEach(() => {
+  root = document.createElement("div");
+  document.body.append(root);
+  act(() => { render(<ShipMap />, root); game.startGame(PROTOCOLS[0]); });
+});
+afterEach(() => { render(null, root); root.remove(); });
+
+const roomEl = (id: string) => root.querySelector(`[data-room="${id}"]`) as SVGGElement;
+
+test("dessine les 16 salles sur les deux ponts", () => {
+  expect(root.querySelectorAll("#deck1 .room")).toHaveLength(11);
+  expect(root.querySelectorAll("#deck2 .room")).toHaveLength(5);
+  for (const id of ROOM_IDS) expect(roomEl(id)).not.toBeNull();
+});
+
+test("les salles toxiques sont marquées", () => {
+  expect(roomEl("labo").classList.contains("toxic")).toBe(true);
+  expect(roomEl("labo").classList.contains("reach")).toBe(false);
+});
+
+test("toucher une salle pose le pion et met en avant les salles voisines", () => {
+  act(() => { roomEl("cockpit").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+  expect(game.position.value).toBe("cockpit");
+  expect(root.querySelector("#pawn")!.getAttribute("visibility")).toBe("visible");
+  expect(root.querySelector("#pawn2")!.getAttribute("visibility")).toBe("hidden");
+  const reach = [...root.querySelectorAll(".room.reach")].map(el => el.getAttribute("data-room")).sort();
+  expect(reach).toEqual(["infirmerie", "reunion", "vie"]);
+});
+
+test("les salles fermées sont hachurées", () => {
+  act(() => { game.closed.value = new Set(["atelier"]); });
+  expect(roomEl("atelier").classList.contains("closed")).toBe(true);
+});
