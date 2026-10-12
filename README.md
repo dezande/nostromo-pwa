@@ -25,9 +25,23 @@ Dans Chrome ou Edge, l'icône « Installer » dans la barre d'adresse installe l
 Héberge le dossier en HTTPS (GitHub Pages, Netlify…), ouvre l'adresse sur le téléphone, puis
 « Ajouter à l'écran d'accueil ». L'app fonctionne ensuite hors ligne.
 
+## Tests
+
+Tests automatiques avec [Playwright](https://playwright.dev) : écran d'accueil, partie complète avec chacun des
+4 protocoles, élimination de l'agent, déplacements, styles d'écran et réglages, sur ordinateur et téléphone.
+
+```sh
+npm install
+npm test
+```
+
+En local, les tests utilisent le Chrome installé. Sur GitHub, ils se lancent à chaque pull request et à chaque
+push sur `main` (`.github/workflows/tests.yml`).
+
 ## Fichiers
 
 - `index.html` : toute l'application (plan, règles, audio). Les salles, liaisons et protocoles sont dans `ROOMS`, `LINKS` et `PROTOCOLS`.
 - `manifest.webmanifest`, `sw.js`, `icons/` : partie PWA (installation, hors ligne).
+- `tests/`, `playwright.config.js`, `package.json` : tests automatiques.
 
 Si tu modifies `index.html`, change `CACHE` dans `sw.js` (ex. `nostromo-v2`) pour que l'app installée se mette à jour.
