@@ -122,6 +122,13 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
   const info = (await page.locator("#infoPanel").boundingBox())!;
   const deck2 = (await page.locator("#deck2").boundingBox())!;
   expect(info.y + info.height).toBeLessThanOrEqual(deck2.y);
+  // Sur grand écran, la colonne de droite (informations + pont 2) a la même hauteur que le pont 1.
+  if (test.info().project.name === "ordinateur") {
+    const left = (await page.locator(".deck:has(#deck1)").boundingBox())!;
+    const right = (await page.locator(".deck:has(#deck2)").boundingBox())!;
+    expect(Math.abs(info.y - left.y)).toBeLessThanOrEqual(1);
+    expect(Math.abs(right.y + right.height - (left.y + left.height))).toBeLessThanOrEqual(1);
+  }
   await expect(page.locator(".coordinator")).toHaveCount(0);
   await expect(page.locator("#status, #aip, #resetBtn")).toHaveCount(0);
   await expect(page.locator(".action-bar #closeBtn")).toHaveText("VALIDER");
