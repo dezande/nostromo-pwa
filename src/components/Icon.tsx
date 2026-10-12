@@ -13,6 +13,7 @@ const PATHS = {
   undo: <><path d="M9 15L4 10l5-5" /><path d="M4 10h11a5 5 0 0 1 0 10h-4" /></>,
   reset: <><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3" /><path d="M4 3.5v5h5" /></>,
   play: <path d="M7 4l13 8-13 8Z" fill="currentColor" />,
+  check: <path d="M4 12.5l5 5L20 6.5" />,
 };
 
 export type IconName = keyof typeof PATHS;
