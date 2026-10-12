@@ -27,6 +27,10 @@ test("bienvenue puis protocole, retour possible, puis la partie commence", () =>
   expect(shown("briefing")).toBe(true);
   expect($("#briefing").textContent).toContain("Seul le Coordinateur en connaît l'ordre de fermeture.");
   expect(root.querySelectorAll("#briefing .briefing-steps li")).toHaveLength(4);
+  // Un dessin animé par étape
+  expect([...root.querySelectorAll("#briefing .step-anim")].map(e => e.getAttribute("class"))).toEqual([
+    "step-anim step-start", "step-anim step-moves", "step-anim step-close", "step-anim step-end",
+  ]);
   act(() => { $("#briefingBack").click(); });
   expect(shown("welcome")).toBe(true);
   act(() => { $("#welcomeNext").click(); });
