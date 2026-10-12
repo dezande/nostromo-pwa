@@ -64,6 +64,39 @@ export const LINKS: [RoomId, RoomId, ("vent" | "lift")?][] = [
 export const ADJ = Object.fromEntries(ROOM_IDS.map(k => [k, new Set<RoomId>()])) as Record<RoomId, Set<RoomId>>;
 for (const [a, b] of LINKS) { ADJ[a].add(b); ADJ[b].add(a); }
 
+/** Nombre minimal de déplacements entre deux salles (portes, ascenseurs, conduits), ou Infinity. */
+export function distanceBetween(from: RoomId, to: RoomId): number {
+  if (from === to) return 0;
+  const seen = new Set<RoomId>([from]);
+  let frontier: RoomId[] = [from];
+  for (let d = 1; frontier.length; d++) {
+    const next: RoomId[] = [];
+    for (const r of frontier) for (const n of ADJ[r]) {
+      if (n === to) return d;
+      if (!seen.has(n)) { seen.add(n); next.push(n); }
+    }
+    frontier = next;
+  }
+  return Infinity;
+}
+
+/** Volume du cri du xénomorphe selon la distance : 1 dans la salle, puis 0,8 / 0,55 / 0,35 / 0,2, minimum 0,1. */
+export const XENO_VOLUMES = [1, 0.8, 0.55, 0.35, 0.2];
+export const volumeForDistance = (d: number): number => XENO_VOLUMES[d] ?? 0.1;
+
+/** Volume pour une fermeture d'une ou plusieurs salles : la plus proche du pion compte. */
+export const xenoVolume = (pawn: RoomId, closedRooms: RoomId[]): number =>
+  volumeForDistance(Math.min(...closedRooms.map(r => distanceBetween(pawn, r))));
+
+/** Rectangle englobant d'une salle (pour dessiner la croix des salles fermées). */
+export function roomBox(id: RoomId): [number, number, number, number] {
+  const r = room(id);
+  if (r.rect) return r.rect;
+  const pts = r.points!.split(" ").map(p => p.split(",").map(Number));
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  return [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)];
+}
+
 /** Lignes du nom d'une salle sur le plan. */
 export const roomLines = (id: RoomId): string[] => room(id).label || [room(id).name];
 

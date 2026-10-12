@@ -1,6 +1,6 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
-import { ROOM_IDS, VENTS, room, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
-import { reachable, closable, closed, closing, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
+import { ROOM_IDS, VENTS, room, roomBox, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
+import { reachable, closable, closed, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
 import { ProtocolWindow } from "./ProtocolWindow";
 
 const range = (from: number, to: number, stepBy: number) => Array.from({ length: Math.ceil((to - from) / stepBy) }, (_, i) => from + i * stepBy);
@@ -162,7 +162,6 @@ function Room({ id }: { id: RoomId }) {
     reachable.value.has(id) && phase.value === "place" && "pulse", // salles de départ possibles
     closable.value.has(id) && "target",                             // salles que le Coordinateur peut fermer
     toClose.value.has(id) && "selected",                            // salles choisies pour la fermeture
-    closing.value.has(id) && "closing",
     flashing.value.has(id) && "flash",
   ].filter(Boolean).join(" ");
 
@@ -178,7 +177,8 @@ function Room({ id }: { id: RoomId }) {
         ? <rect x={r.rect[0]} y={r.rect[1]} width={r.rect[2]} height={r.rect[3]} />
         : <polygon points={r.points} />}
       {lines.map((text, i) => <text key={i} x={cx} y={top + i * 12}>{text.toUpperCase()}</text>)}
-      {r.toxic && r.rect && <ToxicCross rect={r.rect} />}
+      {/* Croix rouge : salles contaminées et salles fermées (elle reste) */}
+      {(r.toxic || closed.value.has(id)) && <ToxicCross rect={roomBox(id)} />}
     </g>
   );
 }

@@ -9,6 +9,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4173",
     serviceWorkers: "block",
+    // Tests silencieux : pas de son (la voix est aussi neutralisée dans tests/app.spec.ts).
+    launchOptions: { args: ["--mute-audio"] },
+    headless: true,
     trace: "retain-on-failure",
     // En local on utilise le Chrome installé ; en CI, le Chromium de Playwright.
     ...(process.env.CI ? {} : { channel: "chrome" }),

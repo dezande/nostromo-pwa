@@ -1,4 +1,4 @@
-import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, VENTS, pathSegments, pawnPosition, room, roomLines, stepLabel, ventBetween } from "./ship";
+import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, VENTS, distanceBetween, pathSegments, pawnPosition, room, roomBox, roomLines, stepLabel, ventBetween, volumeForDistance, xenoVolume } from "./ship";
 
 describe("plan du vaisseau", () => {
   test("16 salles, dont 2 toxiques", () => {
@@ -95,6 +95,27 @@ describe("plan du vaisseau", () => {
     ]);
     // Dans l'autre sens, le couloir est parcouru à l'envers.
     expect(pathSegments(["entrepot1", "dortoir1"])[1]).toEqual({ deck: 1, from: bottom, to: top, step: 1 });
+  });
+
+  test("distance en nombre de déplacements (portes, ascenseurs, conduits)", () => {
+    expect(distanceBetween("cockpit", "cockpit")).toBe(0);
+    expect(distanceBetween("cockpit", "vie")).toBe(1);
+    expect(distanceBetween("cockpit", "cuisine")).toBe(2);
+    expect(distanceBetween("dortoir1", "entrepot1")).toBe(1); // par le conduit d'aération
+    expect(distanceBetween("cockpit", "atelier")).toBe(2);    // par l'ascenseur
+    expect(distanceBetween("entrepot1", "entrepot3")).toBe(4); // cuisine, salle de vie, atelier
+    expect(distanceBetween("cockpit", "labo")).toBe(Infinity); // salle contaminée, isolée
+  });
+
+  test("volume du cri selon la distance : 1, 0,8, 0,55, 0,35, 0,2 puis 0,1", () => {
+    expect([0, 1, 2, 3, 4, 5, 6, Infinity].map(volumeForDistance)).toEqual([1, 0.8, 0.55, 0.35, 0.2, 0.1, 0.1, 0.1]);
+    expect(xenoVolume("cockpit", ["entrepot4", "vie"])).toBe(0.8); // la plus proche
+    expect(xenoVolume("cockpit", ["cockpit"])).toBe(1);
+  });
+
+  test("rectangle englobant (salles en polygone comprises)", () => {
+    expect(roomBox("dortoir1")).toEqual([75, 250, 80, 80]);
+    expect(roomBox("cockpit")).toEqual([155, 100, 90, 105]);
   });
 
   test("le pion se place sous le nom de la salle", () => {

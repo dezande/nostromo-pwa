@@ -71,6 +71,14 @@ test("les conduits d'aération sont dessinés et mis en avant quand on peut les 
   expect(root.querySelectorAll("#deck1 .path-line")).toHaveLength(5); // 2 pas + 3 traits par le conduit
 });
 
+test("une salle fermée porte la croix rouge, comme les salles contaminées", () => {
+  expect(roomEl("cuisine").querySelectorAll(".toxic-cross")).toHaveLength(0);
+  expect(roomEl("labo").querySelectorAll(".toxic-cross")).toHaveLength(2);
+  act(() => { game.closed.value = new Set(["cuisine", "cockpit"]); });
+  expect(roomEl("cuisine").querySelectorAll(".toxic-cross")).toHaveLength(2);
+  expect(roomEl("cockpit").querySelectorAll(".toxic-cross")).toHaveLength(2); // salle en polygone
+});
+
 test("les salles fermées sont hachurées", () => {
   act(() => { game.closed.value = new Set(["atelier"]); });
   expect(roomEl("atelier").classList.contains("closed")).toBe(true);
