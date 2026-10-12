@@ -21,6 +21,8 @@
   flex: 1; // prend toute la hauteur restante de la colonne
   min-height: 120px;
   .info-body { padding: 4px 6px 8px; font-size: fs(13px); line-height: 1.5; }
+  .terminal-text { margin: 0; color: var(--accent); letter-spacing: .12em; font-size: fs(14px); }
+  .cur::after { content: "█"; margin-left: 2px; animation: blink .8s steps(2) infinite; }
   .info-empty { margin: 0; color: var(--dim); letter-spacing: .2em; font-size: fs(11px); }
 }
 
@@ -87,10 +89,13 @@
     @include room-shape { fill: #1a0c0d; stroke: #6b2326; }
     text { fill: #c55; }
   }
+  // Salles de départ possibles : clignotement doux
+  &.pulse { @include room-shape { animation: pulse 1.6s ease-in-out infinite; } }
   &.closing { @include room-shape { animation: alarm .5s steps(2) infinite; } }
   &.flash { @include room-shape { animation: slam .9s ease-out; } }
 }
 
+@keyframes pulse { 0%, 100% { fill: var(--room); } 50% { fill: var(--room-hi); } }
 @keyframes alarm { 0% { fill: #3a0a0c; } 100% { fill: #120607; } }
 @keyframes slam { 0% { fill: #ff3b3b; } 100% { fill: #3a0a0c; } }
 

@@ -33,6 +33,12 @@ const reachableRooms = (page: Page) => page.locator(".room.reach").evaluateAll(e
 
 const clickRoom = (page: Page, k: RoomId) => page.locator(`[data-room="${k}"]`).dispatchEvent("click");
 
+/** Choisit la salle de départ puis la confirme avec « Valider ». */
+async function placeAgent(page: Page, k: RoomId) {
+  await clickRoom(page, k);
+  await page.locator("#closeBtn").click();
+}
+
 async function closeRoom(page: Page) {
   await page.locator("#closeBtn").click();
   await page.clock.runFor(15_000);
@@ -67,7 +73,7 @@ for (const id of [0, 1, 2, 3]) {
 
     await startSimulation(page);
     await page.locator("#protos .proto").nth(id).click();
-    await clickRoom(page, survivor);
+    await placeAgent(page, survivor);
     await expect(page.locator("#pawn, #pawn2").locator("visible=true")).toHaveCount(1);
 
     for (let step = 1; step <= 8; step++) {
@@ -86,7 +92,7 @@ test("l'agent dans une salle qui ferme est éliminé", async ({ page }) => {
   const first = PROTOCOLS[0].steps[0][0];
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
-  await clickRoom(page, first);
+  await placeAgent(page, first);
   await closeRoom(page);
   await page.clock.runFor(2_000);
   await expect(page.locator("#endTitle")).toHaveText("AGENT ÉLIMINÉ");
@@ -97,7 +103,7 @@ test("déplacement vers une salle voisine puis annulation", async ({ page }) => 
   await open(page);
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
-  await clickRoom(page, "cockpit");
+  await placeAgent(page, "cockpit");
   expect(await reachableRooms(page)).toEqual([...ADJ.cockpit].sort());
   await expect(page.locator("#undoBtn")).toBeDisabled();
   await clickRoom(page, "vie");
@@ -141,7 +147,7 @@ test("le bouton Menu est sans effet pendant le compte à rebours", async ({ page
   await open(page);
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
-  await clickRoom(page, "cockpit");
+  await placeAgent(page, "cockpit");
   await page.locator("#closeBtn").click();
   await page.clock.runFor(500);
   await expect(page.locator("#count")).toHaveClass(/show/);
@@ -212,6 +218,29 @@ test("faux écrans de transition au démarrage et au choix du protocole", async 
   expect(errors).toEqual([]);
 });
 
+test("fenêtre du protocole : choix de la salle de départ puis position enregistrée", async ({ page }) => {
+  const errors = await open(page);
+  await startSimulation(page);
+  await page.locator("#protos .proto").first().click();
+  await expect(page.locator("#infoPanel h2")).toHaveText("PROTOCOLE A.I.P.");
+  await page.clock.runFor(3000);
+  await expect(page.locator("#protocolMessage")).toHaveText("AGENT, CHOISISSEZ VOTRE SALLE DE DÉPART");
+  await expect(page.locator(".room.pulse")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
+  await clickRoom(page, "cockpit");
+  await page.clock.runFor(4000);
+  await expect(page.locator("#protocolMessage")).toContainText("SALLE DE DÉPART : COCKPIT");
+  // On peut encore changer de salle, même éloignée, tant qu'on n'a pas validé.
+  await clickRoom(page, "entrepot4");
+  await page.clock.runFor(4000);
+  await expect(page.locator("#protocolMessage")).toContainText("SALLE DE DÉPART : ENTREPÔT 4");
+  await expect(page.locator("#pawn2")).toHaveAttribute("visibility", "visible");
+  await page.locator("#closeBtn").click();
+  await page.clock.runFor(3000);
+  await expect(page.locator("#protocolMessage")).toHaveText("POSITION ENREGISTRÉE : ENTREPÔT 4");
+  await expect(page.locator(".room.pulse")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});
+
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
@@ -222,7 +251,7 @@ test("le menu met la partie en pause et permet de la reprendre", async ({ page }
   const errors = await open(page);
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
-  await clickRoom(page, "cockpit");
+  await placeAgent(page, "cockpit");
   await page.locator("#menuBtn").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
   await expect(page.locator("#resumeBtn")).toBeVisible();
@@ -248,7 +277,7 @@ test("menu depuis l'écran de fin, sans bouton Reprendre", async ({ page }) => {
   const first = PROTOCOLS[0].steps[0][0];
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
-  await clickRoom(page, first);
+  await placeAgent(page, first);
   await closeRoom(page);
   await page.clock.runFor(2_000);
   await page.locator("#endMenuBtn").click();

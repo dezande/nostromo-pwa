@@ -11,7 +11,7 @@ export type Phase = "pick" | "place" | "move" | "dead" | "win";
 /**
  * Phases :
  * - "pick"  : choix du protocole
- * - "place" : le Psychic Agent pose son pion
+ * - "place" : le Psychic Agent pose son pion ; il peut changer de salle jusqu'à « Valider »
  * - "move"  : déplacements puis fermeture
  * - "dead" / "win" : fin de partie
  */
@@ -19,6 +19,7 @@ export const phase = signal<Phase>("pick");
 export const protocol = signal<Protocol | null>(null);
 export const step = signal(0);                         // nombre de fermetures déjà faites
 export const position = signal<RoomId | null>(null);   // salle du pion
+export const startRoom = signal<RoomId | null>(null);  // salle de départ choisie
 export const trail = signal<RoomId[]>([]);             // salles précédentes, pour « Annuler »
 export const moves = signal(0);
 export const closed = signal(new Set<RoomId>());       // salles fermées
@@ -50,6 +51,7 @@ function reset(newPhase: Phase, proto: Protocol | null = null) {
     protocol.value = proto;
     step.value = 0;
     position.value = null;
+    startRoom.value = null;
     trail.value = [];
     moves.value = 0;
     closed.value = new Set();
@@ -68,19 +70,35 @@ export function startGame(proto: Protocol) {
   reset("place", proto);
 }
 
-/** Toucher une salle : poser le pion, ou le déplacer vers une salle voisine. */
+/** Toucher une salle : choisir (ou changer) la salle de départ, ou déplacer le pion vers une salle voisine. */
 export function touchRoom(id: RoomId) {
   if (busy.value) return;
   audio.init();
   const from = position.value;
   if (phase.value === "place" && isOpen(id)) {
-    batch(() => { position.value = id; phase.value = "move"; trail.value = []; moves.value = 0; });
+    batch(() => { position.value = id; startRoom.value = id; });
     audio.beep(false);
   } else if (phase.value === "move" && from && ADJ[from].has(id) && isOpen(id)) {
     batch(() => { trail.value = [...trail.value, from]; position.value = id; moves.value++; });
     audio.beep(false);
   }
 }
+
+/** Confirme la salle de départ : la partie commence. */
+export function confirmStart() {
+  if (phase.value !== "place" || !position.value) return;
+  batch(() => { phase.value = "move"; trail.value = []; moves.value = 0; });
+  audio.beep(true);
+}
+
+/** Bouton « Valider » : confirme la salle de départ, puis lance les fermetures. */
+export function validate() {
+  if (phase.value === "place") confirmStart();
+  else void closeRooms();
+}
+
+export const canValidate = computed(() =>
+  !busy.value && ((phase.value === "place" && !!position.value) || phase.value === "move"));
 
 export function undo() {
   if (!trail.value.length) return;
