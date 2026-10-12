@@ -39,7 +39,10 @@ header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-are
 header h1{font-size:calc(15px * var(--fs));letter-spacing:.18em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 header h1 small{color:var(--dim);letter-spacing:.1em;font-weight:normal}
 .icon-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:6px 12px;font-size:calc(13px * var(--fs))}
-.ic{font-size:1.6em;line-height:1;display:inline-block}
+.ic{font-size:1.6em;line-height:1;display:inline-block;transform:translateY(-.06em)}
+/* icône et texte centrés verticalement dans tous les boutons */
+button:has(.ic){display:inline-flex;align-items:center;justify-content:center;gap:.45em}
+.big:has(.ic){display:flex}
 .icon-btn .ic{font-size:calc(24px * var(--fs))}
 @media (max-width:560px){.icon-btn .lbl{display:none}.icon-btn{min-width:48px;justify-content:center}}
 button .ic + *{margin-left:0}
