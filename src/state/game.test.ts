@@ -16,6 +16,12 @@ beforeEach(() => {
 });
 afterEach(() => jest.useRealTimers());
 
+/** Pose le pion et valide la salle de départ. */
+function place(id: Parameters<typeof game.touchRoom>[0]) {
+  game.touchRoom(id);
+  game.confirmStart();
+}
+
 /** Lance une fermeture et fait avancer le temps jusqu'au bout. */
 async function close() {
   const done = game.closeRooms();
@@ -35,16 +41,35 @@ describe("pose du pion", () => {
     expect(game.phase.value).toBe("place");
   });
 
-  test("poser le pion passe en phase de déplacement", () => {
+  test("on peut changer de salle de départ tant qu'on n'a pas validé", () => {
     game.touchRoom("cockpit");
     expect(game.position.value).toBe("cockpit");
+    expect(game.phase.value).toBe("place");
+    expect(game.canValidate.value).toBe(true);
+    game.touchRoom("entrepot4"); // n'importe quelle salle, même éloignée
+    expect(game.position.value).toBe("entrepot4");
+    expect(game.startRoom.value).toBe("entrepot4");
+    expect(game.phase.value).toBe("place");
+  });
+
+  test("Valider est impossible tant qu'aucune salle n'est choisie", () => {
+    expect(game.canValidate.value).toBe(false);
+    game.validate();
+    expect(game.phase.value).toBe("place");
+  });
+
+  test("valider la salle de départ passe en phase de déplacement", () => {
+    game.touchRoom("cockpit");
+    game.validate();
+    expect(game.position.value).toBe("cockpit");
+    expect(game.startRoom.value).toBe("cockpit");
     expect(game.phase.value).toBe("move");
     expect([...game.reachable.value].sort()).toEqual(["infirmerie", "reunion", "vie"]);
   });
 });
 
 describe("déplacements", () => {
-  beforeEach(() => game.touchRoom("cockpit"));
+  beforeEach(() => place("cockpit"));
 
   test("vers une salle voisine", () => {
     game.touchRoom("vie");
@@ -74,7 +99,7 @@ describe("déplacements", () => {
 
 describe("fermetures", () => {
   test("une fermeture ferme les salles de l'étape et remet les déplacements à zéro", async () => {
-    game.touchRoom("cockpit");
+    place("cockpit");
     game.touchRoom("vie");
     await close();
     expect([...game.closed.value]).toEqual(proto.steps[0]);
@@ -84,7 +109,7 @@ describe("fermetures", () => {
   });
 
   test("pendant le compte à rebours, rien ne bouge", async () => {
-    game.touchRoom("cockpit");
+    place("cockpit");
     const done = game.closeRooms();
     expect(game.busy.value).toBe(true);
     expect(game.countdown.value).toEqual({ n: 3, room: "" });
@@ -96,14 +121,14 @@ describe("fermetures", () => {
   });
 
   test("on ne peut plus entrer dans une salle fermée", async () => {
-    game.touchRoom("vie");
+    place("vie");
     await close(); // ferme l'atelier
     game.touchRoom("atelier");
     expect(game.position.value).toBe("vie");
   });
 
   test("l'agent dans une salle qui ferme est éliminé", async () => {
-    game.touchRoom(proto.steps[0][0]);
+    place(proto.steps[0][0]);
     await close();
     expect(game.phase.value).toBe("dead");
     expect(game.ending.value).toMatchObject({ win: false });
@@ -112,7 +137,7 @@ describe("fermetures", () => {
   test("l'agent resté dans la dernière salle survit", async () => {
     const closed = new Set(proto.steps.flat());
     const survivor = ROOM_IDS.find(id => !room(id).toxic && !closed.has(id))!;
-    game.touchRoom(survivor);
+    place(survivor);
     for (let i = 0; i < 8; i++) await close();
     expect(game.phase.value).toBe("win");
     expect(game.ending.value).toMatchObject({ win: true });
@@ -121,7 +146,7 @@ describe("fermetures", () => {
 });
 
 test("newGame revient au choix du protocole", () => {
-  game.touchRoom("cockpit");
+  place("cockpit");
   game.newGame();
   expect(game.phase.value).toBe("pick");
   expect(game.protocol.value).toBeNull();

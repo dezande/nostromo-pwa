@@ -1,7 +1,7 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
 import { ROOM_IDS, room, roomLines, pawnPosition, type RoomId } from "../data/ship";
-import { reachable, closed, closing, flashing, position, touchRoom } from "../state/game";
-import { InfoPanel } from "./InfoPanel";
+import { reachable, closed, closing, flashing, phase, position, touchRoom } from "../state/game";
+import { ProtocolWindow } from "./ProtocolWindow";
 
 const range = (from: number, to: number, stepBy: number) => Array.from({ length: Math.ceil((to - from) / stepBy) }, (_, i) => from + i * stepBy);
 
@@ -15,7 +15,7 @@ export function ShipMap() {
         </svg>
       </div>
       <div class="side">
-        <InfoPanel />
+        <ProtocolWindow />
         <div class="deck">
           <h2>PONT 2</h2>
           <svg id="deck2" viewBox="0 0 320 330" aria-label="Plan du pont 2">
@@ -159,6 +159,7 @@ function Room({ id }: { id: RoomId }) {
     r.toxic && "toxic",
     closed.value.has(id) && "closed",
     canTouch && "reach",
+    canTouch && phase.value === "place" && "pulse", // salles de départ possibles
     closing.value.has(id) && "closing",
     flashing.value.has(id) && "flash",
   ].filter(Boolean).join(" ");

@@ -21,7 +21,7 @@ test("affiche l'état de la partie et la fiche A.I.P. cachée", () => {
   expect($("#status").textContent).toBe("Choisissez un protocole.");
   expect(($("#closeBtn") as HTMLButtonElement).disabled).toBe(true);
 
-  act(() => { game.startGame(PROTOCOLS[1]); game.touchRoom("cockpit"); });
+  act(() => { game.startGame(PROTOCOLS[1]); game.touchRoom("cockpit"); game.confirmStart(); });
   expect($("#status").textContent).toContain("Agent en Cockpit");
   expect($("#protoName").textContent).toBe("N°2");
   expect(root.querySelectorAll("#aip li")).toHaveLength(8);
@@ -37,7 +37,7 @@ test("« Afficher » révèle l'ordre de fermeture", () => {
 });
 
 test("« Nouvelle partie » demande confirmation pendant une partie", () => {
-  act(() => { render(<Coordinator />, root); game.startGame(PROTOCOLS[0]); game.touchRoom("cockpit"); });
+  act(() => { render(<Coordinator />, root); game.startGame(PROTOCOLS[0]); game.touchRoom("cockpit"); game.confirmStart(); });
   act(() => { $("#resetBtn").click(); });
   expect($("#resetLbl").textContent).toBe("Confirmer ?");
   expect(game.phase.value).toBe("move");

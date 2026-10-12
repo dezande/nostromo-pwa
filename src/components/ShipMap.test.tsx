@@ -23,13 +23,23 @@ test("dessine les 16 salles sur les deux ponts", () => {
   for (const id of ROOM_IDS) expect(roomEl(id)).not.toBeNull();
 });
 
+test("pendant le placement, les salles de départ possibles clignotent", () => {
+  expect(roomEl("cockpit").classList.contains("pulse")).toBe(true);
+  expect(roomEl("labo").classList.contains("pulse")).toBe(false);
+  act(() => { game.touchRoom("cockpit"); });
+  expect(roomEl("entrepot4").classList.contains("pulse")).toBe(true); // on peut encore changer
+  act(() => { game.confirmStart(); });
+  expect(root.querySelectorAll(".room.pulse")).toHaveLength(0);
+});
+
 test("les salles toxiques sont marquées", () => {
   expect(roomEl("labo").classList.contains("toxic")).toBe(true);
   expect(roomEl("labo").classList.contains("reach")).toBe(false);
 });
 
-test("toucher une salle pose le pion et met en avant les salles voisines", () => {
+test("toucher une salle pose le pion ; après validation, les salles voisines sont mises en avant", () => {
   act(() => { roomEl("cockpit").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
+  act(() => { game.confirmStart(); });
   expect(game.position.value).toBe("cockpit");
   expect(root.querySelector("#pawn")!.getAttribute("visibility")).toBe("visible");
   expect(root.querySelector("#pawn2")!.getAttribute("visibility")).toBe("hidden");
