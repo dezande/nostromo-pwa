@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nostromo II</title>
+<meta name="description" content="Nostromo II Training Base : plan du vaisseau, fermeture des salles, compte à rebours et ambiance sonore.">
+<meta name="theme-color" content="#07090a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{
+  --bg:#07090a; --panel:#0e1312; --line:#1f2a27; --ink:#cfe9d9; --dim:#6f8a7e;
+  --green:#5cff9d; --amber:#ffb238; --red:#ff3b3b; --blood:#7a0d12;
+  --room:#0f1a17; --room-hi:#16302a;
+  color-scheme:dark;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);
+  -webkit-tap-highlight-color:transparent;overflow-x:hidden;
+  background-image:radial-gradient(ellipse at 50% -10%, #12221d 0%, transparent 60%);}
+body::after{content:"";pointer-events:none;position:fixed;inset:0;z-index:50;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);mix-blend-mode:multiply}
+button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:6px;padding:10px 14px;cursor:pointer}
+button:disabled{opacity:.35;cursor:default}
+header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
+header h1{font-size:15px;letter-spacing:.18em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header h1 small{color:var(--dim);letter-spacing:.1em;font-weight:normal}
+.icon-btn{padding:8px 10px;font-size:13px}
+.icon-btn.on{border-color:var(--green);color:var(--green)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;padding:16px;max-width:1200px;margin:0 auto}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+.decks{display:grid;grid-template-columns:3fr 2fr;gap:12px;align-items:start}
+@media (max-width:520px){.decks{grid-template-columns:1fr}}
+.deck{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:8px}
+.deck h2{font-size:11px;letter-spacing:.25em;color:var(--dim);margin:2px 4px 6px;font-weight:normal}
+svg{width:100%;height:auto;display:block;touch-action:manipulation}
+.wall{fill:none;stroke:#2f4a41;stroke-width:2}
+.deco{fill:#0b1210;stroke:#2f4a41;stroke-width:2}
+.hatch{stroke:#2f4a41;stroke-width:1.5}
+.room path,.room rect,.room polygon{fill:var(--room);stroke:#3f6a5c;stroke-width:2;transition:fill .25s}
+.room text{fill:var(--ink);font-size:10px;text-anchor:middle;pointer-events:none;letter-spacing:.05em}
+.room{outline:none}
+.room:focus-visible path,.room:focus-visible rect,.room:focus-visible polygon{stroke:var(--amber);stroke-width:3}
+.room.reach{cursor:pointer}
+.room.reach path,.room.reach rect,.room.reach polygon{fill:var(--room-hi);stroke:var(--green)}
+.room.reach text{fill:var(--green)}
+.room.closed path,.room.closed rect,.room.closed polygon{fill:url(#sealed);stroke:var(--red)}
+.room.closed text{fill:#ffb3b3}
+.room.toxic path,.room.toxic rect,.room.toxic polygon{fill:#1a0c0d;stroke:#6b2326}
+.room.toxic text{fill:#c55}
+.room.closing path,.room.closing rect,.room.closing polygon{animation:alarm .5s steps(2) infinite}
+@keyframes alarm{0%{fill:#3a0a0c}100%{fill:#120607}}
+.room.flash path,.room.flash rect,.room.flash polygon{animation:slam .9s ease-out}
+@keyframes slam{0%{fill:#ff3b3b}100%{fill:#3a0a0c}}
+.door{stroke:var(--amber);stroke-width:2}
+.vent{stroke:#4f7f70;stroke-width:1.5;stroke-dasharray:3 3;fill:none}
+.vent-label{fill:var(--dim);font-size:7px;text-anchor:middle}
+.lift{fill:#0b1210;stroke:var(--amber);stroke-width:1.5}
+#pawn,#pawn2{pointer-events:none;transition:transform .35s ease}
+.pawn-core{fill:var(--green)}
+.pawn-ring{fill:none;stroke:var(--green);stroke-width:2;animation:ping 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ping{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.2)}}
+aside{display:flex;flex-direction:column;gap:12px}
+.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px}
+.card h3{margin:0 0 10px;font-size:11px;letter-spacing:.25em;color:var(--dim);font-weight:normal;display:flex;justify-content:space-between;align-items:center}
+.status{font-size:14px;line-height:1.5;min-height:3em}
+.status b{color:var(--green);font-weight:normal}
+.big{display:block;width:100%;padding:16px;font-size:15px;letter-spacing:.15em;border-color:var(--red);color:#fff;background:linear-gradient(#5b0b10,#2a0507)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row button{flex:1}
+.counter{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-top:10px}
+.counter span b{color:var(--ink);font-size:16px;font-weight:normal}
+ol.aip{list-style:none;margin:0;padding:0;font-size:13px}
+ol.aip li{display:flex;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+ol.aip li i{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:#5b0b10;color:#fff;font-size:11px}
+ol.aip li.done{color:#7d4a4a;text-decoration:line-through}
+ol.aip li.next{color:var(--amber)}
+.mini{padding:4px 8px;font-size:11px}
+/* overlays */
+.overlay{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:rgba(3,5,5,.88);padding:16px}
+.overlay.show{display:grid}
+.panel{max-width:720px;width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px;max-height:calc(100vh - 32px);overflow:auto}
+.panel h2{margin:0 0 6px;letter-spacing:.2em;font-size:16px}
+.panel p{color:var(--dim);font-size:13px;line-height:1.5;margin:0 0 14px}
+.protos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.proto{text-align:left;padding:12px;border-radius:8px}
+.proto:hover,.proto:focus{border-color:var(--amber)}
+.proto strong{display:block;color:var(--red);letter-spacing:.15em;margin-bottom:6px;font-size:12px}
+.proto small{display:block;color:var(--dim);font-size:11px;line-height:1.45}
+#count{background:radial-gradient(circle, rgba(70,5,8,.75), rgba(3,5,5,.92))}
+#count .num{font-size:min(38vw,240px);color:var(--red);text-shadow:0 0 30px #f00;line-height:1;text-align:center}
+#count .lbl{text-align:center;letter-spacing:.35em;font-size:13px;color:#ffb3b3}
+#count .room-name{text-align:center;font-size:22px;letter-spacing:.2em;color:#fff;margin-top:8px;min-height:1.4em}
+.end h2{font-size:clamp(22px,7vw,40px);text-align:center;margin:10px 0}
+.end p{text-align:center}
+.dead h2{color:var(--red);text-shadow:0 0 18px #f00}
+.win h2{color:var(--green);text-shadow:0 0 18px #2f8}
+label.set{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px dashed var(--line)}
+label.set input[type=range]{flex:1;accent-color:var(--red)}
+.shake{animation:shake .5s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-2px)}}
+</style>
+</head>
+<body>
+<header>
+  <h1>NOSTROMO II <small>· TRAINING BASE</small></h1>
+  <button class="icon-btn" id="musicBtn" aria-pressed="false">♫ Musique</button>
+  <button class="icon-btn" id="setBtn" aria-label="Réglages">⚙</button>
+</header>
+
+<main id="main">
+  <section class="decks">
+    <div class="deck">
+      <h2>PONT 1</h2>
+      <svg id="deck1" viewBox="0 0 400 520" aria-label="Plan du pont 1"></svg>
+    </div>
+    <div class="deck">
+      <h2>PONT 2</h2>
+      <svg id="deck2" viewBox="0 0 320 330" aria-label="Plan du pont 2"></svg>
+    </div>
+  </section>
+
+  <aside>
+    <div class="card">
+      <h3>COORDINATEUR</h3>
+      <div class="status" id="status">Choisissez un protocole.</div>
+      <div class="counter">
+        <span>Déplacements <b id="moves">0</b></span>
+        <span>Fermeture <b id="step">0/8</b></span>
+      </div>
+    </div>
+    <button class="big" id="closeBtn" disabled>⚠ FERMETURE DE SALLE</button>
+    <div class="row">
+      <button id="undoBtn" disabled>↶ Annuler</button>
+      <button id="resetBtn">⟲ Nouvelle partie</button>
+    </div>
+    <div class="card">
+      <h3>FICHE A.I.P. <span id="protoName"></span>
+        <button class="mini" id="peekBtn" aria-pressed="false">Afficher</button></h3>
+      <ol class="aip" id="aip"></ol>
+    </div>
+  </aside>
+</main>
+
+<!-- choix du protocole -->
+<div class="overlay show" id="pick">
+  <div class="panel">
+    <h2>ALIEN INTRUSION PROTOCOL</h2>
+    <p>Le Psychic Agent choisit le protocole. Il établit l'ordre de fermeture des salles du vaisseau-base. Seuls les agents présents dans la dernière salle survivent.</p>
+    <div class="protos" id="protos"></div>
+  </div>
+</div>
+
+<!-- compte à rebours -->
+<div class="overlay" id="count" aria-live="assertive">
+  <div>
+    <div class="lbl">FERMETURE IMMINENTE</div>
+    <div class="num" id="countNum">10</div>
+    <div class="room-name" id="countRoom"></div>
+  </div>
+</div>
+
+<!-- fin -->
+<div class="overlay" id="end">
+  <div class="panel end" id="endPanel">
+    <h2 id="endTitle"></h2>
+    <p id="endText"></p>
+    <div class="row"><button id="againBtn">⟲ Rejouer</button></div>
+  </div>
+</div>
+
+<!-- réglages -->
+<div class="overlay" id="settings">
+  <div class="panel">
+    <h2>RÉGLAGES</h2>
+    <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
+    <label class="set">Annonce vocale du nom de la salle <input type="checkbox" id="voiceChk" checked></label>
+    <label class="set">Volume musique <input type="range" id="volRange" min="0" max="100" value="60"></label>
+    <label class="set">Écran toujours allumé <input type="checkbox" id="wakeChk" checked></label>
+    <p style="margin-top:14px">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
+    <div class="row"><button id="setClose">Fermer</button></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ---------- Données du vaisseau-base ---------- */
+const NS = "http://www.w3.org/2000/svg";
+const ROOMS = {
+  cockpit:   {name:"Cockpit",         deck:1, shape:"poly", pts:"155,100 245,100 245,205 155,205", c:[200,160]},
+  reunion:   {name:"Salle de réunion",deck:1, shape:"rect", r:[75,150,80,100],  c:[115,200], label:["Salle de","réunion"]},
+  infirmerie:{name:"Infirmerie",      deck:1, shape:"rect", r:[245,150,80,100], c:[285,200]},
+  vie:       {name:"Salle de vie",    deck:1, shape:"rect", r:[155,205,90,125], c:[200,240], label:["Salle","de vie"]},
+  dortoir1:  {name:"Dortoir 1",       deck:1, shape:"rect", r:[75,250,80,80],   c:[115,290]},
+  dortoir2:  {name:"Dortoir 2",       deck:1, shape:"rect", r:[245,250,80,80],  c:[285,290]},
+  armurerie: {name:"Armurerie",       deck:1, shape:"rect", r:[75,330,80,70],   c:[115,365], toxic:true},
+  cuisine:   {name:"Cuisine",         deck:1, shape:"rect", r:[155,330,90,100], c:[200,380], label:["Cuisine &","salle à","manger"]},
+  labo:      {name:"Labo",            deck:1, shape:"rect", r:[245,330,80,70],  c:[285,365], toxic:true},
+  entrepot1: {name:"Entrepôt 1",      deck:1, shape:"poly", pts:"75,400 155,400 155,480 50,480 50,425", c:[105,445]},
+  entrepot2: {name:"Entrepôt 2",      deck:1, shape:"poly", pts:"245,400 325,400 350,425 350,480 245,480", c:[295,445]},
+  atelier:   {name:"Atelier",         deck:2, shape:"rect", r:[40,40,95,90],    c:[87,85]},
+  sport:     {name:"Salle de sport",  deck:2, shape:"rect", r:[185,40,95,90],   c:[232,85], label:["Salle de","sport"]},
+  serre:     {name:"Serre hydroponique",deck:2, shape:"rect", r:[135,130,50,150], c:[160,200], label:["Serre","hydro-","ponique"]},
+  entrepot3: {name:"Entrepôt 3",      deck:2, shape:"poly", pts:"40,130 135,130 135,300 20,300 20,215 40,195", c:[78,250]},
+  entrepot4: {name:"Entrepôt 4",      deck:2, shape:"poly", pts:"185,130 280,130 280,195 300,215 300,300 185,300", c:[242,250]},
+};
+// Liaisons : portes, conduits d'aération et ascenseurs (lieux de passage, pas d'arrêt).
+const LINKS = [
+  ["cockpit","reunion"],["cockpit","infirmerie"],["cockpit","vie"],
+  ["reunion","dortoir1"],["infirmerie","dortoir2"],
+  ["vie","dortoir1"],["vie","dortoir2"],["vie","cuisine"],
+  ["dortoir1","entrepot1","vent"],["dortoir2","entrepot2","vent"],
+  ["cuisine","entrepot1"],["cuisine","entrepot2"],
+  ["vie","atelier","lift"],["vie","sport","lift"],["vie","serre","lift"],
+  ["atelier","entrepot3"],["sport","entrepot4"],["serre","entrepot3"],["serre","entrepot4"],
+];
+const ADJ = {}; for (const k in ROOMS) ADJ[k] = new Set();
+for (const [a,b] of LINKS){ ADJ[a].add(b); ADJ[b].add(a); }
+
+const PROTOCOLS = [
+  {id:1, date:"04/17/2183", instr:"Elton Riley", part:4, alive:"2 alive",
+   steps:[["atelier"],["entrepot2"],["entrepot4","entrepot3"],["cockpit","cuisine"],["serre","sport"],["reunion","infirmerie"],["entrepot1"],["dortoir1","dortoir2"]]},
+  {id:2, date:"10/02/2184", instr:"Jack Stone", part:5, alive:"1 alive",
+   steps:[["cuisine"],["entrepot1"],["entrepot2"],["dortoir2","sport"],["dortoir1","atelier"],["infirmerie","entrepot3"],["reunion","entrepot4"],["serre","cockpit"]]},
+  {id:3, date:"03/17/2182", instr:"Helen Wade", part:7, alive:"3 alive",
+   steps:[["cockpit"],["reunion"],["infirmerie"],["dortoir1","sport"],["atelier","dortoir2"],["entrepot1","entrepot4"],["entrepot2","entrepot3"],["cuisine","serre"]]},
+  {id:4, date:"12/22/2181", instr:"Igor Ivenov", part:5, alive:"2 alive",
+   steps:[["dortoir1"],["infirmerie","entrepot2"],["entrepot4","entrepot1"],["cuisine","serre"],["dortoir2","sport"],["reunion"],["entrepot3"],["cockpit","atelier"]]},
+];
+const stepLabel = s => s.map(k=>ROOMS[k].name).join(" + ");
+
+/* ---------- Dessin du plan ---------- */
+function el(tag, attrs={}, parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function centerOf(k){ return ROOMS[k].c; }
+
+function drawDeck1(svg){
+  const defs = el("defs",{},svg);
+  const pat = el("pattern",{id:"sealed",width:8,height:8,patternUnits:"userSpaceOnUse",patternTransform:"rotate(45)"},defs);
+  el("rect",{width:8,height:8,fill:"#3a0a0c"},pat); el("line",{x1:0,y1:0,x2:0,y2:8,stroke:"#8a1418","stroke-width":3},pat);
+  // propulseurs latéraux
+  for (const x of [12,352]){
+    el("rect",{x, y:130, width:36, height:250, class:"deco"},svg);
+    el("polygon",{points:`${x},130 ${x+18},104 ${x+36},130`, class:"deco"},svg);
+    el("polygon",{points:`${x-4},380 ${x+40},380 ${x+44},396 ${x-8},396`, class:"deco"},svg);
+    for (let y=150;y<370;y+=26) el("line",{x1:x+4,y1:y,x2:x+32,y2:y+20,class:"hatch"},svg);
+  }
+  el("rect",{x:48,y:160,width:27,height:14,class:"deco"},svg); el("rect",{x:325,y:160,width:27,height:14,class:"deco"},svg);
+  el("rect",{x:48,y:335,width:27,height:14,class:"deco"},svg); el("rect",{x:325,y:335,width:27,height:14,class:"deco"},svg);
+  // capots, nez, antenne
+  el("rect",{x:75,y:132,width:80,height:18,class:"deco"},svg); el("rect",{x:245,y:132,width:80,height:18,class:"deco"},svg);
+  for (let x=80;x<152;x+=6){ el("line",{x1:x,y1:136,x2:x,y2:148,class:"hatch"},svg); el("line",{x1:x+170,y1:136,x2:x+170,y2:148,class:"hatch"},svg); }
+  el("polygon",{points:"155,100 200,46 245,100",class:"deco"},svg);
+  for (let i=0;i<5;i++) el("line",{x1:200,y1:50,x2:165+i*17.5,y2:98,class:"hatch"},svg);
+  el("line",{x1:200,y1:46,x2:200,y2:14,stroke:"#3f6a5c","stroke-width":3},svg);
+  // tuyères
+  for (const x of [56,250]){
+    el("polygon",{points:`${x},480 ${x+94},480 ${x+100},500 ${x-6},500`,class:"deco"},svg);
+    for (let i=0;i<10;i++) el("line",{x1:x+2+i*10,y1:484,x2:x+i*10,y2:498,class:"hatch"},svg);
+  }
+  el("rect",{x:165,y:440,width:70,height:26,class:"deco"},svg);
+  for (let x=175;x<235;x+=12) el("line",{x1:x,y1:442,x2:x,y2:464,class:"hatch"},svg);
+  drawRooms(svg,1);
+  // conduits d'aération
+  for (const [x,dir] of [[64,1],[336,-1]]){
+    el("line",{x1:x,y1:336,x2:x,y2:396,class:"vent"},svg);
+    el("polygon",{points:`${x-4},342 ${x},334 ${x+4},342`,fill:"#4f7f70"},svg);
+    el("polygon",{points:`${x-4},390 ${x},398 ${x+4},390`,fill:"#4f7f70"},svg);
+  }
+  el("text",{x:30,y:505,class:"vent-label"},svg).textContent="VENTILATION";
+  el("text",{x:370,y:505,class:"vent-label"},svg).textContent="VENTILATION";
+  // ascenseurs
+  el("rect",{x:186,y:290,width:28,height:26,class:"lift"},svg);
+  el("path",{d:"M192 296 h16 v12 h-16 z M196 300 h8",stroke:"#ffb238",fill:"none","stroke-width":1.2},svg);
+  el("text",{x:200,y:326,class:"vent-label"},svg).textContent="ASCENSEURS";
+  drawDoors(svg,[
+    [155,190,"v"],[245,190,"v"],[200,205,"h"],
+    [115,250,"h"],[285,250,"h"],
+    [155,290,"v"],[245,290,"v"],[200,330,"h"],
+    [155,412,"v"],[245,412,"v"],
+  ]);
+}
+function drawDeck2(svg){
+  drawRooms(svg,2);
+  el("rect",{x:145,y:44,width:30,height:30,class:"lift"},svg);
+  el("path",{d:"M152 51 h16 v12 h-16 z M156 55 h8",stroke:"#ffb238",fill:"none","stroke-width":1.2},svg);
+  el("line",{x1:135,y1:59,x2:145,y2:59,class:"door"},svg); el("line",{x1:175,y1:59,x2:185,y2:59,class:"door"},svg);
+  el("line",{x1:160,y1:74,x2:160,y2:130,class:"vent"},svg);
+  el("text",{x:160,y:24,class:"vent-label"},svg).textContent="↑ VERS SALLE DE VIE";
+  el("text",{x:160,y:36,class:"vent-label"},svg).textContent="ASCENSEURS";
+  drawDoors(svg,[[87,130,"h"],[232,130,"h"],[135,215,"v"],[185,215,"v"]]);
+}
+function drawDoors(svg, list){
+  for (const [x,y,o] of list){
+    if (o==="h"){ el("line",{x1:x-4,y1:y-5,x2:x-4,y2:y+5,class:"door"},svg); el("line",{x1:x+4,y1:y-5,x2:x+4,y2:y+5,class:"door"},svg); }
+    else { el("line",{x1:x-5,y1:y-4,x2:x+5,y2:y-4,class:"door"},svg); el("line",{x1:x-5,y1:y+4,x2:x+5,y2:y+4,class:"door"},svg); }
+  }
+}
+const roomEls = {};
+function drawRooms(svg, deck){
+  for (const k in ROOMS){
+    const r = ROOMS[k]; if (r.deck!==deck) continue;
+    const g = el("g",{class:"room","data-room":k, role:"button", tabindex:"-1", "aria-label":r.name},svg);
+    if (r.shape==="rect") el("rect",{x:r.r[0],y:r.r[1],width:r.r[2],height:r.r[3]},g);
+    else el("polygon",{points:r.pts},g);
+    const lines = r.label || [r.name];
+    const [cx,cy] = r.c, ty = (k==="vie") ? 228 : cy - (lines.length-1)*6 + 3;
+    lines.forEach((t,i)=>{ el("text",{x:cx,y:ty+i*12},g).textContent = t.toUpperCase(); });
+    if (r.toxic){
+      const [x,y,w,h]=r.r;
+      el("line",{x1:x+18,y1:y+18,x2:x+w-18,y2:y+h-8,stroke:"#c22","stroke-width":3},g);
+      el("line",{x1:x+w-18,y1:y+18,x2:x+18,y2:y+h-8,stroke:"#c22","stroke-width":3},g);
+    }
+    g.addEventListener("click",()=>onRoom(k));
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();onRoom(k);} });
+    roomEls[k]=g;
+  }
+  const p = el("g",{id: deck===1?"pawn":"pawn2", visibility:"hidden"},svg);
+  el("circle",{r:9,class:"pawn-ring"},p); el("circle",{r:6,class:"pawn-core"},p);
+}
+
+/* ---------- Audio (Web Audio, généré) ---------- */
+const Audio = (() => {
+  let ctx, master, musicBus, sfxBus, music=null;
+  function init(){
+    if (ctx) { if (ctx.state==="suspended") ctx.resume(); return; }
+    ctx = new (window.AudioContext||window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = 0.9;
+    const comp = ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
+    musicBus = ctx.createGain(); musicBus.gain.value = 0; musicBus.connect(master);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = 1; sfxBus.connect(master);
+  }
+  function noiseBuf(sec){ const b=ctx.createBuffer(1,ctx.sampleRate*sec,ctx.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; }
+  function startMusic(vol){
+    init(); if (music) return;
+    const t = ctx.currentTime, nodes=[];
+    // nappe grave : deux dents de scie désaccordées dans un passe-bas qui respire
+    const lp = ctx.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=260; lp.Q.value=6; lp.connect(musicBus);
+    for (const f of [55, 55.35, 82.4]){ const o=ctx.createOscillator(); o.type="sawtooth"; o.frequency.value=f; const g=ctx.createGain(); g.gain.value=.10; o.connect(g); g.connect(lp); o.start(); nodes.push(o); }
+    const lfo=ctx.createOscillator(); lfo.frequency.value=.05; const lg=ctx.createGain(); lg.gain.value=160; lfo.connect(lg); lg.connect(lp.frequency); lfo.start(); nodes.push(lfo);
+    const sub=ctx.createOscillator(); sub.type="sine"; sub.frequency.value=41.2; const sg=ctx.createGain(); sg.gain.value=.25; sub.connect(sg); sg.connect(musicBus); sub.start(); nodes.push(sub);
+    // souffle de ventilation
+    const n=ctx.createBufferSource(); n.buffer=noiseBuf(4); n.loop=true; const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=700; bp.Q.value=.8;
+    const ng=ctx.createGain(); ng.gain.value=.05; n.connect(bp); bp.connect(ng); ng.connect(musicBus); n.start(); nodes.push(n);
+    const lfo2=ctx.createOscillator(); lfo2.frequency.value=.11; const lg2=ctx.createGain(); lg2.gain.value=.035; lfo2.connect(lg2); lg2.connect(ng.gain); lfo2.start(); nodes.push(lfo2);
+    // écho pour les tintements
+    const dl=ctx.createDelay(2); dl.delayTime.value=.62; const fb=ctx.createGain(); fb.gain.value=.55; const dlp=ctx.createBiquadFilter(); dlp.frequency.value=2200;
+    dl.connect(dlp); dlp.connect(fb); fb.connect(dl); dlp.connect(musicBus);
+    const notes=[440,523.25,587.33,622.25,659.25,783.99,880,1046.5,1244.5];
+    let alive=true;
+    (function ping(){
+      if(!alive) return;
+      const now=ctx.currentTime, f=notes[Math.floor(Math.random()*notes.length)];
+      const o=ctx.createOscillator(); o.type= Math.random()<.5?"sine":"triangle"; o.frequency.value=f;
+      const g=ctx.createGain(); g.gain.setValueAtTime(0,now); g.gain.linearRampToValueAtTime(.07,now+.02); g.gain.exponentialRampToValueAtTime(.0001,now+2.5);
+      o.connect(g); g.connect(dl); g.connect(musicBus); o.start(now); o.stop(now+2.6);
+      if (Math.random()<.25){ // grondement lointain
+        const s=ctx.createOscillator(); s.type="sine"; s.frequency.setValueAtTime(70,now); s.frequency.exponentialRampToValueAtTime(30,now+3);
+        const sg2=ctx.createGain(); sg2.gain.setValueAtTime(0,now); sg2.gain.linearRampToValueAtTime(.18,now+.8); sg2.gain.linearRampToValueAtTime(0,now+3); s.connect(sg2); sg2.connect(musicBus); s.start(now); s.stop(now+3.1);
+      }
+      setTimeout(ping, 1800 + Math.random()*4200);
+    })();
+    musicBus.gain.cancelScheduledValues(t); musicBus.gain.setValueAtTime(musicBus.gain.value,t); musicBus.gain.linearRampToValueAtTime(vol,t+3);
+    music={nodes, stop(){ alive=false; }};
+  }
+  function stopMusic(){
+    if(!music) return; const m=music; music=null; m.stop();
+    const t=ctx.currentTime; musicBus.gain.cancelScheduledValues(t); musicBus.gain.setValueAtTime(musicBus.gain.value,t); musicBus.gain.linearRampToValueAtTime(0,t+1.5);
+    setTimeout(()=>m.nodes.forEach(n=>{try{n.stop()}catch(e){}}),1700);
+  }
+  function setVolume(v){ if(!ctx||!music) return; musicBus.gain.setTargetAtTime(v,ctx.currentTime,.2); }
+  function duck(on){ if(!ctx||!music) return; musicBus.gain.setTargetAtTime(on? curVol*.35 : curVol, ctx.currentTime, .3); }
+  let curVol=.6;
+  function beep(high){
+    init(); const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
+    o.type="square"; o.frequency.value= high?1320:880; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.18,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+(high?.3:.14));
+    o.connect(g); g.connect(sfxBus); o.start(t); o.stop(t+.35);
+  }
+  function siren(sec){
+    init(); const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain(), l=ctx.createOscillator(), lg=ctx.createGain();
+    o.type="sawtooth"; o.frequency.value=600; l.frequency.value=2.2; lg.gain.value=180; l.connect(lg); lg.connect(o.frequency);
+    const f=ctx.createBiquadFilter(); f.frequency.value=1800;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.07,t+.1); g.gain.setValueAtTime(.07,t+sec-.1); g.gain.linearRampToValueAtTime(0,t+sec);
+    o.connect(f); f.connect(g); g.connect(sfxBus); o.start(t); l.start(t); o.stop(t+sec); l.stop(t+sec);
+  }
+  function slam(){
+    init(); const t=ctx.currentTime;
+    const n=ctx.createBufferSource(); n.buffer=noiseBuf(1.2); const lp=ctx.createBiquadFilter(); lp.frequency.value=500; const g=ctx.createGain();
+    g.gain.setValueAtTime(.9,t); g.gain.exponentialRampToValueAtTime(.001,t+1.1); n.connect(lp); lp.connect(g); g.connect(sfxBus); n.start(t);
+    const o=ctx.createOscillator(); o.frequency.setValueAtTime(90,t); o.frequency.exponentialRampToValueAtTime(35,t+.5); const og=ctx.createGain();
+    og.gain.setValueAtTime(.8,t); og.gain.exponentialRampToValueAtTime(.001,t+.7); o.connect(og); og.connect(sfxBus); o.start(t); o.stop(t+.8);
+    for (const f of [1170,2390,3610]){ const b=ctx.createBiquadFilter(); b.type="bandpass"; b.frequency.value=f; b.Q.value=40; const bg=ctx.createGain();
+      bg.gain.setValueAtTime(.6,t); bg.gain.exponentialRampToValueAtTime(.001,t+1.6); n.connect(b); b.connect(bg); bg.connect(sfxBus); }
+  }
+  function alien(long){
+    init(); const t=ctx.currentTime+.35, d= long?4.2:1.8;
+    const o=ctx.createOscillator(); o.type="sawtooth";
+    o.frequency.setValueAtTime(260,t); o.frequency.exponentialRampToValueAtTime(1500,t+d*.3); o.frequency.exponentialRampToValueAtTime(700,t+d*.55);
+    if (long){ o.frequency.exponentialRampToValueAtTime(1900,t+d*.75); }
+    o.frequency.exponentialRampToValueAtTime(180,t+d);
+    const vib=ctx.createOscillator(); vib.frequency.value=28; const vg=ctx.createGain(); vg.gain.value=90; vib.connect(vg); vg.connect(o.frequency);
+    const bp=ctx.createBiquadFilter(); bp.type="bandpass"; bp.frequency.value=1400; bp.Q.value=3;
+    const g=ctx.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.35,t+.15); g.gain.setValueAtTime(.35,t+d*.7); g.gain.linearRampToValueAtTime(0,t+d);
+    o.connect(bp); bp.connect(g); g.connect(sfxBus); o.start(t); vib.start(t); o.stop(t+d+.05); vib.stop(t+d+.05);
+    const n=ctx.createBufferSource(); n.buffer=noiseBuf(d); const hp=ctx.createBiquadFilter(); hp.type="highpass"; hp.frequency.value=3000; const ng=ctx.createGain();
+    ng.gain.setValueAtTime(0,t); ng.gain.linearRampToValueAtTime(.25,t+.2); ng.gain.linearRampToValueAtTime(0,t+d); n.connect(hp); hp.connect(ng); ng.connect(sfxBus); n.start(t);
+  }
+  function victory(){
+    init(); const t=ctx.currentTime;
+    [261.63,329.63,392,523.25].forEach((f,i)=>{ const o=ctx.createOscillator(); o.type="triangle"; o.frequency.value=f; const g=ctx.createGain();
+      g.gain.setValueAtTime(0,t+i*.18); g.gain.linearRampToValueAtTime(.15,t+i*.18+.05); g.gain.exponentialRampToValueAtTime(.001,t+3); o.connect(g); g.connect(sfxBus); o.start(t+i*.18); o.stop(t+3.1); });
+  }
+  return { init, startMusic, stopMusic, setVolume(v){curVol=v; setVolume(v);}, duck, beep, siren, slam, alien, victory, get vol(){return curVol;} };
+})();
+
+/* ---------- État de la partie ---------- */
+const S = { proto:null, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"pick", peek:false, busy:false };
+const $ = id => document.getElementById(id);
+const settings = { countdown:10, voice:true, wake:true };
+try { Object.assign(settings, JSON.parse(localStorage.getItem("nostromo-settings")||"{}")); } catch(e){}
+function saveSettings(){ try{ localStorage.setItem("nostromo-settings", JSON.stringify({...settings, vol:Audio.vol})); }catch(e){} }
+
+function isOpen(k){ return !ROOMS[k].toxic && !S.closed.has(k); }
+function reachable(){
+  if (S.phase==="place") return Object.keys(ROOMS).filter(isOpen);
+  if (S.phase!=="move" || !S.pos) return [];
+  return [...ADJ[S.pos]].filter(isOpen);
+}
+function render(){
+  const reach = new Set(S.busy?[]:reachable());
+  for (const k in roomEls){
+    const g=roomEls[k];
+    g.classList.toggle("toxic", !!ROOMS[k].toxic);
+    g.classList.toggle("closed", S.closed.has(k));
+    g.classList.toggle("reach", reach.has(k));
+    g.setAttribute("tabindex", reach.has(k)?"0":"-1");
+  }
+  for (const [id,deck] of [["pawn",1],["pawn2",2]]){
+    const p=$(id);
+    if (S.pos && ROOMS[S.pos].deck===deck){ const [x,y]=centerOf(S.pos); p.setAttribute("transform",`translate(${x},${(S.pos==="vie")?262:y+ (ROOMS[S.pos].label? (ROOMS[S.pos].label.length*6+8):16)})`); p.setAttribute("visibility","visible"); }
+    else p.setAttribute("visibility","hidden");
+  }
+  $("moves").textContent = S.moves;
+  $("step").textContent = `${S.step}/8`;
+  $("closeBtn").disabled = !(S.phase==="move") || S.busy;
+  $("undoBtn").disabled = !(S.phase==="move" && S.trail.length) || S.busy;
+  // fiche AIP
+  const ol=$("aip"); ol.innerHTML="";
+  $("protoName").textContent = S.proto ? `N°${S.proto.id}` : "";
+  if (S.proto) S.proto.steps.forEach((s,i)=>{
+    const li=document.createElement("li");
+    const hidden = !S.peek && i>=S.step;
+    li.innerHTML = `<i>${i+1}</i><span>${hidden ? "▒▒▒▒▒▒▒▒" : stepLabel(s)}</span>`;
+    if (i<S.step) li.className="done"; else if (i===S.step && S.peek) li.className="next";
+    ol.appendChild(li);
+  });
+  $("peekBtn").textContent = S.peek ? "Masquer" : "Afficher";
+  $("peekBtn").setAttribute("aria-pressed", String(S.peek));
+  const st=$("status");
+  if (S.phase==="pick") st.innerHTML="Choisissez un protocole.";
+  else if (S.phase==="place") st.innerHTML="Le Psychic Agent pose son pion : <b>touchez la salle de départ</b>.";
+  else if (S.phase==="move") st.innerHTML=`Agent en <b>${ROOMS[S.pos].name}</b>. Déplacez-le selon la carte W.Y.C., puis lancez la fermeture.`;
+  else if (S.phase==="dead") st.innerHTML="Agent éliminé.";
+  else if (S.phase==="win") st.innerHTML="Entraînement terminé. <b>Agent survivant.</b>";
+}
+
+function onRoom(k){
+  if (S.busy) return;
+  Audio.init();
+  if (S.phase==="place" && isOpen(k)){ S.pos=k; S.phase="move"; S.trail=[]; S.moves=0; Audio.beep(false); render(); return; }
+  if (S.phase==="move" && ADJ[S.pos].has(k) && isOpen(k)){ S.trail.push(S.pos); S.pos=k; S.moves++; Audio.beep(false); render(); }
+}
+$("undoBtn").onclick = () => { if(!S.trail.length) return; S.pos=S.trail.pop(); S.moves=Math.max(0,S.moves-1); render(); };
+
+/* ---------- Compte à rebours et fermeture ---------- */
+let wakeLock=null;
+async function keepAwake(){ try{ if(settings.wake && "wakeLock" in navigator && !wakeLock){ wakeLock=await navigator.wakeLock.request("screen"); wakeLock.addEventListener("release",()=>wakeLock=null); } }catch(e){} }
+function say(text){
+  if (!settings.voice || !("speechSynthesis" in window)) return;
+  try{ const u=new SpeechSynthesisUtterance(text); u.lang="fr-FR"; u.rate=.9; u.pitch=.7;
+    const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith("fr")); if(v) u.voice=v; speechSynthesis.cancel(); speechSynthesis.speak(u);}catch(e){}
+}
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+$("closeBtn").onclick = async () => {
+  if (S.phase!=="move" || S.busy) return;
+  Audio.init(); keepAwake();
+  S.busy=true; render();
+  const rooms = S.proto.steps[S.step], last = S.step===7;
+  const ov=$("count"); $("countRoom").textContent=""; ov.classList.add("show");
+  Audio.duck(true);
+  for (let n=settings.countdown; n>0; n--){
+    $("countNum").textContent=n;
+    Audio.beep(n<=3);
+    if (n===3) Audio.siren(3);
+    await sleep(1000);
+  }
+  $("countNum").textContent="0";
+  const label = stepLabel(rooms);
+  $("countRoom").textContent = label.toUpperCase();
+  rooms.forEach(k=>roomEls[k].classList.add("closing"));
+  say((rooms.length>1?"Fermeture des salles : ":"Fermeture de la salle : ")+label.replace("+","et"));
+  await sleep(settings.voice ? 2200 : 900);
+  ov.classList.remove("show");
+  rooms.forEach(k=>{ roomEls[k].classList.remove("closing"); S.closed.add(k); roomEls[k].classList.add("flash"); setTimeout(()=>roomEls[k].classList.remove("flash"),1000); });
+  Audio.slam(); Audio.alien(last);
+  $("main").classList.add("shake"); setTimeout(()=>$("main").classList.remove("shake"),600);
+  S.step++; S.moves=0; S.trail=[];
+  const dead = rooms.includes(S.pos);
+  await sleep(last ? 2600 : 1400);
+  S.busy=false;
+  Audio.duck(false);
+  if (dead){ S.phase="dead"; render(); showEnd(false, `Un xénomorphe a été introduit en ${ROOMS[S.pos].name}. L'agent s'y trouvait.`); }
+  else if (S.step===8){ S.phase="win"; render(); Audio.victory(); showEnd(true, `Seule la ${ROOMS[S.pos].name} reste ouverte. Le Psychic Agent a ressenti chaque présence alien.`); }
+  else render();
+};
+function showEnd(win, text){
+  const p=$("endPanel"); p.className="panel end "+(win?"win":"dead");
+  $("endTitle").textContent = win ? "AGENT SURVIVANT" : "AGENT ÉLIMINÉ";
+  $("endText").textContent = text;
+  setTimeout(()=>$("end").classList.add("show"), win?600:200);
+}
+
+/* ---------- Protocoles, réglages, musique ---------- */
+function buildProtos(){
+  const box=$("protos");
+  PROTOCOLS.forEach(p=>{
+    const b=document.createElement("button"); b.className="proto";
+    b.innerHTML=`<strong>PROTOCOLE ${p.id}</strong><small>Date : ${p.date}<br>Instructeur : ${p.instr}<br>Participants : ${p.part}<br>Conclusion : ${p.alive}</small>`;
+    b.onclick=()=>startGame(p); box.appendChild(b);
+  });
+}
+function startGame(p){
+  Audio.init(); keepAwake();
+  Object.assign(S,{proto:p, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"place", busy:false});
+  $("pick").classList.remove("show"); $("end").classList.remove("show");
+  render();
+}
+function newGame(){ Object.assign(S,{proto:null, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"pick", busy:false}); $("end").classList.remove("show"); $("pick").classList.add("show"); render(); }
+let resetArmed=null;
+$("resetBtn").onclick=()=>{
+  if(S.busy) return;
+  if (S.phase==="move" && !resetArmed){ $("resetBtn").textContent="Confirmer ?"; resetArmed=setTimeout(()=>{resetArmed=null; $("resetBtn").textContent="⟲ Nouvelle partie";},3000); return; }
+  clearTimeout(resetArmed); resetArmed=null; $("resetBtn").textContent="⟲ Nouvelle partie"; newGame();
+};
+$("againBtn").onclick=newGame;
+$("peekBtn").onclick=()=>{ S.peek=!S.peek; render(); };
+
+const musicBtn=$("musicBtn");
+function setMusic(on){ musicBtn.classList.toggle("on",on); musicBtn.setAttribute("aria-pressed",String(on)); if(on) Audio.startMusic(Audio.vol); else Audio.stopMusic(); }
+musicBtn.onclick=()=>setMusic(musicBtn.getAttribute("aria-pressed")!=="true");
+
+$("setBtn").onclick=()=>$("settings").classList.add("show");
+$("setClose").onclick=()=>$("settings").classList.remove("show");
+$("cdRange").value=settings.countdown; $("cdVal").textContent=settings.countdown+" s";
+$("cdRange").oninput=e=>{ settings.countdown=+e.target.value; $("cdVal").textContent=settings.countdown+" s"; saveSettings(); };
+$("voiceChk").checked=settings.voice; $("voiceChk").onchange=e=>{ settings.voice=e.target.checked; saveSettings(); };
+$("wakeChk").checked=settings.wake; $("wakeChk").onchange=e=>{ settings.wake=e.target.checked; saveSettings(); };
+if (typeof settings.vol==="number") Audio.setVolume(settings.vol);
+$("volRange").value=Math.round(Audio.vol*100);
+$("volRange").oninput=e=>{ Audio.setVolume(e.target.value/100); saveSettings(); };
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") keepAwake(); });
+
+drawDeck1($("deck1")); drawDeck2($("deck2")); buildProtos(); render();
+
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>

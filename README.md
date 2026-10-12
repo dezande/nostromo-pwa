@@ -1,0 +1,33 @@
+# Nostromo II – partie fusée (PWA)
+
+Application web installable qui accompagne l'effet *Nostromo II* (Fred Darevil, Marchand de Trucs) :
+plan du vaisseau-base sur deux ponts, les 4 protocoles A.I.P., compte à rebours avant chaque
+fermeture de salle, annonce vocale, musique d'ambiance et bruitages.
+
+La musique et les bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
+
+## Tester sur ton ordinateur
+
+Il faut un petit serveur local (le service worker ne marche pas en ouvrant le fichier directement).
+Depuis ce dossier, une de ces commandes suffit :
+
+```sh
+python3 -m http.server 8000
+# ou
+npx serve .
+```
+
+Puis ouvre <http://localhost:8000> dans Chrome, Edge ou Firefox. Clique sur « ♫ Musique » pour lancer l'ambiance.
+Dans Chrome ou Edge, l'icône « Installer » dans la barre d'adresse installe l'app sur l'ordinateur.
+
+## Installer sur un téléphone
+
+Héberge le dossier en HTTPS (GitHub Pages, Netlify…), ouvre l'adresse sur le téléphone, puis
+« Ajouter à l'écran d'accueil ». L'app fonctionne ensuite hors ligne.
+
+## Fichiers
+
+- `index.html` : toute l'application (plan, règles, audio). Les salles, liaisons et protocoles sont dans `ROOMS`, `LINKS` et `PROTOCOLS`.
+- `manifest.webmanifest`, `sw.js`, `icons/` : partie PWA (installation, hors ligne).
+
+Si tu modifies `index.html`, change `CACHE` dans `sw.js` (ex. `nostromo-v2`) pour que l'app installée se mette à jour.
