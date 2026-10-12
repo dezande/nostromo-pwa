@@ -20,7 +20,7 @@
   --room:#0f1a17; --room-hi:#16302a;
   --glow:#12221d; --wall:#2f4a41; --deco:#0b1210; --rstroke:#3f6a5c; --vent:#4f7f70;
   --veil:rgba(3,5,5,.88);
-  --scan:1; --flick:0; --noise:0; --curve:0; --bloom:0; --rgb:0; --amb:0; --jit:0; --hs:0;
+  --scan:1; --flick:0; --noise:0; --curve:0; --bloom:0; --rgb:0; --amb:0;
   color-scheme:dark;
   --font: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
@@ -133,9 +133,6 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
 #crt::after{opacity:calc(var(--noise) * .55);mix-blend-mode:screen;animation:noise .25s steps(3) infinite;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E")}
 @keyframes noise{0%{background-position:0 0}33%{background-position:-40px 60px}66%{background-position:70px -30px}100%{background-position:0 0}}
-.glitch header,.glitch main:not(.shake){animation:glitch 3.7s infinite}
-@keyframes glitch{0%,93%,100%{transform:none}94%{transform:translateX(calc(var(--jit) * 6px)) skewX(calc(var(--hs) * -6deg))}
-  96%{transform:translateX(calc(var(--jit) * -4px))}98%{transform:translateY(calc(var(--hs) * 4px))}}
 .retro-font{font-size-adjust:.52}
 .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:6px 0 14px}
 .theme{padding:12px 10px;text-align:left;font-size:12px;border-radius:6px;font-size-adjust:.52}
@@ -632,7 +629,7 @@ $("pickMenuBtn").onclick=showHome;
 $("homeSetBtn").onclick=()=>$("settings").classList.add("show");
 
 /* ---------- Styles d'écran (profils de cool-retro-term) ---------- */
-// [nom, police, couleur texte, fond, scintillement, synchro horizontale, gigue, bruit, courbure, halo, décalage RVB, trame (0 légère, 1 lignes, 4 aucune), lumière ambiante]
+// [nom, police, couleur texte, fond, scintillement, synchro horizontale et gigue (non utilisées : pas de déformation de l'image), bruit, courbure, halo, décalage RVB, trame (0 légère, 1 lignes, 4 aucune), lumière ambiante]
 const THEMES = [
   ["Nostromo (origine)", null, null, null],
   ["Default Amber",     "VT323",          "#ff8100","#000000", .1,.1,.2,.1,.2,.6,0,0,.3],
@@ -657,8 +654,8 @@ const fontStack = f => `"${f}", ui-monospace, Menlo, Consolas, monospace`;
 function applyTheme(i){
   const t = THEMES[i] || THEMES[0], st = document.documentElement.style, root = document.documentElement;
   ["--bg","--panel","--line","--ink","--dim","--green","--room","--room-hi","--glow","--wall","--deco","--rstroke","--vent","--veil","--font",
-   "--scan","--flick","--noise","--curve","--bloom","--rgb","--amb","--jit","--hs","color-scheme"].forEach(k=>st.removeProperty(k));
-  root.classList.remove("glitch","retro-font");
+   "--scan","--flick","--noise","--curve","--bloom","--rgb","--amb","color-scheme"].forEach(k=>st.removeProperty(k));
+  root.classList.remove("retro-font");
   let bg = "#07090a";
   if (t[1]){
     const [, font, fg, b, flick, hs, jit, noise, curve, bloom, rgb, raster, amb] = t; bg = b;
@@ -666,11 +663,10 @@ function applyTheme(i){
     const v = { "--bg":bg, "--green":fg, "--ink":mix(fg,pole,.55), "--dim":mix(fg,bg,.62), "--panel":mix(fg,bg,.06), "--line":mix(fg,bg,.16),
       "--room":mix(fg,bg,.08), "--room-hi":mix(fg,bg,.2), "--glow":mix(fg,bg,.12), "--wall":mix(fg,bg,.28), "--deco":mix(fg,bg,.04),
       "--rstroke":mix(fg,bg,.4), "--vent":mix(fg,bg,.5), "--veil":bg+"e0", "--font":fontStack(font),
-      "--scan":raster===1?1.6:raster===0?.8:0, "--flick":flick, "--noise":noise, "--curve":curve, "--bloom":bloom, "--rgb":rgb, "--amb":amb, "--jit":jit, "--hs":hs,
+      "--scan":raster===1?1.6:raster===0?.8:0, "--flick":flick, "--noise":noise, "--curve":curve, "--bloom":bloom, "--rgb":rgb, "--amb":amb,
       "color-scheme":isLight(bg)?"light":"dark" };
     for (const k in v) st.setProperty(k, v[k]);
     root.classList.add("retro-font");
-    if (jit || hs) root.classList.add("glitch");
   }
   $("themeColor").content = bg;
   document.querySelectorAll(".theme").forEach((b,j)=>b.setAttribute("aria-pressed", String(j===i)));
