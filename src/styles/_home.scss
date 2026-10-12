@@ -1,0 +1,30 @@
+@use "functions" as *;
+
+#home {
+  grid-template-columns: minmax(0, 1fr);
+  text-align: center;
+  background: radial-gradient(ellipse at 50% 40%, var(--glow) 0%, var(--bg) 70%);
+}
+
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 520px;
+
+  .rocket { width: 110px; height: auto; color: var(--accent); }
+  .corp { font-size: fs(11px); letter-spacing: .4em; color: var(--dim); }
+  h2 {
+    margin: 0;
+    white-space: nowrap;
+    font-size: clamp(28px, 9vw, 64px);
+    letter-spacing: .12em;
+    font-weight: normal;
+    text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .base { color: var(--accent); letter-spacing: .3em; font-size: fs(13px); }
+  p { margin: 0; color: var(--dim); font-size: fs(13px); line-height: 1.6; }
+  .big { max-width: 360px; }
+}

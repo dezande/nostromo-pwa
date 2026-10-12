@@ -1,0 +1,9 @@
+// Taille de texte qui suit le réglage « Taille du texte » (variable CSS --fs).
+@function fs($px) {
+  @return calc(#{$px} * var(--fs));
+}
+
+// Pour le plan : le texte grandit moins, pour rester dans les salles.
+@function fs-map($px) {
+  @return calc(#{$px} * min(var(--fs), 1.15));
+}

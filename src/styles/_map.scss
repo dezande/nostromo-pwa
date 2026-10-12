@@ -1,0 +1,90 @@
+@use "functions" as *;
+
+.decks {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 12px;
+  align-items: start;
+  @media (max-width: 520px) { grid-template-columns: 1fr; }
+}
+
+.deck {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 8px;
+
+  h2 {
+    margin: 2px 4px 6px;
+    font-size: fs(11px);
+    letter-spacing: .25em;
+    color: var(--dim);
+    font-weight: normal;
+  }
+}
+
+// Décor du vaisseau
+.wall { fill: none; stroke: var(--wall); stroke-width: 2; }
+.deco { fill: var(--deco); stroke: var(--wall); stroke-width: 2; }
+.hatch { stroke: var(--wall); stroke-width: 1.5; }
+.antenna { stroke: var(--room-stroke); stroke-width: 3; }
+.door { stroke: var(--amber); stroke-width: 2; }
+.vent { stroke: var(--vent); stroke-width: 1.5; stroke-dasharray: 3 3; fill: none; }
+.vent-arrow { fill: var(--vent); }
+.vent-label { fill: var(--dim); font-size: fs-map(7px); text-anchor: middle; }
+.lift { fill: var(--deco); stroke: var(--amber); stroke-width: 1.5; }
+.lift-icon { stroke: var(--amber); fill: none; stroke-width: 1.2; }
+.toxic-cross { stroke: #c22; stroke-width: 3; }
+
+// Salles
+@mixin room-shape { rect, polygon { @content; } }
+
+.room {
+  outline: none;
+  @include room-shape { fill: var(--room); stroke: var(--room-stroke); stroke-width: 2; transition: fill .25s; }
+
+  text {
+    fill: var(--ink);
+    font-size: fs-map(10px);
+    text-anchor: middle;
+    pointer-events: none;
+    letter-spacing: .05em;
+  }
+
+  &:focus-visible { @include room-shape { stroke: var(--amber); stroke-width: 3; } }
+
+  &.reach {
+    cursor: pointer;
+    @include room-shape { fill: var(--room-hi); stroke: var(--accent); }
+    text { fill: var(--accent); }
+  }
+  &.closed {
+    @include room-shape { fill: url(#sealed); stroke: var(--red); }
+    text { fill: #ffb3b3; }
+  }
+  &.toxic {
+    @include room-shape { fill: #1a0c0d; stroke: #6b2326; }
+    text { fill: #c55; }
+  }
+  &.closing { @include room-shape { animation: alarm .5s steps(2) infinite; } }
+  &.flash { @include room-shape { animation: slam .9s ease-out; } }
+}
+
+@keyframes alarm { 0% { fill: #3a0a0c; } 100% { fill: #120607; } }
+@keyframes slam { 0% { fill: #ff3b3b; } 100% { fill: #3a0a0c; } }
+
+// Pion du Psychic Agent
+.pawn { pointer-events: none; transition: transform .35s ease; }
+.pawn-core { fill: var(--accent); }
+.pawn-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ping 1.6s ease-out infinite;
+}
+@keyframes ping {
+  0% { opacity: .9; transform: scale(.6); }
+  100% { opacity: 0; transform: scale(2.2); }
+}

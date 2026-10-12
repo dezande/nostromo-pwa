@@ -1,0 +1,47 @@
+@use "functions" as *;
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { margin: 0; height: 100%; }
+
+body {
+  background: var(--bg);
+  background-image: radial-gradient(ellipse at 50% -10%, var(--glow) 0%, transparent 60%);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: fs(16px);
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+// Les polices rétro n'ont pas toutes la même taille : on les harmonise.
+.retro-font { font-size-adjust: .52; }
+
+svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  touch-action: manipulation;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+.blink {
+  font-size: fs(11px);
+  letter-spacing: .3em;
+  color: var(--accent);
+  animation: blink 1.2s steps(2) infinite;
+}
+
+@keyframes shake {
+  20% { transform: translate(-6px, 3px); }
+  40% { transform: translate(5px, -4px); }
+  60% { transform: translate(-4px, 2px); }
+  80% { transform: translate(3px, -2px); }
+}
+.shake { animation: shake .5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
