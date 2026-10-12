@@ -119,6 +119,7 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
   await expect(page.locator("#deck2")).toBeVisible();
   await expect(page.locator(".coordinator")).toHaveCount(0);
   await expect(page.locator("#status, #aip, #resetBtn")).toHaveCount(0);
+  await expect(page.locator(".action-bar #closeBtn")).toHaveText("VALIDER");
   await expect(page.locator(".action-bar #closeBtn")).toBeDisabled();
   await clickRoom(page, "cockpit");
   await expect(page.locator(".action-bar #closeBtn")).toBeEnabled();
