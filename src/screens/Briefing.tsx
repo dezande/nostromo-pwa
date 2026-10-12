@@ -2,6 +2,7 @@
 // Pas de choix de protocole dans l'app : le Coordinateur utilise ses fiches papier.
 import { Overlay } from "../components/Overlay";
 import { Icon } from "../components/Icon";
+import { StepAnimation } from "../components/StepAnimation";
 import { startGame } from "../state/game";
 import { briefing } from "../state/ui";
 
@@ -31,18 +32,22 @@ export function Briefing() {
           <p class="briefing-intro">Le protocole de cet entraînement a été établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture.</p>
           <ol class="briefing-steps">
             <li>
+              <StepAnimation name="start" />
               <h3>POSITION DE DÉPART</h3>
               <p>Choisissez la salle où vous commencez l'entraînement. Vous pouvez changer d'avis tant que vous n'avez pas validé.</p>
             </li>
             <li>
+              <StepAnimation name="moves" />
               <h3>DÉPLACEMENTS</h3>
               <p>Avant chaque fermeture, le Coordinateur tire une carte W.Y.C. Elle indique le nombre de déplacements imposés. Un déplacement vous fait passer dans une salle voisine, par une porte, un ascenseur ou un passage de ventilation. Les ascenseurs et les conduits d'aération sont des lieux de passage : vous ne pouvez pas vous y arrêter.</p>
             </li>
             <li>
+              <StepAnimation name="close" />
               <h3>FERMETURE</h3>
               <p>Le Coordinateur annonce la salle fermée. Un xénomorphe y est introduit. Tout agent présent dans cette salle est éliminé.</p>
             </li>
             <li>
+              <StepAnimation name="end" />
               <h3>FIN DE L'ENTRAÎNEMENT</h3>
               <p>Huit fermetures se succèdent. Seuls les agents qui se trouvent dans la dernière salle restée ouverte survivent.</p>
             </li>

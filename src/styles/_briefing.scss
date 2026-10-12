@@ -17,6 +17,10 @@
     margin: 0 0 14px;
     padding-left: 1.6em;
     li::marker { color: var(--amber); font-weight: bold; }
+    // Dessin animé à droite du texte de chaque étape
+    li::after { content: ""; display: block; clear: both; } // garde le numéro de l'étape
+    .step-anim { float: right; width: 120px; height: 80px; margin: 0 0 8px 14px; }
+    @media (max-width: 520px) { .step-anim { width: 90px; height: 60px; } }
     h3 { margin: 0 0 4px; font-size: fs(13px); letter-spacing: .2em; color: var(--amber); font-weight: normal; }
     p { margin: 0 0 12px; }
   }
@@ -26,3 +30,66 @@
   .briefing-actions { margin-top: 40px; }
   .briefing-actions .big { flex: 2; }
 }
+
+// ---------- Dessins animés des étapes ----------
+.step-anim {
+  overflow: visible;
+  .sa-room { fill: var(--room); stroke: var(--room-stroke); stroke-width: 1.5; }
+  .sa-pawn-core { fill: var(--accent); }
+  .sa-pawn-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+}
+
+// 1. Choix de la salle de départ
+.step-start {
+  .sa-pawn { animation: sa-choose 4s ease-in-out infinite; }
+  .sa-check { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; opacity: 0; animation: sa-check 4s infinite; }
+  .sa-room:nth-of-type(2) { animation: sa-pick 4s infinite; }
+}
+@keyframes sa-choose {
+  0%, 15% { transform: translate(21px, 40px); }
+  30%, 45% { transform: translate(99px, 40px); }
+  60%, 100% { transform: translate(60px, 40px); }
+}
+@keyframes sa-check { 0%, 70% { opacity: 0; } 78%, 100% { opacity: 1; } }
+@keyframes sa-pick { 0%, 65% { fill: var(--room); } 72%, 100% { fill: var(--room-hi); stroke: var(--accent); } }
+
+// 2. Carte puis déplacements
+.step-moves {
+  .sa-card {
+    transform-box: fill-box; transform-origin: center; animation: sa-flip 5s infinite;
+    rect { fill: var(--panel); stroke: var(--amber); stroke-width: 1.5; }
+    text { fill: var(--amber); font-size: 20px; text-anchor: middle; font-weight: bold; }
+  }
+  .sa-trail { stroke: var(--amber); stroke-width: 2; stroke-dasharray: 3 3; stroke-dashoffset: 0; animation: sa-trail 5s linear infinite; }
+  .sa-pawn { animation: sa-walk 5s ease-in-out infinite; }
+}
+@keyframes sa-flip { 0% { transform: scaleX(0); } 12%, 100% { transform: scaleX(1); } }
+@keyframes sa-walk {
+  0%, 25% { transform: translate(46px, 40px); }
+  40% { transform: translate(68px, 40px); }
+  55% { transform: translate(90px, 40px); }
+  70%, 100% { transform: translate(109px, 40px); }
+}
+@keyframes sa-trail { 0%, 25% { opacity: 0; } 30%, 100% { opacity: 1; } }
+
+// 3. Fermeture : porte qui claque, salle rouge, alien
+.step-close {
+  .sa-door { fill: var(--amber); transform-box: fill-box; transform-origin: top; animation: sa-door 4s ease-in infinite; }
+  .sa-closing { animation: sa-red 4s infinite; }
+  .sa-alien { fill: #120607; stroke: var(--red); stroke-width: 1.5; opacity: 0; animation: sa-alien 4s infinite; }
+  .sa-warn { fill: var(--red); font-size: 14px; text-anchor: middle; font-weight: bold; opacity: 0; animation: sa-alien 4s infinite; }
+}
+@keyframes sa-door { 0%, 22% { transform: scaleY(0); } 32%, 100% { transform: scaleY(1); } }
+@keyframes sa-red { 0%, 33% { fill: var(--room); stroke: var(--room-stroke); } 36% { fill: #ff3b3b; } 45%, 100% { fill: #3a0a0c; stroke: var(--red); } }
+@keyframes sa-alien { 0%, 45% { opacity: 0; } 60%, 90% { opacity: 1; } 100% { opacity: 0; } }
+
+// 4. Fin : les salles tombent une à une, une seule reste ouverte
+.step-end {
+  .sa-shut .sa-room { animation: sa-shut 5s infinite; animation-delay: inherit; }
+  .sa-x { fill: none; stroke: var(--red); stroke-width: 2; opacity: 0; animation: sa-x 5s infinite; }
+  .sa-survivor { stroke: var(--accent); fill: var(--room-hi); }
+  .sa-glow { animation: sa-glow 1.2s ease-in-out infinite alternate; }
+}
+@keyframes sa-shut { 0%, 10% { fill: var(--room); } 16%, 90% { fill: #3a0a0c; stroke: var(--red); } 100% { fill: var(--room); } }
+@keyframes sa-x { 0%, 10% { opacity: 0; } 16%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes sa-glow { from { opacity: .5; } to { opacity: 1; } }
