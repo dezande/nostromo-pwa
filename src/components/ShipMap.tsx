@@ -1,5 +1,5 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
-import { ROOM_IDS, room, roomLines, pathSegments, pawnPosition, type RoomId } from "../data/ship";
+import { ROOM_IDS, VENTS, room, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
 import { reachable, closed, closing, flashing, path, phase, position, touchRoom } from "../state/game";
 import { ProtocolWindow } from "./ProtocolWindow";
 
@@ -47,7 +47,7 @@ function Deck1() {
           {range(150, 370, 26).map(y => <line key={y} x1={x + 4} y1={y} x2={x + 32} y2={y + 20} class="hatch" />)}
         </g>
       ))}
-      {[[48, 160], [325, 160], [48, 335], [325, 335]].map(([x, y]) => (
+      {[[48, 160], [325, 160]].map(([x, y]) => (
         <rect key={`${x}-${y}`} x={x} y={y} width="27" height="14" class="deco" />
       ))}
 
@@ -76,16 +76,8 @@ function Deck1() {
 
       <Rooms deck={1} />
 
-      {/* Conduits d'aération */}
-      {[64, 336].map(x => (
-        <g key={x}>
-          <line x1={x} y1="336" x2={x} y2="396" class="vent" />
-          <polygon points={`${x - 4},342 ${x},334 ${x + 4},342`} class="vent-arrow" />
-          <polygon points={`${x - 4},390 ${x},398 ${x + 4},390`} class="vent-arrow" />
-        </g>
-      ))}
-      <text x="30" y="505" class="vent-label">VENTILATION</text>
-      <text x="370" y="505" class="vent-label">VENTILATION</text>
+      {/* Conduits d'aération : couloirs entre dortoirs et entrepôts */}
+      {VENTS.map(v => <Vent key={v.rooms[0]} vent={v} />)}
 
       {/* Ascenseurs */}
       <Lift x={186} y={290} w={28} h={26} />
@@ -96,6 +88,8 @@ function Deck1() {
         [115, 250, "h"], [285, 250, "h"],
         [155, 290, "v"], [245, 290, "v"], [200, 330, "h"],
         [155, 412, "v"], [245, 412, "v"],
+        // ouvertures des conduits d'aération
+        [75, 318, "v"], [65, 410, "h"], [325, 318, "v"], [335, 410, "h"],
       ]} />
       <PathTrace deck={1} />
       <Pawn deck={1} />
@@ -189,6 +183,23 @@ function ToxicCross({ rect: [x, y, w, h] }: { rect: [number, number, number, num
       <line x1={x + 18} y1={y + 18} x2={x + w - 18} y2={y + h - 8} class="toxic-cross" />
       <line x1={x + w - 18} y1={y + 18} x2={x + 18} y2={y + h - 8} class="toxic-cross" />
     </>
+  );
+}
+
+/** Conduit d'aération : couloir étroit, grille, étiquette ; mis en avant quand on peut l'emprunter. */
+function Vent({ vent }: { vent: VentCorridor }) {
+  const [x, y, w, h] = vent.rect;
+  const [a, b] = vent.rooms;
+  const here = position.value;
+  const usable = phase.value === "move" && !!here &&
+    ((here === a && reachable.value.has(b)) || (here === b && reachable.value.has(a)));
+  const cx = x + w / 2, cy = y + h / 2;
+  return (
+    <g class={`vent-corridor ${usable ? "open" : ""}`} data-vent={`${a}-${b}`}>
+      <rect x={x} y={y} width={w} height={h} rx="3" />
+      {range(y + 8, y + h - 4, 8).map(gy => <line key={gy} x1={x + 3} y1={gy} x2={x + w - 3} y2={gy} class="grate" />)}
+      <text x={cx} y={cy} transform={`rotate(-90 ${cx} ${cy})`} dy="2.5">VENTILATION</text>
+    </g>
   );
 }
 

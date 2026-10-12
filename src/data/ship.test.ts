@@ -1,4 +1,4 @@
-import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, pathSegments, pawnPosition, room, roomLines, stepLabel } from "./ship";
+import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, VENTS, pathSegments, pawnPosition, room, roomLines, stepLabel, ventBetween } from "./ship";
 
 describe("plan du vaisseau", () => {
   test("16 salles, dont 2 toxiques", () => {
@@ -61,6 +61,25 @@ describe("plan du vaisseau", () => {
       { deck: 1, from: pawnPosition("vie"), to: LIFT_POSITION[1] },
       { deck: 2, from: LIFT_POSITION[2], to: pawnPosition("atelier"), step: 1 },
     ]);
+  });
+
+  test("les conduits d'aération relient dortoirs et entrepôts, et chaque conduit correspond à une liaison", () => {
+    expect(ADJ.dortoir1.has("entrepot1")).toBe(true);
+    expect(ADJ.dortoir2.has("entrepot2")).toBe(true);
+    for (const v of VENTS) expect(ADJ[v.rooms[0]].has(v.rooms[1])).toBe(true);
+    expect(ventBetween("entrepot1", "dortoir1")).toBe(VENTS[0]);
+    expect(ventBetween("cuisine", "entrepot1")).toBeUndefined();
+  });
+
+  test("tracé du chemin : par un conduit d'aération, le trait passe dans le couloir", () => {
+    const [top, bottom] = VENTS[0].ends;
+    expect(pathSegments(["dortoir1", "entrepot1"])).toEqual([
+      { deck: 1, from: pawnPosition("dortoir1"), to: top },
+      { deck: 1, from: top, to: bottom, step: 1 },
+      { deck: 1, from: bottom, to: pawnPosition("entrepot1") },
+    ]);
+    // Dans l'autre sens, le couloir est parcouru à l'envers.
+    expect(pathSegments(["entrepot1", "dortoir1"])[1]).toEqual({ deck: 1, from: bottom, to: top, step: 1 });
   });
 
   test("le pion se place sous le nom de la salle", () => {

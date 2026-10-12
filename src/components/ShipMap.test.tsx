@@ -58,6 +58,20 @@ test("trace le chemin du pion, avec l'ascenseur entre les ponts", () => {
   expect(root.querySelectorAll("#deck2 .path-line")).toHaveLength(0);
 });
 
+test("les conduits d'aération sont dessinés et mis en avant quand on peut les emprunter", () => {
+  const left = root.querySelector('[data-vent="dortoir1-entrepot1"]')!;
+  expect(left).not.toBeNull();
+  expect(root.querySelector('[data-vent="dortoir2-entrepot2"]')).not.toBeNull();
+  expect(left.textContent).toBe("VENTILATION");
+  act(() => { game.touchRoom("cockpit"); game.confirmStart(); });
+  expect(left.classList.contains("open")).toBe(false);
+  act(() => { game.touchRoom("reunion"); game.touchRoom("dortoir1"); });
+  expect(left.classList.contains("open")).toBe(true);
+  act(() => { game.touchRoom("entrepot1"); });
+  expect(left.classList.contains("open")).toBe(true); // on peut revenir par le même conduit
+  expect(root.querySelectorAll("#deck1 .path-line")).toHaveLength(5); // 2 pas + 3 traits par le conduit
+});
+
 test("les salles fermées sont hachurées", () => {
   act(() => { game.closed.value = new Set(["atelier"]); });
   expect(roomEl("atelier").classList.contains("closed")).toBe(true);
