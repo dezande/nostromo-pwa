@@ -1,0 +1,65 @@
+// Effets d'écran cathodique, d'après les profils de cool-retro-term.
+// Chaque effet est piloté par une variable CSS entre 0 et 1 (voir src/data/themes.js).
+
+// Lignes horizontales
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: var(--scan);
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, .5) 0 1px,
+    color-mix(in srgb, var(--accent) 7%, transparent) 1px 2px,
+    transparent 2px 3px);
+}
+.no-scan body::after { display: none; }
+
+// Halo autour du texte (bloom) et décalage rouge / bleu (rgb)
+body {
+  text-shadow:
+    0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--accent) 55%, transparent),
+    calc(var(--rgb) * 2px) 0 rgba(255, 0, 60, calc(var(--rgb) * 4)),
+    calc(var(--rgb) * -2px) 0 rgba(0, 140, 255, calc(var(--rgb) * 4));
+}
+
+#crt, #crt::before, #crt::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+// Lumière ambiante + bords assombris (courbure)
+#crt {
+  z-index: 51;
+  background:
+    radial-gradient(ellipse at 50% 45%, rgba(255, 255, 255, calc(var(--ambient) * .07)), transparent 65%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, calc(var(--curve) * 1.1)) 100%);
+}
+
+// Scintillement
+#crt::before {
+  background: #000;
+  opacity: 0;
+  animation: flicker .12s steps(2) infinite;
+}
+@keyframes flicker {
+  0% { opacity: 0; }
+  100% { opacity: calc(var(--flicker) * .5); }
+}
+
+// Bruit statique
+#crt::after {
+  opacity: calc(var(--noise) * .55);
+  mix-blend-mode: screen;
+  animation: noise .25s steps(3) infinite;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.6'/%3E%3C/svg%3E");
+}
+@keyframes noise {
+  0% { background-position: 0 0; }
+  33% { background-position: -40px 60px; }
+  66% { background-position: 70px -30px; }
+  100% { background-position: 0 0; }
+}

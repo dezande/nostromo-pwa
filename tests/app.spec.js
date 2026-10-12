@@ -1,8 +1,12 @@
 // @ts-check
-const { test, expect } = require("@playwright/test");
+import { test, expect } from "@playwright/test";
+import { ROOMS, ADJ } from "../src/data/ship.js";
+import { PROTOCOLS } from "../src/data/protocols.js";
+import { THEMES, DEFAULT_BG } from "../src/data/themes.js";
 
 // Partie rapide : compte à rebours minimal et pas d'annonce vocale.
-const FAST = { countdown: 3, voice: false, wake: false, transitions: false };
+const FAST = { countdown: 3, voice: false, wakeLock: false, transitions: false };
+const audioState = page => page.evaluate(() => ({ playing: window.nostromo.audio.playing, state: window.nostromo.audio.state }));
 
 async function open(page, settings = FAST) {
   const errors = [];
@@ -53,10 +57,8 @@ for (const id of [0, 1, 2, 3]) {
   test(`protocole n°${id + 1} : l'agent resté dans la dernière salle survit`, async ({ page }) => {
     const errors = await open(page);
     // Salle jamais fermée par ce protocole (hors salles toxiques).
-    const survivor = await page.evaluate(i => {
-      const closed = new Set(PROTOCOLS[i].steps.flat());
-      return Object.keys(ROOMS).find(k => !ROOMS[k].toxic && !closed.has(k));
-    }, id);
+    const closedRooms = new Set(PROTOCOLS[id].steps.flat());
+    const survivor = Object.keys(ROOMS).find(k => !ROOMS[k].toxic && !closedRooms.has(k));
     expect(survivor).toBeTruthy();
 
     await startSimulation(page);
@@ -77,7 +79,7 @@ for (const id of [0, 1, 2, 3]) {
 
 test("l'agent dans une salle qui ferme est éliminé", async ({ page }) => {
   const errors = await open(page);
-  const first = await page.evaluate(() => PROTOCOLS[0].steps[0][0]);
+  const first = PROTOCOLS[0].steps[0][0];
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
   await clickRoom(page, first);
@@ -96,7 +98,7 @@ test("déplacement vers une salle voisine puis annulation", async ({ page }) => 
   await expect(page.locator("#moves")).toHaveText("1");
   await expect(page.locator("#status")).toContainText("Salle de vie");
   // Une salle non reliée ne compte pas comme déplacement.
-  const far = await page.evaluate(() => Object.keys(ROOMS).find(k => k !== "vie" && !ADJ.vie.has(k)));
+  const far = Object.keys(ROOMS).find(k => k !== "vie" && !ADJ.vie.has(k));
   await clickRoom(page, far);
   await expect(page.locator("#moves")).toHaveText("1");
   await page.locator("#undoBtn").click();
@@ -125,11 +127,8 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
   for (let i = 0; i < count; i++) {
     await themes.nth(i).click();
     await expect(themes.nth(i)).toHaveAttribute("aria-pressed", "true");
-    const [bg, expected] = await page.evaluate(i => [
-      getComputedStyle(document.documentElement).getPropertyValue("--bg").trim(),
-      THEMES[i][3] || "#07090a",
-    ], i);
-    expect(bg).toBe(expected);
+    const bg = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim());
+    expect(bg).toBe(THEMES[i].bg || DEFAULT_BG);
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")).theme);
     expect(saved).toBe(i);
   }
@@ -139,26 +138,26 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
 test("la musique démarre à l'ouverture et se règle dans les réglages", async ({ page }) => {
   const errors = await open(page);
   await expect(page.locator("#home")).toHaveClass(/show/);
-  expect(await page.evaluate(() => Audio.playing)).toBe(true);
-  await expect.poll(() => page.evaluate(() => Audio.state)).toBe("running");
+  expect((await audioState(page)).playing).toBe(true);
+  await expect.poll(async () => (await audioState(page)).state).toBe("running");
   await expect(page.locator("#musicBtn")).toHaveCount(0);
 
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#musicChk")).toBeChecked();
   await page.locator("#musicChk").uncheck();
-  expect(await page.evaluate(() => Audio.playing)).toBe(false);
+  expect((await audioState(page)).playing).toBe(false);
   await page.locator("#sfxRange").fill("40");
   await expect(page.locator("#sfxVal")).toHaveText("40 %");
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")));
   expect(saved.music).toBe(false);
-  expect(saved.sfx).toBe(0.4);
+  expect(saved.sfxVolume).toBe(0.4);
   expect(errors).toEqual([]);
 });
 
 test("musique coupée : pas d'écran « touchez pour commencer »", async ({ page }) => {
   await open(page, { ...FAST, music: false });
   await expect(page.locator("#press")).not.toHaveClass(/show/);
-  expect(await page.evaluate(() => Audio.playing)).toBe(false);
+  expect((await audioState(page)).playing).toBe(false);
 });
 
 test("faux écrans de transition au démarrage et au choix du protocole", async ({ page }) => {
@@ -183,11 +182,8 @@ test("faux écrans de transition au démarrage et au choix du protocole", async 
 
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
-  const v = await page.evaluate(() => self.APP_VERSION);
-  expect(Number.isInteger(v.build)).toBe(true);
-  expect(v.date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   await page.locator("#homeSetBtn").click();
-  await expect(page.locator("#versionInfo")).toContainText(`BUILD ${v.build} DU `);
+  await expect(page.locator("#versionInfo")).toHaveText(/v\d+\.\d+\.\d+ · BUILD \d+ \([0-9a-f]+\) DU \d{2}\/\d{2}\/\d{4}/);
 });
 
 test("le menu met la partie en pause et permet de la reprendre", async ({ page }) => {
@@ -216,7 +212,7 @@ test("le menu met la partie en pause et permet de la reprendre", async ({ page }
 
 test("menu depuis l'écran de fin, sans bouton Reprendre", async ({ page }) => {
   await open(page);
-  const first = await page.evaluate(() => PROTOCOLS[0].steps[0][0]);
+  const first = PROTOCOLS[0].steps[0][0];
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
   await clickRoom(page, first);

@@ -1,0 +1,40 @@
+@use "functions" as *;
+
+.set-title { margin-top: 12px; font-size: fs(11px); letter-spacing: .25em; color: var(--dim); }
+
+label.set {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: fs(13px);
+  input[type="range"] { flex: 1; accent-color: var(--red); }
+}
+
+// Choix du style d'écran : chaque bouton s'affiche dans ses propres couleurs
+.themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+.theme {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: fs(12px);
+  font-size-adjust: .52;
+  border-radius: 6px;
+  &[aria-pressed="true"] { outline: 2px solid var(--amber); outline-offset: 2px; }
+}
+
+.panel .note { margin-top: 14px; }
+
+.version {
+  margin: 0 0 12px;
+  font-size: fs(11px);
+  line-height: 1.6;
+  letter-spacing: .1em;
+  color: var(--dim);
+}
