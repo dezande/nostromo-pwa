@@ -105,12 +105,25 @@ label.set{display:flex;justify-content:space-between;align-items:center;gap:10px
 label.set input[type=range]{flex:1;accent-color:var(--red)}
 .shake{animation:shake .5s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#home{z-index:45;grid-template-columns:minmax(0,1fr);background:radial-gradient(ellipse at 50% 40%, #12221d 0%, var(--bg) 70%);text-align:center}
+#settings{z-index:46}
+.home{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:520px;width:100%}
+.home svg{width:110px;height:auto}
+.home .corp{font-size:11px;letter-spacing:.4em;color:var(--dim)}
+.home h2{margin:0;white-space:nowrap;font-size:clamp(28px,9vw,64px);letter-spacing:.12em;font-weight:normal;text-shadow:0 0 18px rgba(92,255,157,.35)}
+.home .base{color:var(--green);letter-spacing:.3em;font-size:13px}
+.home p{color:var(--dim);font-size:13px;line-height:1.6;margin:0}
+.home .big{max-width:360px}
+.link{border:none;color:var(--dim);text-decoration:underline;padding:4px 8px}
+.blink{font-size:11px;letter-spacing:.3em;color:var(--green);animation:blink 1.2s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
 @keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-2px)}}
 </style>
 </head>
 <body>
 <header>
   <h1>NOSTROMO II <small>· TRAINING BASE</small></h1>
+  <button class="icon-btn" id="menuBtn">☰ Menu</button>
   <button class="icon-btn" id="musicBtn" aria-pressed="false">♫ Musique</button>
   <button class="icon-btn" id="setBtn" aria-label="Réglages">⚙</button>
 </header>
@@ -149,12 +162,38 @@ label.set input[type=range]{flex:1;accent-color:var(--red)}
   </aside>
 </main>
 
+<!-- menu d'accueil -->
+<div class="overlay show" id="home">
+  <div class="home">
+    <svg viewBox="0 0 120 160" fill="none" stroke="#5cff9d" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+      <line x1="60" y1="4" x2="60" y2="18"/>
+      <path d="M48 50 L60 18 L72 50 Z"/>
+      <rect x="48" y="50" width="24" height="80"/>
+      <rect x="32" y="66" width="16" height="56"/>
+      <rect x="72" y="66" width="16" height="56"/>
+      <path d="M20 84 L32 76 L32 122 L20 122 Z"/>
+      <path d="M100 84 L88 76 L88 122 L100 122 Z"/>
+      <path d="M50 130 L46 146 L58 146 L56 130"/>
+      <path d="M70 130 L74 146 L62 146 L64 130"/>
+      <rect x="55" y="118" width="10" height="8" fill="#ff3b3b" stroke="#ff3b3b"/>
+    </svg>
+    <div class="corp">WEYLAND-YUTANI CORP</div>
+    <h2>NOSTROMO&nbsp;II</h2>
+    <div class="base">TRAINING BASE · LUNE</div>
+    <p>Simulation d'intrusion alien pour Psychic Agents. Huit salles vont être fermées une à une. Seuls les agents présents dans la dernière salle survivent.</p>
+    <button class="big" id="startBtn">▶ DÉMARRER LA SIMULATION</button>
+    <button class="link" id="homeSetBtn">Réglages</button>
+    <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
+  </div>
+</div>
+
 <!-- choix du protocole -->
-<div class="overlay show" id="pick">
+<div class="overlay" id="pick">
   <div class="panel">
     <h2>ALIEN INTRUSION PROTOCOL</h2>
     <p>Le Psychic Agent choisit le protocole. Il établit l'ordre de fermeture des salles du vaisseau-base. Seuls les agents présents dans la dernière salle survivent.</p>
     <div class="protos" id="protos"></div>
+    <div class="row" style="margin-top:14px"><button id="pickMenuBtn">← Menu</button></div>
   </div>
 </div>
 
@@ -554,6 +593,16 @@ $("peekBtn").onclick=()=>{ S.peek=!S.peek; render(); };
 const musicBtn=$("musicBtn");
 function setMusic(on){ musicBtn.classList.toggle("on",on); musicBtn.setAttribute("aria-pressed",String(on)); if(on) Audio.startMusic(Audio.vol); else Audio.stopMusic(); }
 musicBtn.onclick=()=>setMusic(musicBtn.getAttribute("aria-pressed")!=="true");
+
+$("startBtn").onclick=()=>{
+  Audio.init(); keepAwake();
+  if (musicBtn.getAttribute("aria-pressed")!=="true") setMusic(true);
+  $("home").classList.remove("show"); newGame();
+};
+function showHome(){ if(S.busy) return; $("home").classList.add("show"); }
+$("menuBtn").onclick=showHome;
+$("pickMenuBtn").onclick=showHome;
+$("homeSetBtn").onclick=()=>$("settings").classList.add("show");
 
 $("setBtn").onclick=()=>$("settings").classList.add("show");
 $("setClose").onclick=()=>$("settings").classList.remove("show");
