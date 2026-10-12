@@ -19,14 +19,11 @@ header {
   small { color: var(--dim); letter-spacing: .1em; font-weight: normal; }
 }
 
+// Écran de jeu : les deux ponts sur toute la largeur, au-dessus de la barre d'actions
 main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 16px;
-  padding: 16px;
-  max-width: 1200px;
+  padding: 16px 16px 96px;
+  max-width: 1400px;
   margin: 0 auto;
-  @media (max-width: 860px) { grid-template-columns: 1fr; }
 }
 
 .card {

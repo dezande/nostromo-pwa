@@ -21,6 +21,11 @@
     color: var(--dim);
     font-weight: normal;
   }
+
+  // Sur grand écran, les deux ponts tiennent en entier dans la hauteur de la fenêtre.
+  @media (min-width: 521px) {
+    svg { max-height: calc(100dvh - 200px); }
+  }
 }
 
 // Décor du vaisseau

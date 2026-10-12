@@ -28,6 +28,9 @@ async function startSimulation(page: Page) {
   await expect(page.locator("#pick")).toHaveClass(/show/);
 }
 
+/** Salles mises en avant (accessibles) sur le plan. */
+const reachableRooms = (page: Page) => page.locator(".room.reach").evaluateAll(els => els.map(e => e.getAttribute("data-room")).sort());
+
 const clickRoom = (page: Page, k: RoomId) => page.locator(`[data-room="${k}"]`).dispatchEvent("click");
 
 async function closeRoom(page: Page) {
@@ -65,11 +68,11 @@ for (const id of [0, 1, 2, 3]) {
     await startSimulation(page);
     await page.locator("#protos .proto").nth(id).click();
     await clickRoom(page, survivor);
-    await expect(page.locator("#status")).toContainText("Agent en");
+    await expect(page.locator("#pawn, #pawn2").locator("visible=true")).toHaveCount(1);
 
     for (let step = 1; step <= 8; step++) {
       await closeRoom(page);
-      await expect(page.locator("#step")).toHaveText(`${step}/8`);
+      await expect(page.locator(".room.closed")).toHaveCount(PROTOCOLS[id].steps.slice(0, step).flat().length);
     }
     await page.clock.runFor(2_000);
     await expect(page.locator("#end")).toHaveClass(/show/);
@@ -95,16 +98,30 @@ test("déplacement vers une salle voisine puis annulation", async ({ page }) => 
   await startSimulation(page);
   await page.locator("#protos .proto").first().click();
   await clickRoom(page, "cockpit");
+  expect(await reachableRooms(page)).toEqual([...ADJ.cockpit].sort());
+  await expect(page.locator("#undoBtn")).toBeDisabled();
   await clickRoom(page, "vie");
-  await expect(page.locator("#moves")).toHaveText("1");
-  await expect(page.locator("#status")).toContainText("Salle de vie");
-  // Une salle non reliée ne compte pas comme déplacement.
+  expect(await reachableRooms(page)).toEqual([...ADJ.vie].sort());
+  // Une salle non reliée : le pion ne bouge pas.
   const far = ROOM_IDS.find(k => k !== "vie" && !ADJ.vie.has(k))!;
   await clickRoom(page, far);
-  await expect(page.locator("#moves")).toHaveText("1");
+  expect(await reachableRooms(page)).toEqual([...ADJ.vie].sort());
   await page.locator("#undoBtn").click();
-  await expect(page.locator("#status")).toContainText("Cockpit");
-  await expect(page.locator("#moves")).toHaveText("0");
+  expect(await reachableRooms(page)).toEqual([...ADJ.cockpit].sort());
+  await expect(page.locator("#undoBtn")).toBeDisabled();
+});
+
+test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau coordinateur", async ({ page }) => {
+  await open(page);
+  await startSimulation(page);
+  await page.locator("#protos .proto").first().click();
+  await expect(page.locator("#deck1")).toBeVisible();
+  await expect(page.locator("#deck2")).toBeVisible();
+  await expect(page.locator(".coordinator")).toHaveCount(0);
+  await expect(page.locator("#status, #aip, #resetBtn")).toHaveCount(0);
+  await expect(page.locator(".action-bar #closeBtn")).toBeDisabled();
+  await clickRoom(page, "cockpit");
+  await expect(page.locator(".action-bar #closeBtn")).toBeEnabled();
 });
 
 test("le bouton Menu est sans effet pendant le compte à rebours", async ({ page }) => {
@@ -177,7 +194,7 @@ test("faux écrans de transition au démarrage et au choix du protocole", async 
   // Toucher l'écran passe la transition.
   await page.locator("#trans").click();
   await expect(page.locator("#trans")).not.toHaveClass(/show/);
-  await expect(page.locator("#status")).toContainText("pose son pion");
+  await expect(page.locator(".room.reach")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
   await expect(page.locator("#transLines")).toContainText("PROTOCOLE N°2");
   expect(errors).toEqual([]);
 });
@@ -199,7 +216,8 @@ test("le menu met la partie en pause et permet de la reprendre", async ({ page }
   await expect(page.locator("#startLbl")).toHaveText("NOUVELLE SIMULATION");
   await page.locator("#resumeBtn").click();
   await expect(page.locator("#home")).not.toHaveClass(/show/);
-  await expect(page.locator("#status")).toContainText("Cockpit");
+  await expect(page.locator("#pawn")).toHaveAttribute("visibility", "visible");
+  expect(await reachableRooms(page)).toEqual([...ADJ.cockpit].sort());
 
   // Nouvelle simulation pendant une partie : il faut confirmer.
   await page.locator("#menuBtn").click();
