@@ -113,6 +113,18 @@ label.set input[type=range]{flex:1;accent-color:var(--red)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 #home{z-index:45;grid-template-columns:minmax(0,1fr);background:radial-gradient(ellipse at 50% 40%, var(--glow) 0%, var(--bg) 70%);text-align:center}
 #settings{z-index:46}
+#trans{z-index:48;background:var(--bg);place-items:center;cursor:pointer}
+.term{width:min(640px,100%);font-size:calc(13px * var(--fs));line-height:1.7;color:var(--ink)}
+.term .hd{color:var(--green);letter-spacing:.2em;margin-bottom:10px}
+.term .ln{display:flex;gap:6px;align-items:baseline}
+.term .ln .dots{flex:1;min-width:12px;border-bottom:2px dotted var(--dim);transform:translateY(-4px)}
+.term .ln .res{white-space:nowrap}
+.term .ok{color:var(--green)}
+.term .warn{color:var(--amber)}
+.term .cur::after{content:"█";animation:blink .8s steps(2) infinite;margin-left:2px}
+.term .bar{height:10px;border:1px solid var(--line);margin-top:14px}
+.term .bar i{display:block;height:100%;width:0;background:var(--green);transition:width .15s linear}
+.term .skip{margin-top:14px;font-size:calc(10px * var(--fs));color:var(--dim);letter-spacing:.2em}
 #press{z-index:47;background:var(--bg);cursor:pointer;text-align:center}
 #press .blink{font-size:calc(14px * var(--fs))}
 .home{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:520px;width:100%}
@@ -191,6 +203,16 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
   <div class="blink">▶ TOUCHEZ L'ÉCRAN POUR COMMENCER</div>
 </div>
 
+<!-- faux écrans de transition (terminal du vaisseau) -->
+<div class="overlay" id="trans" aria-live="polite">
+  <div class="term">
+    <div class="hd" id="transHd"></div>
+    <div id="transLines"></div>
+    <div class="bar"><i id="transBar"></i></div>
+    <div class="skip">TOUCHEZ POUR PASSER</div>
+  </div>
+</div>
+
 <!-- menu d'accueil -->
 <div class="overlay show" id="home">
   <div class="home">
@@ -257,6 +279,7 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     <div class="themes" id="themes"></div>
     <label class="set">Taille du texte <input type="range" id="fsRange" min="100" max="160" step="10" value="120"> <span id="fsVal">120 %</span></label>
     <label class="set">Lignes horizontales (écran ancien) <input type="checkbox" id="scanChk" checked></label>
+    <label class="set">Écrans de transition <input type="checkbox" id="transChk" checked></label>
     <div class="set-title">PARTIE</div>
     <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
     <label class="set">Écran toujours allumé <input type="checkbox" id="wakeChk" checked></label>
@@ -458,6 +481,11 @@ const Audio = (() => {
     o.type="square"; o.frequency.value= high?1320:880; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.18,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+(high?.3:.14));
     o.connect(g); g.connect(sfxBus); o.start(t); o.stop(t+.35);
   }
+  function tick(){
+    init(); const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain();
+    o.type="square"; o.frequency.value=2400+Math.random()*800; g.gain.setValueAtTime(.025,t); g.gain.exponentialRampToValueAtTime(.0001,t+.03);
+    o.connect(g); g.connect(sfxBus); o.start(t); o.stop(t+.04);
+  }
   function siren(sec){
     init(); const t=ctx.currentTime, o=ctx.createOscillator(), g=ctx.createGain(), l=ctx.createOscillator(), lg=ctx.createGain();
     o.type="sawtooth"; o.frequency.value=600; l.frequency.value=2.2; lg.gain.value=180; l.connect(lg); lg.connect(o.frequency);
@@ -493,13 +521,13 @@ const Audio = (() => {
       g.gain.setValueAtTime(0,t+i*.18); g.gain.linearRampToValueAtTime(.15,t+i*.18+.05); g.gain.exponentialRampToValueAtTime(.001,t+3); o.connect(g); g.connect(sfxBus); o.start(t+i*.18); o.stop(t+3.1); });
   }
   function setSfx(v){ sfxVol=v; if(ctx) sfxBus.gain.setTargetAtTime(v,ctx.currentTime,.05); }
-  return { init, startMusic, stopMusic, setVolume(v){curVol=v; setVolume(v);}, setSfx, duck, beep, siren, slam, alien, victory, get vol(){return curVol;}, get playing(){return !!music;}, get state(){return ctx?ctx.state:"none";} };
+  return { init, startMusic, stopMusic, setVolume(v){curVol=v; setVolume(v);}, setSfx, duck, beep, tick, siren, slam, alien, victory, get vol(){return curVol;}, get playing(){return !!music;}, get state(){return ctx?ctx.state:"none";} };
 })();
 
 /* ---------- État de la partie ---------- */
 const S = { proto:null, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"pick", peek:false, busy:false };
 const $ = id => document.getElementById(id);
-const settings = { countdown:10, voice:true, wake:true, scan:true, fs:120, music:true, sfx:1 };
+const settings = { countdown:10, voice:true, wake:true, scan:true, fs:120, music:true, sfx:1, transitions:true };
 try { Object.assign(settings, JSON.parse(localStorage.getItem("nostromo-settings")||"{}")); } catch(e){}
 function saveSettings(){ try{ localStorage.setItem("nostromo-settings", JSON.stringify({...settings, vol:Audio.vol})); }catch(e){} }
 
@@ -603,13 +631,65 @@ function showEnd(win, text){
   setTimeout(()=>$("end").classList.add("show"), win?600:200);
 }
 
+/* ---------- Faux écrans de transition ---------- */
+// Chaque ligne : [texte, résultat affiché au bout (facultatif), classe du résultat].
+let transBusy=false, transSkip=null;
+async function transition(title, lines){
+  if (!settings.transitions) return;
+  transBusy=true;
+  const ov=$("trans"), box=$("transLines"), bar=$("transBar");
+  $("transHd").textContent=title; box.textContent=""; bar.style.width="0";
+  ov.classList.add("show");
+  let skipped=false; const skip=new Promise(r=>transSkip=()=>{ skipped=true; r(); });
+  const wait = ms => Promise.race([sleep(ms), skip]);
+  for (let i=0;i<lines.length && !skipped;i++){
+    const [text, res, cls] = lines[i];
+    const ln=document.createElement("div"); ln.className="ln"; box.appendChild(ln);
+    const lab=document.createElement("span"); lab.className="cur"; ln.appendChild(lab);
+    for (let c=0;c<text.length && !skipped;c+=3){ lab.textContent=text.slice(0,c+3); if(c%9===0) Audio.tick(); await wait(14); }
+    lab.textContent=text;
+    if (res){
+      const d=document.createElement("span"); d.className="dots"; ln.appendChild(d);
+      await wait(160+Math.random()*220);
+      const b=document.createElement("span"); b.className="res "+(cls||"ok"); b.textContent=res; ln.appendChild(b);
+    }
+    lab.classList.remove("cur");
+    bar.style.width=Math.round((i+1)/lines.length*100)+"%";
+    await wait(60);
+  }
+  bar.style.width="100%";
+  if (!skipped) await wait(350);
+  ov.classList.remove("show"); transSkip=null; transBusy=false;
+}
+$("trans").addEventListener("pointerdown", ()=>transSkip&&transSkip());
+document.addEventListener("keydown", e=>{ if(transSkip && (e.key===" "||e.key==="Enter"||e.key==="Escape")){ e.preventDefault(); transSkip(); } });
+const BOOT_LINES = [
+  ["WEYLAND-YUTANI CORP · MU/TH/UR 6000 · v2.1.7"],
+  ["CONNEXION AU VAISSEAU-BASE NOSTROMO II","OK"],
+  ["CONTRÔLE DES CLOISONS ÉTANCHES","OK"],
+  ["LIAISONS PONT 1 / PONT 2 · ASCENSEURS","OK"],
+  ["CONDUITS D'AÉRATION","OK"],
+  ["ARMURERIE, LABO · ATMOSPHÈRE","TOXIQUE","warn"],
+  ["CHARGEMENT DES PROTOCOLES A.I.P.",PROTOCOLS.length+" TROUVÉS"],
+  ["ORDRE SPÉCIAL 937","ACCÈS REFUSÉ","warn"],
+];
+const protoLines = p => [
+  [`PROTOCOLE N°${p.id} · ${p.date}`],
+  [`INSTRUCTEUR : ${p.instr.toUpperCase()}`],
+  [`PARTICIPANTS : ${p.part}`],
+  ["DÉCRYPTAGE DE LA SÉQUENCE DE FERMETURE","OK"],
+  ["SCELLEMENT DES SALLES TOXIQUES","OK"],
+  ["SYNCHRONISATION DU PSYCHIC AGENT","OK"],
+  ["SPÉCIMEN XX121 · CONFINEMENT","EN ATTENTE","warn"],
+];
+
 /* ---------- Protocoles, réglages, musique ---------- */
 function buildProtos(){
   const box=$("protos");
   PROTOCOLS.forEach(p=>{
     const b=document.createElement("button"); b.className="proto";
     b.innerHTML=`<strong>PROTOCOLE ${p.id}</strong><small>Date : ${p.date}<br>Instructeur : ${p.instr}<br>Participants : ${p.part}<br>Conclusion : ${p.alive}</small>`;
-    b.onclick=()=>startGame(p); box.appendChild(b);
+    b.onclick=async()=>{ if(transBusy) return; Audio.init(); await transition("CHARGEMENT DU PROTOCOLE", protoLines(p)); startGame(p); }; box.appendChild(b);
   });
 }
 function startGame(p){
@@ -633,11 +713,13 @@ function setMusic(on){ if(on) Audio.startMusic(Audio.vol); else Audio.stopMusic(
 $("musicChk").checked=settings.music;
 $("musicChk").onchange=e=>{ settings.music=e.target.checked; setMusic(settings.music); saveSettings(); };
 
-$("startBtn").onclick=()=>{
+$("startBtn").onclick=async()=>{
+  if (transBusy) return;
   Audio.init(); keepAwake();
+  await transition("INITIALISATION DE LA SIMULATION", BOOT_LINES);
   $("home").classList.remove("show"); newGame();
 };
-function showHome(){ if(S.busy) return; $("home").classList.add("show"); }
+function showHome(){ if(S.busy || transBusy) return; $("home").classList.add("show"); }
 $("menuBtn").onclick=showHome;
 $("pickMenuBtn").onclick=showHome;
 $("homeSetBtn").onclick=()=>$("settings").classList.add("show");
@@ -700,6 +782,7 @@ $("cdRange").oninput=e=>{ settings.countdown=+e.target.value; $("cdVal").textCon
 $("voiceChk").checked=settings.voice; $("voiceChk").onchange=e=>{ settings.voice=e.target.checked; saveSettings(); };
 const setFs = v => { document.documentElement.style.setProperty("--fs", v/100); $("fsVal").textContent=v+" %"; };
 $("fsRange").value=settings.fs; setFs(settings.fs); $("fsRange").oninput=e=>{ settings.fs=+e.target.value; setFs(settings.fs); saveSettings(); };
+$("transChk").checked=settings.transitions; $("transChk").onchange=e=>{ settings.transitions=e.target.checked; saveSettings(); };
 const setScan = on => document.documentElement.classList.toggle("no-scan", !on);
 $("scanChk").checked=settings.scan; setScan(settings.scan); $("scanChk").onchange=e=>{ settings.scan=e.target.checked; setScan(settings.scan); saveSettings(); };
 $("wakeChk").checked=settings.wake; $("wakeChk").onchange=e=>{ settings.wake=e.target.checked; saveSettings(); };
