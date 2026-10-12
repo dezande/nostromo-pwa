@@ -62,7 +62,7 @@ test("les conduits d'aération sont dessinés et mis en avant quand on peut les 
   const left = root.querySelector('[data-vent="dortoir1-entrepot1"]')!;
   expect(left).not.toBeNull();
   expect(root.querySelector('[data-vent="dortoir2-entrepot2"]')).not.toBeNull();
-  expect(left.textContent).toBe("VENTILATION");
+  expect([...left.querySelectorAll("tspan")].map(t => t.textContent)).toEqual(["PASSAGE", "VENTILATION"]);
   act(() => { game.touchRoom("cockpit"); game.confirmStart(); });
   expect(left.classList.contains("open")).toBe(false);
   act(() => { game.touchRoom("reunion"); game.touchRoom("dortoir1"); });

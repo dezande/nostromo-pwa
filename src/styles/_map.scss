@@ -54,15 +54,15 @@
 .door { stroke: var(--amber); stroke-width: 2; }
 .vent { stroke: var(--vent); stroke-width: 1.5; stroke-dasharray: 3 3; fill: none; }
 
-// Conduit d'aération : couloir étroit et praticable
+// Conduit d'aération : bande étroite dans la coque, praticable
 .vent-corridor {
-  rect { fill: var(--room); stroke: var(--vent); stroke-width: 1.5; transition: fill .25s; }
-  .grate { stroke: var(--wall); stroke-width: 1; }
-  text { fill: var(--vent); font-size: 6px; letter-spacing: .15em; text-anchor: middle; }
+  rect { fill: var(--room); stroke: var(--room-stroke); stroke-width: 2; transition: fill .25s; }
+  .vent-arrow { fill: none; stroke: var(--vent); stroke-width: 1.5; }
+  .vent-pointer { stroke: var(--dim); stroke-width: .8; }
   // On peut l'emprunter depuis la salle du pion
   &.open {
     rect { fill: var(--room-hi); stroke: var(--accent); }
-    text { fill: var(--accent); }
+    .vent-arrow { stroke: var(--accent); }
   }
 }
 .vent-label { fill: var(--dim); font-size: fs-map(7px); text-anchor: middle; }
