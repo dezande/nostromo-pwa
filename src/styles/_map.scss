@@ -68,7 +68,9 @@
 .vent-label { fill: var(--dim); font-size: fs-map(7px); text-anchor: middle; }
 .lift { fill: var(--deco); stroke: var(--amber); stroke-width: 1.5; }
 .lift-icon { stroke: var(--amber); fill: none; stroke-width: 1.2; }
-.toxic-cross { stroke: #c22; stroke-width: 3; }
+.toxic-cross { stroke: #c22; stroke-width: 3; stroke-linecap: round; }
+// Repère discret : minuscule et peu visible
+.marker-dot { fill: var(--room-stroke); opacity: .5; pointer-events: none; }
 
 // Salles
 @mixin room-shape { rect, polygon { @content; } }

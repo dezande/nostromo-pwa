@@ -19,6 +19,7 @@ export interface Settings {
   alertVoice: boolean;          // voix toutes les 30 s
   alertCountdown: boolean;      // décompte des 10 dernières secondes
   settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
+  markerDot: boolean;           // repère discret sur le plan
 }
 
 export type SettingsTab = "display" | "audio" | "alert" | "system";
@@ -37,6 +38,7 @@ export const DEFAULTS: Settings = {
   alertVoice: true,
   alertCountdown: true,
   settingsTab: "display",
+  markerDot: true,
 };
 
 // Anciens noms des réglages (version avant Preact), pour ne pas perdre les choix du joueur.

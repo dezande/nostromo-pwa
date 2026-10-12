@@ -411,6 +411,38 @@ test("chaque onglet des réglages tient dans l'écran sans défilement", async (
   }
 });
 
+test("repère discret sur certaines salles, masquable dans les réglages", async ({ page }) => {
+  await open(page);
+  await startSimulation(page);
+  await expect(page.locator(".marker-dot")).toHaveCount(7);
+  await expect(page.locator('[data-room="vie"] .marker-dot')).toHaveCount(1);
+  await expect(page.locator('[data-room="cockpit"] .marker-dot')).toHaveCount(0);
+  await page.locator("#setBtn").click();
+  await page.locator("#tab-display").click();
+  await expect(page.locator("#markerChk")).toBeChecked();
+  await page.locator("#markerChk").uncheck();
+  await page.locator("#setClose").click();
+  await expect(page.locator(".marker-dot")).toHaveCount(0);
+});
+
+test("la croix des salles fermées reste dans la forme de chaque salle (entrepôts compris)", async ({ page }) => {
+  await open(page);
+  await startSimulation(page);
+  await placeAgent(page, "serre");
+  await closeRoom(page, "entrepot1", "entrepot2", "entrepot3", "entrepot4", "cockpit", "reunion");
+  for (const id of ["entrepot1", "entrepot2", "entrepot3", "entrepot4", "cockpit", "reunion", "armurerie", "labo"]) {
+    const ok = await page.locator(`[data-room="${id}"]`).evaluate(g => {
+      const shape = g.querySelector("rect, polygon") as SVGGeometryElement;
+      return [...g.querySelectorAll(".toxic-cross")].every(l => {
+        const line = l as SVGLineElement;
+        const pts = [[line.x1, line.y1], [line.x2, line.y2]].map(([x, y]) => new DOMPoint(x.baseVal.value, y.baseVal.value));
+        return pts.every(p => shape.isPointInFill(p));
+      }) && g.querySelectorAll(".toxic-cross").length === 2;
+    });
+    expect(ok, id).toBe(true);
+  }
+});
+
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
