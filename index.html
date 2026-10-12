@@ -30,7 +30,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font);
   -webkit-tap-highlight-color:transparent;overflow-x:hidden;
   background-image:radial-gradient(ellipse at 50% -10%, var(--glow) 0%, transparent 60%);}
 body::after{content:"";pointer-events:none;position:fixed;inset:0;z-index:50;
-  background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);mix-blend-mode:multiply;opacity:var(--scan)}
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.5) 0 1px, color-mix(in srgb, var(--green) 7%, transparent) 1px 2px, transparent 2px 3px);opacity:var(--scan)}
+.no-scan body::after{display:none}
 button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:6px;padding:10px 14px;cursor:pointer}
 button:disabled{opacity:.35;cursor:default}
 header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
@@ -246,6 +247,7 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
     <label class="set">Annonce vocale du nom de la salle <input type="checkbox" id="voiceChk" checked></label>
     <label class="set">Volume musique <input type="range" id="volRange" min="0" max="100" value="60"></label>
+    <label class="set">Lignes horizontales (écran ancien) <input type="checkbox" id="scanChk" checked></label>
     <label class="set">Écran toujours allumé <input type="checkbox" id="wakeChk" checked></label>
     <p style="margin-top:14px">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
     <div class="row"><button id="setClose">Fermer</button></div>
@@ -485,7 +487,7 @@ const Audio = (() => {
 /* ---------- État de la partie ---------- */
 const S = { proto:null, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"pick", peek:false, busy:false };
 const $ = id => document.getElementById(id);
-const settings = { countdown:10, voice:true, wake:true };
+const settings = { countdown:10, voice:true, wake:true, scan:true };
 try { Object.assign(settings, JSON.parse(localStorage.getItem("nostromo-settings")||"{}")); } catch(e){}
 function saveSettings(){ try{ localStorage.setItem("nostromo-settings", JSON.stringify({...settings, vol:Audio.vol})); }catch(e){} }
 
@@ -663,7 +665,7 @@ function applyTheme(i){
     const v = { "--bg":bg, "--green":fg, "--ink":mix(fg,pole,.55), "--dim":mix(fg,bg,.62), "--panel":mix(fg,bg,.06), "--line":mix(fg,bg,.16),
       "--room":mix(fg,bg,.08), "--room-hi":mix(fg,bg,.2), "--glow":mix(fg,bg,.12), "--wall":mix(fg,bg,.28), "--deco":mix(fg,bg,.04),
       "--rstroke":mix(fg,bg,.4), "--vent":mix(fg,bg,.5), "--veil":bg+"e0", "--font":fontStack(font),
-      "--scan":raster===1?1.6:raster===0?.8:0, "--flick":flick, "--noise":noise, "--curve":curve, "--bloom":bloom, "--rgb":rgb, "--amb":amb,
+      "--scan":raster===1?1:raster===0?.85:.7, "--flick":flick, "--noise":noise, "--curve":curve, "--bloom":bloom, "--rgb":rgb, "--amb":amb,
       "color-scheme":isLight(bg)?"light":"dark" };
     for (const k in v) st.setProperty(k, v[k]);
     root.classList.add("retro-font");
@@ -684,6 +686,8 @@ $("setClose").onclick=()=>$("settings").classList.remove("show");
 $("cdRange").value=settings.countdown; $("cdVal").textContent=settings.countdown+" s";
 $("cdRange").oninput=e=>{ settings.countdown=+e.target.value; $("cdVal").textContent=settings.countdown+" s"; saveSettings(); };
 $("voiceChk").checked=settings.voice; $("voiceChk").onchange=e=>{ settings.voice=e.target.checked; saveSettings(); };
+const setScan = on => document.documentElement.classList.toggle("no-scan", !on);
+$("scanChk").checked=settings.scan; setScan(settings.scan); $("scanChk").onchange=e=>{ settings.scan=e.target.checked; setScan(settings.scan); saveSettings(); };
 $("wakeChk").checked=settings.wake; $("wakeChk").onchange=e=>{ settings.wake=e.target.checked; saveSettings(); };
 if (typeof settings.vol==="number") Audio.setVolume(settings.vol);
 $("volRange").value=Math.round(Audio.vol*100);
