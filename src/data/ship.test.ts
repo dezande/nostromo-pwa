@@ -1,4 +1,4 @@
-import { ADJ, LINKS, ROOM_IDS, pawnPosition, room, roomLines, stepLabel } from "./ship";
+import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, pathSegments, pawnPosition, room, roomLines, stepLabel } from "./ship";
 
 describe("plan du vaisseau", () => {
   test("16 salles, dont 2 toxiques", () => {
@@ -46,6 +46,21 @@ describe("plan du vaisseau", () => {
     expect(roomLines("cockpit")).toEqual(["Cockpit"]);
     expect(roomLines("serre")).toEqual(["Serre", "hydro-", "ponique"]);
     expect(stepLabel(["cuisine", "labo"])).toBe("Cuisine + Labo");
+  });
+
+  test("tracé du chemin : un segment numéroté par pas sur le même pont", () => {
+    expect(pathSegments(["cockpit"])).toEqual([]);
+    expect(pathSegments(["cockpit", "vie", "cuisine"])).toEqual([
+      { deck: 1, from: pawnPosition("cockpit"), to: pawnPosition("vie"), step: 1 },
+      { deck: 1, from: pawnPosition("vie"), to: pawnPosition("cuisine"), step: 2 },
+    ]);
+  });
+
+  test("tracé du chemin : changement de pont par l'ascenseur", () => {
+    expect(pathSegments(["vie", "atelier"])).toEqual([
+      { deck: 1, from: pawnPosition("vie"), to: LIFT_POSITION[1] },
+      { deck: 2, from: LIFT_POSITION[2], to: pawnPosition("atelier"), step: 1 },
+    ]);
   });
 
   test("le pion se place sous le nom de la salle", () => {

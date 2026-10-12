@@ -1,6 +1,6 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
-import { ROOM_IDS, room, roomLines, pawnPosition, type RoomId } from "../data/ship";
-import { reachable, closed, closing, flashing, phase, position, touchRoom } from "../state/game";
+import { ROOM_IDS, room, roomLines, pathSegments, pawnPosition, type RoomId } from "../data/ship";
+import { reachable, closed, closing, flashing, path, phase, position, touchRoom } from "../state/game";
 import { ProtocolWindow } from "./ProtocolWindow";
 
 const range = (from: number, to: number, stepBy: number) => Array.from({ length: Math.ceil((to - from) / stepBy) }, (_, i) => from + i * stepBy);
@@ -97,6 +97,7 @@ function Deck1() {
         [155, 290, "v"], [245, 290, "v"], [200, 330, "h"],
         [155, 412, "v"], [245, 412, "v"],
       ]} />
+      <PathTrace deck={1} />
       <Pawn deck={1} />
     </>
   );
@@ -113,6 +114,7 @@ function Deck2() {
       <text x="160" y="24" class="vent-label">↑ VERS SALLE DE VIE</text>
       <text x="160" y="36" class="vent-label">ASCENSEURS</text>
       <Doors list={[[87, 130, "h"], [232, 130, "h"], [135, 215, "v"], [185, 215, "v"]]} />
+      <PathTrace deck={2} />
       <Pawn deck={2} />
     </>
   );
@@ -187,6 +189,22 @@ function ToxicCross({ rect: [x, y, w, h] }: { rect: [number, number, number, num
       <line x1={x + 18} y1={y + 18} x2={x + w - 18} y2={y + h - 8} class="toxic-cross" />
       <line x1={x + w - 18} y1={y + 18} x2={x + 18} y2={y + h - 8} class="toxic-cross" />
     </>
+  );
+}
+
+/** Chemin du pion depuis la dernière validation : pointillés et numéro de chaque pas. */
+function PathTrace({ deck }: { deck: 1 | 2 }) {
+  const segments = pathSegments(path.value).filter(s => s.deck === deck);
+  return (
+    <g class="path" data-deck={deck}>
+      {segments.map((s, i) => <line key={`l${i}`} class="path-line" x1={s.from[0]} y1={s.from[1]} x2={s.to[0]} y2={s.to[1]} />)}
+      {segments.map((s, i) => s.step && (
+        <g key={`n${i}`} class="path-step" transform={`translate(${(s.from[0] + s.to[0]) / 2},${(s.from[1] + s.to[1]) / 2})`}>
+          <circle r="7" />
+          <text y="3">{s.step}</text>
+        </g>
+      ))}
+    </g>
   );
 }
 

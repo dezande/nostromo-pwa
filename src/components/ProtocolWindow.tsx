@@ -1,6 +1,6 @@
 // Fenêtre du protocole (au-dessus du pont 2) : guide le Psychic Agent, façon terminal.
 import { room } from "../data/ship";
-import { phase, position, startRoom } from "../state/game";
+import { moves, path, phase, position } from "../state/game";
 import { InfoPanel } from "./InfoPanel";
 import { useTypewriter } from "./useTypewriter";
 
@@ -10,7 +10,12 @@ export function protocolMessage(): string {
     if (!position.value) return "AGENT, CHOISISSEZ VOTRE SALLE DE DÉPART";
     return `SALLE DE DÉPART : ${room(position.value).name.toUpperCase()} — VALIDEZ OU CHOISISSEZ UNE AUTRE SALLE`;
   }
-  if (startRoom.value) return `POSITION ENREGISTRÉE : ${room(startRoom.value).name.toUpperCase()}`;
+  if (phase.value === "move" && position.value) {
+    if (moves.value === 0) return `POSITION ENREGISTRÉE : ${room(position.value).name.toUpperCase()}`;
+    // Trajet depuis la dernière validation
+    const route = path.value.map(id => room(id).name.toUpperCase()).join(" → ");
+    return `${route} · ${moves.value} DÉPLACEMENT${moves.value > 1 ? "S" : ""}`;
+  }
   return "";
 }
 

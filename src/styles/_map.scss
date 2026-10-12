@@ -99,6 +99,14 @@
 @keyframes alarm { 0% { fill: #3a0a0c; } 100% { fill: #120607; } }
 @keyframes slam { 0% { fill: #ff3b3b; } 100% { fill: #3a0a0c; } }
 
+// Chemin du pion depuis la dernière validation
+.path { pointer-events: none; }
+.path-line { stroke: var(--amber); stroke-width: 2; stroke-dasharray: 4 4; stroke-linecap: round; }
+.path-step {
+  circle { fill: var(--bg); stroke: var(--amber); stroke-width: 1.5; }
+  text { fill: var(--amber); font-size: 9px; text-anchor: middle; font-weight: bold; }
+}
+
 // Pion du Psychic Agent
 .pawn { pointer-events: none; transition: transform .35s ease; }
 .pawn-core { fill: var(--accent); }
