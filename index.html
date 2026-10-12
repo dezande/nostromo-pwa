@@ -20,13 +20,13 @@
   --room:#0f1a17; --room-hi:#16302a;
   --glow:#12221d; --wall:#2f4a41; --deco:#0b1210; --rstroke:#3f6a5c; --vent:#4f7f70;
   --veil:rgba(3,5,5,.88);
-  --scan:1; --flick:0; --noise:0; --curve:0; --bloom:0; --rgb:0; --amb:0;
+  --scan:1; --flick:0; --noise:0; --curve:0; --bloom:0; --rgb:0; --amb:0; --fs:1.2;
   color-scheme:dark;
   --font: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--ink);font-family:var(--font);
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:calc(16px * var(--fs));
   -webkit-tap-highlight-color:transparent;overflow-x:hidden;
   background-image:radial-gradient(ellipse at 50% -10%, var(--glow) 0%, transparent 60%);}
 body::after{content:"";pointer-events:none;position:fixed;inset:0;z-index:50;
@@ -35,22 +35,22 @@ body::after{content:"";pointer-events:none;position:fixed;inset:0;z-index:50;
 button{font:inherit;color:inherit;background:none;border:1px solid var(--line);border-radius:6px;padding:10px 14px;cursor:pointer}
 button:disabled{opacity:.35;cursor:default}
 header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
-header h1{font-size:15px;letter-spacing:.18em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header h1{font-size:calc(15px * var(--fs));letter-spacing:.18em;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 header h1 small{color:var(--dim);letter-spacing:.1em;font-weight:normal}
-.icon-btn{padding:8px 10px;font-size:13px}
+.icon-btn{padding:8px 10px;font-size:calc(13px * var(--fs))}
 .icon-btn.on{border-color:var(--green);color:var(--green)}
 main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;padding:16px;max-width:1200px;margin:0 auto}
 @media (max-width:860px){main{grid-template-columns:1fr}}
 .decks{display:grid;grid-template-columns:3fr 2fr;gap:12px;align-items:start}
 @media (max-width:520px){.decks{grid-template-columns:1fr}}
 .deck{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:8px}
-.deck h2{font-size:11px;letter-spacing:.25em;color:var(--dim);margin:2px 4px 6px;font-weight:normal}
+.deck h2{font-size:calc(11px * var(--fs));letter-spacing:.25em;color:var(--dim);margin:2px 4px 6px;font-weight:normal}
 svg{width:100%;height:auto;display:block;touch-action:manipulation}
 .wall{fill:none;stroke:var(--wall);stroke-width:2}
 .deco{fill:var(--deco);stroke:var(--wall);stroke-width:2}
 .hatch{stroke:var(--wall);stroke-width:1.5}
 .room path,.room rect,.room polygon{fill:var(--room);stroke:var(--rstroke);stroke-width:2;transition:fill .25s}
-.room text{fill:var(--ink);font-size:10px;text-anchor:middle;pointer-events:none;letter-spacing:.05em}
+.room text{fill:var(--ink);font-size:calc(10px * min(var(--fs), 1.15));text-anchor:middle;pointer-events:none;letter-spacing:.05em}
 .room{outline:none}
 .room:focus-visible path,.room:focus-visible rect,.room:focus-visible polygon{stroke:var(--amber);stroke-width:3}
 .room.reach{cursor:pointer}
@@ -66,7 +66,7 @@ svg{width:100%;height:auto;display:block;touch-action:manipulation}
 @keyframes slam{0%{fill:#ff3b3b}100%{fill:#3a0a0c}}
 .door{stroke:var(--amber);stroke-width:2}
 .vent{stroke:var(--vent);stroke-width:1.5;stroke-dasharray:3 3;fill:none}
-.vent-label{fill:var(--dim);font-size:7px;text-anchor:middle}
+.vent-label{fill:var(--dim);font-size:calc(7px * min(var(--fs), 1.15));text-anchor:middle}
 .lift{fill:var(--deco);stroke:var(--amber);stroke-width:1.5}
 #pawn,#pawn2{pointer-events:none;transition:transform .35s ease}
 .pawn-core{fill:var(--green)}
@@ -74,40 +74,40 @@ svg{width:100%;height:auto;display:block;touch-action:manipulation}
 @keyframes ping{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(2.2)}}
 aside{display:flex;flex-direction:column;gap:12px}
 .card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:14px}
-.card h3{margin:0 0 10px;font-size:11px;letter-spacing:.25em;color:var(--dim);font-weight:normal;display:flex;justify-content:space-between;align-items:center}
-.status{font-size:14px;line-height:1.5;min-height:3em}
+.card h3{margin:0 0 10px;font-size:calc(11px * var(--fs));letter-spacing:.25em;color:var(--dim);font-weight:normal;display:flex;justify-content:space-between;align-items:center}
+.status{font-size:calc(14px * var(--fs));line-height:1.5;min-height:3em}
 .status b{color:var(--green);font-weight:normal}
-.big{display:block;width:100%;padding:16px;font-size:15px;letter-spacing:.15em;border-color:var(--red);color:#fff;background:linear-gradient(#5b0b10,#2a0507)}
+.big{display:block;width:100%;padding:16px;font-size:calc(15px * var(--fs));letter-spacing:.15em;border-color:var(--red);color:#fff;background:linear-gradient(#5b0b10,#2a0507)}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .row button{flex:1}
-.counter{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-top:10px}
-.counter span b{color:var(--ink);font-size:16px;font-weight:normal}
-ol.aip{list-style:none;margin:0;padding:0;font-size:13px}
+.counter{display:flex;justify-content:space-between;font-size:calc(12px * var(--fs));color:var(--dim);margin-top:10px}
+.counter span b{color:var(--ink);font-size:calc(16px * var(--fs));font-weight:normal}
+ol.aip{list-style:none;margin:0;padding:0;font-size:calc(13px * var(--fs))}
 ol.aip li{display:flex;gap:10px;padding:5px 0;border-bottom:1px dashed var(--line);align-items:baseline}
-ol.aip li i{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:#5b0b10;color:#fff;font-size:11px}
+ol.aip li i{font-style:normal;display:inline-grid;place-items:center;min-width:22px;height:22px;border-radius:50%;background:#5b0b10;color:#fff;font-size:calc(11px * var(--fs))}
 ol.aip li.done{color:#7d4a4a;text-decoration:line-through}
 ol.aip li.next{color:var(--amber)}
-.mini{padding:4px 8px;font-size:11px}
+.mini{padding:4px 8px;font-size:calc(11px * var(--fs))}
 /* overlays */
 .overlay{position:fixed;inset:0;z-index:40;display:none;place-items:center;background:var(--veil);padding:16px}
 .overlay.show{display:grid}
 .panel{max-width:720px;width:100%;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:20px;max-height:calc(100vh - 32px);overflow:auto}
-.panel h2{margin:0 0 6px;letter-spacing:.2em;font-size:16px}
-.panel p{color:var(--dim);font-size:13px;line-height:1.5;margin:0 0 14px}
+.panel h2{margin:0 0 6px;letter-spacing:.2em;font-size:calc(16px * var(--fs))}
+.panel p{color:var(--dim);font-size:calc(13px * var(--fs));line-height:1.5;margin:0 0 14px}
 .protos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .proto{text-align:left;padding:12px;border-radius:8px}
 .proto:hover,.proto:focus{border-color:var(--amber)}
-.proto strong{display:block;color:var(--red);letter-spacing:.15em;margin-bottom:6px;font-size:12px}
-.proto small{display:block;color:var(--dim);font-size:11px;line-height:1.45}
+.proto strong{display:block;color:var(--red);letter-spacing:.15em;margin-bottom:6px;font-size:calc(12px * var(--fs))}
+.proto small{display:block;color:var(--dim);font-size:calc(11px * var(--fs));line-height:1.45}
 #count{background:radial-gradient(circle, rgba(70,5,8,.75), rgba(3,5,5,.92))}
 #count .num{font-size:min(38vw,240px);color:var(--red);text-shadow:0 0 30px #f00;line-height:1;text-align:center}
-#count .lbl{text-align:center;letter-spacing:.35em;font-size:13px;color:#ffb3b3}
-#count .room-name{text-align:center;font-size:22px;letter-spacing:.2em;color:#fff;margin-top:8px;min-height:1.4em}
+#count .lbl{text-align:center;letter-spacing:.35em;font-size:calc(13px * var(--fs));color:#ffb3b3}
+#count .room-name{text-align:center;font-size:calc(22px * var(--fs));letter-spacing:.2em;color:#fff;margin-top:8px;min-height:1.4em}
 .end h2{font-size:clamp(22px,7vw,40px);text-align:center;margin:10px 0}
 .end p{text-align:center}
 .dead h2{color:var(--red);text-shadow:0 0 18px #f00}
 .win h2{color:var(--green);text-shadow:0 0 18px var(--green)}
-label.set{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px dashed var(--line)}
+label.set{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:calc(13px * var(--fs));padding:8px 0;border-bottom:1px dashed var(--line)}
 label.set input[type=range]{flex:1;accent-color:var(--red)}
 .shake{animation:shake .5s}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -115,13 +115,13 @@ label.set input[type=range]{flex:1;accent-color:var(--red)}
 #settings{z-index:46}
 .home{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:520px;width:100%}
 .home svg{width:110px;height:auto;color:var(--green)}
-.home .corp{font-size:11px;letter-spacing:.4em;color:var(--dim)}
+.home .corp{font-size:calc(11px * var(--fs));letter-spacing:.4em;color:var(--dim)}
 .home h2{margin:0;white-space:nowrap;font-size:clamp(28px,9vw,64px);letter-spacing:.12em;font-weight:normal;text-shadow:0 0 18px color-mix(in srgb, var(--green) 35%, transparent)}
-.home .base{color:var(--green);letter-spacing:.3em;font-size:13px}
-.home p{color:var(--dim);font-size:13px;line-height:1.6;margin:0}
+.home .base{color:var(--green);letter-spacing:.3em;font-size:calc(13px * var(--fs))}
+.home p{color:var(--dim);font-size:calc(13px * var(--fs));line-height:1.6;margin:0}
 .home .big{max-width:360px}
 .link{border:none;color:var(--dim);text-decoration:underline;padding:4px 8px}
-.blink{font-size:11px;letter-spacing:.3em;color:var(--green);animation:blink 1.2s steps(2) infinite}
+.blink{font-size:calc(11px * var(--fs));letter-spacing:.3em;color:var(--green);animation:blink 1.2s steps(2) infinite}
 @keyframes blink{50%{opacity:0}}
 /* effets d'écran (styles cool-retro-term) */
 body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55%, transparent),
@@ -136,9 +136,9 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
 @keyframes noise{0%{background-position:0 0}33%{background-position:-40px 60px}66%{background-position:70px -30px}100%{background-position:0 0}}
 .retro-font{font-size-adjust:.52}
 .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:6px 0 14px}
-.theme{padding:12px 10px;text-align:left;font-size:12px;border-radius:6px;font-size-adjust:.52}
+.theme{padding:12px 10px;text-align:left;font-size:calc(12px * var(--fs));border-radius:6px;font-size-adjust:.52}
 .theme[aria-pressed="true"]{outline:2px solid var(--amber);outline-offset:2px}
-.set-title{font-size:11px;letter-spacing:.25em;color:var(--dim);margin-top:12px}
+.set-title{font-size:calc(11px * var(--fs));letter-spacing:.25em;color:var(--dim);margin-top:12px}
 @keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-2px)}}
 </style>
 </head>
@@ -247,6 +247,7 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
     <label class="set">Annonce vocale du nom de la salle <input type="checkbox" id="voiceChk" checked></label>
     <label class="set">Volume musique <input type="range" id="volRange" min="0" max="100" value="60"></label>
+    <label class="set">Taille du texte <input type="range" id="fsRange" min="100" max="160" step="10" value="120"> <span id="fsVal">120 %</span></label>
     <label class="set">Lignes horizontales (écran ancien) <input type="checkbox" id="scanChk" checked></label>
     <label class="set">Écran toujours allumé <input type="checkbox" id="wakeChk" checked></label>
     <p style="margin-top:14px">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
@@ -487,7 +488,7 @@ const Audio = (() => {
 /* ---------- État de la partie ---------- */
 const S = { proto:null, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"pick", peek:false, busy:false };
 const $ = id => document.getElementById(id);
-const settings = { countdown:10, voice:true, wake:true, scan:true };
+const settings = { countdown:10, voice:true, wake:true, scan:true, fs:120 };
 try { Object.assign(settings, JSON.parse(localStorage.getItem("nostromo-settings")||"{}")); } catch(e){}
 function saveSettings(){ try{ localStorage.setItem("nostromo-settings", JSON.stringify({...settings, vol:Audio.vol})); }catch(e){} }
 
@@ -686,6 +687,8 @@ $("setClose").onclick=()=>$("settings").classList.remove("show");
 $("cdRange").value=settings.countdown; $("cdVal").textContent=settings.countdown+" s";
 $("cdRange").oninput=e=>{ settings.countdown=+e.target.value; $("cdVal").textContent=settings.countdown+" s"; saveSettings(); };
 $("voiceChk").checked=settings.voice; $("voiceChk").onchange=e=>{ settings.voice=e.target.checked; saveSettings(); };
+const setFs = v => { document.documentElement.style.setProperty("--fs", v/100); $("fsVal").textContent=v+" %"; };
+$("fsRange").value=settings.fs; setFs(settings.fs); $("fsRange").oninput=e=>{ settings.fs=+e.target.value; setFs(settings.fs); saveSettings(); };
 const setScan = on => document.documentElement.classList.toggle("no-scan", !on);
 $("scanChk").checked=settings.scan; setScan(settings.scan); $("scanChk").onchange=e=>{ settings.scan=e.target.checked; setScan(settings.scan); saveSettings(); };
 $("wakeChk").checked=settings.wake; $("wakeChk").onchange=e=>{ settings.wake=e.target.checked; saveSettings(); };
