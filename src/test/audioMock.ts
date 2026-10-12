@@ -12,6 +12,7 @@ export const audio = {
   slam: jest.fn(),
   alien: jest.fn(),
   victory: jest.fn(),
+  alarm: jest.fn(),
   musicVolume: 0.6,
   playing: false,
   state: "running",

@@ -288,6 +288,12 @@ function alien(long: boolean) {
   hiss.start(t);
 }
 
+/** Alarme de fin des 5 minutes d'entraînement. */
+function alarm() {
+  siren(3);
+  [0, 0.5, 1, 1.5, 2].forEach(d => setTimeout(() => beep(true), d * 1000));
+}
+
 /** Petit accord de victoire. */
 function victory() {
   const ctx = init();
@@ -307,7 +313,7 @@ function victory() {
 
 export const audio = {
   init, startMusic, stopMusic, setMusicVolume, setSfxVolume, duck,
-  beep, tick, siren, slam, alien, victory,
+  beep, tick, siren, slam, alien, victory, alarm,
   get musicVolume() { return musicVolume; },
   get playing() { return !!music; },
   get state() { return ctx ? ctx.state : "none"; },

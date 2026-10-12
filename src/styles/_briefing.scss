@@ -29,6 +29,7 @@
   // Bonne respiration entre le dernier paragraphe et les boutons
   .briefing-actions { margin-top: 40px; }
   .briefing-actions .big { flex: 2; }
+  .briefing-actions button { white-space: nowrap; }
 }
 
 // ---------- Dessins animés des étapes ----------
@@ -93,3 +94,27 @@
 @keyframes sa-shut { 0%, 10% { fill: var(--room); } 16%, 90% { fill: #3a0a0c; stroke: var(--red); } 100% { fill: var(--room); } }
 @keyframes sa-x { 0%, 10% { opacity: 0; } 16%, 90% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes sa-glow { from { opacity: .5; } to { opacity: 1; } }
+
+// ---------- Petits écrans : tout doit tenir sans défilement ----------
+@media (max-height: 800px), (max-width: 480px) {
+  .briefing { padding: 8px; }
+  .briefing-panel {
+    padding: 14px 16px;
+    line-height: 1.4;
+    .briefing-corp, .briefing-motto { font-size: fs(9px); }
+    .briefing-motto { margin-bottom: 10px; }
+    h2 { font-size: fs(15px); margin-bottom: 8px; }
+    p { font-size: fs(11px); margin-bottom: 8px; }
+    .briefing-intro { margin-top: 8px; }
+    .briefing-steps {
+      h3 { font-size: fs(11px); }
+      p { margin-bottom: 6px; }
+      .step-anim { width: 84px; height: 56px; margin-left: 8px; }
+    }
+    .briefing-actions { margin-top: 20px; }
+    .big { padding: 12px; }
+  }
+}
+@media (max-height: 700px) {
+  .briefing-panel { line-height: 1.32; .briefing-steps .step-anim { width: 72px; height: 48px; } }
+}
