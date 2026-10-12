@@ -1,5 +1,6 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
-import { ROOM_IDS, VENTS, room, roomBox, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
+import { ROOM_IDS, VENTS, crossLines, markerPosition, room, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
+import { settings } from "../state/settings";
 import { reachable, closable, closed, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
 import { ProtocolWindow } from "./ProtocolWindow";
 
@@ -178,16 +179,17 @@ function Room({ id }: { id: RoomId }) {
         : <polygon points={r.points} />}
       {lines.map((text, i) => <text key={i} x={cx} y={top + i * 12}>{text.toUpperCase()}</text>)}
       {/* Croix rouge : salles contaminées et salles fermées (elle reste) */}
-      {(r.toxic || closed.value.has(id)) && <ToxicCross rect={roomBox(id)} />}
+      {(r.toxic || closed.value.has(id)) && <ToxicCross id={id} />}
+      {r.marker && settings.markerDot.value && <circle class="marker-dot" cx={markerPosition(id)[0]} cy={markerPosition(id)[1]} r="1.8" />}
     </g>
   );
 }
 
-function ToxicCross({ rect: [x, y, w, h] }: { rect: [number, number, number, number] }) {
+/** Croix rouge, calculée pour rester dans la forme réelle de la salle. */
+function ToxicCross({ id }: { id: RoomId }) {
   return (
     <>
-      <line x1={x + 18} y1={y + 18} x2={x + w - 18} y2={y + h - 8} class="toxic-cross" />
-      <line x1={x + w - 18} y1={y + 18} x2={x + 18} y2={y + h - 8} class="toxic-cross" />
+      {crossLines(id).map(([x1, y1, x2, y2], i) => <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} class="toxic-cross" />)}
     </>
   );
 }

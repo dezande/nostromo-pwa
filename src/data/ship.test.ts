@@ -1,4 +1,4 @@
-import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, VENTS, distanceBetween, pathSegments, pawnPosition, room, roomBox, roomLines, stepLabel, ventBetween, volumeForDistance, xenoVolume } from "./ship";
+import { ADJ, LIFT_POSITION, LINKS, ROOM_IDS, VENTS, crossLines, distanceBetween, insidePolygon, markerPosition, roomPolygon, pathSegments, pawnPosition, room, roomBox, roomLines, stepLabel, ventBetween, volumeForDistance, xenoVolume } from "./ship";
 
 describe("plan du vaisseau", () => {
   test("16 salles, dont 2 toxiques", () => {
@@ -111,6 +111,29 @@ describe("plan du vaisseau", () => {
     expect([0, 1, 2, 3, 4, 5, 6, Infinity].map(volumeForDistance)).toEqual([1, 0.8, 0.55, 0.35, 0.2, 0.1, 0.1, 0.1]);
     expect(xenoVolume("cockpit", ["entrepot4", "vie"])).toBe(0.8); // la plus proche
     expect(xenoVolume("cockpit", ["cockpit"])).toBe(1);
+  });
+
+  test("repère discret : les salles du schéma du manuel (page « Déroulement »)", () => {
+    const marked = ROOM_IDS.filter(id => room(id).marker).sort();
+    expect(marked).toEqual(["entrepot1", "entrepot2", "entrepot3", "entrepot4", "infirmerie", "reunion", "vie"]);
+    // Chaque liaison relie une salle repérée à une salle non repérée.
+    for (const [a, b] of LINKS) expect(!!room(a).marker).not.toBe(!!room(b).marker);
+    expect(marked.some(id => room(id).toxic)).toBe(false);
+  });
+
+  test("le repère est dans la salle", () => {
+    for (const id of ROOM_IDS.filter(r => room(r).marker)) expect(insidePolygon(markerPosition(id), roomPolygon(id))).toBe(true);
+  });
+
+  test("la croix reste à l'intérieur de chaque salle, avec une marge", () => {
+    for (const id of ROOM_IDS) {
+      const poly = roomPolygon(id);
+      for (const [x1, y1, x2, y2] of crossLines(id)) {
+        for (let t = 0; t <= 1; t += 0.05) {
+          expect(insidePolygon([x1 + (x2 - x1) * t, y1 + (y2 - y1) * t], poly)).toBe(true);
+        }
+      }
+    }
   });
 
   test("rectangle englobant (salles en polygone comprises)", () => {

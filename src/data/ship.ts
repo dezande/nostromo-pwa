@@ -16,6 +16,8 @@ export interface Room {
   pawnY?: number;
   /** atmosphère toxique : salle inaccessible */
   toxic?: boolean;
+  /** repère discret pour le magicien (voir le manuel, page « Déroulement ») */
+  marker?: boolean;
 }
 
 /**
@@ -28,21 +30,21 @@ export interface Room {
  */
 export const ROOMS = {
   cockpit:    { name: "Cockpit",            deck: 1, points: "155,100 245,100 245,205 155,205", center: [200, 160] },
-  reunion:    { name: "Salle de réunion",   deck: 1, rect: [75, 150, 80, 100],  center: [115, 200], label: ["Salle de", "réunion"] },
-  infirmerie: { name: "Infirmerie",         deck: 1, rect: [245, 150, 80, 100], center: [285, 200] },
-  vie:        { name: "Salle de vie",       deck: 1, rect: [155, 205, 90, 125], center: [200, 240], label: ["Salle", "de vie"], labelY: 228, pawnY: 262 },
+  reunion:    { name: "Salle de réunion",   deck: 1, rect: [75, 150, 80, 100],  center: [115, 200], label: ["Salle de", "réunion"], marker: true },
+  infirmerie: { name: "Infirmerie",         deck: 1, rect: [245, 150, 80, 100], center: [285, 200], marker: true },
+  vie:        { name: "Salle de vie",       deck: 1, rect: [155, 205, 90, 125], center: [200, 240], label: ["Salle", "de vie"], labelY: 228, pawnY: 262, marker: true },
   dortoir1:   { name: "Dortoir 1",          deck: 1, rect: [75, 250, 80, 80],   center: [115, 290] },
   dortoir2:   { name: "Dortoir 2",          deck: 1, rect: [245, 250, 80, 80],  center: [285, 290] },
   armurerie:  { name: "Armurerie",          deck: 1, rect: [95, 330, 60, 70],   center: [125, 365], label: ["Armu-", "rerie"], toxic: true },
   cuisine:    { name: "Cuisine",            deck: 1, rect: [155, 330, 90, 100], center: [200, 380], label: ["Cuisine &", "salle à", "manger"] },
   labo:       { name: "Labo",               deck: 1, rect: [245, 330, 60, 70],  center: [275, 365], toxic: true },
-  entrepot1:  { name: "Entrepôt 1",         deck: 1, points: "75,400 155,400 155,480 50,480 50,425", center: [105, 445] },
-  entrepot2:  { name: "Entrepôt 2",         deck: 1, points: "245,400 325,400 350,425 350,480 245,480", center: [295, 445] },
+  entrepot1:  { name: "Entrepôt 1",         deck: 1, points: "75,400 155,400 155,480 50,480 50,425", center: [105, 445], marker: true },
+  entrepot2:  { name: "Entrepôt 2",         deck: 1, points: "245,400 325,400 350,425 350,480 245,480", center: [295, 445], marker: true },
   atelier:    { name: "Atelier",            deck: 2, rect: [40, 40, 95, 90],    center: [87, 85] },
   sport:      { name: "Salle de sport",     deck: 2, rect: [185, 40, 95, 90],   center: [232, 85], label: ["Salle de", "sport"] },
   serre:      { name: "Serre hydroponique", deck: 2, rect: [135, 130, 50, 150], center: [160, 200], label: ["Serre", "hydro-", "ponique"] },
-  entrepot3:  { name: "Entrepôt 3",         deck: 2, points: "40,130 135,130 135,300 20,300 20,215 40,195", center: [78, 250] },
-  entrepot4:  { name: "Entrepôt 4",         deck: 2, points: "185,130 280,130 280,195 300,215 300,300 185,300", center: [242, 250] },
+  entrepot3:  { name: "Entrepôt 3",         deck: 2, points: "40,130 135,130 135,300 20,300 20,215 40,195", center: [78, 250], marker: true },
+  entrepot4:  { name: "Entrepôt 4",         deck: 2, points: "185,130 280,130 280,195 300,215 300,300 185,300", center: [242, 250], marker: true },
 } satisfies Record<string, Room>;
 
 export type RoomId = keyof typeof ROOMS;
@@ -87,6 +89,54 @@ export const volumeForDistance = (d: number): number => XENO_VOLUMES[d] ?? 0.1;
 /** Volume pour une fermeture d'une ou plusieurs salles : la plus proche du pion compte. */
 export const xenoVolume = (pawn: RoomId, closedRooms: RoomId[]): number =>
   volumeForDistance(Math.min(...closedRooms.map(r => distanceBetween(pawn, r))));
+
+/** Contour d'une salle, en liste de points. */
+export function roomPolygon(id: RoomId): [number, number][] {
+  const r = room(id);
+  if (r.rect) {
+    const [x, y, w, h] = r.rect;
+    return [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+  }
+  return r.points!.split(" ").map(p => p.split(",").map(Number) as [number, number]);
+}
+
+/** Le point est-il à l'intérieur du polygone ? (méthode du rayon) */
+export function insidePolygon([px, py]: [number, number], poly: [number, number][]): boolean {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const [xi, yi] = poly[i], [xj, yj] = poly[j];
+    if ((yi > py) !== (yj > py) && px < ((xj - xi) * (py - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
+}
+
+/**
+ * Croix rouge d'une salle fermée ou contaminée : deux diagonales qui restent à l'intérieur
+ * de la forme réelle de la salle, avec une marge (salles en polygone comprises).
+ */
+export function crossLines(id: RoomId, margin = 10): [number, number, number, number][] {
+  const poly = roomPolygon(id);
+  const [x, y, w, h] = roomBox(id);
+  const c: [number, number] = [x + w / 2, y + h / 2];
+  const toward = ([cx, cy]: [number, number]): [number, number] => {
+    // On part du coin et on revient vers le centre jusqu'à être dedans avec la marge.
+    const len = Math.hypot(cx - c[0], cy - c[1]);
+    for (let t = 1; t > 0; t -= 0.01) {
+      const p: [number, number] = [c[0] + (cx - c[0]) * t, c[1] + (cy - c[1]) * t];
+      const ahead: [number, number] = [c[0] + (cx - c[0]) * (t + margin / len), c[1] + (cy - c[1]) * (t + margin / len)];
+      if (insidePolygon(p, poly) && insidePolygon(ahead, poly)) return [Math.round(p[0]), Math.round(p[1])];
+    }
+    return c;
+  };
+  const [a, b, d, e] = [toward([x, y]), toward([x + w, y + h]), toward([x + w, y]), toward([x, y + h])];
+  return [[...a, ...b], [...d, ...e]];
+}
+
+/** Repère discret : petit point dans le coin bas droit de la salle. */
+export function markerPosition(id: RoomId): [number, number] {
+  const [x, y, w, h] = roomBox(id);
+  return [x + w - 6, y + h - 6];
+}
 
 /** Rectangle englobant d'une salle (pour dessiner la croix des salles fermées). */
 export function roomBox(id: RoomId): [number, number, number, number] {

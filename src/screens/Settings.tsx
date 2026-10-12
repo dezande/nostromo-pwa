@@ -48,6 +48,7 @@ export function Settings() {
               <Slider id="fsRange" label="Taille du texte" setting={settings.textSize} min={100} max={160} step={10} unit="%" />
               <Toggle id="scanChk" label="Lignes horizontales (écran ancien)" setting={settings.scanlines} />
               <Toggle id="transChk" label="Écrans de transition" setting={settings.transitions} />
+              <Toggle id="markerChk" label="Repère discret" setting={settings.markerDot} />
             </>
           )}
           {tab === "audio" && (
