@@ -70,6 +70,25 @@ export const roomLines = (id: RoomId): string[] => room(id).label || [room(id).n
 /** « Cuisine + Labo » pour une étape qui ferme plusieurs salles. */
 export const stepLabel = (rooms: RoomId[]): string => rooms.map(k => room(k).name).join(" + ");
 
+/**
+ * Conduits d'aération du pont 1 : couloirs étroits le long de l'Armurerie et du Labo,
+ * entre un dortoir et un entrepôt. `ends` = ouvertures [côté dortoir, côté entrepôt].
+ */
+export interface VentCorridor {
+  rooms: [RoomId, RoomId];
+  rect: [number, number, number, number];
+  ends: [[number, number], [number, number]];
+}
+
+export const VENTS: VentCorridor[] = [
+  { rooms: ["dortoir1", "entrepot1"], rect: [56, 312, 18, 100], ends: [[65, 318], [65, 410]] },
+  { rooms: ["dortoir2", "entrepot2"], rect: [326, 312, 18, 100], ends: [[335, 318], [335, 410]] },
+];
+
+/** Conduit d'aération entre deux salles, s'il y en a un. */
+export const ventBetween = (a: RoomId, b: RoomId) =>
+  VENTS.find(v => v.rooms.includes(a) && v.rooms.includes(b));
+
 /** Centre de la cabine d'ascenseur sur chaque pont (passage entre les ponts). */
 export const LIFT_POSITION: Record<1 | 2, [number, number]> = { 1: [200, 303], 2: [160, 59] };
 
@@ -84,13 +103,20 @@ export interface PathSegment {
 /**
  * Segments à tracer pour un chemin de salles. Quand on change de pont, le trait va
  * jusqu'à l'ascenseur sur chaque pont ; le numéro du pas est mis du côté de l'arrivée.
+ * Par un conduit d'aération, le trait passe dans le couloir (numéro au milieu du couloir).
  */
 export function pathSegments(path: RoomId[]): PathSegment[] {
   const segments: PathSegment[] = [];
   for (let i = 1; i < path.length; i++) {
     const a = room(path[i - 1]), b = room(path[i]);
     const from = pawnPosition(path[i - 1]), to = pawnPosition(path[i]);
-    if (a.deck === b.deck) {
+    const vent = ventBetween(path[i - 1], path[i]);
+    if (vent) {
+      const [start, end] = vent.rooms[0] === path[i - 1] ? vent.ends : [vent.ends[1], vent.ends[0]];
+      segments.push({ deck: a.deck, from, to: start });
+      segments.push({ deck: a.deck, from: start, to: end, step: i });
+      segments.push({ deck: a.deck, from: end, to });
+    } else if (a.deck === b.deck) {
       segments.push({ deck: a.deck, from, to, step: i });
     } else {
       segments.push({ deck: a.deck, from, to: LIFT_POSITION[a.deck] });

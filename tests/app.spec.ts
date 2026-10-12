@@ -117,6 +117,21 @@ test("déplacement vers une salle voisine puis annulation", async ({ page }) => 
   await expect(page.locator("#undoBtn")).toBeDisabled();
 });
 
+test("conduit d'aération : couloir visible, praticable entre dortoir et entrepôt", async ({ page }) => {
+  await open(page);
+  await startSimulation(page);
+  await page.locator("#protos .proto").nth(2).click(); // le protocole n°3 ne ferme les entrepôts qu'à la fin
+  const vent = page.locator('[data-vent="dortoir1-entrepot1"]');
+  await expect(vent).toBeVisible();
+  await expect(vent).toHaveText("VENTILATION");
+  await placeAgent(page, "dortoir1");
+  await expect(vent).toHaveClass(/open/);
+  expect(await reachableRooms(page)).toContain("entrepot1");
+  await clickRoom(page, "entrepot1");
+  await expect(page.locator("#deck1 .path-line")).toHaveCount(3); // dortoir → couloir → entrepôt
+  await expect(page.locator("#deck1 .path-step")).toHaveText(["1"]);
+});
+
 test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau coordinateur", async ({ page }) => {
   await open(page);
   await startSimulation(page);
