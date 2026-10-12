@@ -2,7 +2,7 @@
 const { test, expect } = require("@playwright/test");
 
 // Partie rapide : compte à rebours minimal et pas d'annonce vocale.
-const FAST = { countdown: 3, voice: false, wake: false };
+const FAST = { countdown: 3, voice: false, wake: false, transitions: false };
 
 async function open(page, settings = FAST) {
   const errors = [];
@@ -159,6 +159,26 @@ test("musique coupée : pas d'écran « touchez pour commencer »", async ({ pag
   await open(page, { ...FAST, music: false });
   await expect(page.locator("#press")).not.toHaveClass(/show/);
   expect(await page.evaluate(() => Audio.playing)).toBe(false);
+});
+
+test("faux écrans de transition au démarrage et au choix du protocole", async ({ page }) => {
+  const errors = await open(page, { ...FAST, transitions: true });
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#trans")).toHaveClass(/show/);
+  await expect(page.locator("#transHd")).toHaveText("INITIALISATION DE LA SIMULATION");
+  await page.clock.runFor(10_000);
+  await expect(page.locator("#trans")).not.toHaveClass(/show/);
+  await expect(page.locator("#pick")).toHaveClass(/show/);
+  await expect(page.locator("#transLines")).toContainText("CONNEXION AU VAISSEAU-BASE");
+
+  await page.locator("#protos .proto").nth(1).click();
+  await expect(page.locator("#trans")).toHaveClass(/show/);
+  // Toucher l'écran passe la transition.
+  await page.locator("#trans").click();
+  await expect(page.locator("#trans")).not.toHaveClass(/show/);
+  await expect(page.locator("#status")).toContainText("pose son pion");
+  await expect(page.locator("#transLines")).toContainText("PROTOCOLE N°2");
+  expect(errors).toEqual([]);
 });
 
 test("taille du texte et lignes horizontales", async ({ page }) => {
