@@ -113,6 +113,8 @@ label.set input[type=range]{flex:1;accent-color:var(--red)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 #home{z-index:45;grid-template-columns:minmax(0,1fr);background:radial-gradient(ellipse at 50% 40%, var(--glow) 0%, var(--bg) 70%);text-align:center}
 #settings{z-index:46}
+#press{z-index:47;background:var(--bg);cursor:pointer;text-align:center}
+#press .blink{font-size:calc(14px * var(--fs))}
 .home{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:520px;width:100%}
 .home svg{width:110px;height:auto;color:var(--green)}
 .home .corp{font-size:calc(11px * var(--fs));letter-spacing:.4em;color:var(--dim)}
@@ -147,7 +149,6 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
 <header>
   <h1>NOSTROMO II <small>· TRAINING BASE</small></h1>
   <button class="icon-btn" id="menuBtn">☰ Menu</button>
-  <button class="icon-btn" id="musicBtn" aria-pressed="false">♫ Musique</button>
   <button class="icon-btn" id="setBtn" aria-label="Réglages">⚙</button>
 </header>
 
@@ -184,6 +185,11 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     </div>
   </aside>
 </main>
+
+<!-- écran titre : « appuyez pour commencer », le navigateur exige un geste avant de jouer du son -->
+<div class="overlay" id="press" role="button" tabindex="0" aria-label="Commencer">
+  <div class="blink">▶ TOUCHEZ L'ÉCRAN POUR COMMENCER</div>
+</div>
 
 <!-- menu d'accueil -->
 <div class="overlay show" id="home">
@@ -242,13 +248,17 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
 <div class="overlay" id="settings">
   <div class="panel">
     <h2>RÉGLAGES</h2>
-    <div class="set-title">STYLE D'ÉCRAN</div>
-    <div class="themes" id="themes"></div>
-    <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
+    <div class="set-title">AUDIO</div>
+    <label class="set">Musique <input type="checkbox" id="musicChk" checked></label>
+    <label class="set">Volume de la musique <input type="range" id="volRange" min="0" max="100" value="60"> <span id="volVal">60 %</span></label>
+    <label class="set">Volume des effets sonores <input type="range" id="sfxRange" min="0" max="100" value="100"> <span id="sfxVal">100 %</span></label>
     <label class="set">Annonce vocale du nom de la salle <input type="checkbox" id="voiceChk" checked></label>
-    <label class="set">Volume musique <input type="range" id="volRange" min="0" max="100" value="60"></label>
+    <div class="set-title">AFFICHAGE</div>
+    <div class="themes" id="themes"></div>
     <label class="set">Taille du texte <input type="range" id="fsRange" min="100" max="160" step="10" value="120"> <span id="fsVal">120 %</span></label>
     <label class="set">Lignes horizontales (écran ancien) <input type="checkbox" id="scanChk" checked></label>
+    <div class="set-title">PARTIE</div>
+    <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
     <label class="set">Écran toujours allumé <input type="checkbox" id="wakeChk" checked></label>
     <p style="margin-top:14px">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
     <div class="row"><button id="setClose">Fermer</button></div>
@@ -393,14 +403,14 @@ function drawRooms(svg, deck){
 
 /* ---------- Audio (Web Audio, généré) ---------- */
 const Audio = (() => {
-  let ctx, master, musicBus, sfxBus, music=null;
+  let ctx, master, musicBus, sfxBus, music=null, sfxVol=1;
   function init(){
     if (ctx) { if (ctx.state==="suspended") ctx.resume(); return; }
     ctx = new (window.AudioContext||window.webkitAudioContext)();
     master = ctx.createGain(); master.gain.value = 0.9;
     const comp = ctx.createDynamicsCompressor(); master.connect(comp); comp.connect(ctx.destination);
     musicBus = ctx.createGain(); musicBus.gain.value = 0; musicBus.connect(master);
-    sfxBus = ctx.createGain(); sfxBus.gain.value = 1; sfxBus.connect(master);
+    sfxBus = ctx.createGain(); sfxBus.gain.value = sfxVol; sfxBus.connect(master);
   }
   function noiseBuf(sec){ const b=ctx.createBuffer(1,ctx.sampleRate*sec,ctx.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; }
   function startMusic(vol){
@@ -482,13 +492,14 @@ const Audio = (() => {
     [261.63,329.63,392,523.25].forEach((f,i)=>{ const o=ctx.createOscillator(); o.type="triangle"; o.frequency.value=f; const g=ctx.createGain();
       g.gain.setValueAtTime(0,t+i*.18); g.gain.linearRampToValueAtTime(.15,t+i*.18+.05); g.gain.exponentialRampToValueAtTime(.001,t+3); o.connect(g); g.connect(sfxBus); o.start(t+i*.18); o.stop(t+3.1); });
   }
-  return { init, startMusic, stopMusic, setVolume(v){curVol=v; setVolume(v);}, duck, beep, siren, slam, alien, victory, get vol(){return curVol;} };
+  function setSfx(v){ sfxVol=v; if(ctx) sfxBus.gain.setTargetAtTime(v,ctx.currentTime,.05); }
+  return { init, startMusic, stopMusic, setVolume(v){curVol=v; setVolume(v);}, setSfx, duck, beep, siren, slam, alien, victory, get vol(){return curVol;}, get playing(){return !!music;}, get state(){return ctx?ctx.state:"none";} };
 })();
 
 /* ---------- État de la partie ---------- */
 const S = { proto:null, step:0, pos:null, trail:[], moves:0, closed:new Set(), phase:"pick", peek:false, busy:false };
 const $ = id => document.getElementById(id);
-const settings = { countdown:10, voice:true, wake:true, scan:true, fs:120 };
+const settings = { countdown:10, voice:true, wake:true, scan:true, fs:120, music:true, sfx:1 };
 try { Object.assign(settings, JSON.parse(localStorage.getItem("nostromo-settings")||"{}")); } catch(e){}
 function saveSettings(){ try{ localStorage.setItem("nostromo-settings", JSON.stringify({...settings, vol:Audio.vol})); }catch(e){} }
 
@@ -617,13 +628,13 @@ $("resetBtn").onclick=()=>{
 $("againBtn").onclick=newGame;
 $("peekBtn").onclick=()=>{ S.peek=!S.peek; render(); };
 
-const musicBtn=$("musicBtn");
-function setMusic(on){ musicBtn.classList.toggle("on",on); musicBtn.setAttribute("aria-pressed",String(on)); if(on) Audio.startMusic(Audio.vol); else Audio.stopMusic(); }
-musicBtn.onclick=()=>setMusic(musicBtn.getAttribute("aria-pressed")!=="true");
+/* ---------- Audio : géré dans les réglages, la musique démarre à l'ouverture ---------- */
+function setMusic(on){ if(on) Audio.startMusic(Audio.vol); else Audio.stopMusic(); }
+$("musicChk").checked=settings.music;
+$("musicChk").onchange=e=>{ settings.music=e.target.checked; setMusic(settings.music); saveSettings(); };
 
 $("startBtn").onclick=()=>{
   Audio.init(); keepAwake();
-  if (musicBtn.getAttribute("aria-pressed")!=="true") setMusic(true);
   $("home").classList.remove("show"); newGame();
 };
 function showHome(){ if(S.busy) return; $("home").classList.add("show"); }
@@ -693,11 +704,23 @@ const setScan = on => document.documentElement.classList.toggle("no-scan", !on);
 $("scanChk").checked=settings.scan; setScan(settings.scan); $("scanChk").onchange=e=>{ settings.scan=e.target.checked; setScan(settings.scan); saveSettings(); };
 $("wakeChk").checked=settings.wake; $("wakeChk").onchange=e=>{ settings.wake=e.target.checked; saveSettings(); };
 if (typeof settings.vol==="number") Audio.setVolume(settings.vol);
+const showVol = () => { $("volVal").textContent=$("volRange").value+" %"; $("sfxVal").textContent=$("sfxRange").value+" %"; };
 $("volRange").value=Math.round(Audio.vol*100);
-$("volRange").oninput=e=>{ Audio.setVolume(e.target.value/100); saveSettings(); };
+$("volRange").oninput=e=>{ Audio.setVolume(e.target.value/100); showVol(); saveSettings(); };
+Audio.setSfx(settings.sfx); $("sfxRange").value=Math.round(settings.sfx*100);
+$("sfxRange").oninput=e=>{ settings.sfx=e.target.value/100; Audio.setSfx(settings.sfx); showVol(); saveSettings(); };
+showVol();
 document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") keepAwake(); });
 
 drawDeck1($("deck1")); drawDeck2($("deck2")); buildProtos(); render();
+
+// Comme dans un jeu : la musique se lance dès l'ouverture. Si le navigateur bloque le son
+// tant qu'on n'a pas touché la page, on affiche l'écran « touchez pour commencer ».
+if (settings.music) setMusic(true);
+setTimeout(()=>{ if (settings.music && Audio.state!=="running") $("press").classList.add("show"); }, 300);
+function pressStart(){ Audio.init(); keepAwake(); $("press").classList.remove("show"); }
+$("press").addEventListener("pointerdown", pressStart);
+document.addEventListener("keydown", e=>{ if($("press").classList.contains("show")){ e.preventDefault(); pressStart(); } });
 
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")){
   window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
