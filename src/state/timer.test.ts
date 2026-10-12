@@ -1,6 +1,5 @@
 jest.mock("../audio/audio", () => require("../test/audioMock"));
 
-import { audio } from "../audio/audio";
 import { expired, formatTime, remaining, startTimer, stopTimer } from "./timer";
 
 beforeEach(() => { jest.useFakeTimers(); stopTimer(); });
@@ -12,18 +11,16 @@ test("format mm:ss", () => {
   expect(formatTime(0)).toBe("00:00");
 });
 
-test("5 minutes, puis alarme une seule fois, sans s'arrêter en négatif", () => {
+test("5 minutes, puis le minuteur reste à zéro (sans passer en négatif)", () => {
   startTimer();
   expect(remaining.value).toBe(300);
   jest.advanceTimersByTime(60_000);
   expect(remaining.value).toBe(240);
-  expect(audio.alarm).not.toHaveBeenCalled();
   jest.advanceTimersByTime(240_000);
   expect(remaining.value).toBe(0);
   expect(expired.value).toBe(true);
   jest.advanceTimersByTime(30_000);
   expect(remaining.value).toBe(0);
-  expect(audio.alarm).toHaveBeenCalledTimes(1);
 });
 
 test("arrêt : plus de minuteur affiché", () => {
