@@ -5,7 +5,9 @@ import { Overlay } from "../components/Overlay";
 import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
 import { settings, type SettingsTab } from "../state/settings";
-import { settingsOpen } from "../state/ui";
+import { returnHome, settingsOpen } from "../state/ui";
+import { inGame } from "../state/game";
+import { useState } from "preact/hooks";
 import { BUILD, offline, type OfflineState } from "../state/pwa";
 
 const TABS: { id: SettingsTab; label: string }[] = [
@@ -69,11 +71,33 @@ export function Settings() {
           )}
         </div>
 
+        {inGame.value && <ReturnHome />}
         <div class="row">
           <button id="setClose" onClick={() => { settingsOpen.value = false; }}>Fermer</button>
         </div>
       </div>
     </Overlay>
+  );
+}
+
+/** « Retour à l'accueil » avec confirmation dans la page (pas de fenêtre du navigateur). */
+function ReturnHome() {
+  const [asking, setAsking] = useState(false);
+  if (!asking) {
+    return (
+      <div class="row return-home">
+        <button id="homeReturnBtn" onClick={() => setAsking(true)}>⌂ Retour à l'accueil</button>
+      </div>
+    );
+  }
+  return (
+    <div class="return-home confirm" role="alertdialog" aria-labelledby="homeReturnQ">
+      <p id="homeReturnQ">Abandonner l'entraînement en cours ?</p>
+      <div class="row">
+        <button class="big" id="homeReturnYes" onClick={returnHome}>Oui</button>
+        <button id="homeReturnNo" onClick={() => setAsking(false)}>Non</button>
+      </div>
+    </div>
   );
 }
 

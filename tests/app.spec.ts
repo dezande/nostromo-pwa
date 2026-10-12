@@ -91,9 +91,9 @@ test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de d
   // Plus de choix de protocole dans l'app.
   await expect(page.locator("#pick, #protos")).toHaveCount(0);
 
-  await page.locator("#menuBtn").click();
-  await expect(page.locator("#home")).toHaveClass(/show/);
-  await page.locator("#homeSetBtn").click();
+  // Plus de bouton Menu sur l'écran de jeu : seulement les Réglages.
+  await expect(page.locator("#menuBtn")).toHaveCount(0);
+  await page.locator("#setBtn").click();
   await expect(page.locator("#settings")).toHaveClass(/show/);
   await page.locator("#setClose").click();
   await expect(page.locator("#settings")).not.toHaveClass(/show/);
@@ -450,31 +450,38 @@ test("le numéro de build est affiché dans les réglages", async ({ page }) => 
   await expect(page.locator("#versionInfo")).toHaveText(/v\d+\.\d+\.\d+ · BUILD \d+ \([0-9a-f]+\) DU \d{2}\/\d{2}\/\d{4}/);
 });
 
-test("le menu met la partie en pause et permet de la reprendre", async ({ page }) => {
-  const errors = await open(page);
+test("retour à l'accueil par les Réglages, avec confirmation : minuteur, alarme et voix s'arrêtent", async ({ page }) => {
+  const errors = await open(page, { ...FAST, music: true });
   await startSimulation(page);
   await placeAgent(page, "cockpit");
-  await page.locator("#menuBtn").click();
-  await expect(page.locator("#home")).toHaveClass(/show/);
-  await expect(page.locator("#resumeBtn")).toBeVisible();
-  await expect(page.locator("#startLbl")).toHaveText("NOUVELLE SIMULATION");
-  await page.locator("#resumeBtn").click();
-  await expect(page.locator("#home")).not.toHaveClass(/show/);
-  await expect(page.locator("#pawn")).toHaveAttribute("visibility", "visible");
-  expect(await reachableRooms(page)).toEqual([...ADJ.cockpit].sort());
+  await expect(page.locator("#trainingTimer")).toHaveText("05:00");
+  await expect.poll(() => page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
 
-  // Nouvelle simulation pendant une partie : il faut confirmer.
-  await page.locator("#menuBtn").click();
-  await page.locator("#startBtn").click();
-  await expect(page.locator("#startLbl")).toContainText("CONFIRMER");
-  await expect(page.locator("#home")).toHaveClass(/show/);
-  await page.locator("#startBtn").click();
-  await expect(page.locator("#welcome")).toHaveClass(/show/);
+  // Pas de retour à l'accueil hors partie ; ici, partie en cours : le bouton est là.
+  await page.locator("#setBtn").click();
+  await page.locator("#homeReturnBtn").click();
+  await expect(page.locator("#homeReturnQ")).toHaveText("Abandonner l'entraînement en cours ?");
+  // « Non » : on reste dans la partie.
+  await page.locator("#homeReturnNo").click();
+  await expect(page.locator("#homeReturnBtn")).toBeVisible();
   await expect(page.locator("#home")).not.toHaveClass(/show/);
+  // « Oui » : retour à l'accueil, tout s'arrête.
+  await page.locator("#homeReturnBtn").click();
+  await page.evaluate(() => { (window as unknown as { cancelled: number }).cancelled = 0; window.speechSynthesis.cancel = () => { (window as unknown as { cancelled: number }).cancelled++; }; });
+  await page.locator("#homeReturnYes").click();
+  await expect(page.locator("#home")).toHaveClass(/show/);
+  await expect(page.locator("#settings")).not.toHaveClass(/show/);
+  await expect(page.locator("#trainingTimer")).toHaveCount(0);
+  expect(await page.evaluate(() => (window as unknown as { cancelled: number }).cancelled)).toBeGreaterThan(0);
+  expect(await page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(false);
+  expect(await page.evaluate(() => window.nostromo!.audio.playing)).toBe(true); // musique 1
+  // Hors partie, pas de bouton de retour dans les Réglages.
+  await page.locator("#homeSetBtn").click();
+  await expect(page.locator("#homeReturnBtn")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
-test("menu depuis l'écran de fin, sans bouton Reprendre", async ({ page }) => {
+test("écran de fin : bouton Accueil", async ({ page }) => {
   await open(page);
   await startSimulation(page);
   await placeAgent(page, "cockpit");
@@ -482,7 +489,6 @@ test("menu depuis l'écran de fin, sans bouton Reprendre", async ({ page }) => {
   await page.clock.runFor(2_000);
   await page.locator("#endMenuBtn").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
-  await expect(page.locator("#resumeBtn")).toBeHidden();
   await expect(page.locator("#startLbl")).toHaveText("DÉMARRER LA SIMULATION");
 });
 

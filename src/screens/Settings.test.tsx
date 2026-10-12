@@ -9,7 +9,9 @@ import { render } from "preact";
 import { act } from "preact/test-utils";
 import { audio } from "../audio/audio";
 import { settings } from "../state/settings";
-import { settingsOpen } from "../state/ui";
+import { homeOpen, settingsOpen } from "../state/ui";
+import * as game from "../state/game";
+import { remaining } from "../state/timer";
 import { Settings } from "./Settings";
 
 let root: HTMLElement;
@@ -53,4 +55,24 @@ test("flèches du clavier pour changer d'onglet", () => {
   expect(settings.settingsTab.value).toBe("system");
   act(() => { $("#tab-system").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })); });
   expect(settings.settingsTab.value).toBe("display");
+});
+
+test("« Retour à l'accueil » seulement pendant une partie, avec confirmation Oui / Non", () => {
+  (window as unknown as { speechSynthesis: { cancel: jest.Mock } }).speechSynthesis = { cancel: jest.fn() };
+  act(() => { game.showIntro(); });
+  expect($("#homeReturnBtn")).toBeNull();
+  act(() => { game.startGame(); game.touchRoom("cockpit"); game.confirmStart(); homeOpen.value = false; });
+  expect(remaining.value).toBe(300);
+  act(() => { $("#homeReturnBtn").click(); });
+  expect($("#homeReturnQ").textContent).toBe("Abandonner l'entraînement en cours ?");
+  act(() => { $("#homeReturnNo").click(); });
+  expect($("#homeReturnQ")).toBeNull();
+  expect(game.inGame.value).toBe(true);
+  act(() => { $("#homeReturnBtn").click(); });
+  act(() => { $("#homeReturnYes").click(); });
+  expect(homeOpen.value).toBe(true);
+  expect(settingsOpen.value).toBe(false);
+  expect(game.inGame.value).toBe(false);
+  expect(remaining.value).toBeNull();
+  expect((window as unknown as { speechSynthesis: { cancel: jest.Mock } }).speechSynthesis.cancel).toHaveBeenCalled();
 });
