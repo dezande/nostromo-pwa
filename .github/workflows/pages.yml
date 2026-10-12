@@ -17,6 +17,9 @@ concurrency:
 
 jobs:
   build:
+    # GitHub Pages n'est pas disponible pour un dépôt privé avec un compte gratuit :
+    # la publication ne se fait que si le dépôt est public.
+    if: ${{ !github.event.repository.private }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
