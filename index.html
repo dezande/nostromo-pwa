@@ -152,6 +152,7 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
 .themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:6px 0 14px}
 .theme{padding:12px 10px;text-align:left;font-size:calc(12px * var(--fs));border-radius:6px;font-size-adjust:.52}
 .theme[aria-pressed="true"]{outline:2px solid var(--amber);outline-offset:2px}
+.version{font-size:calc(11px * var(--fs));color:var(--dim);letter-spacing:.1em;margin:0 0 12px;line-height:1.6}
 .set-title{font-size:calc(11px * var(--fs));letter-spacing:.25em;color:var(--dim);margin-top:12px}
 @keyframes shake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-2px)}}
 </style>
@@ -284,10 +285,12 @@ body{text-shadow:0 0 calc(var(--bloom) * 5px) color-mix(in srgb, var(--green) 55
     <label class="set">Compte à rebours <input type="range" id="cdRange" min="3" max="30" value="10"> <span id="cdVal">10 s</span></label>
     <label class="set">Écran toujours allumé <input type="checkbox" id="wakeChk" checked></label>
     <p style="margin-top:14px">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
+    <div class="version" id="versionInfo"></div>
     <div class="row"><button id="setClose">Fermer</button></div>
   </div>
 </div>
 
+<script src="version.js"></script>
 <script>
 "use strict";
 /* ---------- Données du vaisseau-base ---------- */
@@ -722,7 +725,7 @@ $("startBtn").onclick=async()=>{
 function showHome(){ if(S.busy || transBusy) return; $("home").classList.add("show"); }
 $("menuBtn").onclick=showHome;
 $("pickMenuBtn").onclick=showHome;
-$("homeSetBtn").onclick=()=>$("settings").classList.add("show");
+$("homeSetBtn").onclick=()=>{ showVersion(); $("settings").classList.add("show"); };
 
 /* ---------- Styles d'écran (profils de cool-retro-term) ---------- */
 // [nom, police, couleur texte, fond, scintillement, synchro horizontale et gigue (non utilisées : pas de déformation de l'image), bruit, courbure, halo, décalage RVB, trame (0 légère, 1 lignes, 4 aucune), lumière ambiante]
@@ -775,7 +778,20 @@ THEMES.forEach((t,i)=>{
 });
 applyTheme(settings.theme|0);
 
-$("setBtn").onclick=()=>$("settings").classList.add("show");
+$("setBtn").onclick=()=>{ showVersion(); $("settings").classList.add("show"); };
+/* ---------- Version affichée dans les réglages ---------- */
+async function showVersion(){
+  const v = self.APP_VERSION || {build:"?", date:""};
+  const d = v.date ? v.date.split("-").reverse().join("/") : "";
+  let off = "hors ligne : non installé";
+  try {
+    const ks = ("caches" in self) ? (await caches.keys()).filter(k=>k.startsWith("nostromo-")) : [];
+    if (ks.includes("nostromo-v"+v.build)) off = "hors ligne : prêt";
+    else if (ks.length) off = "hors ligne : mise à jour en cours, rechargez la page";
+  } catch(e){}
+  $("versionInfo").textContent = `NOSTROMO II · BUILD ${v.build}${d ? " DU "+d : ""} · ${off}`;
+}
+showVersion();
 $("setClose").onclick=()=>$("settings").classList.remove("show");
 $("cdRange").value=settings.countdown; $("cdVal").textContent=settings.countdown+" s";
 $("cdRange").oninput=e=>{ settings.countdown=+e.target.value; $("cdVal").textContent=settings.countdown+" s"; saveSettings(); };

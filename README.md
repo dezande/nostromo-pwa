@@ -44,4 +44,6 @@ push sur `main` (`.github/workflows/tests.yml`).
 - `manifest.webmanifest`, `sw.js`, `icons/` : partie PWA (installation, hors ligne).
 - `tests/`, `playwright.config.js`, `package.json` : tests automatiques.
 
-Si tu modifies `index.html`, change `CACHE` dans `sw.js` (ex. `nostromo-v2`) pour que l'app installée se mette à jour.
+- `version.js` : numéro de build et date, affichés en bas des Réglages.
+
+À chaque modification de l'app, incrémente `build` dans `version.js` (et mets la date) : le cache hors ligne (`sw.js`) en dépend, l'app installée se met donc à jour, et tu vois dans Réglages quel build tu utilises.
