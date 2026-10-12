@@ -4,7 +4,8 @@
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 12px;
-  align-items: start;
+  // Les deux colonnes ont la même hauteur : pont 1 à gauche = informations + pont 2 à droite.
+  align-items: stretch;
   @media (max-width: 520px) { grid-template-columns: 1fr; }
 }
 
@@ -17,6 +18,7 @@
 }
 
 .info-panel {
+  flex: 1; // prend toute la hauteur restante de la colonne
   min-height: 120px;
   .info-body { padding: 4px 6px 8px; font-size: fs(13px); line-height: 1.5; }
   .info-empty { margin: 0; color: var(--dim); letter-spacing: .2em; font-size: fs(11px); }
