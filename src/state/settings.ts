@@ -1,6 +1,6 @@
 // Réglages du joueur : un signal par réglage, enregistrés dans le navigateur (localStorage).
 import { signal, effect, type Signal } from "@preact/signals";
-import { audio } from "../audio/audio";
+import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, themeVars, DEFAULT_BG } from "../data/themes";
 
 const STORAGE_KEY = "nostromo-settings";
@@ -16,7 +16,13 @@ export interface Settings {
   transitions: boolean;
   countdown: number;
   wakeLock: boolean;
+  alertVariant: AlertVariant;   // musique 2 pendant les 5 minutes
+  alertVoice: boolean;          // voix toutes les 30 s
+  alertCountdown: boolean;      // décompte des 10 dernières secondes
+  settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
 }
+
+export type SettingsTab = "display" | "audio" | "alert" | "system";
 
 export const DEFAULTS: Settings = {
   music: true,        // musique d'ambiance
@@ -29,6 +35,10 @@ export const DEFAULTS: Settings = {
   transitions: true,  // faux écrans de transition
   countdown: 10,      // secondes
   wakeLock: true,     // écran toujours allumé
+  alertVariant: "siren",
+  alertVoice: true,
+  alertCountdown: true,
+  settingsTab: "display",
 };
 
 // Anciens noms des réglages (version avant Preact), pour ne pas perdre les choix du joueur.

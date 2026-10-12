@@ -1,12 +1,16 @@
 // Musique et bruitages générés en direct avec Web Audio : aucun fichier audio, aucun droit d'auteur.
 //
 // Deux bus de volume : la musique (musicBus) et les effets (sfxBus), tous deux reliés au master.
+// La musique a deux couches : l'ambiance (musique 1) et l'alerte des 5 minutes (musique 2),
+// qui passent toutes deux par musicBus : elles suivent le volume et la case « Musique ».
 
 interface Music { nodes: AudioScheduledSourceNode[]; stop(): void; }
 
 let ctx: AudioContext | null = null;
 let master: GainNode;
 let musicBus: GainNode;
+let ambientBus: GainNode;   // musique 1 : ambiance
+let alertBus: GainNode;     // musique 2 : alerte pendant les 5 minutes
 let sfxBus: GainNode;
 let music: Music | null = null; // musique en cours
 let musicVolume = 0.6;
@@ -24,6 +28,8 @@ function init(): AudioContext {
   master.connect(compressor);
   compressor.connect(ctx.destination);
   musicBus = gain(0, master);
+  ambientBus = gain(1, musicBus);
+  alertBus = gain(0, musicBus);
   sfxBus = gain(sfxVolume, master);
   return ctx;
 }
@@ -90,7 +96,7 @@ function startMusic() {
 
   // Nappe grave : dents de scie désaccordées dans un passe-bas qui « respire ».
   const lowpass = filter("lowpass", 260, 6);
-  lowpass.connect(musicBus);
+  lowpass.connect(ambientBus);
   for (const f of [55, 55.35, 82.4]) {
     const o = osc("sawtooth", f);
     o.connect(gain(0.1, lowpass));
@@ -101,12 +107,12 @@ function startMusic() {
   keep(breath);
 
   const sub = osc("sine", 41.2);
-  sub.connect(gain(0.25, musicBus));
+  sub.connect(gain(0.25, ambientBus));
   keep(sub);
 
   // Souffle de ventilation.
   const air = noise(4, true);
-  const airGain = gain(0.05, musicBus);
+  const airGain = gain(0.05, ambientBus);
   air.connect(filter("bandpass", 700, 0.8)).connect(airGain);
   keep(air);
   const airLfo = osc("sine", 0.11);
@@ -119,7 +125,7 @@ function startMusic() {
   const echoFilter = filter("lowpass", 2200);
   delay.connect(echoFilter);
   echoFilter.connect(gain(0.55, delay));
-  echoFilter.connect(musicBus);
+  echoFilter.connect(ambientBus);
 
   // Tintements aléatoires et grondements lointains.
   let alive = true;
@@ -134,7 +140,7 @@ function startMusic() {
     g.gain.exponentialRampToValueAtTime(0.0001, now + 2.5);
     o.connect(g);
     g.connect(delay);
-    g.connect(musicBus);
+    g.connect(ambientBus);
     o.start(now);
     o.stop(now + 2.6);
 
@@ -142,7 +148,7 @@ function startMusic() {
       const rumble = osc("sine", 70);
       rumble.frequency.setValueAtTime(70, now);
       rumble.frequency.exponentialRampToValueAtTime(30, now + 3);
-      const rg = gain(0, musicBus);
+      const rg = gain(0, ambientBus);
       rg.gain.setValueAtTime(0, now);
       rg.gain.linearRampToValueAtTime(0.18, now + 0.8);
       rg.gain.linearRampToValueAtTime(0, now + 3);
@@ -288,10 +294,133 @@ function alien(long: boolean) {
   hiss.start(t);
 }
 
-/** Alarme de fin des 5 minutes d'entraînement. */
+// ---------- musique 2 : alerte pendant les 5 minutes ----------
+
+export type AlertVariant = "siren" | "klaxon" | "detector";
+
+interface Alert { stop(): void; nodes: AudioScheduledSourceNode[]; }
+let alert: Alert | null = null;
+
+/** Coup sourd (grosse caisse / battement de cœur). */
+function kick(to: AudioNode, at: number, from = 90, toFreq = 40, level = 0.9, length = 0.25) {
+  const o = osc("sine", from);
+  o.frequency.setValueAtTime(from, at);
+  o.frequency.exponentialRampToValueAtTime(toFreq, at + 0.18);
+  const g = gain(0, to);
+  g.gain.setValueAtTime(level, at);
+  g.gain.exponentialRampToValueAtTime(0.001, at + length);
+  o.connect(g);
+  o.start(at);
+  o.stop(at + length + 0.05);
+}
+
+/** Note brève avec attaque de 10 ms et décroissance exponentielle. */
+function blip(to: AudioNode, type: OscillatorType, freq: number, at: number, level: number, decay: number) {
+  const o = osc(type, freq);
+  const g = gain(0, to);
+  g.gain.setValueAtTime(0.0001, at);
+  g.gain.exponentialRampToValueAtTime(level, at + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, at + decay);
+  o.connect(g);
+  o.start(at);
+  o.stop(at + decay + 0.05);
+}
+
+/** Répète `fn` toutes les `ms` millisecondes tant que l'alerte joue. */
+function every(ms: number, fn: (i: number) => void) {
+  let i = 0, alive = true;
+  (function loop() { if (!alive) return; fn(i++); setTimeout(loop, ms); })();
+  return () => { alive = false; };
+}
+
+/** Démarre le fond sonore d'alerte choisi, dans une couche destination (bus d'alerte ou aperçu). */
+function buildAlert(variant: AlertVariant, out: GainNode): Alert {
+  const ctx = init();
+  const nodes: AudioScheduledSourceNode[] = [];
+  const keep = <T extends AudioScheduledSourceNode>(n: T) => { n.start(); nodes.push(n); return n; };
+  const stops: (() => void)[] = [];
+
+  if (variant === "siren") {
+    // Sirène lente : dent de scie 520 Hz, filtrée, modulée par un LFO à 0,35 Hz (± 160 Hz).
+    const siren = keep(osc("sawtooth", 520));
+    const lfo = keep(osc("sine", 0.35));
+    lfo.connect(gain(160, siren.frequency));
+    siren.connect(filter("lowpass", 1400)).connect(gain(0.12, out));
+    // Grondement grave : deux dents de scie désaccordées.
+    const low = filter("lowpass", 220);
+    low.connect(gain(0.35, out));
+    for (const f of [55, 55.6]) keep(osc("sawtooth", f)).connect(low);
+    // Battement chaque seconde.
+    stops.push(every(1000, () => kick(out, ctx.currentTime)));
+  } else if (variant === "klaxon") {
+    // Klaxon à deux tons, toutes les 600 ms, sur un bourdon en triangle.
+    keep(osc("triangle", 73.4)).connect(gain(0.25, out));
+    stops.push(every(600, i => blip(out, "square", i % 2 ? 660 : 880, ctx.currentTime, 0.14, 0.45)));
+  } else {
+    // Détecteur : ping 1320 Hz toutes les 1,5 s avec un écho, double battement de cœur, bourdon à 41 Hz.
+    keep(osc("sine", 41)).connect(gain(0.4, out));
+    stops.push(every(1500, () => {
+      const t = ctx.currentTime;
+      blip(out, "sine", 1320, t, 0.18, 0.9);
+      blip(out, "sine", 1320, t + 0.22, 0.06, 0.6);
+    }));
+    stops.push(every(800, () => {
+      const t = ctx.currentTime;
+      kick(out, t, 70, 35, 0.6, 0.2);
+      kick(out, t + 0.18, 70, 35, 0.4, 0.2);
+    }));
+  }
+  return {
+    nodes,
+    stop() {
+      stops.forEach(s => s());
+      setTimeout(() => nodes.forEach(n => { try { n.stop(); } catch { /* déjà arrêté */ } }), 1200);
+    },
+  };
+}
+
+/** Pendant les 5 minutes : l'ambiance s'efface, l'alerte prend sa place. */
+function startAlert(variant: AlertVariant) {
+  const ctx = init();
+  stopAlert();
+  alert = buildAlert(variant, alertBus);
+  ambientBus.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
+  alertBus.gain.setTargetAtTime(1, ctx.currentTime, 0.4);
+}
+
+/** Fin des 5 minutes (ou de la partie) : retour à la musique d'ambiance. */
+function stopAlert() {
+  if (!alert || !ctx) return;
+  alert.stop();
+  alert = null;
+  alertBus.gain.setTargetAtTime(0, ctx.currentTime, 0.4);
+  ambientBus.gain.setTargetAtTime(1, ctx.currentTime, 0.8);
+}
+
+/** La musique d'alerte baisse à 25 % pendant que la voix parle. */
+function alertDuck(on: boolean) {
+  if (ctx && alert) alertBus.gain.setTargetAtTime(on ? 0.25 : 1, ctx.currentTime, 0.15);
+}
+
+/** Aperçu de quelques secondes depuis les Réglages (par-dessus la musique, au volume de la musique). */
+let preview: Alert | null = null;
+function previewAlert(variant: AlertVariant, seconds = 4) {
+  init();
+  preview?.stop();
+  const out = gain(1, musicBus);
+  const current = buildAlert(variant, out);
+  preview = current;
+  setTimeout(() => {
+    current.stop();
+    out.gain.setTargetAtTime(0, ac().currentTime, 0.2);
+    if (preview === current) preview = null;
+  }, seconds * 1000);
+}
+
+/** Fin des 5 minutes : quatre bips en dent de scie à 440 Hz, à 600 ms d'intervalle. */
 function alarm() {
-  siren(3);
-  [0, 0.5, 1, 1.5, 2].forEach(d => setTimeout(() => beep(true), d * 1000));
+  const ctx = init();
+  for (let i = 0; i < 4; i++) blip(musicBus, "sawtooth", 440, ctx.currentTime + i * 0.6, 0.3, 0.4);
 }
 
 /** Petit accord de victoire. */
@@ -314,7 +443,9 @@ function victory() {
 export const audio = {
   init, startMusic, stopMusic, setMusicVolume, setSfxVolume, duck,
   beep, tick, siren, slam, alien, victory, alarm,
+  startAlert, stopAlert, alertDuck, previewAlert,
   get musicVolume() { return musicVolume; },
   get playing() { return !!music; },
   get state() { return ctx ? ctx.state : "none"; },
+  get alertPlaying() { return !!alert; },
 };

@@ -234,6 +234,7 @@ test("la musique démarre à l'ouverture et se règle dans les réglages", async
   await expect(page.locator("#musicBtn")).toHaveCount(0);
 
   await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-audio").click();
   await expect(page.locator("#musicChk")).toBeChecked();
   await page.locator("#musicChk").uncheck();
   expect((await audioState(page)).playing).toBe(false);
@@ -355,9 +356,53 @@ test("minuteur de 5 minutes : démarre à la validation, alarme à zéro, la par
   expect(errors).toEqual([]);
 });
 
+test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
+  const errors = await open(page);
+  await page.locator("#homeSetBtn").click();
+  await expect(page.getByRole("tab")).toHaveText(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
+  await expect(page.locator("#tab-display")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#themes")).toBeVisible();
+  // Clavier : flèche droite → Audio
+  await page.locator("#tab-display").focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#tab-audio")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#tab-audio")).toBeFocused();
+  await expect(page.locator("#musicChk")).toBeVisible();
+  await page.locator("#tab-alert").click();
+  await expect(page.locator(".alert-card")).toHaveCount(3);
+  await expect(page.locator(".alert-card strong")).toHaveText(["Sirène", "Klaxon", "Détecteur"]);
+  await expect(page.locator("#alert-siren")).toHaveAttribute("aria-checked", "true");
+  await page.locator("#alert-detector").click();
+  await expect(page.locator("#alert-detector")).toHaveAttribute("aria-checked", "true");
+  await page.locator("#alertCountdownChk").uncheck();
+  await page.locator("#alertPreview").click();
+  await page.clock.runFor(5000);
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!));
+  expect(saved).toMatchObject({ alertVariant: "detector", alertVoice: true, alertCountdown: false, settingsTab: "alert" });
+  // Le dernier onglet est mémorisé (enregistré ci-dessus, et rouvert à la réouverture)
+  await page.locator("#setClose").click();
+  await page.locator("#homeSetBtn").click();
+  await expect(page.locator("#tab-alert")).toHaveAttribute("aria-selected", "true");
+  expect(errors).toEqual([]);
+});
+
+test("chaque onglet des réglages tient dans l'écran sans défilement", async ({ page }) => {
+  await open(page);
+  await page.locator("#homeSetBtn").click();
+  for (const size of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 1280, height: 720 }, { width: 1366, height: 768 }]) {
+    await page.setViewportSize(size);
+    for (const tab of ["display", "audio", "alert", "system"]) {
+      await page.locator(`#tab-${tab}`).click();
+      const fits = await page.locator("#settings .panel").evaluate(el => el.scrollHeight <= el.clientHeight + 1 && el.getBoundingClientRect().bottom <= innerHeight + 1);
+      expect(fits, `${tab} à ${size.width}×${size.height}`).toBe(true);
+    }
+  }
+});
+
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-system").click();
   await expect(page.locator("#versionInfo")).toHaveText(/v\d+\.\d+\.\d+ · BUILD \d+ \([0-9a-f]+\) DU \d{2}\/\d{2}\/\d{4}/);
 });
 

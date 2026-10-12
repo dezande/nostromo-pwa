@@ -1,7 +1,6 @@
 // Minuteur de l'entraînement : 5 minutes à partir de la validation de la salle de départ.
-// À zéro, une alarme retentit, mais la partie continue.
+// À zéro, l'alerte se termine (state/alert.ts), mais la partie continue.
 import { signal } from "@preact/signals";
-import { audio } from "../audio/audio";
 
 export const TRAINING_SECONDS = 5 * 60;
 
@@ -18,8 +17,7 @@ function tick() {
   if (left !== remaining.value) remaining.value = left;
   if (left === 0 && !expired.value) {
     expired.value = true;
-    clearInterval(interval);
-    audio.alarm();
+    clearInterval(interval); // la musique d'alerte et la voix sont gérées par state/alert.ts
   }
 }
 

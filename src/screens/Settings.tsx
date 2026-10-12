@@ -1,40 +1,109 @@
-// Réglages : audio, affichage, partie, et numéro de build.
+// Réglages, en onglets : Affichage, Audio, Alerte, Système.
+// Le dernier onglet ouvert est mémorisé ; navigation au clavier avec les flèches.
 import type { Signal } from "@preact/signals";
 import { Overlay } from "../components/Overlay";
+import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
-import { settings } from "../state/settings";
+import { settings, type SettingsTab } from "../state/settings";
 import { settingsOpen } from "../state/ui";
 import { BUILD, offline, type OfflineState } from "../state/pwa";
 
+const TABS: { id: SettingsTab; label: string }[] = [
+  { id: "display", label: "AFFICHAGE" },
+  { id: "audio", label: "AUDIO" },
+  { id: "alert", label: "ALERTE" },
+  { id: "system", label: "SYSTÈME" },
+];
+
 export function Settings() {
+  const tab = settings.settingsTab.value;
+  const select = (id: SettingsTab) => { settings.settingsTab.value = id; };
+  const onKey = (e: KeyboardEvent) => {
+    const i = TABS.findIndex(t => t.id === tab);
+    const next = e.key === "ArrowRight" ? i + 1 : e.key === "ArrowLeft" ? i - 1 : e.key === "Home" ? 0 : e.key === "End" ? TABS.length - 1 : null;
+    if (next === null) return;
+    e.preventDefault();
+    const target = TABS[(next + TABS.length) % TABS.length].id;
+    select(target);
+    (document.getElementById(`tab-${target}`) as HTMLElement | null)?.focus();
+  };
+
   return (
     <Overlay id="settings" show={settingsOpen.value}>
-      <div class="panel">
+      <div class="panel settings-panel">
         <h2>RÉGLAGES</h2>
+        <div class="tabs" role="tablist" aria-label="Réglages" onKeyDown={onKey}>
+          {TABS.map(t => (
+            <button key={t.id} id={`tab-${t.id}`} role="tab" class="tab" aria-selected={tab === t.id}
+              aria-controls={`panel-${t.id}`} tabIndex={tab === t.id ? 0 : -1} onClick={() => select(t.id)}>
+              {t.label}
+            </button>
+          ))}
+        </div>
 
-        <div class="set-title">AUDIO</div>
-        <Toggle id="musicChk" label="Musique" setting={settings.music} />
-        <Slider id="volRange" label="Volume de la musique" setting={settings.musicVolume} min={0} max={100} scale={100} unit="%" />
-        <Slider id="sfxRange" label="Volume des effets sonores" setting={settings.sfxVolume} min={0} max={100} scale={100} unit="%" />
-        <Toggle id="voiceChk" label="Annonce vocale du nom de la salle" setting={settings.voice} />
+        <div class="tab-panel" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
+          {tab === "display" && (
+            <>
+              <ThemePicker />
+              <Slider id="fsRange" label="Taille du texte" setting={settings.textSize} min={100} max={160} step={10} unit="%" />
+              <Toggle id="scanChk" label="Lignes horizontales (écran ancien)" setting={settings.scanlines} />
+              <Toggle id="transChk" label="Écrans de transition" setting={settings.transitions} />
+            </>
+          )}
+          {tab === "audio" && (
+            <>
+              <Toggle id="musicChk" label="Musique" setting={settings.music} />
+              <Slider id="volRange" label="Volume de la musique" setting={settings.musicVolume} min={0} max={100} scale={100} unit="%" />
+              <Slider id="sfxRange" label="Volume des effets sonores" setting={settings.sfxVolume} min={0} max={100} scale={100} unit="%" />
+              <Toggle id="voiceChk" label="Annonce vocale du nom de la salle" setting={settings.voice} />
+              <p class="note">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
+            </>
+          )}
+          {tab === "alert" && <AlertSettings />}
+          {tab === "system" && (
+            <>
+              <Slider id="cdRange" label="Compte à rebours avant fermeture" setting={settings.countdown} min={3} max={30} unit="s" />
+              <Toggle id="wakeChk" label="Écran toujours allumé" setting={settings.wakeLock} />
+              <VersionInfo />
+            </>
+          )}
+        </div>
 
-        <div class="set-title">AFFICHAGE</div>
-        <ThemePicker />
-        <Slider id="fsRange" label="Taille du texte" setting={settings.textSize} min={100} max={160} step={10} unit="%" />
-        <Toggle id="scanChk" label="Lignes horizontales (écran ancien)" setting={settings.scanlines} />
-        <Toggle id="transChk" label="Écrans de transition" setting={settings.transitions} />
-
-        <div class="set-title">PARTIE</div>
-        <Slider id="cdRange" label="Compte à rebours" setting={settings.countdown} min={3} max={30} unit="s" />
-        <Toggle id="wakeChk" label="Écran toujours allumé" setting={settings.wakeLock} />
-
-        <p class="note">Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.</p>
-        <VersionInfo />
         <div class="row">
           <button id="setClose" onClick={() => { settingsOpen.value = false; }}>Fermer</button>
         </div>
       </div>
     </Overlay>
+  );
+}
+
+const ALERTS: { id: AlertVariant; name: string; description: string }[] = [
+  { id: "siren", name: "Sirène", description: "Sirène lente et grondement grave" },
+  { id: "klaxon", name: "Klaxon", description: "Bip à deux tons, rythmé" },
+  { id: "detector", name: "Détecteur", description: "Bip de détecteur et pulsation" },
+];
+
+/** Musique 2 : jouée pendant les 5 minutes de l'entraînement, avec la voix toutes les 30 s. */
+function AlertSettings() {
+  const current = settings.alertVariant.value;
+  return (
+    <>
+      <p class="note">Musique jouée pendant les 5 minutes de l'entraînement.</p>
+      <div class="alert-cards" role="radiogroup" aria-label="Fond sonore de l'alerte">
+        {ALERTS.map(a => (
+          <button key={a.id} class="alert-card" id={`alert-${a.id}`} role="radio" aria-checked={current === a.id}
+            onClick={() => { settings.alertVariant.value = a.id; }}>
+            <strong>{a.name}</strong>
+            <small>{a.description}</small>
+          </button>
+        ))}
+      </div>
+      <Toggle id="alertVoiceChk" label="Voix toutes les 30 s" setting={settings.alertVoice} />
+      <Toggle id="alertCountdownChk" label="Décompte des 10 dernières secondes" setting={settings.alertCountdown} />
+      <div class="row">
+        <button id="alertPreview" onClick={() => audio.previewAlert(current)}>▶ Écouter</button>
+      </div>
+    </>
   );
 }
 
