@@ -8,7 +8,12 @@ export const offline = signal<OfflineState>("serviceWorker" in navigator ? "inst
 export const BUILD = __BUILD__;
 
 export async function registerServiceWorker() {
-  if (!("serviceWorker" in navigator) || import.meta.env.DEV) return;
+  if (!("serviceWorker" in navigator)) return;
+  if (import.meta.env.DEV) {
+    // Pas de mode hors ligne en développement : on retire un éventuel ancien service worker.
+    for (const registration of await navigator.serviceWorker.getRegistrations()) await registration.unregister();
+    return;
+  }
   const { registerSW } = await import("virtual:pwa-register");
   registerSW({
     immediate: true,

@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import preact from "@preact/preset-vite";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -15,11 +15,34 @@ const build = {
   date: new Date().toISOString().slice(0, 10),
 };
 
+// En développement, /sw.js remplace l'ancien service worker (version sans Vite) par un script qui
+// vide les caches et se désinstalle : sinon le navigateur continue d'afficher l'ancienne app en cache.
+const SELF_DESTROYING_SW = `
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", event => event.waitUntil((async () => {
+  for (const key of await caches.keys()) await caches.delete(key);
+  await self.registration.unregister();
+  for (const client of await self.clients.matchAll({ type: "window" })) client.navigate(client.url);
+})()));
+`;
+const removeOldServiceWorkerInDev = (): Plugin => ({
+  name: "nostromo-remove-old-sw",
+  apply: "serve",
+  configureServer(server) {
+    server.middlewares.use("/sw.js", (_req, res) => {
+      res.setHeader("Content-Type", "application/javascript");
+      res.setHeader("Cache-Control", "no-store");
+      res.end(SELF_DESTROYING_SW);
+    });
+  },
+});
+
 export default defineConfig({
   // Sur GitHub Pages, le site est servi sous /<nom-du-dépôt>/ (voir .github/workflows/pages.yml).
   base: process.env.BASE_PATH || "/",
   define: { __BUILD__: JSON.stringify(build) },
   plugins: [
+    removeOldServiceWorkerInDev(),
     preact(),
     VitePWA({
       registerType: "autoUpdate",
