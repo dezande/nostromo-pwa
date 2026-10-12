@@ -1,6 +1,6 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
 import { ROOM_IDS, VENTS, room, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
-import { reachable, closed, closing, flashing, path, phase, position, touchRoom } from "../state/game";
+import { reachable, closable, closed, closing, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
 import { ProtocolWindow } from "./ProtocolWindow";
 
 const range = (from: number, to: number, stepBy: number) => Array.from({ length: Math.ceil((to - from) / stepBy) }, (_, i) => from + i * stepBy);
@@ -153,13 +153,15 @@ function Rooms({ deck }: { deck: 1 | 2 }) {
 
 function Room({ id }: { id: RoomId }) {
   const r = room(id);
-  const canTouch = reachable.value.has(id);
+  const canTouch = reachable.value.has(id) || closable.value.has(id);
   const classes = [
     "room",
     r.toxic && "toxic",
     closed.value.has(id) && "closed",
-    canTouch && "reach",
-    canTouch && phase.value === "place" && "pulse", // salles de départ possibles
+    reachable.value.has(id) && "reach",
+    reachable.value.has(id) && phase.value === "place" && "pulse", // salles de départ possibles
+    closable.value.has(id) && "target",                             // salles que le Coordinateur peut fermer
+    toClose.value.has(id) && "selected",                            // salles choisies pour la fermeture
     closing.value.has(id) && "closing",
     flashing.value.has(id) && "flash",
   ].filter(Boolean).join(" ");

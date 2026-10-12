@@ -3,7 +3,7 @@ import { ShipMap } from "./components/ShipMap";
 import { ActionBar } from "./components/ActionBar";
 import { PressStart } from "./screens/PressStart";
 import { Home } from "./screens/Home";
-import { ProtocolPicker } from "./screens/ProtocolPicker";
+import { Briefing } from "./screens/Briefing";
 import { Countdown } from "./screens/Countdown";
 import { EndScreen } from "./screens/EndScreen";
 import { Settings } from "./screens/Settings";
@@ -20,11 +20,10 @@ export function App() {
       <main id="main" class={shake.value ? "shake" : ""}>
         <ShipMap />
       </main>
-      {/* Le panneau du coordinateur (components/Coordinator.tsx) n'est plus affiché pour l'instant. */}
       <ActionBar />
 
       {/* Écrans superposés, du plus bas au plus haut. */}
-      <ProtocolPicker />
+      <Briefing />
       <Countdown />
       <EndScreen />
       <Home />
