@@ -1,0 +1,58 @@
+@use "functions" as *;
+
+// Écran superposé : caché par défaut, affiché avec la classe .show
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  place-items: center;
+  padding: 16px;
+  background: var(--veil);
+  &.show { display: grid; }
+}
+
+// Ordre d'empilement (du plus bas au plus haut)
+#home { z-index: 45; }
+#welcome, #briefing, #briefing2 { z-index: 44; }
+#settings { z-index: 46; }
+#press { z-index: 47; }
+#trans { z-index: 48; }
+
+.panel {
+  width: 100%;
+  max-width: 720px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+
+  h2 { margin: 0 0 6px; letter-spacing: .2em; font-size: fs(16px); }
+  p { margin: 0 0 14px; color: var(--dim); font-size: fs(13px); line-height: 1.5; }
+}
+
+// Compte à rebours
+#count {
+  background: radial-gradient(circle, rgba(70, 5, 8, .75), rgba(3, 5, 5, .92));
+  .lbl { text-align: center; letter-spacing: .35em; font-size: fs(13px); color: #ffb3b3; }
+  .num { text-align: center; font-size: min(38vw, 240px); line-height: 1; color: var(--red); text-shadow: 0 0 30px #f00; }
+  .room-name { text-align: center; margin-top: 8px; min-height: 1.4em; font-size: fs(22px); letter-spacing: .2em; color: #fff; }
+}
+
+// Fin de partie
+.end {
+  h2 { margin: 10px 0; text-align: center; font-size: clamp(22px, 7vw, 40px); }
+  p { text-align: center; }
+  &.dead h2 { color: var(--red); text-shadow: 0 0 18px #f00; }
+  &.win h2 { color: var(--accent); text-shadow: 0 0 18px var(--accent); }
+}
+
+// Écran titre « touchez l'écran pour commencer »
+#press {
+  background: var(--bg);
+  cursor: pointer;
+  text-align: center;
+  .blink { font-size: fs(14px); }
+}

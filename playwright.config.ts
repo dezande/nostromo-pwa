@@ -1,7 +1,7 @@
 // @ts-check
-const { defineConfig, devices } = require("@playwright/test");
+import { defineConfig, devices } from "@playwright/test";
 
-module.exports = defineConfig({
+export default defineConfig({
   testDir: "tests",
   timeout: 60_000,
   forbidOnly: !!process.env.CI,
@@ -9,6 +9,9 @@ module.exports = defineConfig({
   use: {
     baseURL: "http://localhost:4173",
     serviceWorkers: "block",
+    // Tests silencieux : pas de son (la voix est aussi neutralisée dans tests/app.spec.ts).
+    launchOptions: { args: ["--mute-audio"] },
+    headless: true,
     trace: "retain-on-failure",
     // En local on utilise le Chrome installé ; en CI, le Chromium de Playwright.
     ...(process.env.CI ? {} : { channel: "chrome" }),
@@ -18,9 +21,11 @@ module.exports = defineConfig({
     { name: "telephone", use: { ...devices["Pixel 7"], ...(process.env.CI ? {} : { channel: "chrome" }) } },
   ],
   webServer: {
-    command: "python3 -m http.server 4173",
+    // Les tests tournent sur la version compilée, comme sur GitHub Pages.
+    command: "npx vite build && npx vite preview --port 4173 --strictPort",
     url: "http://localhost:4173",
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
+    timeout: 120_000,
     stdout: "ignore",
     stderr: "ignore",
   },

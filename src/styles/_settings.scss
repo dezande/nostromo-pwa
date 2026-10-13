@@ -1,0 +1,101 @@
+@use "functions" as *;
+
+.set-title { margin-top: 12px; font-size: fs(11px); letter-spacing: .25em; color: var(--dim); }
+
+label.set {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: fs(13px);
+  input[type="range"] { flex: 1; accent-color: var(--red); }
+}
+
+// Choix du style d'écran : chaque bouton s'affiche dans ses propres couleurs
+.themes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+.theme {
+  padding: 12px 10px;
+  text-align: left;
+  font-size: fs(12px);
+  font-size-adjust: .52;
+  border-radius: 6px;
+  &[aria-pressed="true"] { outline: 2px solid var(--amber); outline-offset: 2px; }
+}
+
+.panel .note { margin-top: 14px; }
+
+.version {
+  margin: 0 0 12px;
+  font-size: fs(11px);
+  line-height: 1.6;
+  letter-spacing: .1em;
+  color: var(--dim);
+}
+
+// ---------- Onglets des Réglages ----------
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin: 8px 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+.tab {
+  min-height: 44px;
+  padding: 8px 4px;
+  border: 1px solid var(--line);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  font-size: fs(11px);
+  letter-spacing: .15em;
+  color: var(--dim);
+  &[aria-selected="true"] { color: var(--accent); border-color: var(--accent); background: var(--room-hi); }
+  &:focus-visible { outline: 2px solid var(--amber); outline-offset: -2px; }
+}
+.tab-panel { min-height: 0; }
+
+// Choix de l'alerte : cartes
+.alert-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 6px 0 10px;
+}
+.alert-card {
+  text-align: left;
+  padding: 10px 12px;
+  strong { display: block; color: var(--accent); letter-spacing: .15em; font-size: fs(13px); margin-bottom: 4px; }
+  small { display: block; color: var(--dim); font-size: fs(11px); line-height: 1.4; }
+  &[aria-checked="true"] { outline: 2px solid var(--amber); outline-offset: 2px; background: var(--room-hi); }
+}
+
+// Petits écrans : chaque onglet tient sans défilement
+@media (max-height: 800px), (max-width: 480px) {
+  .settings-panel { padding: 14px 16px; h2 { font-size: fs(14px); } }
+  .themes { grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 4px 0 8px; }
+  .theme { padding: 8px 6px; font-size: fs(10px); }
+  label.set { padding: 6px 0; font-size: fs(12px); }
+  .tab { font-size: fs(9px); letter-spacing: .08em; }
+}
+
+// Retour à l'accueil (avec confirmation)
+.return-home { margin: 8px 0; }
+.return-home.confirm {
+  padding: 10px 12px;
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  p { margin: 0 0 8px; color: var(--ink); }
+}

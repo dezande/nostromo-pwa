@@ -1,0 +1,33 @@
+// Couleurs et réglages par défaut (style « Nostromo (origine) »).
+// Les autres styles d'écran remplacent ces variables depuis src/data/themes.js.
+:root {
+  --bg: #07090a;
+  --panel: #0e1312;
+  --line: #1f2a27;
+  --ink: #cfe9d9;           // texte
+  --dim: #6f8a7e;           // texte secondaire
+  --accent: #5cff9d;        // couleur du style (vert par défaut)
+  --amber: #ffb238;         // portes, ascenseurs, alertes
+  --red: #ff3b3b;           // danger, salles fermées
+  --room: #0f1a17;
+  --room-hi: #16302a;       // salle accessible
+  --room-stroke: #3f6a5c;
+  --glow: #12221d;
+  --wall: #2f4a41;
+  --deco: #0b1210;
+  --vent: #4f7f70;
+  --veil: rgba(3, 5, 5, .88); // fond des écrans superposés
+  --font: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  // Effets d'écran cathodique (0 = aucun)
+  --scan: 1;
+  --flicker: 0;
+  --noise: 0;
+  --curve: 0;
+  --bloom: 0;
+  --rgb: 0;
+  --ambient: 0;
+
+  --fs: 1.2; // taille du texte (réglage)
+  color-scheme: dark;
+}

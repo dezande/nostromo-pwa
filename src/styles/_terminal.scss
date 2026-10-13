@@ -1,0 +1,34 @@
+@use "functions" as *;
+
+// Faux écran de transition (terminal MU/TH/UR 6000)
+#trans {
+  place-items: center;
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.term {
+  width: min(640px, 100%);
+  font-size: fs(13px);
+  line-height: 1.7;
+  color: var(--ink);
+
+  .hd { margin-bottom: 10px; color: var(--accent); letter-spacing: .2em; }
+
+  .ln { display: flex; gap: 6px; align-items: baseline; }
+  // Pointillés qui s'étirent jusqu'au résultat
+  .dots { flex: 1; min-width: 12px; border-bottom: 2px dotted var(--dim); transform: translateY(-4px); }
+  .res { white-space: nowrap; }
+  .ok { color: var(--accent); }
+  .warn { color: var(--amber); }
+  .cur::after { content: "█"; margin-left: 2px; animation: blink .8s steps(2) infinite; }
+
+  .bar {
+    height: 10px;
+    margin-top: 14px;
+    border: 1px solid var(--line);
+    i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .15s linear; }
+  }
+
+  .skip { margin-top: 14px; font-size: fs(10px); letter-spacing: .2em; color: var(--dim); }
+}

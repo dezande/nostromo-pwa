@@ -1,0 +1,143 @@
+@use "functions" as *;
+
+.decks {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 12px;
+  // Les deux colonnes ont la même hauteur : pont 1 à gauche = informations + pont 2 à droite.
+  align-items: stretch;
+  @media (max-width: 520px) { grid-template-columns: 1fr; }
+}
+
+// Colonne de droite : fenêtre d'informations puis pont 2
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.info-panel {
+  flex: 1; // prend toute la hauteur restante de la colonne
+  min-height: 120px;
+  .info-body { padding: 4px 6px 8px; font-size: fs(13px); line-height: 1.5; }
+  .terminal-text { margin: 0; color: var(--accent); letter-spacing: .12em; font-size: fs(14px); }
+  .cur::after { content: "█"; margin-left: 2px; animation: blink .8s steps(2) infinite; }
+  .info-empty { margin: 0; color: var(--dim); letter-spacing: .2em; font-size: fs(11px); }
+}
+
+.deck {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 8px;
+
+  h2 {
+    margin: 2px 4px 6px;
+    font-size: fs(11px);
+    letter-spacing: .25em;
+    color: var(--dim);
+    font-weight: normal;
+  }
+
+  // Sur grand écran, les deux ponts tiennent en entier dans la hauteur de la fenêtre.
+  @media (min-width: 521px) {
+    svg { max-height: calc(100dvh - 200px); }
+  }
+}
+
+// Décor du vaisseau
+.wall { fill: none; stroke: var(--wall); stroke-width: 2; }
+.deco { fill: var(--deco); stroke: var(--wall); stroke-width: 2; }
+.hatch { stroke: var(--wall); stroke-width: 1.5; }
+.antenna { stroke: var(--room-stroke); stroke-width: 3; }
+.door { stroke: var(--amber); stroke-width: 2; }
+.vent { stroke: var(--vent); stroke-width: 1.5; stroke-dasharray: 3 3; fill: none; }
+
+// Conduit d'aération : bande étroite dans la coque, praticable
+.vent-corridor {
+  rect { fill: var(--room); stroke: var(--room-stroke); stroke-width: 2; transition: fill .25s; }
+  .vent-arrow { fill: none; stroke: var(--vent); stroke-width: 1.5; }
+  .vent-pointer { stroke: var(--dim); stroke-width: .8; }
+  // On peut l'emprunter depuis la salle du pion
+  &.open {
+    rect { fill: var(--room-hi); stroke: var(--accent); }
+    .vent-arrow { stroke: var(--accent); }
+  }
+}
+.vent-label { fill: var(--dim); font-size: fs-map(7px); text-anchor: middle; }
+.lift { fill: var(--deco); stroke: var(--amber); stroke-width: 1.5; }
+.lift-icon { stroke: var(--amber); fill: none; stroke-width: 1.2; }
+.toxic-cross { stroke: #c22; stroke-width: 3; stroke-linecap: round; }
+// Repère discret : minuscule et peu visible
+.marker-dot { fill: var(--room-stroke); opacity: .5; pointer-events: none; }
+
+// Salles
+@mixin room-shape { rect, polygon { @content; } }
+
+.room {
+  outline: none;
+  @include room-shape { fill: var(--room); stroke: var(--room-stroke); stroke-width: 2; transition: fill .25s; }
+
+  text {
+    fill: var(--ink);
+    font-size: fs-map(10px);
+    text-anchor: middle;
+    pointer-events: none;
+    letter-spacing: .05em;
+  }
+
+  &:focus-visible { @include room-shape { stroke: var(--amber); stroke-width: 3; } }
+
+  &.reach {
+    cursor: pointer;
+    @include room-shape { fill: var(--room-hi); stroke: var(--accent); }
+    text { fill: var(--accent); }
+  }
+  &.closed {
+    @include room-shape { fill: url(#sealed); stroke: var(--red); }
+    text { fill: #ffb3b3; }
+  }
+  &.toxic {
+    @include room-shape { fill: #1a0c0d; stroke: #6b2326; }
+    text { fill: #c55; }
+  }
+  // Choix du Coordinateur : salles à fermer
+  &.target { cursor: pointer; @include room-shape { stroke: var(--amber); } }
+  &.selected {
+    @include room-shape { fill: #3a0a0c; stroke: var(--red); stroke-width: 3; animation: alarm 1s steps(2) infinite; }
+    text { fill: #ffb3b3; }
+  }
+  // Salles de départ possibles : clignotement doux
+  &.pulse { @include room-shape { animation: pulse 1.6s ease-in-out infinite; } }
+  &.closing { @include room-shape { animation: alarm .5s steps(2) infinite; } }
+  &.flash { @include room-shape { animation: slam .9s ease-out; } }
+}
+
+@keyframes pulse { 0%, 100% { fill: var(--room); } 50% { fill: var(--room-hi); } }
+@keyframes alarm { 0% { fill: #3a0a0c; } 100% { fill: #120607; } }
+@keyframes slam { 0% { fill: #ff3b3b; } 100% { fill: #3a0a0c; } }
+
+// Chemin du pion depuis la dernière validation
+.path { pointer-events: none; }
+.path-line { stroke: var(--amber); stroke-width: 2; stroke-dasharray: 4 4; stroke-linecap: round; }
+.path-step {
+  circle { fill: var(--bg); stroke: var(--amber); stroke-width: 1.5; }
+  text { fill: var(--amber); font-size: 9px; text-anchor: middle; font-weight: bold; }
+}
+
+// Pion du Psychic Agent
+.pawn { pointer-events: none; transition: transform .35s ease; }
+.pawn-core { fill: var(--accent); }
+.pawn-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ping 1.6s ease-out infinite;
+}
+@keyframes ping {
+  0% { opacity: .9; transform: scale(.6); }
+  100% { opacity: 0; transform: scale(2.2); }
+}

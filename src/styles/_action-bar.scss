@@ -1,0 +1,35 @@
+@use "functions" as *;
+
+// Barre fine collée en bas de l'écran de jeu
+.action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line);
+  background: var(--veil);
+  backdrop-filter: blur(4px);
+
+  button { flex: 1; min-height: 44px; font-size: fs(13px); }
+  .big { flex: 2; padding: 8px 12px; font-size: fs(14px); }
+
+  // Minuteur de 5 minutes
+  .training-timer {
+    display: grid;
+    place-items: center;
+    min-width: 5.5em;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: fs(20px);
+    letter-spacing: .1em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    &.urgent { color: var(--red); border-color: var(--red); }
+    &.expired { color: #fff; background: #5b0b10; border-color: var(--red); animation: blink 1s steps(2) infinite; }
+  }
+}
