@@ -48,8 +48,9 @@ function MiniUi({ x, y, w, text, pressed }: { x: number; y: number; w: number; t
       <rect class="mini-info" x={x} y={y} width={w} height="26" rx="4" />
       <text class="mini-info-title" x={x + 6} y={y + 9}>PROTOCOLE A.I.P.</text>
       <text class="mini-info-text" x={x + 6} y={y + 20}>{text}</text>
-      <rect class={`mini-validate ${pressed ? "pressed" : ""}`} x={x + w * 0.35} y={y + 32} width={w * 0.65} height="20" rx="4" />
-      <text class="mini-validate-text" x={x + w * 0.675} y={y + 46}>✓ VALIDER</text>
+      {/* Bouton « Valider » carré, icône seule, comme dans la barre d'actions */}
+      <rect class={`mini-validate ${pressed ? "pressed" : ""}`} x={x + w - 20} y={y + 32} width="20" height="20" rx="3" />
+      <path class="mini-validate-icon" d="M5 12.5l4.5 4.5L19 7.5" transform={`translate(${x + w - 18} ${y + 34}) scale(0.667)`} />
     </g>
   );
 }

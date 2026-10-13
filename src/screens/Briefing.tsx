@@ -1,7 +1,7 @@
 // Panneaux affichés après « Démarrer la simulation » : bienvenue, puis explication du protocole.
 // Pas de choix de protocole dans l'app : le Coordinateur utilise ses fiches papier.
 import { Overlay } from "../components/Overlay";
-import { Icon } from "../components/Icon";
+import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { RuleScene, type RuleName } from "../components/RuleScenes";
 import { startGame } from "../state/game";
@@ -39,10 +39,8 @@ export function Briefing() {
           <p>Vous avez été sélectionné pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
           <p>Le vaisseau-base Nostromo II reproduit un cargo de taille moyenne de la compagnie. L'entraînement se déroule en conditions réelles. Huit spécimens adultes sont confinés sous le plancher du vaisseau.</p>
           <p>Votre contrat prévoit les risques liés à cet entraînement. La compagnie vous remercie de votre engagement.</p>
-          <div class="row briefing-actions">
-            <button class="big" id="welcomeNext" onClick={() => { briefing.value = 1; }}>
-              CONTINUER <Icon name="play" />
-            </button>
+          <div class="row icon-row briefing-actions">
+            <IconButton id="welcomeNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = 1; }} />
           </div>
         </div>
       </Overlay>
@@ -60,12 +58,11 @@ export function Briefing() {
             {panel === i + 1 && <RuleScene name={rule.scene} />}
             <p class="rule-text">{rule.text}</p>
             {i === RULES.length - 1 && <p class="briefing-sign">Fiez-vous à votre instinct, Agent.</p>}
-            <div class="row briefing-actions">
-              <button id={`rule${i + 1}Back`} onClick={() => { briefing.value = i === 0 ? "welcome" : (i as BriefingPanel); }}>← RETOUR</button>
-              <button class="big" id={`rule${i + 1}Next`}
-                onClick={() => { if (i === RULES.length - 1) { briefing.value = null; startGame(); } else briefing.value = (i + 2) as BriefingPanel; }}>
-                CONTINUER <Icon name="play" />
-              </button>
+            <div class="row icon-row briefing-actions">
+              <IconButton id={`rule${i + 1}Back`} icon="retour" label="Retour"
+                onClick={() => { briefing.value = i === 0 ? "welcome" : (i as BriefingPanel); }} />
+              <IconButton id={`rule${i + 1}Next`} icon="continuer" label="Continuer" primary
+                onClick={() => { if (i === RULES.length - 1) { briefing.value = null; startGame(); } else briefing.value = (i + 2) as BriefingPanel; }} />
             </div>
           </div>
         </Overlay>
