@@ -19,7 +19,7 @@ async function startSimulation() {
   homeOpen.value = false;
   showIntro();
   contractSigned.value = false;
-  briefing.value = settings.scenario.value === "recruitment" ? "hr" : "welcome";
+  briefing.value = SCENARIOS[settings.scenario.value].firstPanel;
 }
 
 export function Home() {

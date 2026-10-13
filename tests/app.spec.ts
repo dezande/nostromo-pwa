@@ -881,3 +881,37 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
   await expect(page.locator("#endTitle")).toHaveText("CANDIDATURE CLOSE");
   expect(errors).toEqual([]);
 });
+
+test("scénario Infiltré : archives C.R.F., e-mail de la direction, session disciplinaire, sanction", async ({ page }) => {
+  const errors = await open(page);
+  await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-scenario").click();
+  await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
+  await page.locator("#scenario-infiltrated").click();
+  await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
+  await page.locator("#setClose").click();
+  await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
+
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#archives")).toHaveClass(/show/);
+  await expect(page.locator("#archives")).toContainText("LIEUTENANT D.R.");
+  await page.locator("#archivesNext").click();
+  await expect(page.locator("#email")).toHaveClass(/show/);
+  await expect(page.locator("#emailSubject")).toHaveText("Agent infiltré – Lieutenant D.R. – affectation disciplinaire");
+  await expect(page.locator("#email .redacted").first()).toBeVisible();
+  // L'e-mail tient dans l'écran (seul son corps peut défiler).
+  expect(await page.locator(".email-panel").evaluate(el => el.getBoundingClientRect().bottom <= innerHeight + 1)).toBe(true);
+  await page.locator("#emailNext").click();
+
+  await expect(page.locator("#rule1")).toContainText("SESSION DISCIPLINAIRE");
+  await page.locator("#rule1Back").click();
+  await expect(page.locator("#email")).toHaveClass(/show/);
+  await page.locator("#emailNext").click();
+  await expect(page.locator("#rule4")).toContainText("FIN DE LA SESSION");
+  for (const n of [1, 2, 3, 4]) await page.locator(`#rule${n}Next`).click();
+  await placeAgent(page, "cockpit");
+  await closeRoom(page, "cockpit");
+  await page.clock.runFor(2_000);
+  await expect(page.locator("#endTitle")).toHaveText("SANCTION APPLIQUÉE");
+  expect(errors).toEqual([]);
+});

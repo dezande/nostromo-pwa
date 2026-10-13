@@ -113,3 +113,47 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
+// ---------- Scénario « Infiltré » : archives de la C.R.F., e-mail de la direction ----------
+.archives-panel {
+  border-style: dashed;
+  .briefing-corp { color: var(--amber); }
+  h2 { color: var(--amber); }
+}
+
+// L'e-mail tient dans l'écran ; seul son corps défile si besoin.
+.email-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  .email-alert { color: var(--red); font-size: fs(10px); letter-spacing: .2em; margin: 6px 0 8px; }
+  .email-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 10px;
+    margin: 0 0 10px;
+    font-size: fs(11px);
+    dt { color: var(--dim); letter-spacing: .12em; }
+    dd { margin: 0; color: var(--ink); }
+    .email-subject { color: var(--accent); }
+    .email-attachment { display: inline-block; margin-right: 10px; color: var(--dim); }
+  }
+  .email-body { flex: 0 1 auto; }
+  .email-foot { margin-top: 8px; color: var(--red); font-size: fs(9px); letter-spacing: .2em; text-align: center; }
+  .briefing-actions { margin-top: 10px; }
+}
+
+// Fin : message d'une autre source sous le rapport
+.end-note {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px dashed var(--amber);
+  color: var(--amber);
+  font-size: fs(11px);
+  .end-note-from { display: block; letter-spacing: .15em; font-size: fs(9px); margin-bottom: 4px; }
+}
+
+@media (max-height: 800px), (max-width: 480px) {
+  .email-panel { max-height: calc(100dvh - 16px); .email-head { font-size: fs(10px); } }
+}

@@ -19,11 +19,14 @@ export interface Settings {
   settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
   markerDot: boolean;           // repère discret sur le plan
   layout: Layout;               // format de l'écran de jeu : tablette ou téléphone
-  scenario: Scenario;           // entraînement (par défaut) ou recrutement (jeu de rôle)
+  scenario: Scenario;           // entraînement (par défaut), recrutement (jeu de rôle) ou infiltré
 }
 
-/** Scénario : « training » (entraînement Psychic Agent, par défaut) ou « recruitment » (jeu de rôle). */
-export type Scenario = "training" | "recruitment";
+/**
+ * Scénario : « training » (entraînement Psychic Agent, par défaut), « recruitment » (jeu de rôle)
+ * ou « infiltrated » (le Lieutenant D.R. du livret, démasqué par la direction).
+ */
+export type Scenario = "training" | "recruitment" | "infiltrated";
 
 export type Layout = "tablet" | "phone";
 
