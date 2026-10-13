@@ -560,9 +560,11 @@ test("réglages : boutons du bas alignés sur une seule rangée, de même taille
   // Onglet Alerte : « Écouter » sur la même rangée
   await page.locator("#tab-alert").click();
   await sameRow("alertPreview", "homeReturnBtn", "setClose");
-  // Confirmation : Oui / Non sur la même rangée que Fermer
+  // Confirmation : seulement Oui / Non, sur la même rangée (pas de Fermer en doublon)
   await page.locator("#homeReturnBtn").click();
-  await sameRow("homeReturnYes", "homeReturnNo", "setClose");
+  await sameRow("homeReturnYes", "homeReturnNo");
+  await expect(page.locator("#setClose")).toHaveCount(0);
+  await expect(page.locator("#settings .settings-footer button")).toHaveCount(2);
   await page.locator("#homeReturnNo").click();
   await page.locator("#setClose").click();
   expect(errors).toEqual([]);
