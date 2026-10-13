@@ -5,6 +5,7 @@ import { ActionBar } from "./components/ActionBar";
 import { PressStart } from "./screens/PressStart";
 import { Home } from "./screens/Home";
 import { Briefing } from "./screens/Briefing";
+import { Recruitment } from "./screens/Recruitment";
 import { EndScreen } from "./screens/EndScreen";
 import { Settings } from "./screens/Settings";
 import { Transition } from "./screens/Transition";
@@ -29,6 +30,7 @@ export function App() {
 
       {/* Écrans superposés, du plus bas au plus haut. */}
       <Briefing />
+      <Recruitment />
       <EndScreen />
       <Home />
       <Settings />

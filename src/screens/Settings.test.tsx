@@ -26,7 +26,7 @@ afterEach(() => { render(null, root); root.remove(); });
 const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
 
 test("quatre onglets, un seul panneau visible à la fois", () => {
-  expect([...root.querySelectorAll('[role="tab"]')].map(t => t.textContent)).toEqual(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
+  expect([...root.querySelectorAll('[role="tab"]')].map(t => t.textContent)).toEqual(["SCÉNARIO", "AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
   expect($("#themes")).not.toBeNull();
   expect($("#musicChk")).toBeNull();
   act(() => { $("#tab-audio").click(); });

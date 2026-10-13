@@ -7,6 +7,9 @@ import { keepAwake } from "../state/device";
 import { showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
 import { briefing, homeOpen, settingsOpen } from "../state/ui";
+import { settings } from "../state/settings";
+import { SCENARIOS } from "../data/scenarios";
+import { contractSigned } from "./Recruitment";
 
 async function startSimulation() {
   if (terminalOpen.value) return;
@@ -15,7 +18,8 @@ async function startSimulation() {
   await runTerminal(BOOT);
   homeOpen.value = false;
   showIntro();
-  briefing.value = "welcome";
+  contractSigned.value = false;
+  briefing.value = settings.scenario.value === "recruitment" ? "hr" : "welcome";
 }
 
 export function Home() {
@@ -26,7 +30,7 @@ export function Home() {
         <div class="corp">WEYLAND-YUTANI CORP</div>
         <h2>NOSTROMO&nbsp;II</h2>
         <div class="base">TRAINING BASE · LUNE</div>
-        <p>Simulation d'intrusion alien pour Psychic Agents.</p>
+        <p id="homeLine">{SCENARIOS[settings.scenario.value].homeLine}</p>
         <div class="row icon-row home-actions">
           <IconButton id="startBtn" icon="demarrer" label="Démarrer" primary onClick={startSimulation} />
           <IconButton id="homeSetBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />

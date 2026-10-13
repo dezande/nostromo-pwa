@@ -1,0 +1,106 @@
+@use "functions" as *;
+
+// ---------- Scénario « Recrutement » : contrat à faire défiler, signé par empreinte ----------
+// Le panneau tient dans l'écran ; seul le texte du contrat défile (c'est voulu).
+.contract-panel {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 32px);
+  height: calc(100dvh - 32px);
+  max-height: 900px;
+  overflow: hidden;
+
+  .contract-title { margin: 6px 0 10px; letter-spacing: .08em; }
+  .briefing-actions.contract-actions { margin-top: 10px; }
+}
+
+.contract-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: fs(11px);
+  line-height: 1.5;
+
+  p { margin: 0 0 8px; color: var(--ink); }
+  .contract-lead { color: var(--accent); letter-spacing: .08em; }
+  .contract-article h3 { margin: 14px 0 6px; font-size: fs(11px); letter-spacing: .15em; color: var(--accent); font-weight: normal; }
+  .contract-num { color: var(--dim); }
+  .contract-end { margin-top: 16px; text-align: center; color: var(--dim); letter-spacing: .2em; }
+  &:focus-visible { outline: 1px solid var(--accent); }
+}
+
+// Lecteur d'empreinte
+.fingerprint {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 14px;
+  margin-top: 12px;
+
+  .fingerprint-pad {
+    grid-row: span 2;
+    position: relative;
+    width: 72px;
+    height: 84px;
+    padding: 8px;
+    border: 2px solid var(--line);
+    border-radius: 14px 14px 22px 22px;
+    color: var(--dim);
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    svg { width: 100%; height: 100%; display: block; }
+  }
+  .fingerprint-beam {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 3px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    opacity: 0;
+  }
+  .fingerprint-msg { color: var(--dim); font-size: fs(11px); letter-spacing: .12em; }
+  .fingerprint-ref { color: var(--dim); font-size: fs(9px); letter-spacing: .12em; }
+
+  &.ready .fingerprint-pad {
+    border-color: var(--accent);
+    color: var(--accent);
+    animation: fp-pulse 1.6s ease-in-out infinite;
+  }
+  &.ready .fingerprint-msg { color: var(--accent); }
+  &.scanning .fingerprint-pad { animation: none; background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  &.scanning .fingerprint-beam { opacity: 1; animation: fp-scan .5s linear infinite alternate; }
+  &.signed .fingerprint-pad {
+    animation: none;
+    opacity: 1;
+    border-color: var(--accent);
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  &.signed .fingerprint-msg { color: var(--accent); }
+}
+
+@keyframes fp-pulse {
+  50% { box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 45%, transparent); }
+}
+@keyframes fp-scan {
+  from { top: 0; }
+  to { top: calc(100% - 3px); }
+}
+
+// Petits écrans
+@media (max-height: 800px), (max-width: 480px) {
+  .contract-panel { height: calc(100dvh - 16px); }
+  .contract-scroll { font-size: fs(10px); }
+  .fingerprint { margin-top: 8px; .fingerprint-pad { width: 60px; height: 70px; } }
+}

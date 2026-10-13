@@ -1,17 +1,19 @@
-// Réglages, en onglets : Affichage, Audio, Alerte, Système.
+// Réglages, en onglets : Scénario, Affichage, Audio, Alerte, Système.
 // Le dernier onglet ouvert est mémorisé ; navigation au clavier avec les flèches.
 import type { Signal } from "@preact/signals";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
-import { settings, type Layout, type SettingsTab } from "../state/settings";
+import { settings, type Layout, type Scenario, type SettingsTab } from "../state/settings";
+import { SCENARIOS } from "../data/scenarios";
 import { returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
 import { useState } from "preact/hooks";
 import { BUILD, offline, type OfflineState } from "../state/pwa";
 
 const TABS: { id: SettingsTab; label: string }[] = [
+  { id: "scenario", label: "SCÉNARIO" },
   { id: "display", label: "AFFICHAGE" },
   { id: "audio", label: "AUDIO" },
   { id: "alert", label: "ALERTE" },
@@ -45,6 +47,7 @@ export function Settings() {
         </div>
 
         <div class="tab-panel" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
+          {tab === "scenario" && <ScenarioPicker />}
           {tab === "display" && (
             <>
               <LayoutPicker />
@@ -91,7 +94,7 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
   return (
     <div class={confirm ? "settings-footer confirm" : "settings-footer"} role={confirm ? "alertdialog" : undefined}
       aria-labelledby={confirm ? "homeReturnQ" : undefined}>
-      {confirm && <p id="homeReturnQ">Abandonner l'entraînement en cours ?</p>}
+      {confirm && <p id="homeReturnQ">{SCENARIOS[settings.scenario.value].quitQuestion}</p>}
       <div class="row icon-row settings-actions">
         {tab === "alert" && !confirm && (
           <IconButton id="alertPreview" icon="son" label="Écouter" onClick={() => audio.previewAlert(settings.alertVariant.value)} />
@@ -108,6 +111,46 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
         <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { setAsking(false); settingsOpen.value = false; }} />
       </div>
     </div>
+  );
+}
+
+/** Fiches de personnage (PDF noir et blanc) du scénario « Recrutement ». */
+const SHEETS = [
+  { id: "candidat", name: "Candidat (joueur)" },
+  { id: "rh", name: "RH (MJ)" },
+  { id: "coordinateur", name: "Coordinateur (MJ)" },
+];
+
+/** Choix du scénario. Il s'applique à la prochaine partie ; pendant une partie, le choix est bloqué. */
+function ScenarioPicker() {
+  const current = settings.scenario.value;
+  const locked = inGame.value;
+  return (
+    <>
+      <div class="alert-cards scenario-cards" role="radiogroup" aria-label="Scénario">
+        {(Object.keys(SCENARIOS) as Scenario[]).map(id => (
+          <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
+            disabled={locked && current !== id} onClick={() => { settings.scenario.value = id; }}>
+            <strong>{SCENARIOS[id].name}{id === "training" ? " (par défaut)" : ""}</strong>
+            <small>{SCENARIOS[id].description}</small>
+          </button>
+        ))}
+      </div>
+      {locked && <p class="note">Le scénario se change hors partie.</p>}
+      {current === "recruitment" && (
+        <div class="sheets" id="sheets">
+          <span class="set-label">Fiches de personnage (PDF, système 3d6)</span>
+          <div class="sheet-links">
+            {SHEETS.map(sheet => (
+              <a key={sheet.id} class="sheet-link" id={`sheet-${sheet.id}`} href={`${import.meta.env.BASE_URL}fiches/fiche-${sheet.id}.pdf`}
+                target="_blank" rel="noopener" download>
+                {sheet.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
