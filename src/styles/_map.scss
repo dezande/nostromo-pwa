@@ -188,23 +188,27 @@
   .layout-tablet .sys-wide { display: flex; }
 }
 
-// ---------- Téléphone : tout empilé ----------
-// Protocole compact en haut, puis pont 1, puis relevés + pont 2 ; tout tient dans la hauteur.
+// ---------- Téléphone : tout empilé, les ponts le plus grand possible ----------
+// Protocole sur deux lignes en haut, puis pont 1, puis pont 2, chacun sur toute la largeur.
+// Pas de relevés décoratifs : toute la place va aux ponts.
 .layout-phone {
   .decks {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    grid-template-rows: auto minmax(0, 1.5fr) minmax(0, 1fr);
-    grid-template-areas: "proto proto" "d1 d1" "sys d2";
-    gap: 6px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1.3fr) minmax(0, 1fr);
+    grid-template-areas: "proto" "d1" "d2";
+    gap: 4px;
   }
   .col-main, .side { display: contents; }
   .info-panel { grid-area: proto; }
   .deck-1 { grid-area: d1; }
   .deck-2 { grid-area: d2; }
-  .sys-side { grid-area: sys; }
-  .sys-wide { display: none; }
+  .sys-side, .sys-wide { display: none; }
 
-  .deck { padding: 4px; }
+  .deck { padding: 2px; }
+  // Noms des salles et numéros des pas un peu plus grands
+  .room text { font-size: 11.5px; }
+  .path-step circle { r: 9px; }
+  .path-step text { font-size: 11px; }
   // Le plan remplit tout le cadre ; le titre se pose dans un coin, par-dessus
   .deck-1 svg, .deck-2 svg { flex: 1 1 0; aspect-ratio: auto; height: auto; }
   .deck-head { position: absolute; top: 4px; left: 6px; right: 6px; z-index: 1; }
@@ -214,10 +218,11 @@
   .info-panel {
     min-height: 0;
     // hauteur fixe : les ponts ne bougent pas pendant que le texte s'écrit
-    height: calc(#{fs(12px)} * 1.35 * 3 + #{fs(9px)} * 1.2 + 22px);
+    height: calc(#{fs(12px)} * 1.3 * 2 + 10px);
     padding: 4px 8px;
-    h2 { margin: 0 0 2px; font-size: fs(9px); }
+    h2 { display: none; }
     .info-body { padding: 0; line-height: 1.35; }
+    .info-body { line-height: 1.3; }
     .terminal-text { font-size: fs(12px); letter-spacing: .05em; }
   }
 

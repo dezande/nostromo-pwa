@@ -42,7 +42,10 @@ main {
 
 // Téléphone : en-tête plus compact
 .layout-phone {
-  header { padding: calc(4px + env(safe-area-inset-top)) 10px 4px; gap: 6px; h1 { font-size: fs(12px); } }
+  header {
+    padding: calc(2px + env(safe-area-inset-top)) 8px 2px; gap: 6px;
+    h1 { font-size: fs(12px); }
+  }
   main { padding: 6px 6px 4px; }
 }
 
