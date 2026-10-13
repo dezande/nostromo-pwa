@@ -45,3 +45,29 @@ svg {
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+// Logo Weyland Corp en filigrane : couleur du style d'écran, derrière le contenu, jamais cliquable.
+.weyland-logo { color: var(--accent); }
+.weyland-logo-text { font-family: Questrial, Arial, sans-serif; font-size: 17px; }
+.logo-watermark {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: min(80vw, 640px);
+  height: auto;
+  opacity: .12;
+  pointer-events: none;
+  z-index: 0;
+}
+// Écran de jeu : plus petit et plus pâle, fixé au centre de l'écran
+.logo-faint {
+  position: fixed;
+  width: min(60vw, 520px);
+  opacity: .06;
+  z-index: 5; // par-dessus le plan, mais transparent aux clics
+}
+// Dans le panneau de bienvenue : derrière le texte, sur le fond du panneau
+.welcome-panel { position: relative; > :not(.logo-watermark) { position: relative; z-index: 1; } }
+.logo-in-panel { width: 90%; opacity: .1; }
+// Le terminal passe devant le filigrane
+#trans .term { position: relative; z-index: 1; }

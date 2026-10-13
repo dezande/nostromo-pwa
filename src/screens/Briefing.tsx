@@ -2,6 +2,7 @@
 // Pas de choix de protocole dans l'app : le Coordinateur utilise ses fiches papier.
 import { Overlay } from "../components/Overlay";
 import { Icon } from "../components/Icon";
+import { WeylandLogo } from "../components/WeylandLogo";
 import { RuleScene, type RuleName } from "../components/RuleScenes";
 import { startGame } from "../state/game";
 import { briefing, type BriefingPanel } from "../state/ui";
@@ -30,7 +31,8 @@ export function Briefing() {
   return (
     <>
       <Overlay id="welcome" show={panel === "welcome"} class="briefing">
-        <div class="panel briefing-panel">
+        <div class="panel briefing-panel welcome-panel">
+          <WeylandLogo class="logo-watermark logo-in-panel" />
           <div class="briefing-corp">WEYLAND-YUTANI CORP · BASE LUNAIRE D'ENTRAÎNEMENT NOSTROMO II</div>
           <div class="briefing-motto">« Building Better Worlds »</div>
           <h2>BIENVENUE À BORD, AGENT.</h2>

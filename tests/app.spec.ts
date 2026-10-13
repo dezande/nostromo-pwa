@@ -469,6 +469,28 @@ test("5 déplacements au maximum, sans compteur visible ; Annuler et Valider res
   await expect(page.locator("#protocolMessage")).toHaveText("COORDINATEUR : TOUCHEZ LA SALLE À FERMER");
 });
 
+test("logo Weyland Corp en filigrane : transition, bienvenue, et discret sur l'écran de jeu", async ({ page }) => {
+  await open(page, { ...FAST, transitions: true });
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#trans .weyland-logo")).toBeVisible();
+  await page.clock.runFor(10_000);
+  await expect(page.locator("#welcome .weyland-logo")).toBeVisible();
+  // Couleur du style d'écran
+  const color = await page.locator("#welcome .weyland-logo").evaluate(el => getComputedStyle(el).color);
+  const accent = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
+  expect(color).toBe(await page.evaluate(c => { const d = document.createElement("div"); d.style.color = c; document.body.append(d); const v = getComputedStyle(d).color; d.remove(); return v; }, accent));
+  await page.locator("#welcomeNext").click();
+  for (const n of [1, 2, 3, 4]) await page.locator(`#rule${n}Next`).click();
+  const faint = page.locator(".weyland-logo.logo-faint");
+  await expect(faint).toHaveCount(1);
+  expect(await faint.evaluate(el => getComputedStyle(el).pointerEvents)).toBe("none");
+  expect(Number(await faint.evaluate(el => getComputedStyle(el).opacity))).toBeLessThan(0.1);
+  // Les salles restent cliquables à travers le logo
+  await clickRoom(page, "vie");
+  await page.locator('[data-room="cockpit"]').click();
+  await expect(page.locator("#pawn")).toHaveAttribute("visibility", "visible");
+});
+
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
