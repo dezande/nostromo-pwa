@@ -1,4 +1,5 @@
 import { Header } from "./components/Header";
+import { WeylandLogo } from "./components/WeylandLogo";
 import { ShipMap } from "./components/ShipMap";
 import { ActionBar } from "./components/ActionBar";
 import { PressStart } from "./screens/PressStart";
@@ -16,6 +17,8 @@ export function App() {
       <div id="crt" aria-hidden="true" />
 
       <Header />
+      {/* Logo Weyland Corp en filigrane, très discret, derrière le plan */}
+      <WeylandLogo class="logo-watermark logo-faint" />
       <main id="main" class={shake.value ? "shake" : ""}>
         <ShipMap />
       </main>
