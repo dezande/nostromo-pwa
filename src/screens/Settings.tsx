@@ -132,11 +132,15 @@ function ScenarioPicker() {
       {locked && <p class="note">Le scénario se change hors partie.</p>}
       {current === "recruitment" && (
         <div class="sheets" id="sheets">
-          <span class="set-label">Fiches de personnage (PDF, système 3d6)</span>
+          <span class="set-label">Documents PDF (système 3d6)</span>
           <div class="sheet-links">
             <a class="sheet-link" id="sheetsPdf" href={`${import.meta.env.BASE_URL}fiches/fiches-personnages.pdf`}
               target="_blank" rel="noopener" download>
               Candidat · RH · Coordinateur (1 page A4)
+            </a>
+            <a class="sheet-link" id="guidePdf" href={`${import.meta.env.BASE_URL}fiches/guide-mj.pdf`}
+              target="_blank" rel="noopener" download>
+              Guide du MJ
             </a>
           </div>
         </div>

@@ -828,7 +828,8 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
   await expect(page.locator("#sheets")).toHaveCount(0);
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheets a")).toHaveAttribute("href", /fiches\/fiches-personnages\.pdf$/);
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("href", /fiches\/fiches-personnages\.pdf$/);
+  await expect(page.locator("#guidePdf")).toHaveAttribute("href", /fiches\/guide-mj\.pdf$/);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Recrutement");
