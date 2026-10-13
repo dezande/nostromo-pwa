@@ -17,8 +17,6 @@
   .briefing-sign { color: var(--accent); letter-spacing: .1em; }
   // Bonne respiration entre le dernier paragraphe et les boutons
   .briefing-actions { margin-top: 40px; }
-  .briefing-actions .big { flex: 2; }
-  .briefing-actions button { white-space: nowrap; }
 }
 
 // ---------- Panneaux de règles : une règle par panneau ----------
@@ -49,9 +47,9 @@
   .mini-info { fill: var(--panel); stroke: var(--line); }
   .mini-info-title { fill: var(--dim); font-size: 6px; letter-spacing: .2em; }
   .mini-info-text { fill: var(--accent); font-size: 8px; letter-spacing: .08em; }
-  .mini-validate { fill: #2a0507; stroke: var(--red); transition: fill .2s; }
-  .mini-validate.pressed { fill: #8a1418; }
-  .mini-validate-text { fill: #fff; font-size: 9px; text-anchor: middle; letter-spacing: .15em; }
+  .mini-validate { fill: color-mix(in srgb, var(--accent) 8%, var(--bg)); stroke: var(--accent); stroke-width: 1.5; transition: fill .2s; }
+  .mini-validate.pressed { fill: color-mix(in srgb, var(--accent) 35%, var(--bg)); }
+  .mini-validate-icon { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: square; pointer-events: none; }
 }
 
 // ---------- Petits écrans : tout doit tenir sans défilement ----------
@@ -65,8 +63,7 @@
     h2 { font-size: fs(15px); margin-bottom: 8px; }
     p { font-size: fs(11px); margin-bottom: 8px; }
     .briefing-intro { margin-top: 8px; }
-    .briefing-actions { margin-top: 20px; }
-    .big { padding: 12px; }
+    .briefing-actions { margin-top: 12px; }
   }
 }
 @media (max-height: 700px) {

@@ -2,6 +2,7 @@
 // Le dernier onglet ouvert est mémorisé ; navigation au clavier avec les flèches.
 import type { Signal } from "@preact/signals";
 import { Overlay } from "../components/Overlay";
+import { IconButton } from "../components/Icon";
 import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
 import { settings, type SettingsTab } from "../state/settings";
@@ -72,8 +73,8 @@ export function Settings() {
         </div>
 
         {inGame.value && <ReturnHome />}
-        <div class="row">
-          <button id="setClose" onClick={() => { settingsOpen.value = false; }}>Fermer</button>
+        <div class="row icon-row">
+          <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { settingsOpen.value = false; }} />
         </div>
       </div>
     </Overlay>
@@ -85,17 +86,17 @@ function ReturnHome() {
   const [asking, setAsking] = useState(false);
   if (!asking) {
     return (
-      <div class="row return-home">
-        <button id="homeReturnBtn" onClick={() => setAsking(true)}>⌂ Retour à l'accueil</button>
+      <div class="row icon-row return-home">
+        <IconButton id="homeReturnBtn" icon="accueil" label="Accueil" onClick={() => setAsking(true)} />
       </div>
     );
   }
   return (
     <div class="return-home confirm" role="alertdialog" aria-labelledby="homeReturnQ">
       <p id="homeReturnQ">Abandonner l'entraînement en cours ?</p>
-      <div class="row">
-        <button class="big" id="homeReturnYes" onClick={returnHome}>Oui</button>
-        <button id="homeReturnNo" onClick={() => setAsking(false)}>Non</button>
+      <div class="row icon-row">
+        <IconButton id="homeReturnYes" icon="valider" label="Oui" primary onClick={returnHome} />
+        <IconButton id="homeReturnNo" icon="annuler" label="Non" onClick={() => setAsking(false)} />
       </div>
     </div>
   );

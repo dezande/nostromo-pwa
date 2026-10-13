@@ -29,22 +29,61 @@ button {
   svg { width: 100%; height: 100%; display: block; }
 }
 
-// Bouton de l'en-tête : icône + libellé (icône seule sur téléphone)
+// Bouton carré, icône seule (composant <IconButton>) : bordé et éclairé de la couleur du style.
 .icon-btn {
+  --size: 56px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 6px 12px;
-  font-size: fs(13px);
+  justify-content: center;
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  min-width: var(--size);
+  padding: 0;
+  border: 2px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--accent) 28%, transparent),
+    inset 0 0 8px color-mix(in srgb, var(--accent) 14%, transparent);
+  transition: box-shadow .15s, background .15s;
 
-  .ic { width: fs(22px); height: fs(22px); }
-
-  @media (max-width: 560px) {
-    min-width: 48px;
-    justify-content: center;
-    .lbl { display: none; }
+  .ic {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 65%, transparent));
   }
+
+  &:hover:not(:disabled), &:focus-visible {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    box-shadow:
+      0 0 16px color-mix(in srgb, var(--accent) 45%, transparent),
+      inset 0 0 10px color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+  &:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  &:active:not(:disabled) { background: color-mix(in srgb, var(--accent) 24%, transparent); }
+
+  // Action principale : un peu plus grande et plus lumineuse.
+  &.primary {
+    --size: 64px;
+    border-width: 3px;
+    .ic { width: 32px; height: 32px; }
+  }
+
+  &:disabled {
+    opacity: .3;
+    box-shadow: none;
+    .ic { filter: none; }
+  }
+}
+
+// Rangée de boutons carrés, centrés
+.row.icon-row {
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  button { flex: none; }
 }
 
 // Grand bouton rouge

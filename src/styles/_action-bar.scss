@@ -8,13 +8,11 @@
   bottom: 0;
   z-index: 30;
   display: flex;
-  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
   padding: 8px 16px calc(8px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   background: var(--veil);
   backdrop-filter: blur(4px);
-
-  button { flex: 1; min-height: 44px; font-size: fs(13px); }
-  .big { flex: 2; padding: 8px 12px; font-size: fs(14px); }
-
 }
