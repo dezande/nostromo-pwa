@@ -129,7 +129,9 @@ test("le Coordinateur choisit la salle à fermer : salles possibles, choix de de
   await expect(page.locator('[data-room="labo"]')).not.toHaveClass(/target/);
   await clickRoom(page, "cuisine");
   await clickRoom(page, "atelier");
+  await clickRoom(page, "cockpit"); // 3e salle : ignorée, sans message
   await expect(page.locator(".room.selected")).toHaveCount(2);
+  await expect(page.locator('[data-room="cockpit"]')).not.toHaveClass(/selected/);
   await page.clock.runFor(4000);
   await expect(page.locator("#protocolMessage")).toContainText("SALLE À FERMER : CUISINE + ATELIER");
   // Annuler : retour aux déplacements, sans fermeture.
@@ -434,7 +436,9 @@ test("la croix des salles fermées reste dans la forme de chaque salle (entrepô
   await open(page);
   await startSimulation(page);
   await placeAgent(page, "serre");
-  await closeRoom(page, "entrepot1", "entrepot2", "entrepot3", "entrepot4", "cockpit", "reunion");
+  await closeRoom(page, "entrepot1", "entrepot2");
+  await closeRoom(page, "entrepot3", "entrepot4");
+  await closeRoom(page, "cockpit", "reunion");
   for (const id of ["entrepot1", "entrepot2", "entrepot3", "entrepot4", "cockpit", "reunion", "armurerie", "labo"]) {
     const ok = await page.locator(`[data-room="${id}"]`).evaluate(g => {
       const shape = g.querySelector("rect, polygon") as SVGGeometryElement;
@@ -446,6 +450,23 @@ test("la croix des salles fermées reste dans la forme de chaque salle (entrepô
     });
     expect(ok, id).toBe(true);
   }
+});
+
+test("5 déplacements au maximum, sans compteur visible ; Annuler et Valider restent possibles", async ({ page }) => {
+  await open(page);
+  await startSimulation(page);
+  await placeAgent(page, "cockpit");
+  for (const id of ["vie", "cockpit", "vie", "cockpit", "vie"] as const) await clickRoom(page, id);
+  await expect(page.locator(".room.reach")).toHaveCount(0);
+  await clickRoom(page, "cuisine");
+  await expect(page.locator(".path-step")).toHaveCount(5); // le 6e pas est refusé
+  await expect(page.locator("body")).not.toContainText("/ 5");
+  await page.locator("#undoBtn").click();
+  await expect(page.locator(".path-step")).toHaveCount(4);
+  await expect(page.locator(".room.reach").first()).toBeVisible();
+  await page.locator("#closeBtn").click();
+  await page.clock.runFor(4000);
+  await expect(page.locator("#protocolMessage")).toHaveText("COORDINATEUR : TOUCHEZ LA SALLE À FERMER");
 });
 
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
