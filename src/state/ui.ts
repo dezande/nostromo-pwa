@@ -9,9 +9,9 @@ export const pressToStart = signal(false);  // « touchez l'écran pour commence
 /**
  * Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4).
  * Scénario « Recrutement » : panneau du RH et contrat à signer à la place du panneau de bienvenue.
- * Scénario « Infiltré » : archives de la C.R.F. et e-mail de la direction.
+ * Scénario « Infiltré » : l'e-mail envoyé à la C.R.F., intercepté et annoté par la direction.
  */
-export type BriefingPanel = "welcome" | "hr" | "contract" | "archives" | "email" | 1 | 2 | 3 | 4;
+export type BriefingPanel = "welcome" | "hr" | "contract" | "email" | 1 | 2 | 3 | 4;
 export const briefing = signal<BriefingPanel | null>(null);
 
 /**

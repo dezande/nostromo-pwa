@@ -1,5 +1,5 @@
 // Moniteur mural de la salle de briefing : cadre, étiquette en haut, voyant et état en bas.
-// Les panneaux d'introduction (bienvenue, règles, RH, contrat, archives, e-mail) s'affichent dedans.
+// Les panneaux d'introduction (bienvenue, règles, RH, contrat, e-mail) s'affichent dedans.
 import type { ComponentChildren } from "preact";
 
 /** Salle où l'instructeur présente les moniteurs. */
