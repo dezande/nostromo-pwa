@@ -539,9 +539,13 @@ test("retour à l'accueil par les Réglages, avec confirmation : alarme et voix 
 
 test("réglages : boutons du bas alignés sur une seule rangée, de même taille", async ({ page }) => {
   const errors = await open(page);
-  const box = async (id: string) => (await page.locator(`#${id}`).boundingBox())!;
+  // Toutes les positions sont lues au même instant (le panneau peut encore se redimensionner).
   const sameRow = async (...ids: string[]) => {
-    const boxes = await Promise.all(ids.map(box));
+    await expect(page.locator(`#${ids[0]}`)).toBeVisible();
+    const boxes = await page.evaluate(list => list.map(id => {
+      const r = document.getElementById(id)!.getBoundingClientRect();
+      return { y: r.y, width: r.width, height: r.height };
+    }), ids);
     for (const b of boxes.slice(1)) {
       expect(Math.abs(b.y - boxes[0].y), ids.join(" / ")).toBeLessThanOrEqual(1);
       expect(Math.abs(b.width - boxes[0].width), ids.join(" / ")).toBeLessThanOrEqual(1);
