@@ -2,13 +2,24 @@
 // La partie elle-même est la même ; seuls les panneaux d'accueil, les règles et les rapports de fin changent.
 import type { RuleName } from "../components/RuleScenes";
 import type { Scenario } from "../state/settings";
+import type { BriefingPanel } from "../state/ui";
 
 export interface Rule { id: string; title: string; scene: RuleName; text: string }
 
 /** Rapport de fin de partie ; {room} est remplacé par le nom de la salle. */
-export interface Report { header: string; title: string; status?: string; lines: string[] }
+export interface Report {
+  header: string;
+  title: string;
+  status?: string;
+  lines: string[];
+  /** Message d'une autre source, affiché à part sous le rapport. */
+  note?: { from: string; text: string };
+}
 
 export interface ScenarioText {
+  /** Premier panneau après « Démarrer », et celui où ramène « Retour » depuis la première règle. */
+  firstPanel: BriefingPanel;
+  lastPanel: BriefingPanel;
   /** Nom dans les Réglages et sous-titre de l'accueil. */
   name: string;
   description: string;
@@ -25,6 +36,8 @@ export interface ScenarioText {
 }
 
 const TRAINING: ScenarioText = {
+  firstPanel: "welcome",
+  lastPanel: "welcome",
   name: "Entraînement",
   description: "Psychic Agent en formation à bord du Nostromo II. Scénario d'origine.",
   homeLine: "Simulation d'intrusion alien pour Psychic Agents.",
@@ -72,6 +85,8 @@ const TRAINING: ScenarioText = {
 };
 
 const RECRUITMENT: ScenarioText = {
+  firstPanel: "hr",
+  lastPanel: "contract",
   name: "Recrutement",
   description: "Jeu de rôle (3d6) : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le MJ joue le RH et le Coordinateur.",
   homeLine: "Examen d'aptitude · Recrutement Weyland-Yutani.",
@@ -118,4 +133,40 @@ const RECRUITMENT: ScenarioText = {
   },
 };
 
-export const SCENARIOS: Record<Scenario, ScenarioText> = { training: TRAINING, recruitment: RECRUITMENT };
+const INFILTRATED: ScenarioText = {
+  firstPanel: "archives",
+  lastPanel: "email",
+  name: "Infiltré",
+  description: "Vous êtes le Lieutenant D.R., agent de la C.R.F. infiltré. La direction sait tout : pour vous punir, elle vous envoie à l'entraînement.",
+  homeLine: "Session disciplinaire · Agent infiltré.",
+  rulesHeader: "SESSION DISCIPLINAIRE · ALIEN INTRUSION PROTOCOL",
+  rulesIntro: "Session ordonnée par la Direction de la sécurité. Le protocole a été établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture.",
+  rules: TRAINING.rules.map(rule => ({
+    ...rule,
+    title: rule.title.replace("L'ENTRAÎNEMENT", "LA SESSION"),
+    text: rule.text.replace("l'entraînement", "la session"),
+  })),
+  rulesSign: "Fiez-vous à votre instinct, Lieutenant.",
+  quitQuestion: "Abandonner la session en cours ?",
+  win: {
+    header: "RAPPORT DE LA DIRECTION DE LA SÉCURITÉ",
+    title: "L'AGENT INFILTRÉ A SURVÉCU",
+    status: "SESSION DISCIPLINAIRE TERMINÉE.",
+    lines: [
+      "Position finale : {room}. L'individu « Lieutenant D.R. » a survécu à toutes les fermetures du protocole.",
+      "Résultat non conforme aux attentes de la Direction. [[Procédure 7-B déclenchée.]]",
+    ],
+    note: { from: "MESSAGE C.R.F. DÉCRYPTÉ", text: "Bien reçu, Lieutenant. Exfiltration organisée cette nuit, sas 3. Gardez les protocoles." },
+  },
+  dead: {
+    header: "RAPPORT DE LA DIRECTION DE LA SÉCURITÉ",
+    title: "SANCTION APPLIQUÉE",
+    lines: [
+      "Fermeture de la salle : {room}. Un spécimen y a été introduit. L'individu « Lieutenant D.R. » s'y trouvait.",
+      "La décision disciplinaire est exécutée. Aucune trace ne sera transmise à la C.R.F.",
+      "Dossier clos. [[Documents dérobés récupérés sur la dépouille.]]",
+    ],
+  },
+};
+
+export const SCENARIOS: Record<Scenario, ScenarioText> = { training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED };

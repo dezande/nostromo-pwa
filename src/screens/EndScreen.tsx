@@ -34,6 +34,9 @@ export function EndScreen() {
                 <WithRoom line={line} room={end.room} />
               </p>
             ))}
+            {report.note && (
+              <div class="end-note" id="endNote"><span class="end-note-from">{report.note.from}</span> « {report.note.text} »</div>
+            )}
           </>
         )}
         <div class="row icon-row briefing-actions">

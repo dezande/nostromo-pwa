@@ -16,8 +16,8 @@ export function Briefing() {
   const panel = briefing.value;
   const text = SCENARIOS[settings.scenario.value];
   const RULES = text.rules;
-  // Retour depuis la première règle : bienvenue (entraînement) ou contrat (recrutement).
-  const first: BriefingPanel = settings.scenario.value === "recruitment" ? "contract" : "welcome";
+  // Retour depuis la première règle : dernier panneau d'introduction du scénario.
+  const first = text.lastPanel;
   return (
     <>
       <Overlay id="welcome" show={panel === "welcome"} class="briefing">
