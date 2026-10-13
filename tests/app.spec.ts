@@ -825,7 +825,7 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
   await page.locator("#homeSetBtn").click();
   await page.locator("#tab-scenario").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheets")).toHaveCount(0);
+  await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiches-recrutement.pdf");
@@ -891,6 +891,7 @@ test("scénario Infiltré : archives C.R.F., e-mail de la direction, session dis
   await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr.pdf");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr.pdf");
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
 

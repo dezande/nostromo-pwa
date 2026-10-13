@@ -115,13 +115,18 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
 }
 
 /** Documents PDF à imprimer pour les scénarios de jeu de rôle (dossier public/fiches). */
-const SHEETS: Record<Exclude<Scenario, "training">, { id: string; file: string; name: string }[]> = {
+const SHEETS: Record<Scenario, { id: string; file: string; name: string }[]> = {
+  training: [
+    { id: "trainingPdf", file: "nostromo-fiche-psychic-agent.pdf", name: "Psychic Agent (prétiré)" },
+    { id: "trainingGuidePdf", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
+  ],
   recruitment: [
     { id: "sheetsPdf", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
     { id: "guidePdf", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
   ],
   infiltrated: [
     { id: "infiltratedPdf", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
+    { id: "infiltratedGuidePdf", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ" },
   ],
 };
 
@@ -141,19 +146,17 @@ function ScenarioPicker() {
         ))}
       </div>
       {locked && <p class="note">Le scénario se change hors partie.</p>}
-      {current !== "training" && (
-        <div class="sheets" id="sheets">
-          <span class="set-label">Documents PDF (3D6 Système)</span>
-          <div class="sheet-links">
-            {SHEETS[current].map(sheet => (
-              <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
-                download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}>
-                {sheet.name}
-              </a>
-            ))}
-          </div>
+      <div class="sheets" id="sheets">
+        <span class="set-label">Documents PDF (3D6 Système)</span>
+        <div class="sheet-links">
+          {SHEETS[current].map(sheet => (
+            <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
+              download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}>
+              {sheet.name}
+            </a>
+          ))}
         </div>
-      )}
+      </div>
     </>
   );
 }
