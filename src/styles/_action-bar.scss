@@ -1,11 +1,8 @@
 @use "functions" as *;
 
-// Barre fine collée en bas de l'écran de jeu
+// Barre fine en bas de l'écran de jeu (dernière ligne de la grille de .game-screen)
 .action-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   z-index: 30;
   display: flex;
   justify-content: center;
@@ -15,4 +12,10 @@
   border-top: 1px solid var(--line);
   background: var(--veil);
   backdrop-filter: blur(4px);
+}
+
+// Téléphone : barre plus serrée, les boutons icônes restent de grandes zones à toucher
+.layout-phone .action-bar {
+  gap: 40px;
+  padding: 6px 10px calc(6px + env(safe-area-inset-bottom));
 }

@@ -1,32 +1,33 @@
 @use "functions" as *;
 
+// ---------- Écran de jeu : disposition des ponts ----------
+// Les plans gardent toujours leurs proportions (viewBox + preserveAspectRatio « meet ») :
+// ils rapetissent pour tenir dans la place disponible, sans jamais être déformés.
+
 .decks {
+  height: 100%;
+  min-height: 0;
   display: grid;
-  grid-template-columns: 3fr 2fr;
+  // Tablette : pont 1 à gauche ; protocole, relevés et pont 2 à droite.
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  grid-template-rows: minmax(0, 1fr);
   gap: 12px;
-  // Les deux colonnes ont la même hauteur : pont 1 à gauche = informations + pont 2 à droite.
-  align-items: stretch;
-  @media (max-width: 520px) { grid-template-columns: 1fr; }
 }
 
-// Colonne de droite : fenêtre d'informations puis pont 2
-.side {
+.col-main, .side {
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
-}
-
-.info-panel {
-  flex: 1; // prend toute la hauteur restante de la colonne
-  min-height: 120px;
-  .info-body { padding: 4px 6px 8px; font-size: fs(13px); line-height: 1.5; }
-  .terminal-text { margin: 0; color: var(--accent); letter-spacing: .12em; font-size: fs(14px); }
-  .cur::after { content: "█"; margin-left: 2px; animation: blink .8s steps(2) infinite; }
-  .info-empty { margin: 0; color: var(--dim); letter-spacing: .2em; font-size: fs(11px); }
+  min-height: 0;
 }
 
 .deck {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--panel);
@@ -38,11 +39,239 @@
     letter-spacing: .25em;
     color: var(--dim);
     font-weight: normal;
+    white-space: nowrap;
   }
 
-  // Sur grand écran, les deux ponts tiennent en entier dans la hauteur de la fenêtre.
-  @media (min-width: 521px) {
-    svg { max-height: calc(100dvh - 200px); }
+  svg { width: 100%; min-height: 0; }
+
+  // Coins de cadre qui clignotent doucement (décor)
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 0 solid var(--accent);
+    opacity: .45;
+    pointer-events: none;
+    animation: corner 3s steps(2) infinite;
+  }
+  &::before { top: -1px; left: -1px; border-top-width: 2px; border-left-width: 2px; border-top-left-radius: 10px; }
+  &::after { bottom: -1px; right: -1px; border-bottom-width: 2px; border-right-width: 2px; border-bottom-right-radius: 10px; animation-delay: 1.5s; }
+}
+@keyframes corner { 50% { opacity: .12; } }
+
+// Titre du pont + relevé décoratif à droite
+.deck-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  pointer-events: none;
+}
+.deck-readout {
+  margin-right: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: fs(9px);
+  letter-spacing: .15em;
+  color: var(--dim);
+  opacity: .7;
+}
+
+// Les ponts gardent leurs proportions et rapetissent si la place manque
+.deck-1, .deck-2 { flex: 1 1 auto; }
+.deck-1 svg, .deck-2 svg { flex: 1 1 auto; height: auto; }
+.deck-1 svg { aspect-ratio: 400 / 520; }
+.deck-2 svg { aspect-ratio: 320 / 330; }
+
+// Fenêtre du protocole : prend la place restante de la colonne de droite
+.info-panel {
+  flex: 1000 0 auto;
+  min-height: 96px;
+  overflow: hidden;
+  .info-body { padding: 4px 6px 8px; font-size: fs(13px); line-height: 1.5; }
+  .terminal-text { margin: 0; color: var(--accent); letter-spacing: .12em; font-size: fs(14px); }
+  .cur::after { content: "█"; margin-left: 2px; animation: blink .8s steps(2) infinite; }
+  .info-empty { margin: 0; color: var(--dim); letter-spacing: .2em; font-size: fs(11px); }
+}
+
+// ---------- Panneaux décoratifs (relevés système) ----------
+// Purement décoratifs : valeurs fixes, aria-hidden, jamais cliquables.
+.sys-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  font-size: fs(9px);
+  letter-spacing: .12em;
+  color: var(--dim);
+  pointer-events: none;
+  user-select: none;
+}
+.sys-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  color: var(--accent);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.sys-led {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: blink 1.6s steps(2) infinite;
+}
+.sys-list {
+  flex: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px 12px;
+  li {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    border-bottom: 1px dashed var(--line);
+  }
+  span { overflow: hidden; text-overflow: ellipsis; }
+  b { color: var(--ink); font-weight: normal; }
+}
+.sys-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 120px;
+  margin-top: 6px;
+  i {
+    flex: 1;
+    height: 100%;
+    background: color-mix(in srgb, var(--accent) 40%, transparent);
+    transform-origin: bottom;
+    animation: sys-bar 2.4s ease-in-out infinite alternate;
+  }
+}
+@keyframes sys-bar { 0% { transform: scaleY(.2); } 100% { transform: scaleY(1); } }
+
+// Tablette : relevés en deux colonnes entre le protocole et le pont 2, sans barres
+.sys-side {
+  flex: none;
+  .sys-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sys-bars { display: none; }
+}
+// Tablette en portrait : grand panneau sous le pont 1 pour occuper la place libre
+.sys-wide {
+  display: none;
+  flex: 1000 1 0;
+  .sys-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (orientation: portrait) {
+  .layout-tablet .sys-wide { display: flex; }
+}
+
+// Onglets PONT 1 / PONT 2 : seulement en format Téléphone
+.deck-tabs { display: none; }
+
+// ---------- Téléphone : un pont à la fois, en grand ----------
+// Protocole sur deux lignes en haut, onglets PONT 1 / PONT 2, puis le pont choisi sur toute la place.
+// Pas de relevés décoratifs : toute la place va au pont.
+.layout-phone {
+  .decks {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: "proto" "tabs" "deck";
+    gap: 4px;
+  }
+  .deck-tabs {
+    grid-area: tabs;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .deck-tab {
+    position: relative;
+    min-height: 40px;
+    padding: 6px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    color: var(--dim);
+    font-size: fs(12px);
+    letter-spacing: .3em;
+    &[aria-selected="true"] {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+  }
+  // Voyant : le pion est sur ce pont
+  .deck-tab-led {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: blink 1.6s steps(2) infinite;
+  }
+  .deck-1, .deck-2 { grid-area: deck; }
+  .show-deck-1 .deck-2, .show-deck-2 .deck-1 { display: none; }
+  // Petit effet en changeant de pont
+  .deck { animation: deck-in .35s ease-out; }
+  .col-main, .side { display: contents; }
+  .info-panel { grid-area: proto; }
+  .sys-side, .sys-wide { display: none; }
+
+  .deck { padding: 2px; }
+  // Noms des salles et numéros des pas un peu plus grands
+  .room text { font-size: 11.5px; }
+  .path-step circle { r: 9px; }
+  .path-step text { font-size: 11px; }
+  // Le plan remplit tout le cadre ; le titre se pose dans un coin, par-dessus
+  .deck-1 svg, .deck-2 svg { flex: 1 1 0; aspect-ratio: auto; height: auto; }
+  .deck-head { position: absolute; top: 4px; left: 6px; right: 6px; z-index: 1; }
+  .deck h2 { margin: 0; font-size: fs(9px); letter-spacing: .2em; }
+  .deck-readout { display: none; }
+
+  .info-panel {
+    min-height: 0;
+    // hauteur fixe : les ponts ne bougent pas pendant que le texte s'écrit
+    height: calc(#{fs(12px)} * 1.3 * 2 + 10px);
+    padding: 4px 8px;
+    h2 { display: none; }
+    .info-body { padding: 0; line-height: 1.35; }
+    .info-body { line-height: 1.3; }
+    .terminal-text { font-size: fs(12px); letter-spacing: .05em; }
+  }
+
+  .sys-side {
+    padding: 6px 8px;
+    .sys-list { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+    .sys-list li { display: block; }
+    .sys-list span, .sys-list b { display: block; }
+    .sys-bars { display: flex; }
   }
 }
 
@@ -70,7 +299,8 @@
 .lift-icon { stroke: var(--amber); fill: none; stroke-width: 1.2; }
 .toxic-cross { stroke: #c22; stroke-width: 3; stroke-linecap: round; }
 // Repère discret : minuscule et peu visible
-.marker-dot { fill: var(--room-stroke); opacity: .5; pointer-events: none; }
+.marker-dot { fill: var(--room-stroke); opacity: .8; r: 2.4px; pointer-events: none; }
+.layout-phone .marker-dot { fill: var(--accent); opacity: .55; r: 3px; }
 
 // Salles
 @mixin room-shape { rect, polygon { @content; } }
@@ -140,4 +370,10 @@
 @keyframes ping {
   0% { opacity: .9; transform: scale(.6); }
   100% { opacity: 0; transform: scale(2.2); }
+}
+
+@keyframes deck-in {
+  0% { opacity: 0; filter: brightness(2.5); transform: scaleY(.96); }
+  60% { opacity: 1; filter: brightness(1.4); }
+  100% { opacity: 1; filter: none; transform: none; }
 }

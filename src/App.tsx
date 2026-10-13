@@ -16,13 +16,16 @@ export function App() {
       {/* Effets d'écran cathodique (halo, bruit, scintillement…) par-dessus tout. */}
       <div id="crt" aria-hidden="true" />
 
-      <Header />
-      {/* Logo Weyland Corp en filigrane, très discret, derrière le plan */}
+      {/* Écran de jeu : tient exactement dans la fenêtre, sans défilement (format tablette ou téléphone). */}
+      <div class="game-screen" id="game">
+        <Header />
+        <main id="main" class={shake.value ? "shake" : ""}>
+          <ShipMap />
+        </main>
+        <ActionBar />
+      </div>
+      {/* Logo Weyland Corp en filigrane, très discret, par-dessus le plan mais transparent aux clics */}
       <WeylandLogo class="logo-watermark logo-faint" />
-      <main id="main" class={shake.value ? "shake" : ""}>
-        <ShipMap />
-      </main>
-      <ActionBar />
 
       {/* Écrans superposés, du plus bas au plus haut. */}
       <Briefing />

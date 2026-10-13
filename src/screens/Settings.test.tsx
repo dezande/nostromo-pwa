@@ -48,6 +48,17 @@ test("onglet Alerte : trois fonds sonores et écoute", () => {
   expect($("#alertVoiceChk")).toBeNull(); // plus de voix ni de décompte (plus de minuteur)
 });
 
+test("onglet Affichage : choix du format Tablette / Téléphone", () => {
+  expect($(".layouts").getAttribute("role")).toBe("radiogroup");
+  expect([...root.querySelectorAll(".layout-card")].map(e => e.textContent)).toEqual(["Tablette", "Téléphone"]);
+  act(() => { $("#layout-phone").click(); });
+  expect(settings.layout.value).toBe("phone");
+  expect($("#layout-phone").getAttribute("aria-checked")).toBe("true");
+  expect($("#layout-tablet").getAttribute("aria-checked")).toBe("false");
+  act(() => { $("#layout-tablet").click(); });
+  expect(settings.layout.value).toBe("tablet");
+});
+
 test("flèches du clavier pour changer d'onglet", () => {
   act(() => { $("#tab-display").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })); });
   expect(settings.settingsTab.value).toBe("system");

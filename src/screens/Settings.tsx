@@ -5,7 +5,7 @@ import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
-import { settings, type SettingsTab } from "../state/settings";
+import { settings, type Layout, type SettingsTab } from "../state/settings";
 import { returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
 import { useState } from "preact/hooks";
@@ -47,6 +47,7 @@ export function Settings() {
         <div class="tab-panel" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
           {tab === "display" && (
             <>
+              <LayoutPicker />
               <ThemePicker />
               <Slider id="fsRange" label="Taille du texte" setting={settings.textSize} min={100} max={160} step={10} unit="%" />
               <Toggle id="scanChk" label="Lignes horizontales (écran ancien)" setting={settings.scanlines} />
@@ -165,6 +166,30 @@ function Slider({ id, label, setting, min, max, step = 1, scale = 1, unit }: Sli
         onInput={e => { setting.value = Number(e.currentTarget.value) / scale; }} />
       <span class="set-value" id={id.replace("Range", "Val")}>{shown} {unit}</span>
     </label>
+  );
+}
+
+const LAYOUTS: { id: Layout; name: string }[] = [
+  { id: "tablet", name: "Tablette" },
+  { id: "phone", name: "Téléphone" },
+];
+
+/** Format de l'écran de jeu : tablette (deux colonnes) ou téléphone (tout empilé). */
+function LayoutPicker() {
+  const current = settings.layout.value;
+  return (
+    <div class="layout-picker">
+      <span class="set-label" id="layoutLbl">Format</span>
+      <div class="layouts" role="radiogroup" aria-labelledby="layoutLbl">
+        {LAYOUTS.map(l => (
+          <button key={l.id} class="layout-card" id={`layout-${l.id}`} role="radio" aria-checked={current === l.id}
+            onClick={() => { settings.layout.value = l.id; }}>
+            <span class={`layout-icon layout-icon-${l.id}`} aria-hidden="true" />
+            {l.name}
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
