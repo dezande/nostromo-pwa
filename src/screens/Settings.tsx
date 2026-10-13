@@ -117,11 +117,11 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
 /** Documents PDF à imprimer pour les scénarios de jeu de rôle (dossier public/fiches). */
 const SHEETS: Record<Exclude<Scenario, "training">, { id: string; file: string; name: string }[]> = {
   recruitment: [
-    { id: "sheetsPdf", file: "fiches-personnages.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
-    { id: "guidePdf", file: "guide-mj.pdf", name: "Guide du MJ" },
+    { id: "sheetsPdf", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
+    { id: "guidePdf", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
   ],
   infiltrated: [
-    { id: "infiltratedPdf", file: "fiche-infiltre.pdf", name: "Lieutenant D.R. (prétiré)" },
+    { id: "infiltratedPdf", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
   ],
 };
 
@@ -146,7 +146,8 @@ function ScenarioPicker() {
           <span class="set-label">Documents PDF (3D6 Système)</span>
           <div class="sheet-links">
             {SHEETS[current].map(sheet => (
-              <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener" download>
+              <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
+                download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}>
                 {sheet.name}
               </a>
             ))}

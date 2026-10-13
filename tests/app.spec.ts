@@ -828,8 +828,8 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
   await expect(page.locator("#sheets")).toHaveCount(0);
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheetsPdf")).toHaveAttribute("href", /fiches\/fiches-personnages\.pdf$/);
-  await expect(page.locator("#guidePdf")).toHaveAttribute("href", /fiches\/guide-mj\.pdf$/);
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiches-recrutement.pdf");
+  await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Recrutement");
@@ -889,7 +889,8 @@ test("scénario Infiltré : archives C.R.F., e-mail de la direction, session dis
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await page.locator("#scenario-infiltrated").click();
   await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/fiche-infiltre.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr.pdf");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
 
