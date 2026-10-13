@@ -114,13 +114,6 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
   );
 }
 
-/** Fiches de personnage (PDF noir et blanc) du scénario « Recrutement ». */
-const SHEETS = [
-  { id: "candidat", name: "Candidat (joueur)" },
-  { id: "rh", name: "RH (MJ)" },
-  { id: "coordinateur", name: "Coordinateur (MJ)" },
-];
-
 /** Choix du scénario. Il s'applique à la prochaine partie ; pendant une partie, le choix est bloqué. */
 function ScenarioPicker() {
   const current = settings.scenario.value;
@@ -141,12 +134,10 @@ function ScenarioPicker() {
         <div class="sheets" id="sheets">
           <span class="set-label">Fiches de personnage (PDF, système 3d6)</span>
           <div class="sheet-links">
-            {SHEETS.map(sheet => (
-              <a key={sheet.id} class="sheet-link" id={`sheet-${sheet.id}`} href={`${import.meta.env.BASE_URL}fiches/fiche-${sheet.id}.pdf`}
-                target="_blank" rel="noopener" download>
-                {sheet.name}
-              </a>
-            ))}
+            <a class="sheet-link" id="sheetsPdf" href={`${import.meta.env.BASE_URL}fiches/fiches-personnages.pdf`}
+              target="_blank" rel="noopener" download>
+              Candidat · RH · Coordinateur (1 page A4)
+            </a>
           </div>
         </div>
       )}
