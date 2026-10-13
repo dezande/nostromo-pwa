@@ -134,11 +134,11 @@ function ScenarioPicker() {
         <div class="sheets" id="sheets">
           <span class="set-label">Documents PDF (système 3d6)</span>
           <div class="sheet-links">
-            <a class="sheet-link" id="sheetsPdf" href={`${import.meta.env.BASE_URL}fiches/fiches-personnages.pdf`}
+            <a class="sheet-link" id="sheetsPdf" href="fiches/fiches-personnages.pdf"
               target="_blank" rel="noopener" download>
               Candidat · RH · Coordinateur (1 page A4)
             </a>
-            <a class="sheet-link" id="guidePdf" href={`${import.meta.env.BASE_URL}fiches/guide-mj.pdf`}
+            <a class="sheet-link" id="guidePdf" href="fiches/guide-mj.pdf"
               target="_blank" rel="noopener" download>
               Guide du MJ
             </a>
