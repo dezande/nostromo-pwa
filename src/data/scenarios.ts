@@ -15,6 +15,8 @@ export interface Report {
   title: string;
   status?: string;
   lines: string[];
+  /** Tampon apposé en bas du rapport. */
+  stamp: string;
   /** Message d'une autre source, affiché à part sous le rapport. */
   note?: { from: string; text: string };
 }
@@ -83,6 +85,7 @@ const TRAINING: ScenarioText = {
   win: {
     header: "RAPPORT D'ENTRAÎNEMENT",
     title: "AGENT SURVIVANT",
+    stamp: "APTITUDE VALIDÉE",
     status: "ENTRAÎNEMENT TERMINÉ.",
     lines: [
       "Félicitations, Agent. Vous avez survécu à toutes les fermetures du protocole.",
@@ -93,6 +96,7 @@ const TRAINING: ScenarioText = {
   dead: {
     header: "RAPPORT D'INCIDENT",
     title: "AGENT ÉLIMINÉ",
+    stamp: "DOSSIER CLOS",
     lines: [
       "Fermeture de la salle : {room}. Un spécimen y a été introduit. Vous vous y trouviez.",
       "Conformément à votre contrat, les risques liés à cet entraînement étaient connus et acceptés.",
@@ -146,6 +150,7 @@ const RECRUITMENT: ScenarioText = {
   win: {
     header: "RAPPORT D'EXAMEN",
     title: "CANDIDAT RETENU",
+    stamp: "EMBAUCHE VALIDÉE",
     status: "EXAMEN D'APTITUDE RÉUSSI.",
     lines: [
       "Félicitations. Vous avez satisfait à toutes les étapes de l'examen.",
@@ -156,6 +161,7 @@ const RECRUITMENT: ScenarioText = {
   dead: {
     header: "RAPPORT D'INCIDENT",
     title: "CANDIDATURE CLOSE",
+    stamp: "CANDIDATURE REJETÉE",
     lines: [
       "Fermeture de la salle : {room}. Un élément de test [[XX-121]] y a été introduit. Vous vous y trouviez.",
       "Conformément à l'article 13 de votre contrat, la compagnie décline toute responsabilité.",
@@ -182,6 +188,7 @@ const INFILTRATED: ScenarioText = {
   win: {
     header: "RAPPORT DE LA DIRECTION DE LA SÉCURITÉ",
     title: "L'AGENT INFILTRÉ A SURVÉCU",
+    stamp: "RÉSULTAT NON CONFORME",
     status: "SESSION DISCIPLINAIRE TERMINÉE.",
     lines: [
       "Position finale : {room}. L'individu « Lieutenant D.R. » a survécu à toutes les fermetures du protocole.",
@@ -192,6 +199,7 @@ const INFILTRATED: ScenarioText = {
   dead: {
     header: "RAPPORT DE LA DIRECTION DE LA SÉCURITÉ",
     title: "SANCTION APPLIQUÉE",
+    stamp: "SANCTION EXÉCUTÉE",
     lines: [
       "Fermeture de la salle : {room}. Un spécimen y a été introduit. L'individu « Lieutenant D.R. » s'y trouvait.",
       "La décision disciplinaire est exécutée. Aucune trace ne sera transmise à la C.R.F.",

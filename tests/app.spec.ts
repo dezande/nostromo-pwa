@@ -568,13 +568,21 @@ test("réglages : boutons du bas alignés sur une seule rangée, de même taille
   expect(errors).toEqual([]);
 });
 
-test("écran de fin : bouton Accueil", async ({ page }) => {
+test("écran de fin : rapport sur un moniteur, lignes une à une, tampon, puis Continuer ramène à l'accueil", async ({ page }) => {
   await open(page);
   await startSimulation(page);
   await placeAgent(page, "cockpit");
   await closeRoom(page, "cockpit");
+  await page.clock.runFor(1_000);
+  await expect(page.locator("#end")).toHaveClass(/show/);
+  await expect(page.locator("#end .monitor-label")).toHaveText("MU/TH/UR 6000 · RAPPORT DE FIN DE SESSION");
+  await expect(page.locator("#endStamp")).toHaveCount(0); // rapport en cours de génération
   await page.clock.runFor(2_000);
-  await page.locator("#endMenuBtn").click();
+  await expect(page.locator("#endStamp")).toHaveText("DOSSIER CLOS");
+  await expect(page.locator("#end .end-line:not(.shown)")).toHaveCount(0);
+  // Un seul bouton : Continuer (on rejoue depuis l'accueil).
+  await expect(page.locator("#end button")).toHaveCount(1);
+  await page.locator("#endNext").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
   await expect(page.locator("#home").getByRole("button", { name: "Démarrer" })).toBeVisible();
 });
