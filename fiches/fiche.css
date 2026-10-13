@@ -1,0 +1,193 @@
+/* Fiches de personnage du scénario « RECRUTEMENT » — Nostromo II.
+   Style terminal MU/TH/UR 6000, mais imprimable : fond blanc, encre noire, une page A4 par fiche. */
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;0,700;1,400&display=block");
+
+@page { size: A4; margin: 0; }
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --font: "IBM Plex Mono", "Courier New", Courier, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 8.3pt;
+  line-height: 1.28;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* Les blocs gardent leur hauteur naturelle : un débordement se verrait (vérifié par scripts/fiches.mjs). */
+.page > * { flex-shrink: 0; }
+
+.page {
+  width: 210mm;
+  height: 297mm;
+  padding: 9mm 11mm 8mm;
+  display: flex;
+  flex-direction: column;
+  gap: 2mm;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------- En-tête ---------- */
+.header {
+  display: grid;
+  grid-template-columns: 34mm 1fr auto;
+  align-items: center;
+  gap: 4mm;
+  border: 1.2pt solid var(--ink);
+  padding: 2.2mm 3mm;
+}
+.header img { width: 34mm; display: block; }
+.header .corp { font-weight: 700; font-size: 11pt; letter-spacing: 0.18em; }
+.header .slogan { font-style: italic; font-size: 8pt; letter-spacing: 0.06em; }
+.header .terminal { font-size: 7pt; margin-top: 1mm; letter-spacing: 0.04em; }
+.header .ref { font-size: 7pt; text-align: right; line-height: 1.5; border-left: 0.6pt solid var(--ink); padding-left: 3mm; }
+.header .ref b { font-weight: 700; }
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1.6pt double var(--ink);
+  padding: 0 0 1.4mm;
+}
+.title h1 { margin: 0; font-size: 17pt; letter-spacing: 0.14em; font-weight: 700; }
+.title h1::before { content: "> "; }
+.title .sub { font-size: 8pt; letter-spacing: 0.08em; text-align: right; }
+.stamp {
+  display: inline-block;
+  border: 1pt solid var(--ink);
+  padding: 0.4mm 2mm;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  font-size: 7.5pt;
+}
+
+/* ---------- Blocs ---------- */
+.row { display: grid; gap: 2mm; }
+.row.c2 { grid-template-columns: 1fr 1fr; }
+.row.c2-wide { grid-template-columns: 1.35fr 1fr; }
+.row.c3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.box {
+  border: 0.7pt solid var(--ink);
+  padding: 1.6mm 2.4mm 2mm;
+  position: relative;
+}
+.box > h2 {
+  margin: -1.6mm -2.4mm 1.4mm;
+  padding: 0.7mm 2.4mm;
+  border-bottom: 0.7pt solid var(--ink);
+  font-size: 8pt;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+}
+.box > h2 .code { font-weight: 400; letter-spacing: 0.04em; }
+.box.dashed { border-style: dashed; }
+.box p { margin: 0 0 1.2mm; }
+.box p:last-child { margin-bottom: 0; }
+.box ul { margin: 0; padding-left: 4mm; }
+.box li { margin: 0 0 0.5mm; }
+.box ul.dash { list-style: none; padding-left: 0; }
+.box ul.dash li::before { content: "— "; }
+.box ul.check { list-style: none; padding-left: 0; }
+.box ul.check li::before { content: "[ ] "; font-weight: 700; }
+.box ul.checked li::before { content: "[x] "; }
+.small { font-size: 7.4pt; }
+.muted { font-style: italic; }
+.quote { font-style: italic; }
+
+/* ---------- Champs à remplir ---------- */
+.field { display: flex; align-items: flex-end; gap: 2mm; margin: 0 0 1.6mm; }
+.field:last-child { margin-bottom: 0; }
+.field label { white-space: nowrap; font-weight: 600; font-size: 7.6pt; letter-spacing: 0.06em; }
+.field .line { flex: 1; border-bottom: 0.7pt dotted var(--ink); min-height: 4.2mm; }
+.field .value { flex: 1; border-bottom: 0.7pt dotted var(--ink); padding: 0 1mm; }
+.lines { display: flex; flex-direction: column; }
+.lines span { border-bottom: 0.7pt dotted var(--ink); height: 5mm; }
+
+.cells { display: inline-flex; }
+.cells i { display: inline-block; width: 4.2mm; height: 5mm; border: 0.6pt solid var(--ink); margin-left: -0.6pt; }
+
+/* ---------- Caractéristiques ---------- */
+.stats { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1.6mm; }
+.stat { border: 0.7pt solid var(--ink); text-align: center; padding: 0.8mm 0 1mm; }
+.stat .abbr { font-weight: 700; font-size: 8.6pt; letter-spacing: 0.08em; }
+.stat .name { font-size: 6.2pt; letter-spacing: 0.02em; }
+.stat .val {
+  margin: 1mm auto 0;
+  width: 11mm; height: 8.5mm;
+  border: 1pt solid var(--ink);
+  font-size: 13pt; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- Compétences ---------- */
+table.skills { width: 100%; border-collapse: collapse; font-size: 7.8pt; }
+table.skills th, table.skills td { border-bottom: 0.5pt dotted var(--ink); padding: 0.55mm 1mm; text-align: left; }
+table.skills th { font-size: 6.8pt; letter-spacing: 0.08em; border-bottom: 0.7pt solid var(--ink); font-weight: 600; }
+table.skills td.n, table.skills th.n { text-align: center; width: 12mm; }
+table.skills td.box-cell { width: 5mm; font-weight: 700; }
+table.skills td.blank { border-bottom: 0.5pt dotted var(--ink); }
+table.skills .empty { display: inline-block; width: 8mm; height: 4mm; border: 0.6pt solid var(--ink); vertical-align: middle; }
+.skills-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+
+/* ---------- Jauges ---------- */
+.gauge { display: flex; align-items: center; gap: 2mm; margin: 0 0 1.4mm; }
+.gauge:last-child { margin-bottom: 0; }
+.gauge label { font-weight: 600; font-size: 7.6pt; width: 14mm; letter-spacing: 0.06em; }
+.gauge .squares { display: flex; flex-wrap: nowrap; gap: 0.7mm; }
+.gauge .squares i { width: 3.3mm; height: 3.3mm; border: 0.6pt solid var(--ink); display: inline-block; }
+.gauge .squares i.x { background: repeating-linear-gradient(45deg, transparent 0 0.6mm, #000 0.6mm 0.9mm); }
+.gauge .squares i.sep { border: 0; width: 1mm; }
+
+/* ---------- Encart règles 3d6 ---------- */
+.rules { border: 1pt solid var(--ink); border-left-width: 3pt; padding: 1.4mm 2.6mm; font-size: 7.1pt; line-height: 1.26; }
+.rules h3 { margin: 0 0 0.8mm; font-size: 7.8pt; letter-spacing: 0.12em; }
+.rules h3::before { content: "## "; }
+.rules .grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 4mm; }
+.rules p { margin: 0 0 0.6mm; }
+.rules b { font-weight: 700; }
+
+/* ---------- Pied de page ---------- */
+.footer {
+  margin-top: auto;
+  border-top: 0.7pt solid var(--ink);
+  padding-top: 1.2mm;
+  display: flex;
+  justify-content: space-between;
+  gap: 4mm;
+  font-size: 6.6pt;
+  letter-spacing: 0.04em;
+}
+.cursor::after { content: "\2588"; font-size: 6pt; margin-left: 0.6mm; }
+
+/* Signature / empreinte */
+.sign { display: grid; grid-template-columns: 1fr 26mm; gap: 3mm; align-items: end; }
+.print {
+  height: 22mm; border: 0.7pt dashed var(--ink);
+  display: flex; align-items: flex-end; justify-content: center;
+  font-size: 6.2pt; padding-bottom: 0.8mm; letter-spacing: 0.04em; text-align: center;
+}
+
+/* Portrait / photo d'identité */
+.photo {
+  border: 0.7pt dashed var(--ink);
+  height: 100%; min-height: 30mm;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 6.6pt; text-align: center; letter-spacing: 0.06em;
+}
+.idgrid { display: grid; grid-template-columns: 1fr 27mm; gap: 3mm; }

@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "fiches": "node scripts/fiches.mjs"
   },
   "dependencies": {
     "@fontsource/questrial": "5.3.0",
