@@ -1,9 +1,10 @@
 // Génère les documents imprimables des scénarios « Recrutement » et « Infiltré » (A4, noir et blanc,
 // règles du 3D6 Système de François Cedelle, licence ORC)
 // à partir des pages HTML de fiches/, dans public/fiches/ :
-//   - fiches-personnages.pdf : les trois fiches de personnage sur une seule page ;
-//   - guide-mj.pdf : le guide du MJ, de 2 à 4 pages ;
-//   - fiche-infiltre.pdf : le prétiré du scénario « Infiltré », sur une seule page.
+//   - nostromo-fiches-recrutement.pdf : les trois fiches de personnage du scénario Recrutement, sur une seule page ;
+//   - nostromo-guide-mj-recrutement.pdf : le guide du MJ du scénario Recrutement, de 2 à 4 pages ;
+//   - nostromo-fiche-lieutenant-dr.pdf : le prétiré du scénario « Infiltré » (Lieutenant D.R.), sur une seule page.
+// Le <title> de chaque page HTML devient le titre du PDF.
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
 import { mkdir } from "node:fs/promises";
@@ -15,9 +16,9 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
 const documents = [
-  { html: "fiches.html", pdf: "fiches-personnages.pdf", pages: [1, 1] },
-  { html: "guide-mj.html", pdf: "guide-mj.pdf", pages: [2, 4] },
-  { html: "infiltre.html", pdf: "fiche-infiltre.pdf", pages: [1, 1] },
+  { html: "fiches.html", pdf: "nostromo-fiches-recrutement.pdf", pages: [1, 1] },
+  { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
+  { html: "infiltre.html", pdf: "nostromo-fiche-lieutenant-dr.pdf", pages: [1, 1] },
 ];
 
 const pngIndex = process.argv.indexOf("--png");
