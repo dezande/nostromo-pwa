@@ -1,9 +1,12 @@
-// Génère les documents imprimables des scénarios « Recrutement » et « Infiltré » (A4, noir et blanc,
+// Génère les documents imprimables des scénarios « Entraînement », « Recrutement » et « Infiltré » (A4, noir et blanc,
 // règles du 3D6 Système de François Cedelle, licence ORC)
 // à partir des pages HTML de fiches/, dans public/fiches/ :
 //   - nostromo-fiches-recrutement.pdf : les trois fiches de personnage du scénario Recrutement, sur une seule page ;
 //   - nostromo-guide-mj-recrutement.pdf : le guide du MJ du scénario Recrutement, de 2 à 4 pages ;
-//   - nostromo-fiche-lieutenant-dr.pdf : le prétiré du scénario « Infiltré » (Lieutenant D.R.), sur une seule page.
+//   - nostromo-fiche-lieutenant-dr.pdf : le prétiré du scénario « Infiltré » (Lieutenant D.R.), sur une seule page ;
+//   - nostromo-guide-mj-infiltre.pdf : le guide du MJ du scénario « Infiltré », de 2 à 3 pages ;
+//   - nostromo-fiche-psychic-agent.pdf : le prétiré du scénario « Entraînement » (Psychic Agent), sur une seule page ;
+//   - nostromo-guide-mj-entrainement.pdf : le guide du MJ du scénario « Entraînement », de 2 à 3 pages.
 // Le <title> de chaque page HTML devient le titre du PDF.
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
@@ -19,6 +22,9 @@ const documents = [
   { html: "fiches.html", pdf: "nostromo-fiches-recrutement.pdf", pages: [1, 1] },
   { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
   { html: "infiltre.html", pdf: "nostromo-fiche-lieutenant-dr.pdf", pages: [1, 1] },
+  { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 3] },
+  { html: "psychic-agent.html", pdf: "nostromo-fiche-psychic-agent.pdf", pages: [1, 1] },
+  { html: "guide-mj-entrainement.html", pdf: "nostromo-guide-mj-entrainement.pdf", pages: [2, 3] },
 ];
 
 const pngIndex = process.argv.indexOf("--png");
