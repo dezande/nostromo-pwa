@@ -15,7 +15,7 @@ test("Infiltré : session disciplinaire, survie avec un message de la C.R.F.", (
   expect(s.firstPanel).toBe("archives");
   expect(s.lastPanel).toBe("email");
   expect(s.rules[3].title).toBe("FIN DE LA SESSION");
-  expect(s.rules.map(r => r.text).join(" ")).not.toContain("entraînement");
+  expect(s.rules.flatMap(r => r.points).join(" ")).not.toContain("entraînement");
   expect(s.win.note?.from).toContain("C.R.F.");
 });
 

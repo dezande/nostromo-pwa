@@ -68,7 +68,7 @@ test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de d
 
   await page.locator("#startBtn").click();
   await expect(page.locator("#welcome")).toHaveClass(/show/);
-  await expect(page.locator("#welcome h2")).toHaveText("BIENVENUE À BORD, AGENT.");
+  await expect(page.locator("#welcome h2")).toHaveText("BIENVENUE À BORD, AGENTS.");
   await page.locator("#welcomeNext").click();
   // Une règle par panneau, de 1/4 à 4/4, chacune avec sa scène animée tirée du vrai plan.
   const titles = ["POSITION DE DÉPART", "DÉPLACEMENTS", "FERMETURE", "FIN DE L'ENTRAÎNEMENT"];

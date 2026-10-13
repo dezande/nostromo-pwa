@@ -21,7 +21,7 @@ const shown = (id: string) => $(`#${id}`).classList.contains("show");
 
 test("bienvenue, puis une règle par panneau (1/4 à 4/4), retours possibles, puis la partie commence", () => {
   expect(shown("welcome")).toBe(true);
-  expect($("#welcome").textContent).toContain("BIENVENUE À BORD, AGENT.");
+  expect($("#welcome").textContent).toContain("BIENVENUE À BORD, AGENTS.");
   act(() => { $("#welcomeNext").click(); });
   const titles = ["POSITION DE DÉPART", "DÉPLACEMENTS", "FERMETURE", "FIN DE L'ENTRAÎNEMENT"];
   titles.forEach((title, i) => {
@@ -37,7 +37,7 @@ test("bienvenue, puis une règle par panneau (1/4 à 4/4), retours possibles, pu
     if (n < 4) act(() => { $(`#rule${n}Next`).click(); });
   });
   expect($("#rule1").textContent).toContain("Seul le Coordinateur en connaît l'ordre de fermeture.");
-  expect($("#rule4").textContent).toContain("Fiez-vous à votre instinct, Agent.");
+  expect($("#rule4").textContent).toContain("Fiez-vous à votre instinct, Agents.");
   act(() => { $("#rule4Back").click(); });
   expect(shown("rule3")).toBe(true);
   act(() => { $("#rule3Back").click(); $("#rule2Back").click(); });
