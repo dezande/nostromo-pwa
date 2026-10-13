@@ -18,6 +18,14 @@ export interface Settings {
   alertVariant: AlertVariant;   // musique 2 pendant la partie
   settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
   markerDot: boolean;           // repère discret sur le plan
+  layout: Layout;               // format de l'écran de jeu : tablette ou téléphone
+}
+
+export type Layout = "tablet" | "phone";
+
+/** Format proposé au premier lancement : téléphone si l'écran est étroit (< 600 px) et en portrait. */
+export function defaultLayout(width = window.innerWidth, height = window.innerHeight): Layout {
+  return width < 600 && height > width ? "phone" : "tablet";
 }
 
 export type SettingsTab = "display" | "audio" | "alert" | "system";
@@ -35,6 +43,7 @@ export const DEFAULTS: Settings = {
   alertVariant: "siren",
   settingsTab: "display",
   markerDot: true,
+  layout: defaultLayout(),
 };
 
 // Anciens noms des réglages (version avant Preact), pour ne pas perdre les choix du joueur.
@@ -74,6 +83,8 @@ effect(() => {
   root.style.setProperty("--fs", String(settings.textSize.value / 100));
   root.classList.toggle("retro-font", !!theme.font);
   root.classList.toggle("no-scan", !settings.scanlines.value);
+  root.classList.toggle("layout-phone", settings.layout.value === "phone");
+  root.classList.toggle("layout-tablet", settings.layout.value !== "phone");
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme.font ? theme.bg : DEFAULT_BG);
 });
 

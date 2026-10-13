@@ -3,7 +3,9 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
-html, body { margin: 0; height: 100%; }
+// L'application tient exactement dans la fenêtre : jamais de défilement de la page.
+// (les écrans superposés font défiler leur propre panneau si besoin)
+html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
 
 body {
   background: var(--bg);
@@ -12,7 +14,6 @@ body {
   font-family: var(--font);
   font-size: fs(16px);
   -webkit-tap-highlight-color: transparent;
-  overflow-x: hidden;
 }
 
 // Les polices rétro n'ont pas toutes la même taille : on les harmonise.

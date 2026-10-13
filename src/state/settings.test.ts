@@ -67,3 +67,36 @@ test("la musique suit la case Musique", () => {
   settings.music.value = false;
   expect(audio.stopMusic).toHaveBeenCalled();
 });
+
+test("format par défaut : téléphone si l'écran est étroit et en portrait, sinon tablette", () => {
+  const { defaultLayout } = loadWith(null);
+  expect(defaultLayout(390, 844)).toBe("phone");
+  expect(defaultLayout(360, 780)).toBe("phone");
+  expect(defaultLayout(599, 900)).toBe("phone");
+  expect(defaultLayout(600, 1000)).toBe("tablet");   // assez large : tablette
+  expect(defaultLayout(500, 400)).toBe("tablet");    // paysage
+  expect(defaultLayout(1024, 768)).toBe("tablet");
+  expect(defaultLayout(768, 1024)).toBe("tablet");
+});
+
+test("le format choisi est appliqué à la page et mémorisé", () => {
+  const { settings } = loadWith({ layout: "phone" });
+  const root = document.documentElement;
+  expect(settings.layout.value).toBe("phone");
+  expect(root.classList.contains("layout-phone")).toBe(true);
+  settings.layout.value = "tablet";
+  expect(root.classList.contains("layout-tablet")).toBe(true);
+  expect(root.classList.contains("layout-phone")).toBe(false);
+  expect(JSON.parse(localStorage.getItem(KEY)!).layout).toBe("tablet");
+});
+
+test("premier lancement : le format dépend de la taille de l'écran", () => {
+  const size = { w: window.innerWidth, h: window.innerHeight };
+  Object.assign(window, { innerWidth: 390, innerHeight: 844 });
+  try {
+    expect(loadWith(null).settings.layout.value).toBe("phone");
+  } finally {
+    Object.assign(window, { innerWidth: size.w, innerHeight: size.h });
+  }
+  expect(loadWith(null).settings.layout.value).toBe("tablet");
+});

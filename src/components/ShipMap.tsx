@@ -3,23 +3,30 @@ import { ROOM_IDS, VENTS, crossLines, markerPosition, room, roomLines, pathSegme
 import { settings } from "../state/settings";
 import { reachable, closable, closed, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
 import { ProtocolWindow } from "./ProtocolWindow";
+import { DeckReadout, SystemPanel } from "./SystemPanel";
 
 const range = (from: number, to: number, stepBy: number) => Array.from({ length: Math.ceil((to - from) / stepBy) }, (_, i) => from + i * stepBy);
 
 export function ShipMap() {
   return (
+    // Tablette : pont 1 à gauche ; à droite le protocole, des relevés et le pont 2.
+    // Téléphone : protocole en haut, puis pont 1, puis relevés et pont 2 (voir _map.scss).
     <section class="decks">
-      <div class="deck">
-        <h2>PONT 1</h2>
-        <svg id="deck1" viewBox="0 0 400 520" aria-label="Plan du pont 1">
-          <Deck1 />
-        </svg>
+      <div class="col-main">
+        <div class="deck deck-1">
+          <div class="deck-head"><h2>PONT 1</h2><DeckReadout text="PRESSION 1.02 · O2 98 %" /></div>
+          <svg id="deck1" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet" aria-label="Plan du pont 1">
+            <Deck1 />
+          </svg>
+        </div>
+        <SystemPanel id="sysMain" class="sys-wide" />
       </div>
       <div class="side">
         <ProtocolWindow />
-        <div class="deck">
-          <h2>PONT 2</h2>
-          <svg id="deck2" viewBox="0 0 320 330" aria-label="Plan du pont 2">
+        <SystemPanel id="sysSide" class="sys-side" />
+        <div class="deck deck-2">
+          <div class="deck-head"><h2>PONT 2</h2><DeckReadout text="LIAISON PONT 1/2 OK" /></div>
+          <svg id="deck2" viewBox="0 0 320 330" preserveAspectRatio="xMidYMid meet" aria-label="Plan du pont 2">
             <Deck2 />
           </svg>
         </div>
