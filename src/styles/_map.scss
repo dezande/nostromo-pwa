@@ -117,6 +117,7 @@
   user-select: none;
 }
 .sys-head {
+  flex: none;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -135,6 +136,7 @@
   animation: blink 1.6s steps(2) infinite;
 }
 .sys-list {
+  flex: none;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -157,7 +159,7 @@
   align-items: flex-end;
   gap: 2px;
   flex: 1 1 auto;
-  min-height: 12px;
+  min-height: 0;
   max-height: 120px;
   margin-top: 6px;
   i {
