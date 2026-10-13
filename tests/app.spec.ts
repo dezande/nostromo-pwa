@@ -529,6 +529,33 @@ test("retour à l'accueil par les Réglages, avec confirmation : alarme et voix 
   expect(errors).toEqual([]);
 });
 
+test("réglages : boutons du bas alignés sur une seule rangée, de même taille", async ({ page }) => {
+  const errors = await open(page);
+  const box = async (id: string) => (await page.locator(`#${id}`).boundingBox())!;
+  const sameRow = async (...ids: string[]) => {
+    const boxes = await Promise.all(ids.map(box));
+    for (const b of boxes.slice(1)) {
+      expect(Math.abs(b.y - boxes[0].y), ids.join(" / ")).toBeLessThanOrEqual(1);
+      expect(Math.abs(b.width - boxes[0].width), ids.join(" / ")).toBeLessThanOrEqual(1);
+      expect(Math.abs(b.height - boxes[0].height), ids.join(" / ")).toBeLessThanOrEqual(1);
+    }
+  };
+  await startSimulation(page);
+  await placeAgent(page, "cockpit");
+  await page.locator("#setBtn").click();
+  await page.locator("#tab-display").click();
+  await sameRow("homeReturnBtn", "setClose");
+  // Onglet Alerte : « Écouter » sur la même rangée
+  await page.locator("#tab-alert").click();
+  await sameRow("alertPreview", "homeReturnBtn", "setClose");
+  // Confirmation : Oui / Non sur la même rangée que Fermer
+  await page.locator("#homeReturnBtn").click();
+  await sameRow("homeReturnYes", "homeReturnNo", "setClose");
+  await page.locator("#homeReturnNo").click();
+  await page.locator("#setClose").click();
+  expect(errors).toEqual([]);
+});
+
 test("écran de fin : bouton Accueil", async ({ page }) => {
   await open(page);
   await startSimulation(page);
@@ -544,7 +571,7 @@ test("écran de fin : bouton Accueil", async ({ page }) => {
 async function checkIconButtons(page: Page, scope: string) {
   const buttons = page.locator(`${scope} button.icon-btn:visible`);
   expect(await buttons.count(), scope).toBeGreaterThan(0);
-  const all = await page.locator(`${scope} button:visible:not([role="tab"], [role="radio"], .theme, #alertPreview)`).evaluateAll(els => els.map(b => ({
+  const all = await page.locator(`${scope} button:visible:not([role="tab"], [role="radio"], .theme)`).evaluateAll(els => els.map(b => ({
     id: b.id,
     name: b.getAttribute("aria-label"),
     title: b.getAttribute("title"),
