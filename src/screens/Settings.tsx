@@ -107,12 +107,12 @@ const ALERTS: { id: AlertVariant; name: string; description: string }[] = [
   { id: "detector", name: "Détecteur", description: "Bip de détecteur et pulsation" },
 ];
 
-/** Musique 2 : jouée pendant les 5 minutes de l'entraînement, avec la voix toutes les 30 s. */
+/** Musique 2 : jouée pendant la partie. */
 function AlertSettings() {
   const current = settings.alertVariant.value;
   return (
     <>
-      <p class="note">Musique jouée pendant les 5 minutes de l'entraînement.</p>
+      <p class="note">Musique jouée pendant la partie, de la validation de la salle de départ jusqu'à la fin.</p>
       <div class="alert-cards" role="radiogroup" aria-label="Fond sonore de l'alerte">
         {ALERTS.map(a => (
           <button key={a.id} class="alert-card" id={`alert-${a.id}`} role="radio" aria-checked={current === a.id}
@@ -122,8 +122,6 @@ function AlertSettings() {
           </button>
         ))}
       </div>
-      <Toggle id="alertVoiceChk" label="Voix toutes les 30 s" setting={settings.alertVoice} />
-      <Toggle id="alertCountdownChk" label="Décompte des 10 dernières secondes" setting={settings.alertCountdown} />
       <div class="row">
         <button id="alertPreview" onClick={() => audio.previewAlert(current)}>▶ Écouter</button>
       </div>

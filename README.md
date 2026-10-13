@@ -1,9 +1,10 @@
 # Nostromo II – partie fusée (PWA)
 
 Application web installable qui accompagne l'effet *Nostromo II* (Fred Darevil, Marchand de Trucs) :
-plan du vaisseau-base sur deux ponts, panneaux d'accueil, choix des salles à fermer par le Coordinateur
-(qui suit sa fiche de protocole papier), compte à rebours avant chaque
-fermeture de salle, annonce vocale, musique d'ambiance et bruitages, styles d'écran rétro.
+plan du vaisseau-base sur deux ponts, panneaux d'accueil (une règle par panneau, avec une scène animée tirée
+du vrai plan), choix des salles à fermer par le Coordinateur (qui suit sa fiche de protocole papier),
+fermeture immédiate avec cri du xénomorphe, musique d'ambiance et musique d'alerte pendant la partie
+(coupées par défaut), styles d'écran rétro.
 
 La musique et les bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
 
@@ -39,10 +40,11 @@ src/
     ui.ts               écrans ouverts (menu, réglages…)
     terminal.ts         déroulement des écrans de transition
     device.ts           écran allumé, annonce vocale
+    alert.ts            musique d'alerte pendant la partie
     pwa.ts              mode hors ligne et numéro de build
   audio/audio.ts        musique et bruitages
-  components/           morceaux d'interface (plan, en-tête, coordinateur, icônes…)
-  screens/              écrans superposés (accueil, bienvenue et protocole, compte à rebours, fin, réglages…)
+  components/           morceaux d'interface (plan, barre d'actions, fenêtre du protocole, scènes des règles…)
+  screens/              écrans superposés (accueil, bienvenue et règles, fin, réglages en onglets…)
   styles/               Sass : un fichier par partie, réunis dans main.scss
   **/*.test.ts(x)       tests unitaires Jest, à côté du code testé
 tests/                  tests de bout en bout Playwright
