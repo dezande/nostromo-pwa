@@ -112,6 +112,30 @@ describe("déplacements", () => {
     expect(game.moves.value).toBe(2);
   });
 
+  test("5 déplacements au maximum, sans message ; Annuler libère un pas ; Valider reste possible", () => {
+    // cockpit → vie → cockpit → vie → cockpit → vie : 5 déplacements
+    for (const id of ["vie", "cockpit", "vie", "cockpit", "vie"] as const) game.touchRoom(id);
+    expect(game.moves.value).toBe(game.MAX_MOVES);
+    expect(game.reachable.value.size).toBe(0);
+    game.touchRoom("cuisine"); // refusé
+    expect(game.position.value).toBe("vie");
+    expect(game.moves.value).toBe(5);
+    game.undo();
+    expect(game.moves.value).toBe(4);
+    expect(game.position.value).toBe("cockpit");
+    expect(game.reachable.value.size).toBeGreaterThan(0);
+    game.touchRoom("vie");
+    expect(game.canValidate.value).toBe(true);
+    game.validate();
+    expect(game.phase.value).toBe("close");
+  });
+
+  test("on peut valider avec moins de 5 déplacements", () => {
+    game.touchRoom("vie");
+    game.validate();
+    expect(game.phase.value).toBe("close");
+  });
+
   test("le chemin suit les déplacements, Annuler retire le dernier pas", () => {
     game.touchRoom("vie");
     game.touchRoom("cuisine");
@@ -216,11 +240,28 @@ describe("fermetures", () => {
     expect(game.step.value).toBe(7);
   });
 
-  test("on ne peut pas fermer toutes les salles ouvertes d'un coup", () => {
+  test("1 ou 2 salles par fermeture : une 3e est ignorée, sans message", () => {
     place("serre");
     game.validate();
-    const open = ROOM_IDS.filter(id => !room(id).toxic);
-    for (const id of open) game.touchRoom(id);
-    expect(game.toClose.value.size).toBe(open.length - 1);
+    game.touchRoom("cuisine");
+    game.touchRoom("atelier");
+    game.touchRoom("cockpit"); // ignorée
+    expect([...game.toClose.value].sort()).toEqual(["atelier", "cuisine"]);
+    expect([...game.closable.value].sort()).toEqual(["atelier", "cuisine"]); // seulement pour désélectionner
+    game.touchRoom("atelier"); // désélection
+    game.touchRoom("cockpit");
+    expect([...game.toClose.value].sort()).toEqual(["cockpit", "cuisine"]);
+  });
+
+  test("la dernière salle ouverte ne peut jamais être fermée", async () => {
+    place("serre");
+    const others = ROOM_IDS.filter(id => !room(id).toxic && id !== "serre" && id !== "vie");
+    for (let i = 0; i < others.length; i += 2) await closeRooms(...others.slice(i, i + 2));
+    // Il reste la serre et la salle de vie (6 fermetures) ; on ne peut en choisir qu'une.
+    expect(game.phase.value).toBe("move");
+    game.validate();
+    game.touchRoom("vie");
+    game.touchRoom("serre");
+    expect(game.toClose.value.size).toBe(1);
   });
 });

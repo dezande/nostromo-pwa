@@ -1,6 +1,6 @@
 // Fenêtre du protocole (au-dessus du pont 2) : guide le Psychic Agent, façon terminal.
 import { room } from "../data/ship";
-import { moves, path, phase, position, toClose } from "../state/game";
+import { moves, phase, position, toClose } from "../state/game";
 import { stepLabel } from "../data/ship";
 import { InfoPanel } from "./InfoPanel";
 import { useTypewriter } from "./useTypewriter";
@@ -17,9 +17,8 @@ export function protocolMessage(): string {
   }
   if (phase.value === "move" && position.value) {
     if (moves.value === 0) return `POSITION ENREGISTRÉE : ${room(position.value).name.toUpperCase()}`;
-    // Trajet depuis la dernière validation
-    const route = path.value.map(id => room(id).name.toUpperCase()).join(" → ");
-    return `${route} · ${moves.value} DÉPLACEMENT${moves.value > 1 ? "S" : ""}`;
+    // Pas de compteur visible : seulement l'étape en cours.
+    return "DÉPLACEMENTS EN COURS";
   }
   return "";
 }
