@@ -1,6 +1,9 @@
-// Génère les fiches de personnage du scénario « RECRUTEMENT » en PDF (A4, noir et blanc)
-// à partir des pages HTML de fiches/, dans public/fiches/.
-// Usage : npm run fiches [-- candidat rh coordinateur] [--png <dossier> : capture de chaque fiche en plus]
+// Génère les documents imprimables du scénario « RECRUTEMENT » (A4, noir et blanc)
+// à partir des pages HTML de fiches/, dans public/fiches/ :
+//   - fiches-personnages.pdf : les trois fiches de personnage sur une seule page ;
+//   - guide-mj.pdf : le guide du MJ, de 2 à 4 pages.
+// Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
+// Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
 import { mkdir } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join, resolve } from "node:path";
@@ -9,10 +12,10 @@ import { chromium } from "@playwright/test";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
-const toutes = ["candidat", "rh", "coordinateur"];
-// Option : noms de fiches à générer (ex. npm run fiches -- candidat), sinon toutes.
-const demandees = process.argv.slice(2).filter((arg, i, args) => !arg.startsWith("--") && args[i - 1] !== "--png");
-const fiches = demandees.length ? toutes.filter(name => demandees.includes(name)) : toutes;
+const documents = [
+  { html: "fiches.html", pdf: "fiches-personnages.pdf", pages: [1, 1] },
+  { html: "guide-mj.html", pdf: "guide-mj.pdf", pages: [2, 4] },
+];
 
 const pngIndex = process.argv.indexOf("--png");
 const pngDir = pngIndex > -1 ? resolve(process.argv[pngIndex + 1]) : null;
@@ -29,22 +32,31 @@ const browser = await launch();
 try {
   const page = await browser.newPage({ viewport: { width: 794, height: 1123 } });
   await page.emulateMedia({ media: "print" });
-  for (const name of fiches) {
-    await page.goto(pathToFileURL(join(source, `${name}.html`)).href, { waitUntil: "networkidle" });
+  for (const doc of documents) {
+    await page.goto(pathToFileURL(join(source, doc.html)).href, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
-    // Une fiche = une page A4 : on refuse un contenu qui dépasse du cadre.
-    const depasse = await page.evaluate(() => {
-      const fiche = document.querySelector(".page");
-      return fiche.scrollHeight - fiche.clientHeight;
+
+    const pages = await page.evaluate(() => [...document.querySelectorAll(".page")]
+      .map(el => el.scrollHeight - el.clientHeight));
+    const [min, max] = doc.pages;
+    if (pages.length < min || pages.length > max) {
+      throw new Error(`fiches/${doc.html} : ${pages.length} page(s), attendu de ${min} à ${max}`);
+    }
+    pages.forEach((depasse, i) => {
+      if (depasse > 1) throw new Error(`fiches/${doc.html} : la page ${i + 1} dépasse le format A4 de ${depasse} px`);
     });
-    if (depasse > 1) throw new Error(`fiches/${name}.html dépasse la page A4 de ${depasse} px`);
-    const file = join(output, `fiche-${name}.pdf`);
+
+    const file = join(output, doc.pdf);
     await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true });
-    console.log(`PDF : ${file}`);
+    console.log(`PDF : ${file} (${pages.length} page${pages.length > 1 ? "s" : ""})`);
+
     if (pngDir) {
-      const png = join(pngDir, `fiche-${name}.png`);
-      await page.screenshot({ path: png, fullPage: true });
-      console.log(`PNG : ${png}`);
+      const elements = await page.$$(".page");
+      for (const [i, el] of elements.entries()) {
+        const png = join(pngDir, `${doc.pdf.replace(/\.pdf$/, "")}-p${i + 1}.png`);
+        await el.screenshot({ path: png });
+        console.log(`PNG : ${png}`);
+      }
     }
   }
 } finally {
