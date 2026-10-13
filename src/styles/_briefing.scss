@@ -25,7 +25,14 @@
 .rule-panel {
   .rule-count { color: var(--amber); }
   .rule-title { margin: 10px 0 8px; font-size: fs(15px); letter-spacing: .2em; color: var(--amber); font-weight: normal; }
-  .rule-text { margin: 10px 0 0; }
+  // Puces, comme un support de présentation projeté
+  .rule-points {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+    li { position: relative; padding-left: 1.2em; margin-bottom: 4px; color: var(--ink); font-size: fs(13px); line-height: 1.45; }
+    li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); }
+  }
 }
 
 // Scène animée faite avec le vrai plan
@@ -65,6 +72,7 @@
     .briefing-motto { margin-bottom: 10px; }
     h2 { font-size: fs(15px); margin-bottom: 8px; }
     p { font-size: fs(11px); margin-bottom: 8px; }
+    .rule-points li { font-size: fs(11px); margin-bottom: 2px; }
     .briefing-intro { margin-top: 8px; }
     .briefing-actions { margin-top: 12px; }
   }

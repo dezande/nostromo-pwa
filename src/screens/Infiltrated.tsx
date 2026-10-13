@@ -2,6 +2,7 @@
 // Archives de la C.R.F. (son message), puis l'e-mail de la direction trouvé sur le terminal du Coordinateur :
 // la compagnie sait tout et l'envoie à l'entraînement pour le punir. Viennent ensuite les règles, puis la partie.
 import { Overlay } from "../components/Overlay";
+import { Monitor } from "../components/Monitor";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { Redact } from "../components/Redacted";
@@ -31,6 +32,7 @@ export function Infiltrated() {
   return (
     <>
       <Overlay id="archives" show={panel === "archives"} class="briefing">
+        <Monitor label="TERMINAL PERSONNEL · CANAL C.R.F." status="LIAISON CHIFFRÉE">
         <div class="panel briefing-panel archives-panel">
           <div class="briefing-corp">ARCHIVES SECRÈTES DE LA C.R.F. · CIVIL RESISTANCE FORCE</div>
           <div class="doc-ref">NIVEAU DE CONFIDENTIALITÉ : 5 · 22/10/2184 · EXTRAIT DÉCRYPTÉ</div>
@@ -43,9 +45,11 @@ export function Infiltrated() {
             <IconButton id="archivesNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = "email"; }} />
           </div>
         </div>
+        </Monitor>
       </Overlay>
 
       <Overlay id="email" show={panel === "email"} class="briefing">
+        <Monitor label="TERMINAL DU COORDINATEUR · SALLE DE CONTRÔLE" status="SESSION NON VERROUILLÉE">
         <div class="panel briefing-panel welcome-panel email-panel">
           <WeylandLogo class="logo-watermark logo-in-panel" />
           <div class="briefing-corp">MU/TH/UR 6000 · MESSAGERIE INTERNE W.Y.C. · TERMINAL DU COORDINATEUR</div>
@@ -67,6 +71,7 @@ export function Infiltrated() {
             <IconButton id="emailNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = 1; }} />
           </div>
         </div>
+        </Monitor>
       </Overlay>
     </>
   );

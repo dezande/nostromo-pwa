@@ -1,0 +1,71 @@
+@use "functions" as *;
+
+// ---------- Moniteur mural (composant <Monitor>) ----------
+// Un cadre plat et épais autour du panneau, une étiquette, un voyant. Aucune courbure ni reflet :
+// seulement un léger dégradé de luminosité, fixe, sur l'écran.
+.monitor {
+  --chrome: 64px; // hauteur prise par le cadre (étiquette, voyant, marges)
+  width: 100%;
+  max-width: 744px;
+  padding: 8px 12px 6px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, #1b1f21), #0b0d0e);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, #2a2f31);
+  box-shadow:
+    0 12px 40px #000a,
+    inset 0 1px 0 #ffffff14,
+    inset 0 -2px 0 #0008;
+
+  > .panel {
+    max-height: calc(100vh - 32px - var(--chrome));
+    max-height: calc(100dvh - 32px - var(--chrome));
+    border-radius: 12px;
+    border-color: #000;
+    box-shadow: inset 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
+    background-image: linear-gradient(180deg, #ffffff06, transparent 40%);
+  }
+  // Panneaux dont la hauteur est fixée (contrat, e-mail) : on retire aussi le cadre
+  > .contract-panel { height: calc(100dvh - 32px - var(--chrome)); }
+
+  .monitor-top, .monitor-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: fs(9px);
+    letter-spacing: .2em;
+    color: color-mix(in srgb, var(--accent) 45%, #777);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .monitor-top { margin: 0 4px 6px; }
+  .monitor-label { overflow: hidden; text-overflow: ellipsis; }
+  .monitor-brand { opacity: .6; }
+  .monitor-foot { justify-content: flex-start; margin: 6px 4px 0; }
+  .monitor-led {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: monitor-led 2.4s ease-in-out infinite;
+  }
+}
+@keyframes monitor-led { 50% { opacity: .45; } }
+
+// Petits écrans : cadre plus fin
+@media (max-height: 800px), (max-width: 480px) {
+  .monitor {
+    --chrome: 46px;
+    padding: 5px 6px 4px;
+    border-radius: 14px;
+    > .panel {
+      max-height: calc(100dvh - 16px - var(--chrome));
+      border-radius: 9px;
+    }
+    > .contract-panel { height: calc(100dvh - 16px - var(--chrome)); }
+    .monitor-top { margin-bottom: 4px; font-size: fs(8px); }
+    .monitor-foot { margin-top: 4px; font-size: fs(8px); }
+  }
+}

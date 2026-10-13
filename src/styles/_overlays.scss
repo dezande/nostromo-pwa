@@ -59,3 +59,32 @@
   text-align: center;
   .blink { font-size: fs(14px); }
 }
+
+// Rapport de fin : lignes imprimées une à une, puis tampon
+.end {
+  .end-line { visibility: hidden; }
+  .end-line.shown { visibility: visible; animation: end-line-in .25s steps(4) both; }
+  .end-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    margin-top: 10px;
+  }
+  .end-generated { color: var(--dim); font-size: fs(9px); letter-spacing: .15em; }
+  .end-stamp {
+    padding: 4px 10px;
+    border: 3px double currentColor;
+    border-radius: 4px;
+    font-size: fs(13px);
+    font-weight: bold;
+    letter-spacing: .15em;
+    transform: rotate(-6deg);
+    animation: end-stamp-in .3s ease-out both;
+  }
+  &.win .end-stamp { color: var(--accent); }
+  &.dead .end-stamp { color: var(--red); }
+}
+@keyframes end-line-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes end-stamp-in { from { opacity: 0; transform: rotate(-6deg) scale(1.8); } to { opacity: 1; transform: rotate(-6deg) scale(1); } }

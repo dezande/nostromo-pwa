@@ -3,6 +3,7 @@
 import { signal } from "@preact/signals";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
+import { Monitor } from "../components/Monitor";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { Redact } from "../components/Redacted";
@@ -21,6 +22,7 @@ export function Recruitment() {
   return (
     <>
       <Overlay id="hr" show={panel === "hr"} class="briefing">
+        <Monitor label="BUREAU DU RECRUTEMENT · TERMINAL RH">
         <div class="panel briefing-panel welcome-panel">
           <WeylandLogo class="logo-watermark logo-in-panel" />
           <div class="briefing-corp">WEYLAND-YUTANI CORP · SERVICE DES RESSOURCES HUMAINES · NOSTROMO II</div>
@@ -33,10 +35,11 @@ export function Recruitment() {
             <IconButton id="hrNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = "contract"; }} />
           </div>
         </div>
+        </Monitor>
       </Overlay>
 
       <Overlay id="contract" show={panel === "contract"} class="briefing">
-        {panel === "contract" && <Contract />}
+        {panel === "contract" && <Monitor label="BUREAU DU RECRUTEMENT · LECTEUR BIOMÉTRIQUE" status="EN ATTENTE DE SIGNATURE"><Contract /></Monitor>}
       </Overlay>
     </>
   );

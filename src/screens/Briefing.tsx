@@ -1,7 +1,11 @@
 // Panneaux affichés après « Démarrer la simulation » : bienvenue, puis explication du protocole.
 // Les textes dépendent du scénario choisi dans les Réglages (src/data/scenarios.ts).
 // Pas de choix de protocole dans l'app : le Coordinateur utilise ses fiches papier.
+// Chaque panneau est un moniteur mural de la salle de briefing, que l'instructeur fait défiler.
+import { useEffect } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
+import { Monitor, BRIEFING_ROOM } from "../components/Monitor";
+import { audio } from "../audio/audio";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { RuleScene } from "../components/RuleScenes";
@@ -18,27 +22,32 @@ export function Briefing() {
   const RULES = text.rules;
   // Retour depuis la première règle : dernier panneau d'introduction du scénario.
   const first = text.lastPanel;
+  // Petit bruit de commutation à chaque changement d'écran (si le son est actif)
+  useEffect(() => { if (panel !== null) audio.tick(); }, [panel]);
   return (
     <>
       <Overlay id="welcome" show={panel === "welcome"} class="briefing">
+        <Monitor label={`MONITEUR 00 · ${BRIEFING_ROOM}`}>
         <div class="panel briefing-panel welcome-panel">
           <WeylandLogo class="logo-watermark logo-in-panel" />
           <div class="briefing-corp">WEYLAND-YUTANI CORP · BASE LUNAIRE D'ENTRAÎNEMENT NOSTROMO II</div>
           <div class="doc-ref" id="welcomeRef">{DOC_REFS.welcome}</div>
           <div class="briefing-motto">« Building Better Worlds »</div>
-          <h2>BIENVENUE À BORD, AGENT.</h2>
-          <p>Vous avez été sélectionné pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
+          <h2>BIENVENUE À BORD, AGENTS.</h2>
+          <p>Vous avez été sélectionnés pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
           <p>Le vaisseau-base Nostromo II reproduit un cargo de taille moyenne de la compagnie. L'entraînement se déroule en conditions réelles. Huit spécimens adultes sont confinés sous le plancher du vaisseau.</p>
           <p>Votre contrat prévoit les risques liés à cet entraînement. La compagnie vous remercie de votre engagement.</p>
           <div class="row icon-row briefing-actions">
             <IconButton id="welcomeNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = 1; }} />
           </div>
         </div>
+        </Monitor>
       </Overlay>
 
       {/* Une règle par panneau, pour tenir dans l'écran sans défilement */}
       {RULES.map((rule, i) => (
         <Overlay key={rule.id} id={`rule${i + 1}`} show={panel === i + 1} class="briefing">
+          <Monitor label={`MONITEUR 0${i + 1}/0${RULES.length} · ${BRIEFING_ROOM}`} status="QUESTIONS : NON AUTORISÉES">
           <div class="panel briefing-panel rule-panel">
             <div class="briefing-corp">
               {text.rulesHeader} · RÈGLE <span class="rule-count">{i + 1}/{RULES.length}</span>
@@ -48,7 +57,9 @@ export function Briefing() {
             <h3 class="rule-title">{rule.title}</h3>
             {/* La scène ne tourne que quand son panneau est affiché */}
             {panel === i + 1 && <RuleScene name={rule.scene} />}
-            <p class="rule-text"><Redact text={rule.text} /></p>
+            <ul class="rule-points">
+              {rule.points.map(point => <li key={point}><Redact text={point} /></li>)}
+            </ul>
             {i === RULES.length - 1 && <p class="briefing-sign">{text.rulesSign}</p>}
             <div class="row icon-row briefing-actions">
               <IconButton id={`rule${i + 1}Back`} icon="retour" label="Retour"
@@ -57,6 +68,7 @@ export function Briefing() {
                 onClick={() => { if (i === RULES.length - 1) { briefing.value = null; startGame(); } else briefing.value = (i + 2) as BriefingPanel; }} />
             </div>
           </div>
+          </Monitor>
         </Overlay>
       ))}
     </>
