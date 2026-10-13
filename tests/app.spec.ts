@@ -187,6 +187,12 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
   await open(page);
   await startSimulation(page);
   await expect(page.locator("#deck1")).toBeVisible();
+  // Téléphone : un pont à la fois, l'onglet PONT 2 affiche l'autre.
+  if (test.info().project.name === "telephone") {
+    await expect(page.locator("#deck2")).toBeHidden();
+    await page.locator("#deckTab2").click();
+    await expect(page.locator("#deck1")).toBeHidden();
+  }
   await expect(page.locator("#deck2")).toBeVisible();
   // Fenêtre d'informations au-dessus du pont 2.
   await expect(page.locator("#infoPanel")).toBeVisible();
@@ -380,7 +386,7 @@ test("musique coupée par défaut au premier lancement", async ({ page }) => {
 test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
   const errors = await open(page);
   await page.locator("#homeSetBtn").click();
-  await expect(page.getByRole("tab")).toHaveText(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
+  await expect(page.locator("#settings").getByRole("tab")).toHaveText(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
   await expect(page.locator("#tab-display")).toHaveAttribute("aria-selected", "true");
   await expect(page.locator("#themes")).toBeVisible();
   // Clavier : flèche droite → Audio
@@ -441,7 +447,9 @@ test("la croix des salles fermées reste dans la forme de chaque salle (entrepô
   await closeRoom(page, "entrepot1", "entrepot2");
   await closeRoom(page, "entrepot3", "entrepot4");
   await closeRoom(page, "cockpit", "reunion");
-  for (const id of ["entrepot1", "entrepot2", "entrepot3", "entrepot4", "cockpit", "reunion", "armurerie", "labo"]) {
+  for (const id of ["entrepot1", "entrepot2", "entrepot3", "entrepot4", "cockpit", "reunion", "armurerie", "labo"] as const) {
+    // Téléphone : un pont à la fois ; on affiche celui de la salle pour mesurer sa forme.
+    if (test.info().project.name === "telephone") await page.locator(`#deckTab${room(id).deck}`).click();
     const ok = await page.locator(`[data-room="${id}"]`).evaluate(g => {
       const shape = g.querySelector("rect, polygon") as SVGGeometryElement;
       return [...g.querySelectorAll(".toxic-cross")].every(l => {
