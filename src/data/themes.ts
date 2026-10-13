@@ -1,6 +1,7 @@
 // Styles d'écran, repris des profils de cool-retro-term (https://github.com/Swordfish90/cool-retro-term).
 // Les polices d'origine n'existent pas sur le web : on utilise des polices proches de Google Fonts.
 // La gigue et la synchro horizontale ne sont pas utilisées : pas de déformation de l'image.
+// Seuls les styles sombres et sans courbure de l'écran sont gardés.
 
 /** Intensité des effets d'écran, de 0 à 1. */
 export interface CrtEffects {
@@ -21,21 +22,20 @@ const crt = (name: string, font: string, fg: string, bg: string, fx: CrtEffects)
 export const THEMES: Theme[] = [
   { name: "Nostromo (origine)" }, // couleurs par défaut de la feuille de style
   //   nom                  police             texte      fond       flicker noise curvature bloom rgbShift raster(0 légère, 1 lignes, 4 aucune) ambient
-  crt("Default Amber",    "VT323",           "#ff8100", "#000000", { flicker: .1, noise: .1, curve: .2, bloom: .6, rgb: 0,  raster: 0, ambient: .3 }),
-  crt("Monochrome Green", "Share Tech Mono", "#0ccc68", "#000000", { flicker: .1, noise: .1, curve: .3, bloom: .5, rgb: 0,  raster: 0, ambient: .3 }),
-  crt("Deep Blue",        "IBM Plex Mono",   "#7fb4ff", "#000000", { flicker: .1, noise: .1, curve: .4, bloom: .6, rgb: 0,  raster: 0, ambient: 0 }),
-  crt("Commodore 64",     "Press Start 2P",  "#a9a7ff", "#3b3b8f", { flicker: .1, noise: .1, curve: .5, bloom: .4, rgb: 0,  raster: 1, ambient: .4 }),
-  crt("Commodore PET",    "Press Start 2P",  "#ffffff", "#000000", { flicker: .2, noise: .2, curve: .7, bloom: .4, rgb: 0,  raster: 1, ambient: 0 }),
-  crt("Apple ][",         "Press Start 2P",  "#4dff6b", "#001100", { flicker: .2, noise: .2, curve: .5, bloom: .3, rgb: 0,  raster: 1, ambient: 1 }),
-  crt("Atari 400",        "Press Start 2P",  "#8ed6ff", "#0f1f5a", { flicker: .1, noise: .1, curve: .4, bloom: .1, rgb: 0,  raster: 1, ambient: .1 }),
-  crt("IBM VGA 8x16",     "VT323",           "#c0c0c0", "#000000", { flicker: .1, noise: 0,  curve: .3, bloom: .2, rgb: .1, raster: 1, ambient: .2 }),
   crt("IBM 3278 Reborn",  "IBM Plex Mono",   "#3cff7a", "#000000", { flicker: 0,  noise: 0,  curve: 0,  bloom: .2, rgb: 0,  raster: 4, ambient: .2 }),
-  crt("Neon Cyan",        "JetBrains Mono",  "#52f7ff", "#001018", { flicker: .1, noise: .1, curve: 0,  bloom: .6, rgb: 0,  raster: 4, ambient: .1 }),
+  crt("Neon Cyan",        "JetBrains Mono",  "#52f7ff", "#001018", { flicker: .1, noise: .1, curve: 0,  bloom: .3, rgb: 0,  raster: 4, ambient: .1 }),
   crt("Ghost Terminal",   "JetBrains Mono",  "#a6b3c0", "#0b1014", { flicker: 0,  noise: .1, curve: 0,  bloom: .3, rgb: 0,  raster: 4, ambient: .3 }),
-  crt("Plasma",           "Fira Code",       "#ff9bd6", "#070014", { flicker: .1, noise: .1, curve: 0,  bloom: .7, rgb: .1, raster: 4, ambient: .1 }),
-  crt("Boring",           "JetBrains Mono",  "#ffffff", "#000000", { flicker: 0,  noise: 0,  curve: 0,  bloom: .5, rgb: 0,  raster: 4, ambient: .1 }),
-  crt("E-Ink",            "Source Code Pro", "#101010", "#f2f2ec", { flicker: 0,  noise: 0,  curve: 0,  bloom: 0,  rgb: 0,  raster: 4, ambient: .6 }),
+  crt("Plasma",           "Fira Code",       "#ff9bd6", "#070014", { flicker: .1, noise: .1, curve: 0,  bloom: .3, rgb: 0,  raster: 4, ambient: .1 }),
+  crt("Boring",           "JetBrains Mono",  "#ffffff", "#000000", { flicker: 0,  noise: 0,  curve: 0,  bloom: .2, rgb: 0,  raster: 4, ambient: .1 }),
 ];
+
+/** Style enregistré par son nom ; un style supprimé (ou inconnu) revient au style d'origine. */
+export const findTheme = (name: unknown): Theme => THEMES.find(t => t.name === name) || THEMES[0];
+
+// Anciens styles, enregistrés par leur numéro dans l'ancienne liste.
+const OLD_THEMES = ["Nostromo (origine)", "Default Amber", "Monochrome Green", "Deep Blue", "Commodore 64", "Commodore PET", "Apple ][", "Atari 400", "IBM VGA 8x16", "IBM 3278 Reborn", "Neon Cyan", "Ghost Terminal", "Plasma", "Boring", "E-Ink"];
+/** Nom d'un style enregistré (ancien numéro ou nom), ramené au style d'origine s'il n'existe plus. */
+export const themeName = (stored: unknown): string => findTheme(typeof stored === "number" ? OLD_THEMES[stored] : stored).name;
 
 export const DEFAULT_BG = "#07090a";
 

@@ -237,7 +237,7 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
   await page.locator("#homeSetBtn").click();
   const themes = page.locator("#themes .theme");
   const count = await themes.count();
-  expect(count).toBe(15);
+  expect(count).toBe(THEMES.length);
   for (let i = 0; i < count; i++) {
     await themes.nth(i).click();
     await expect(themes.nth(i)).toHaveAttribute("aria-pressed", "true");
@@ -245,7 +245,7 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
     const theme = THEMES[i];
     expect(bg).toBe(theme.font ? theme.bg : DEFAULT_BG);
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).theme);
-    expect(saved).toBe(i);
+    expect(saved).toBe(theme.name);
   }
   expect(errors).toEqual([]);
 });

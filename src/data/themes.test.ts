@@ -20,9 +20,9 @@ describe("couleurs", () => {
 
 describe("styles d'écran", () => {
   test("15 styles : l'original puis les 14 de cool-retro-term", () => {
-    expect(THEMES).toHaveLength(15);
+    expect(THEMES).toHaveLength(6);
     expect(THEMES[0].name).toBe("Nostromo (origine)");
-    expect(new Set(THEMES.map(t => t.name)).size).toBe(15);
+    expect(new Set(THEMES.map(t => t.name)).size).toBe(6);
   });
 
   test("le style d'origine garde les couleurs de la feuille de style", () => {
@@ -39,8 +39,9 @@ describe("styles d'écran", () => {
     }
   });
 
-  test("E-Ink est un style clair, les autres sont sombres", () => {
+  test("tous les styles sont sombres et ne courbent pas l'écran", () => {
     const light = THEMES.filter(t => themeVars(t)["color-scheme"] === "light").map(t => t.name);
-    expect(light).toEqual(["E-Ink"]);
+    expect(light).toEqual([]);
+    expect(THEMES.filter(t => t.font && t.curve > 0).map(t => t.name)).toEqual([]);
   });
 });
