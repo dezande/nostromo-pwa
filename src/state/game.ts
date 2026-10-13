@@ -5,7 +5,6 @@ import { signal, computed, batch } from "@preact/signals";
 import { ADJ, ROOM_IDS, room, stepLabel, xenoVolume, type RoomId } from "../data/ship";
 import { audio } from "../audio/audio";
 import { keepAwake, say, sleep } from "./device";
-import { startTimer, stopTimer } from "./timer";
 
 /** Nombre de fermetures d'un entraînement. */
 export const STEP_COUNT = 8;
@@ -73,7 +72,6 @@ function reset(newPhase: Phase) {
     busy.value = false;
     ending.value = null;
   });
-  stopTimer();
 }
 
 /** Avant la partie : panneaux d'accueil. */
@@ -110,7 +108,6 @@ export function confirmStart() {
   if (phase.value !== "place" || !position.value) return;
   batch(() => { phase.value = "move"; trail.value = []; moves.value = 0; });
   audio.beep(true);
-  startTimer(); // les 5 minutes de l'entraînement commencent
 }
 
 /** Déplacements terminés : le Coordinateur va choisir la salle à fermer. */
@@ -198,6 +195,5 @@ export async function closeRooms() {
 }
 
 function showEnding(win: boolean, text: string) {
-  stopTimer();
   setTimeout(() => { ending.value = { win, text }; }, win ? 600 : 200);
 }

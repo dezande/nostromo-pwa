@@ -11,7 +11,6 @@ import { audio } from "../audio/audio";
 import { settings } from "../state/settings";
 import { homeOpen, settingsOpen } from "../state/ui";
 import * as game from "../state/game";
-import { remaining } from "../state/timer";
 import { Settings } from "./Settings";
 
 let root: HTMLElement;
@@ -38,7 +37,7 @@ test("quatre onglets, un seul panneau visible à la fois", () => {
   expect($("#versionInfo").textContent).toContain("BUILD");
 });
 
-test("onglet Alerte : trois fonds sonores, voix, décompte, écoute", () => {
+test("onglet Alerte : trois fonds sonores et écoute", () => {
   act(() => { $("#tab-alert").click(); });
   expect([...root.querySelectorAll(".alert-card strong")].map(e => e.textContent)).toEqual(["Sirène", "Klaxon", "Détecteur"]);
   act(() => { $("#alert-klaxon").click(); });
@@ -46,8 +45,7 @@ test("onglet Alerte : trois fonds sonores, voix, décompte, écoute", () => {
   expect($("#alert-klaxon").getAttribute("aria-checked")).toBe("true");
   act(() => { $("#alertPreview").click(); });
   expect(audio.previewAlert).toHaveBeenCalledWith("klaxon");
-  act(() => { ($("#alertVoiceChk") as HTMLInputElement).click(); });
-  expect(settings.alertVoice.value).toBe(false);
+  expect($("#alertVoiceChk")).toBeNull(); // plus de voix ni de décompte (plus de minuteur)
 });
 
 test("flèches du clavier pour changer d'onglet", () => {
@@ -62,7 +60,6 @@ test("« Retour à l'accueil » seulement pendant une partie, avec confirmation 
   act(() => { game.showIntro(); });
   expect($("#homeReturnBtn")).toBeNull();
   act(() => { game.startGame(); game.touchRoom("cockpit"); game.confirmStart(); homeOpen.value = false; });
-  expect(remaining.value).toBe(300);
   act(() => { $("#homeReturnBtn").click(); });
   expect($("#homeReturnQ").textContent).toBe("Abandonner l'entraînement en cours ?");
   act(() => { $("#homeReturnNo").click(); });
@@ -73,6 +70,5 @@ test("« Retour à l'accueil » seulement pendant une partie, avec confirmation 
   expect(homeOpen.value).toBe(true);
   expect(settingsOpen.value).toBe(false);
   expect(game.inGame.value).toBe(false);
-  expect(remaining.value).toBeNull();
   expect((window as unknown as { speechSynthesis: { cancel: jest.Mock } }).speechSynthesis.cancel).toHaveBeenCalled();
 });

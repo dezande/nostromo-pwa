@@ -6,8 +6,9 @@ import { terminalOpen } from "./terminal";
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
 export const settingsOpen = signal(false);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
-/** Panneaux d'accueil après « Démarrer la simulation » : bienvenue puis explication du protocole. */
-export const briefing = signal<"welcome" | "protocol1" | "protocol2" | null>(null);
+/** Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4). */
+export type BriefingPanel = "welcome" | 1 | 2 | 3 | 4;
+export const briefing = signal<BriefingPanel | null>(null);
 
 /**
  * Retour à l'accueil (depuis les Réglages, après confirmation) : la partie est abandonnée,

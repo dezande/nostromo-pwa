@@ -13,17 +13,6 @@
   p { color: var(--ink); }
   .briefing-intro { color: var(--accent); margin-top: 14px; }
 
-  .briefing-steps {
-    margin: 0 0 14px;
-    padding-left: 1.6em;
-    li::marker { color: var(--amber); font-weight: bold; }
-    // Dessin animé à droite du texte de chaque étape
-    li::after { content: ""; display: block; clear: both; } // garde le numéro de l'étape
-    .step-anim { float: right; width: 120px; height: 80px; margin: 0 0 8px 14px; }
-    @media (max-width: 520px) { .step-anim { width: 90px; height: 60px; } }
-    h3 { margin: 0 0 4px; font-size: fs(13px); letter-spacing: .2em; color: var(--amber); font-weight: normal; }
-    p { margin: 0 0 12px; }
-  }
 
   .briefing-sign { color: var(--accent); letter-spacing: .1em; }
   // Bonne respiration entre le dernier paragraphe et les boutons
@@ -32,68 +21,38 @@
   .briefing-actions button { white-space: nowrap; }
 }
 
-// ---------- Dessins animés des étapes ----------
-.step-anim {
-  overflow: visible;
-  .sa-room { fill: var(--room); stroke: var(--room-stroke); stroke-width: 1.5; }
-  .sa-pawn-core { fill: var(--accent); }
-  .sa-pawn-ring { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+// ---------- Panneaux de règles : une règle par panneau ----------
+.rule-panel {
+  .rule-count { color: var(--amber); }
+  .rule-title { margin: 10px 0 8px; font-size: fs(15px); letter-spacing: .2em; color: var(--amber); font-weight: normal; }
+  .rule-text { margin: 10px 0 0; }
 }
 
-// 1. Choix de la salle de départ
-.step-start {
-  .sa-pawn { animation: sa-choose 4s ease-in-out infinite; }
-  .sa-check { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linecap: round; opacity: 0; animation: sa-check 4s infinite; }
-  .sa-room:nth-of-type(2) { animation: sa-pick 4s infinite; }
+// Scène animée faite avec le vrai plan
+.rule-scene-box {
+  display: flex;
+  justify-content: center;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
 }
-@keyframes sa-choose {
-  0%, 15% { transform: translate(21px, 40px); }
-  30%, 45% { transform: translate(99px, 40px); }
-  60%, 100% { transform: translate(60px, 40px); }
+.rule-scene {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  max-height: 34vh;
+  @media (min-height: 700px) { max-height: 40vh; }
+  .room text { font-size: 10px; }
+  .pawn { transition: transform .5s ease; }
+  .mini-closed { rect, polygon { fill: url(#sealed-mini); stroke: var(--red); } text { fill: #ffb3b3; } }
+  .mini-info { fill: var(--panel); stroke: var(--line); }
+  .mini-info-title { fill: var(--dim); font-size: 6px; letter-spacing: .2em; }
+  .mini-info-text { fill: var(--accent); font-size: 8px; letter-spacing: .08em; }
+  .mini-validate { fill: #2a0507; stroke: var(--red); transition: fill .2s; }
+  .mini-validate.pressed { fill: #8a1418; }
+  .mini-validate-text { fill: #fff; font-size: 9px; text-anchor: middle; letter-spacing: .15em; }
 }
-@keyframes sa-check { 0%, 70% { opacity: 0; } 78%, 100% { opacity: 1; } }
-@keyframes sa-pick { 0%, 65% { fill: var(--room); } 72%, 100% { fill: var(--room-hi); stroke: var(--accent); } }
-
-// 2. Carte puis déplacements
-.step-moves {
-  .sa-card {
-    transform-box: fill-box; transform-origin: center; animation: sa-flip 5s infinite;
-    rect { fill: var(--panel); stroke: var(--amber); stroke-width: 1.5; }
-    text { fill: var(--amber); font-size: 20px; text-anchor: middle; font-weight: bold; }
-  }
-  .sa-trail { stroke: var(--amber); stroke-width: 2; stroke-dasharray: 3 3; stroke-dashoffset: 0; animation: sa-trail 5s linear infinite; }
-  .sa-pawn { animation: sa-walk 5s ease-in-out infinite; }
-}
-@keyframes sa-flip { 0% { transform: scaleX(0); } 12%, 100% { transform: scaleX(1); } }
-@keyframes sa-walk {
-  0%, 25% { transform: translate(46px, 40px); }
-  40% { transform: translate(68px, 40px); }
-  55% { transform: translate(90px, 40px); }
-  70%, 100% { transform: translate(109px, 40px); }
-}
-@keyframes sa-trail { 0%, 25% { opacity: 0; } 30%, 100% { opacity: 1; } }
-
-// 3. Fermeture : porte qui claque, salle rouge, alien
-.step-close {
-  .sa-door { fill: var(--amber); transform-box: fill-box; transform-origin: top; animation: sa-door 4s ease-in infinite; }
-  .sa-closing { animation: sa-red 4s infinite; }
-  .sa-alien { fill: #120607; stroke: var(--red); stroke-width: 1.5; opacity: 0; animation: sa-alien 4s infinite; }
-  .sa-warn { fill: var(--red); font-size: 14px; text-anchor: middle; font-weight: bold; opacity: 0; animation: sa-alien 4s infinite; }
-}
-@keyframes sa-door { 0%, 22% { transform: scaleY(0); } 32%, 100% { transform: scaleY(1); } }
-@keyframes sa-red { 0%, 33% { fill: var(--room); stroke: var(--room-stroke); } 36% { fill: #ff3b3b; } 45%, 100% { fill: #3a0a0c; stroke: var(--red); } }
-@keyframes sa-alien { 0%, 45% { opacity: 0; } 60%, 90% { opacity: 1; } 100% { opacity: 0; } }
-
-// 4. Fin : les salles tombent une à une, une seule reste ouverte
-.step-end {
-  .sa-shut .sa-room { animation: sa-shut 5s infinite; animation-delay: inherit; }
-  .sa-x { fill: none; stroke: var(--red); stroke-width: 2; opacity: 0; animation: sa-x 5s infinite; }
-  .sa-survivor { stroke: var(--accent); fill: var(--room-hi); }
-  .sa-glow { animation: sa-glow 1.2s ease-in-out infinite alternate; }
-}
-@keyframes sa-shut { 0%, 10% { fill: var(--room); } 16%, 90% { fill: #3a0a0c; stroke: var(--red); } 100% { fill: var(--room); } }
-@keyframes sa-x { 0%, 10% { opacity: 0; } 16%, 90% { opacity: 1; } 100% { opacity: 0; } }
-@keyframes sa-glow { from { opacity: .5; } to { opacity: 1; } }
 
 // ---------- Petits écrans : tout doit tenir sans défilement ----------
 @media (max-height: 800px), (max-width: 480px) {
@@ -106,15 +65,11 @@
     h2 { font-size: fs(15px); margin-bottom: 8px; }
     p { font-size: fs(11px); margin-bottom: 8px; }
     .briefing-intro { margin-top: 8px; }
-    .briefing-steps {
-      h3 { font-size: fs(11px); }
-      p { margin-bottom: 6px; }
-      .step-anim { width: 84px; height: 56px; margin-left: 8px; }
-    }
     .briefing-actions { margin-top: 20px; }
     .big { padding: 12px; }
   }
 }
 @media (max-height: 700px) {
-  .briefing-panel { line-height: 1.32; .briefing-steps .step-anim { width: 72px; height: 48px; } }
+  .briefing-panel { line-height: 1.32; }
+  .rule-scene { max-height: 28vh; }
 }
