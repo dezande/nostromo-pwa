@@ -43,17 +43,20 @@ test("salle choisie, modifiable, puis position enregistrée après validation", 
   expect(text()).toContain("POSITION ENREGISTRÉE : INFIRMERIE");
 });
 
-test("affiche le trajet et le nombre de déplacements", () => {
+test("pendant les déplacements : aucune indication du nombre de pas", () => {
   act(() => { render(<ProtocolWindow />, root); game.startGame(); game.touchRoom("vie"); game.confirmStart(); });
   act(() => { game.touchRoom("dortoir1"); });
   act(() => { jest.advanceTimersByTime(5000); });
-  expect(text()).toContain("SALLE DE VIE → DORTOIR 1 · 1 DÉPLACEMENT");
+  expect(text()).toContain("DÉPLACEMENTS EN COURS");
+  expect(text()).not.toMatch(/\d/);
   act(() => { game.touchRoom("reunion"); });
   act(() => { jest.advanceTimersByTime(5000); });
-  expect(text()).toContain("SALLE DE VIE → DORTOIR 1 → SALLE DE RÉUNION · 2 DÉPLACEMENTS");
+  expect(text()).toContain("DÉPLACEMENTS EN COURS");
+  expect(text()).not.toMatch(/\d/);
   act(() => { game.undo(); });
   act(() => { jest.advanceTimersByTime(5000); });
-  expect(text()).toContain("SALLE DE VIE → DORTOIR 1 · 1 DÉPLACEMENT");
+  expect(text()).toContain("DÉPLACEMENTS EN COURS");
+  expect(text()).not.toMatch(/\d/);
 });
 
 test("guide le Coordinateur pour choisir la salle à fermer", () => {

@@ -103,7 +103,7 @@ function MovesScene() {
       </g>
       <MiniPawn at={MOVES[done]} />
       <MiniUi x={70} y={338} w={260} pressed={step === MOVES.length}
-        text={done === 0 ? "POSITION ENREGISTRÉE : SALLE DE VIE" : `${done} DÉPLACEMENT${done > 1 ? "S" : ""}`} />
+        text={done === 0 ? "POSITION ENREGISTRÉE : SALLE DE VIE" : "DÉPLACEMENTS EN COURS"} />
     </svg>
   );
 }
