@@ -323,7 +323,7 @@ test("chemin du pion : tracé, trajet en texte, annulation et remise à zéro ap
   await expect(page.locator(".path-line")).toHaveCount(2);
   await expect(page.locator(".path-step")).toHaveText(["1", "2"]);
   await page.clock.runFor(5000);
-  await expect(page.locator("#protocolMessage")).toHaveText("SALLE DE VIE → DORTOIR 1 → SALLE DE RÉUNION · 2 DÉPLACEMENTS");
+  await expect(page.locator("#protocolMessage")).toHaveText("DÉPLACEMENTS EN COURS"); // pas de compteur visible
   await page.locator("#undoBtn").click();
   await expect(page.locator(".path-line")).toHaveCount(1);
   await closeRoom(page, "atelier");
