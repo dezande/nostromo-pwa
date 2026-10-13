@@ -104,3 +104,12 @@
   .contract-scroll { font-size: fs(10px); }
   .fingerprint { margin-top: 8px; .fingerprint-pad { width: 60px; height: 70px; } }
 }
+
+// Passage censuré (composant <Redact>)
+.redacted {
+  color: var(--ink);
+  opacity: .85;
+  letter-spacing: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}

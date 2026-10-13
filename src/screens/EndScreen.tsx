@@ -2,6 +2,7 @@
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
+import { Redact } from "../components/Redacted";
 import { ending, startGame } from "../state/game";
 import { returnHome } from "../state/ui";
 import { settings } from "../state/settings";
@@ -42,6 +43,6 @@ export function EndScreen() {
 /** Remplace {room} par le nom de la salle, mis en évidence. */
 function WithRoom({ line, room }: { line: string; room: string }) {
   const [before, after] = line.split("{room}");
-  if (after === undefined) return <>{line}</>;
-  return <>{before}<span class="end-room">{room.toUpperCase()}</span>{after}</>;
+  if (after === undefined) return <Redact text={line} />;
+  return <><Redact text={before} /><span class="end-room">{room.toUpperCase()}</span><Redact text={after} /></>;
 }

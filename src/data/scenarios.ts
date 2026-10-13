@@ -76,23 +76,23 @@ const RECRUITMENT: ScenarioText = {
   description: "Jeu de rôle (3d6) : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le MJ joue le RH et le Coordinateur.",
   homeLine: "Examen d'aptitude · Recrutement Weyland-Yutani.",
   rulesHeader: "EXAMEN D'APTITUDE · COORDINATEUR",
-  rulesIntro: "Je suis votre Coordinateur. Le déroulement de cet examen a été établi par la compagnie. Moi seul en connais l'ordre de fermeture.",
+  rulesIntro: "Je suis votre Coordinateur. Le déroulement de cet examen a été établi par la [[Division scientifique de la]] compagnie. Moi seul en connais l'ordre de fermeture.",
   rules: [
     {
       id: "start", title: "POSITION DE DÉPART", scene: "start",
-      text: "Choisissez la salle où vous commencez l'examen. Vous pouvez changer d'avis tant que vous n'avez pas validé.",
+      text: "Choisissez la salle où vous commencez l'examen [[sous observation]]. Vous pouvez changer d'avis tant que vous n'avez pas validé.",
     },
     {
       id: "moves", title: "DÉPLACEMENTS", scene: "moves",
-      text: "Avant chaque fermeture, je tire une carte W.Y.C. Elle indique le nombre de déplacements imposés. Un déplacement vous fait passer dans une salle voisine, par une porte, un ascenseur ou un passage de ventilation. Les ascenseurs et les conduits d'aération sont des lieux de passage : vous ne pouvez pas vous y arrêter.",
+      text: "Avant chaque fermeture, je tire une carte W.Y.C. Elle indique le nombre de déplacements imposés. Un déplacement vous fait passer dans une salle voisine, par une porte, un ascenseur ou un passage de ventilation. Les ascenseurs et les conduits d'aération sont des lieux de passage : vous ne pouvez pas vous y arrêter. [[Ne vous attardez pas près des grilles.]]",
     },
     {
       id: "close", title: "FERMETURE", scene: "close",
-      text: "J'annonce la salle fermée. Un élément de test y est introduit. Tout candidat présent dans cette salle est disqualifié.",
+      text: "J'annonce la salle fermée. Un élément de test [[XX-121]] y est introduit. Tout candidat présent dans cette salle est disqualifié [[définitivement]].",
     },
     {
       id: "end", title: "FIN DE L'EXAMEN", scene: "end",
-      text: "Huit fermetures se succèdent. Seuls les candidats qui se trouvent dans la dernière salle restée ouverte sont retenus.",
+      text: "Huit fermetures se succèdent. Seuls les candidats qui se trouvent dans la dernière salle restée ouverte sont retenus. [[Les autres ne sont pas rapatriés.]]",
     },
   ],
   rulesSign: "Restez calme et suivez mes instructions, Candidat.",
@@ -111,9 +111,9 @@ const RECRUITMENT: ScenarioText = {
     header: "RAPPORT D'INCIDENT",
     title: "CANDIDATURE CLOSE",
     lines: [
-      "Fermeture de la salle : {room}. Un élément de test y a été introduit. Vous vous y trouviez.",
+      "Fermeture de la salle : {room}. Un élément de test [[XX-121]] y a été introduit. Vous vous y trouviez.",
       "Conformément à l'article 13 de votre contrat, la compagnie décline toute responsabilité.",
-      "Le poste reste à pourvoir. La compagnie remercie votre famille pour sa compréhension.",
+      "Le poste reste à pourvoir. [[Dépouille non récupérable.]] La compagnie remercie votre famille pour sa compréhension.",
     ],
   },
 };

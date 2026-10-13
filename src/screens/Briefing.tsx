@@ -5,6 +5,7 @@ import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { RuleScene } from "../components/RuleScenes";
+import { Redact } from "../components/Redacted";
 import { SCENARIOS } from "../data/scenarios";
 import { settings } from "../state/settings";
 import { startGame } from "../state/game";
@@ -40,11 +41,11 @@ export function Briefing() {
             <div class="briefing-corp">
               {text.rulesHeader} · RÈGLE <span class="rule-count">{i + 1}/{RULES.length}</span>
             </div>
-            {i === 0 && <p class="briefing-intro">{text.rulesIntro}</p>}
+            {i === 0 && <p class="briefing-intro"><Redact text={text.rulesIntro} /></p>}
             <h3 class="rule-title">{rule.title}</h3>
             {/* La scène ne tourne que quand son panneau est affiché */}
             {panel === i + 1 && <RuleScene name={rule.scene} />}
-            <p class="rule-text">{rule.text}</p>
+            <p class="rule-text"><Redact text={rule.text} /></p>
             {i === RULES.length - 1 && <p class="briefing-sign">{text.rulesSign}</p>}
             <div class="row icon-row briefing-actions">
               <IconButton id={`rule${i + 1}Back`} icon="retour" label="Retour"

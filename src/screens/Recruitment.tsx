@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
+import { Redact } from "../components/Redacted";
 import { audio } from "../audio/audio";
 import { CONTRACT_ARTICLES, CONTRACT_PREAMBLE, CONTRACT_REF } from "../data/contract";
 import { briefing } from "../state/ui";
@@ -26,7 +27,7 @@ export function Recruitment() {
           <div class="briefing-motto">« Building Better Worlds »</div>
           <h2>BIENVENUE PARMI NOUS, CANDIDAT.</h2>
           <p>Merci d'avoir répondu à notre offre. Le poste que nous vous proposons est l'un des mieux rémunérés de la compagnie : 48 000 crédits par mois, logement de fonction, prime d'affectation et couverture médicale complète.</p>
-          <p>Avant votre affectation, vous passerez un court examen d'aptitude à bord du vaisseau-base Nostromo II, sous la supervision de notre Coordinateur. Une simple formalité : restez calme et suivez ses instructions.</p>
+          <p>Avant votre affectation, vous passerez un court examen d'aptitude à bord du vaisseau-base Nostromo II, sous la supervision de notre Coordinateur <Redact text="[[et de la Division scientifique]]" />. Une simple formalité : restez calme et suivez ses instructions.</p>
           <p>Il ne vous reste qu'à prendre connaissance de votre contrat et à le signer.</p>
           <div class="row icon-row briefing-actions">
             <IconButton id="hrNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = "contract"; }} />
@@ -58,11 +59,11 @@ function Contract() {
       <h2 class="contract-title">CONTRAT DE TRAVAIL N° {CONTRACT_REF}</h2>
       <div class="contract-scroll" id="contractScroll" ref={scroller} onScroll={check} tabIndex={0}
         aria-label="Contrat de travail, à lire jusqu'en bas">
-        {CONTRACT_PREAMBLE.map((p, i) => <p key={i} class={i % 2 === 0 && i !== 1 ? "contract-lead" : undefined}>{p}</p>)}
+        {CONTRACT_PREAMBLE.map((p, i) => <p key={i} class={i % 2 === 0 && i !== 1 ? "contract-lead" : undefined}><Redact text={p} /></p>)}
         {CONTRACT_ARTICLES.map((article, i) => (
           <section key={article.title} class="contract-article">
             <h3>ARTICLE {i + 1} · {article.title}</h3>
-            {article.paragraphs.map((p, j) => <p key={j}><span class="contract-num">{i + 1}.{j + 1}</span> {p}</p>)}
+            {article.paragraphs.map((p, j) => <p key={j}><span class="contract-num">{i + 1}.{j + 1}</span> <Redact text={p} /></p>)}
           </section>
         ))}
         <p class="contract-end">— FIN DU DOCUMENT · {CONTRACT_ARTICLES.length} ARTICLES —</p>
