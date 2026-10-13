@@ -58,7 +58,7 @@ async function closeRoom(page: Page, ...rooms: RoomId[]) {
   for (const k of rooms) await clickRoom(page, k);
   await page.locator("#closeBtn").click();
   await page.clock.runFor(3_000); // claquement et cri du xénomorphe
-  await expect(page.locator("#closeBtn")).not.toHaveText("");
+  await expect(page.getByRole("button", { name: "Valider" })).toBeVisible();
 }
 
 test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de départ", async ({ page }) => {
@@ -202,7 +202,9 @@ test("l'écran de jeu montre les deux ponts et la barre d'actions, sans panneau 
   }
   await expect(page.locator(".coordinator")).toHaveCount(0);
   await expect(page.locator("#status, #aip, #resetBtn")).toHaveCount(0);
-  await expect(page.locator(".action-bar #closeBtn")).toHaveText("VALIDER");
+  await expect(page.locator(".action-bar").getByRole("button", { name: "Valider" })).toHaveAttribute("id", "closeBtn");
+  await expect(page.locator(".action-bar #closeBtn")).toHaveAttribute("aria-label", "Valider");
+  await expect(page.locator(".action-bar #undoBtn")).toHaveAccessibleName("Pas arrière");
   await expect(page.locator(".action-bar #closeBtn")).toBeDisabled();
   await clickRoom(page, "cockpit");
   await expect(page.locator(".action-bar #closeBtn")).toBeEnabled();
@@ -535,7 +537,100 @@ test("écran de fin : bouton Accueil", async ({ page }) => {
   await page.clock.runFor(2_000);
   await page.locator("#endMenuBtn").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
-  await expect(page.locator("#startLbl")).toHaveText("DÉMARRER LA SIMULATION");
+  await expect(page.locator("#home").getByRole("button", { name: "Démarrer" })).toBeVisible();
+});
+
+/** Boutons visibles (hors onglets, styles d'écran et cartes d'alerte, qui gardent leur texte). */
+async function checkIconButtons(page: Page, scope: string) {
+  const buttons = page.locator(`${scope} button.icon-btn:visible`);
+  expect(await buttons.count(), scope).toBeGreaterThan(0);
+  const all = await page.locator(`${scope} button:visible:not([role="tab"], [role="radio"], .theme, #alertPreview)`).evaluateAll(els => els.map(b => ({
+    id: b.id,
+    name: b.getAttribute("aria-label"),
+    title: b.getAttribute("title"),
+    text: b.textContent!.trim(),
+    svg: !!b.querySelector("svg"),
+    size: Math.min(b.getBoundingClientRect().width, b.getBoundingClientRect().height),
+    square: Math.abs(b.getBoundingClientRect().width - b.getBoundingClientRect().height) < 1,
+  })));
+  for (const b of all) {
+    expect(b.name, `${scope} #${b.id}`).toBeTruthy();
+    expect(b.title, `${scope} #${b.id}`).toBeTruthy();
+    expect(b, `${scope} #${b.id}`).toMatchObject({ text: "", svg: true, square: true });
+    expect(b.size, `${scope} #${b.id}`).toBeGreaterThanOrEqual(56);
+  }
+}
+
+test("boutons icône seule : nom accessible et icône SVG partout", async ({ page }) => {
+  const errors = await open(page);
+  await expect(page.locator("#home")).toHaveClass(/show/);
+  await checkIconButtons(page, "#home");
+  await expect(page.getByRole("button", { name: "Démarrer" })).toBeVisible();
+  await expect(page.locator("#home").getByRole("button", { name: "Réglages" })).toBeVisible();
+
+  await page.locator("#homeSetBtn").click();
+  await checkIconButtons(page, "#settings");
+  await expect(page.getByRole("button", { name: "Fermer" })).toBeVisible();
+  await page.getByRole("button", { name: "Fermer" }).click();
+
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#welcome")).toHaveClass(/show/);
+  await checkIconButtons(page, "#welcome");
+  await page.locator("#welcome").getByRole("button", { name: "Continuer" }).click();
+  for (const n of [1, 2, 3, 4]) {
+    await expect(page.locator(`#rule${n}`)).toHaveClass(/show/);
+    await checkIconButtons(page, `#rule${n}`);
+    await expect(page.locator(`#rule${n}`).getByRole("button", { name: "Retour" })).toBeVisible();
+    await page.locator(`#rule${n}`).getByRole("button", { name: "Continuer" }).click();
+  }
+
+  // Écran de jeu : en-tête et barre d'actions
+  await checkIconButtons(page, "header");
+  await checkIconButtons(page, ".action-bar");
+  await expect(page.getByRole("button", { name: "Valider" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Pas arrière" })).toBeDisabled();
+  await expect(page.locator("header").getByRole("button", { name: "Réglages" })).toBeVisible();
+  // Bordure et icône de la couleur du style d'écran
+  const accent = await page.evaluate(() => { const d = document.createElement("div"); d.style.color = getComputedStyle(document.documentElement).getPropertyValue("--accent"); document.body.append(d); const c = getComputedStyle(d).color; d.remove(); return c; });
+  const style = await page.locator("#setBtn").evaluate(b => ({ border: getComputedStyle(b).borderTopColor, color: getComputedStyle(b).color, glow: getComputedStyle(b).boxShadow }));
+  expect(style.border).toBe(accent);
+  expect(style.color).toBe(accent);
+  expect(style.glow).not.toBe("none");
+
+  // En partie, dans les Réglages : Accueil puis Oui / Non
+  await clickRoom(page, "cockpit");
+  await page.locator("#closeBtn").click();
+  await page.locator("#setBtn").click();
+  await checkIconButtons(page, "#settings");
+  await page.getByRole("button", { name: "Accueil" }).click();
+  await checkIconButtons(page, "#settings");
+  await expect(page.getByRole("button", { name: "Oui" })).toBeVisible();
+  await page.getByRole("button", { name: "Non" }).click();
+  await page.locator("#setClose").click();
+  expect(errors).toEqual([]);
+});
+
+test("bouton Son / Muet dans l'en-tête : coupe ou remet la musique (aria-pressed)", async ({ page }) => {
+  const errors = await open(page);
+  await startSimulation(page);
+  const sound = page.locator("#soundBtn");
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  await expect(sound).toHaveAccessibleName("Musique coupée");
+  await expect(sound).toHaveAttribute("title", "Muet");
+  await sound.click();
+  await expect(sound).toHaveAttribute("aria-pressed", "true");
+  await expect(sound).toHaveAccessibleName("Musique activée");
+  await expect(sound).toHaveAttribute("title", "Son");
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).music)).toBe(true);
+  // Même réglage que dans l'onglet Audio
+  await page.locator("#setBtn").click();
+  await page.locator("#tab-audio").click();
+  await expect(page.locator("#musicChk")).toBeChecked();
+  await page.locator("#setClose").click();
+  await sound.click(); // on recoupe la musique : tests silencieux
+  await expect(sound).toHaveAttribute("aria-pressed", "false");
+  expect(await page.evaluate(() => window.nostromo!.audio.playing)).toBe(false);
+  expect(errors).toEqual([]);
 });
 
 test("taille du texte et lignes horizontales", async ({ page }) => {

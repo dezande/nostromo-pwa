@@ -1,6 +1,6 @@
 // Écran d'accueil. On y revient par les Réglages (« Retour à l'accueil »), ce qui abandonne la partie.
 import { Overlay } from "../components/Overlay";
-import { Icon } from "../components/Icon";
+import { IconButton } from "../components/Icon";
 import { audio } from "../audio/audio";
 import { BOOT } from "../data/terminal";
 import { keepAwake } from "../state/device";
@@ -27,12 +27,10 @@ export function Home() {
         <h2>NOSTROMO&nbsp;II</h2>
         <div class="base">TRAINING BASE · LUNE</div>
         <p>Simulation d'intrusion alien pour Psychic Agents.</p>
-        <button class="big" id="startBtn" onClick={startSimulation}>
-          <Icon name="play" /> <span id="startLbl">DÉMARRER LA SIMULATION</span>
-        </button>
-        <button class="icon-btn" id="homeSetBtn" onClick={() => { settingsOpen.value = true; }}>
-          <Icon name="gear" /><span>Réglages</span>
-        </button>
+        <div class="row icon-row home-actions">
+          <IconButton id="startBtn" icon="demarrer" label="Démarrer" primary onClick={startSimulation} />
+          <IconButton id="homeSetBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />
+        </div>
         <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
       </div>
     </Overlay>
