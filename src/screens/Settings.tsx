@@ -73,31 +73,39 @@ export function Settings() {
           )}
         </div>
 
-        {inGame.value && <ReturnHome />}
-        <div class="row icon-row">
-          <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { settingsOpen.value = false; }} />
-        </div>
+        <SettingsFooter tab={tab} />
       </div>
     </Overlay>
   );
 }
 
-/** « Retour à l'accueil » avec confirmation dans la page (pas de fenêtre du navigateur). */
-function ReturnHome() {
+/**
+ * Boutons du bas, sur une seule rangée centrée, tous de la même taille :
+ * « Écouter » (onglet Alerte), « Accueil » (en partie) et « Fermer ».
+ * « Accueil » demande confirmation dans la page (pas de fenêtre du navigateur) :
+ * la question s'affiche au-dessus et « Oui » / « Non » prennent la place d'« Accueil », sur la même rangée.
+ */
+function SettingsFooter({ tab }: { tab: SettingsTab }) {
   const [asking, setAsking] = useState(false);
-  if (!asking) {
-    return (
-      <div class="row icon-row return-home">
-        <IconButton id="homeReturnBtn" icon="accueil" label="Accueil" onClick={() => setAsking(true)} />
-      </div>
-    );
-  }
+  const confirm = inGame.value && asking;
   return (
-    <div class="return-home confirm" role="alertdialog" aria-labelledby="homeReturnQ">
-      <p id="homeReturnQ">Abandonner l'entraînement en cours ?</p>
-      <div class="row icon-row">
-        <IconButton id="homeReturnYes" icon="valider" label="Oui" primary onClick={returnHome} />
-        <IconButton id="homeReturnNo" icon="annuler" label="Non" onClick={() => setAsking(false)} />
+    <div class={confirm ? "settings-footer confirm" : "settings-footer"} role={confirm ? "alertdialog" : undefined}
+      aria-labelledby={confirm ? "homeReturnQ" : undefined}>
+      {confirm && <p id="homeReturnQ">Abandonner l'entraînement en cours ?</p>}
+      <div class="row icon-row settings-actions">
+        {tab === "alert" && !confirm && (
+          <IconButton id="alertPreview" icon="son" label="Écouter" onClick={() => audio.previewAlert(settings.alertVariant.value)} />
+        )}
+        {inGame.value && !asking && (
+          <IconButton id="homeReturnBtn" icon="accueil" label="Accueil" onClick={() => setAsking(true)} />
+        )}
+        {confirm && (
+          <>
+            <IconButton id="homeReturnYes" icon="valider" label="Oui" onClick={returnHome} />
+            <IconButton id="homeReturnNo" icon="retour" label="Non" onClick={() => setAsking(false)} />
+          </>
+        )}
+        <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { setAsking(false); settingsOpen.value = false; }} />
       </div>
     </div>
   );
@@ -124,17 +132,14 @@ function AlertSettings() {
           </button>
         ))}
       </div>
-      <div class="row">
-        <button id="alertPreview" onClick={() => audio.previewAlert(current)}>▶ Écouter</button>
-      </div>
     </>
   );
 }
 
 function Toggle({ id, label, setting }: { id: string; label: string; setting: Signal<boolean> }) {
   return (
-    <label class="set">
-      {label}
+    <label class="set toggle">
+      <span class="set-label">{label}</span>
       <input type="checkbox" id={id} checked={setting.value} onChange={e => { setting.value = e.currentTarget.checked; }} />
     </label>
   );
@@ -156,10 +161,10 @@ function Slider({ id, label, setting, min, max, step = 1, scale = 1, unit }: Sli
   const shown = Math.round(setting.value * scale);
   return (
     <label class="set">
-      {label}
+      <span class="set-label">{label}</span>
       <input type="range" id={id} min={min} max={max} step={step} value={shown}
         onInput={e => { setting.value = Number(e.currentTarget.value) / scale; }} />
-      <span id={id.replace("Range", "Val")}>{shown} {unit}</span>
+      <span class="set-value" id={id.replace("Range", "Val")}>{shown} {unit}</span>
     </label>
   );
 }

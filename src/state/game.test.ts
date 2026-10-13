@@ -228,7 +228,7 @@ describe("fermetures", () => {
     for (let i = 0; i < 8; i++) await closeRooms(others[i]);
     expect(game.step.value).toBe(8);
     expect(game.phase.value).toBe("win");
-    expect(game.ending.value!.text).toContain("Serre hydroponique");
+    expect(game.ending.value!.room).toBe("Serre hydroponique");
   });
 
   test("l'entraînement s'arrête aussi quand il ne reste qu'une salle ouverte", async () => {
