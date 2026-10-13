@@ -9,6 +9,12 @@ import { keepAwake, say, sleep } from "./device";
 /** Nombre de fermetures d'un entraînement. */
 export const STEP_COUNT = 8;
 
+/** Déplacements au maximum avant une fermeture (les cartes W.Y.C. vont jusqu'à 5). Limite silencieuse. */
+export const MAX_MOVES = 5;
+
+/** Salles fermées au maximum en une fois (comme sur les fiches de protocole). Limite silencieuse. */
+export const MAX_CLOSE = 2;
+
 /**
  * Phases :
  * - "intro" : panneaux de bienvenue et d'explication (pas encore de partie)
@@ -48,14 +54,19 @@ export const reachable = computed((): Set<RoomId> => {
   if (busy.value) return new Set();
   if (phase.value === "place") return new Set(openRooms());
   if (phase.value !== "move" || !position.value) return new Set();
+  // Au-delà de 5 déplacements, plus aucune salle ne réagit (sans message).
+  if (moves.value >= MAX_MOVES) return new Set();
   return new Set([...ADJ[position.value]].filter(isOpen));
 });
 
-/** Salles que le Coordinateur peut choisir de fermer (au moins une salle doit rester ouverte). */
+/**
+ * Salles que le Coordinateur peut choisir de fermer : 1 ou 2 à la fois, et au moins une salle
+ * doit rester ouverte. Une fois la limite atteinte, on peut seulement désélectionner (sans message).
+ */
 export const closable = computed((): Set<RoomId> => {
   if (busy.value || phase.value !== "close") return new Set();
   const open = openRooms();
-  if (toClose.value.size >= open.length - 1) return new Set(toClose.value); // on peut seulement désélectionner
+  if (toClose.value.size >= Math.min(MAX_CLOSE, open.length - 1)) return new Set(toClose.value);
   return new Set(open);
 });
 
@@ -92,7 +103,7 @@ export function touchRoom(id: RoomId) {
   if (phase.value === "place" && isOpen(id)) {
     batch(() => { position.value = id; startRoom.value = id; });
     audio.beep(false);
-  } else if (phase.value === "move" && from && ADJ[from].has(id) && isOpen(id)) {
+  } else if (phase.value === "move" && from && reachable.value.has(id)) {
     batch(() => { trail.value = [...trail.value, from]; position.value = id; moves.value++; });
     audio.beep(false);
   } else if (phase.value === "close" && closable.value.has(id)) {
