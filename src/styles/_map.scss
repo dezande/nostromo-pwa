@@ -299,7 +299,8 @@
 .lift-icon { stroke: var(--amber); fill: none; stroke-width: 1.2; }
 .toxic-cross { stroke: #c22; stroke-width: 3; stroke-linecap: round; }
 // Repère discret : minuscule et peu visible
-.marker-dot { fill: var(--room-stroke); opacity: .5; pointer-events: none; }
+.marker-dot { fill: var(--room-stroke); opacity: .8; r: 2.4px; pointer-events: none; }
+.layout-phone .marker-dot { fill: var(--accent); opacity: .55; r: 3px; }
 
 // Salles
 @mixin room-shape { rect, polygon { @content; } }
