@@ -1,7 +1,7 @@
 // Réglages du joueur : un signal par réglage, enregistrés dans le navigateur (localStorage).
 import { signal, effect, type Signal } from "@preact/signals";
 import { audio, type AlertVariant } from "../audio/audio";
-import { THEMES, themeVars, DEFAULT_BG } from "../data/themes";
+import { THEMES, findTheme, themeName, themeVars, DEFAULT_BG } from "../data/themes";
 
 const STORAGE_KEY = "nostromo-settings";
 
@@ -10,7 +10,7 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   voice: boolean;
-  theme: number;
+  theme: string;
   textSize: number;
   scanlines: boolean;
   transitions: boolean;
@@ -27,7 +27,7 @@ export const DEFAULTS: Settings = {
   musicVolume: 0.6,   // 0 → 1
   sfxVolume: 1,       // 0 → 1
   voice: true,        // annonce vocale du nom de la salle
-  theme: 0,           // index dans THEMES
+  theme: THEMES[0].name, // nom du style d'écran
   textSize: 120,      // en %
   scanlines: true,    // lignes horizontales
   transitions: true,  // faux écrans de transition
@@ -47,6 +47,7 @@ export function loadSettings(): Settings {
       if (old in stored && !(name in stored)) stored[name] = stored[old];
       delete stored[old];
     }
+    if ("theme" in stored) stored.theme = themeName(stored.theme);
     return { ...DEFAULTS, ...stored };
   } catch {
     return { ...DEFAULTS };
@@ -68,7 +69,7 @@ effect(() => {
 // Applique le style d'écran, la taille du texte et les lignes horizontales à la page.
 effect(() => {
   const root = document.documentElement;
-  const theme = THEMES[settings.theme.value] || THEMES[0];
+  const theme = findTheme(settings.theme.value);
   root.removeAttribute("style");
   for (const [name, value] of Object.entries(themeVars(theme))) root.style.setProperty(name, String(value));
   root.style.setProperty("--fs", String(settings.textSize.value / 100));

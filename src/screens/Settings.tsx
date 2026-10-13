@@ -171,10 +171,10 @@ function Slider({ id, label, setting, min, max, step = 1, scale = 1, unit }: Sli
 function ThemePicker() {
   return (
     <div class="themes" id="themes">
-      {THEMES.map((theme, i) => (
-        <button key={theme.name} class="theme" aria-pressed={settings.theme.value === i}
+      {THEMES.map(theme => (
+        <button key={theme.name} class="theme" aria-pressed={settings.theme.value === theme.name}
           style={theme.font ? { background: theme.bg, color: theme.fg, borderColor: mix(theme.fg, theme.bg, .4), fontFamily: fontStack(theme.font) } : undefined}
-          onClick={() => { settings.theme.value = i; }}>
+          onClick={() => { settings.theme.value = theme.name; }}>
           {theme.name}
         </button>
       ))}

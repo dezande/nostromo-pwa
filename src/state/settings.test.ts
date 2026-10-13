@@ -19,9 +19,15 @@ test("valeurs par défaut", () => {
 });
 
 test("reprend les réglages enregistrés", () => {
-  const { settings } = loadWith({ textSize: 140, theme: 3 });
+  const { settings } = loadWith({ textSize: 140, theme: "Neon Cyan" });
   expect(settings.textSize.value).toBe(140);
-  expect(settings.theme.value).toBe(3);
+  expect(settings.theme.value).toBe("Neon Cyan");
+});
+
+test("style d'écran : ancien numéro converti, style supprimé ramené au style d'origine", () => {
+  expect(loadWith({ theme: 10 }).settings.theme.value).toBe("Neon Cyan");
+  expect(loadWith({ theme: 1 }).settings.theme.value).toBe("Nostromo (origine)");        // Default Amber, supprimé
+  expect(loadWith({ theme: "Commodore 64" }).settings.theme.value).toBe("Nostromo (origine)");
 });
 
 test("convertit les anciens noms de réglages", () => {
@@ -49,14 +55,14 @@ test("enregistre chaque changement", () => {
 test("applique le style d'écran, la taille du texte et les lignes à la page", () => {
   const { settings } = loadWith(null);
   const root = document.documentElement;
-  settings.theme.value = 1; // Default Amber
-  expect(root.style.getPropertyValue("--accent")).toBe("#ff8100");
+  settings.theme.value = "IBM 3278 Reborn";
+  expect(root.style.getPropertyValue("--accent")).toBe("#3cff7a");
   expect(root.classList.contains("retro-font")).toBe(true);
   settings.textSize.value = 150;
   expect(root.style.getPropertyValue("--fs")).toBe("1.5");
   settings.scanlines.value = false;
   expect(root.classList.contains("no-scan")).toBe(true);
-  settings.theme.value = 0;
+  settings.theme.value = "Nostromo (origine)";
   expect(root.style.getPropertyValue("--accent")).toBe("");
   expect(root.classList.contains("retro-font")).toBe(false);
 });
