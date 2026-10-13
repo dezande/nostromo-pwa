@@ -889,6 +889,7 @@ test("scénario Infiltré : archives C.R.F., e-mail de la direction, session dis
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await page.locator("#scenario-infiltrated").click();
   await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/fiche-infiltre.pdf");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
 

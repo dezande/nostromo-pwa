@@ -114,6 +114,17 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
   );
 }
 
+/** Documents PDF à imprimer pour les scénarios de jeu de rôle (dossier public/fiches). */
+const SHEETS: Record<Exclude<Scenario, "training">, { id: string; file: string; name: string }[]> = {
+  recruitment: [
+    { id: "sheetsPdf", file: "fiches-personnages.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
+    { id: "guidePdf", file: "guide-mj.pdf", name: "Guide du MJ" },
+  ],
+  infiltrated: [
+    { id: "infiltratedPdf", file: "fiche-infiltre.pdf", name: "Lieutenant D.R. (prétiré)" },
+  ],
+};
+
 /** Choix du scénario. Il s'applique à la prochaine partie ; pendant une partie, le choix est bloqué. */
 function ScenarioPicker() {
   const current = settings.scenario.value;
@@ -130,18 +141,15 @@ function ScenarioPicker() {
         ))}
       </div>
       {locked && <p class="note">Le scénario se change hors partie.</p>}
-      {current === "recruitment" && (
+      {current !== "training" && (
         <div class="sheets" id="sheets">
-          <span class="set-label">Documents PDF (système 3d6)</span>
+          <span class="set-label">Documents PDF (3D6 Système)</span>
           <div class="sheet-links">
-            <a class="sheet-link" id="sheetsPdf" href="fiches/fiches-personnages.pdf"
-              target="_blank" rel="noopener" download>
-              Candidat · RH · Coordinateur (1 page A4)
-            </a>
-            <a class="sheet-link" id="guidePdf" href="fiches/guide-mj.pdf"
-              target="_blank" rel="noopener" download>
-              Guide du MJ
-            </a>
+            {SHEETS[current].map(sheet => (
+              <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener" download>
+                {sheet.name}
+              </a>
+            ))}
           </div>
         </div>
       )}
