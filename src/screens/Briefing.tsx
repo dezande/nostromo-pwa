@@ -3,6 +3,7 @@
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
+import { DOC_REFS } from "../data/documents";
 import { RuleScene, type RuleName } from "../components/RuleScenes";
 import { startGame } from "../state/game";
 import { briefing, type BriefingPanel } from "../state/ui";
@@ -34,6 +35,7 @@ export function Briefing() {
         <div class="panel briefing-panel welcome-panel">
           <WeylandLogo class="logo-watermark logo-in-panel" />
           <div class="briefing-corp">WEYLAND-YUTANI CORP · BASE LUNAIRE D'ENTRAÎNEMENT NOSTROMO II</div>
+          <div class="doc-ref" id="welcomeRef">{DOC_REFS.welcome}</div>
           <div class="briefing-motto">« Building Better Worlds »</div>
           <h2>BIENVENUE À BORD, AGENT.</h2>
           <p>Vous avez été sélectionné pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
@@ -52,6 +54,7 @@ export function Briefing() {
             <div class="briefing-corp">
               ALIEN INTRUSION PROTOCOL · RÈGLE <span class="rule-count">{i + 1}/{RULES.length}</span>
             </div>
+            <div class="doc-ref">{DOC_REFS.rule(i + 1)}</div>
             {i === 0 && <p class="briefing-intro">Le protocole de cet entraînement a été établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture.</p>}
             <h3 class="rule-title">{rule.title}</h3>
             {/* La scène ne tourne que quand son panneau est affiché */}

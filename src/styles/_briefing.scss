@@ -8,6 +8,8 @@
   line-height: 1.6;
 
   .briefing-corp { color: var(--dim); font-size: fs(11px); letter-spacing: .25em; }
+  // Faux numéro de document, comme sur une pièce officielle
+  .doc-ref { color: var(--dim); opacity: .75; font-size: fs(9px); letter-spacing: .15em; margin-top: 2px; }
   .briefing-motto { color: var(--dim); font-size: fs(11px); font-style: italic; margin: 4px 0 18px; }
   h2 { color: var(--accent); margin: 0 0 14px; font-size: fs(18px); }
   p { color: var(--ink); }
@@ -59,6 +61,7 @@
     padding: 14px 16px;
     line-height: 1.4;
     .briefing-corp, .briefing-motto { font-size: fs(9px); }
+    .doc-ref { font-size: fs(8px); }
     .briefing-motto { margin-bottom: 10px; }
     h2 { font-size: fs(15px); margin-bottom: 8px; }
     p { font-size: fs(11px); margin-bottom: 8px; }
