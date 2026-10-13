@@ -86,7 +86,7 @@ export function Settings() {
  * Boutons du bas, sur une seule rangée centrée, tous de la même taille :
  * « Écouter » (onglet Alerte), « Accueil » (en partie) et « Fermer ».
  * « Accueil » demande confirmation dans la page (pas de fenêtre du navigateur) :
- * la question s'affiche au-dessus et « Oui » / « Non » prennent la place d'« Accueil », sur la même rangée.
+ * la question s'affiche au-dessus et seuls « Oui » / « Non » restent, sur la même rangée (« Non » revient aux réglages).
  */
 function SettingsFooter({ tab }: { tab: SettingsTab }) {
   const [asking, setAsking] = useState(false);
@@ -108,7 +108,8 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
             <IconButton id="homeReturnNo" icon="retour" label="Non" onClick={() => setAsking(false)} />
           </>
         )}
-        <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { setAsking(false); settingsOpen.value = false; }} />
+        {/* Pendant la confirmation : seulement Oui / Non (« Non » revient aux réglages) */}
+        {!confirm && <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { setAsking(false); settingsOpen.value = false; }} />}
       </div>
     </div>
   );

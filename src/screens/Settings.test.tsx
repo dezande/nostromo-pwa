@@ -75,8 +75,13 @@ test("« Retour à l'accueil » seulement pendant une partie, avec confirmation 
   act(() => { game.startGame(); game.touchRoom("cockpit"); game.confirmStart(); homeOpen.value = false; });
   act(() => { $("#homeReturnBtn").click(); });
   expect($("#homeReturnQ").textContent).toBe("Abandonner l'entraînement en cours ?");
+  // Seulement Oui / Non pendant la confirmation
+  expect($("#setClose")).toBeNull();
+  expect(root.querySelectorAll(".settings-footer button")).toHaveLength(2);
   act(() => { $("#homeReturnNo").click(); });
   expect($("#homeReturnQ")).toBeNull();
+  expect($("#setClose")).not.toBeNull();
+  expect(settingsOpen.value).toBe(true);
   expect(game.inGame.value).toBe(true);
   act(() => { $("#homeReturnBtn").click(); });
   act(() => { $("#homeReturnYes").click(); });
