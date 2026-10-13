@@ -271,3 +271,25 @@ body:not(.guide) .stat { display: grid; grid-template-columns: 1fr auto; align-i
 body:not(.guide) .stat .val { grid-row: span 2; margin: 0; width: 8mm; height: 6.4mm; grid-column: 2; grid-row: 1 / span 2; }
 body:not(.guide) .lines span { height: 4.2mm; }
 .row.mj { grid-template-columns: 1fr 1fr 1.12fr; }
+
+/* ================= 3D6 SYSTÈME : caractéristiques 1–5, maîtrises à 3 rangs ================= */
+.traits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4mm; }
+.trait { border: 0.7pt solid var(--ink); padding: 0.8mm 1.2mm; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 1.4mm; }
+.trait .t-name { font-weight: 700; letter-spacing: 0.08em; }
+.trait .t-level { font-size: 7pt; font-style: italic; }
+.trait .t-val { grid-column: 2; grid-row: 1 / span 2; width: 8.5mm; height: 7.5mm; border: 1.1pt solid var(--ink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12pt; }
+.pips { letter-spacing: 0.08em; white-space: nowrap; }
+table.mastery { width: 100%; border-collapse: collapse; }
+table.mastery th, table.mastery td { border-bottom: 0.5pt dotted var(--ink); padding: 0.35mm 0.8mm; text-align: left; vertical-align: top; }
+table.mastery th { font-size: 7pt; font-weight: 600; letter-spacing: 0.04em; border-bottom: 0.7pt solid var(--ink); }
+table.mastery td.c { text-align: center; white-space: nowrap; }
+.signature { display: flex; align-items: flex-end; gap: 2mm; }
+.signature label { font-weight: 700; letter-spacing: 0.06em; white-space: nowrap; }
+.signature .line { flex: 1; border-bottom: 0.8pt solid var(--ink); height: 6mm; }
+.kv { display: grid; grid-template-columns: auto 1fr; column-gap: 1.6mm; row-gap: 0.5mm; }
+.kv dt { font-weight: 600; letter-spacing: 0.03em; white-space: nowrap; }
+.kv dd { margin: 0; border-bottom: 0.5pt dotted var(--ink); }
+.npc-traits { display: grid; grid-template-columns: repeat(4, 1fr); border: 0.7pt solid var(--ink); text-align: center; }
+.npc-traits div { border-left: 0.6pt solid var(--ink); padding: 0.3mm 0; }
+.npc-traits div:first-child { border-left: 0; }
+.npc-traits b { display: block; font-size: 9pt; }

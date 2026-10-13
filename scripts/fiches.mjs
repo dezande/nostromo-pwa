@@ -1,7 +1,9 @@
-// Génère les documents imprimables du scénario « RECRUTEMENT » (A4, noir et blanc)
+// Génère les documents imprimables des scénarios « Recrutement » et « Infiltré » (A4, noir et blanc,
+// règles du 3D6 Système de François Cedelle, licence ORC)
 // à partir des pages HTML de fiches/, dans public/fiches/ :
 //   - fiches-personnages.pdf : les trois fiches de personnage sur une seule page ;
-//   - guide-mj.pdf : le guide du MJ, de 2 à 4 pages.
+//   - guide-mj.pdf : le guide du MJ, de 2 à 4 pages ;
+//   - fiche-infiltre.pdf : le prétiré du scénario « Infiltré », sur une seule page.
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
 import { mkdir } from "node:fs/promises";
@@ -15,6 +17,7 @@ const output = join(root, "public", "fiches");
 const documents = [
   { html: "fiches.html", pdf: "fiches-personnages.pdf", pages: [1, 1] },
   { html: "guide-mj.html", pdf: "guide-mj.pdf", pages: [2, 4] },
+  { html: "infiltre.html", pdf: "fiche-infiltre.pdf", pages: [1, 1] },
 ];
 
 const pngIndex = process.argv.indexOf("--png");
