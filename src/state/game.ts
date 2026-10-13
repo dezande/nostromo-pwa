@@ -38,7 +38,8 @@ export const busy = signal(false);                     // compte à rebours en c
 // Effets visuels pendant une fermeture.
 export const flashing = signal(new Set<RoomId>());  // salles qui viennent de se fermer
 export const shake = signal(false);
-export const ending = signal<{ win: boolean; text: string } | null>(null);
+/** Fin de partie : survie ou élimination, et salle où se trouvait l'agent. */
+export const ending = signal<{ win: boolean; room: string } | null>(null);
 
 export const inGame = computed(() => ["place", "move", "close"].includes(phase.value));
 
@@ -195,16 +196,16 @@ export async function closeRooms() {
   const name = room(agent).name;
   if (dead) {
     phase.value = "dead";
-    showEnding(false, `Un xénomorphe a été introduit en ${name}. L'agent s'y trouvait.`);
+    showEnding(false, name);
   } else if (finished) {
     phase.value = "win";
     audio.victory();
-    showEnding(true, `L'agent a survécu en ${name}. Le Psychic Agent a ressenti chaque présence alien.`);
+    showEnding(true, name);
   } else {
     phase.value = "move";
   }
 }
 
-function showEnding(win: boolean, text: string) {
-  setTimeout(() => { ending.value = { win, text }; }, win ? 600 : 200);
+function showEnding(win: boolean, room: string) {
+  setTimeout(() => { ending.value = { win, room }; }, win ? 600 : 200);
 }
