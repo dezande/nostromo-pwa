@@ -20,5 +20,7 @@ export default {
   globals: {
     __BUILD__: { version: "0.0.0", number: "test", commit: "", date: "2026-01-01" },
   },
+  // Les feuilles de style (ex. police du logo) ne servent à rien dans les tests.
+  moduleNameMapper: { "\\.css$": "<rootDir>/src/test/styleStub.cjs" },
   clearMocks: true,
 };

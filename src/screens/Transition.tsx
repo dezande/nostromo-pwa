@@ -1,6 +1,7 @@
 // Faux écran de transition : terminal MU/TH/UR 6000.
 import { useEffect } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
+import { WeylandLogo } from "../components/WeylandLogo";
 import { terminal, terminalOpen, skipTerminal } from "../state/terminal";
 
 export function Transition() {
@@ -15,6 +16,7 @@ export function Transition() {
   const { title, lines, progress } = terminal.value;
   return (
     <Overlay id="trans" show={terminalOpen.value} aria-live="polite" onPointerDown={skipTerminal}>
+      <WeylandLogo class="logo-watermark" />
       <div class="term">
         <div class="hd" id="transHd">{title}</div>
         <div id="transLines">
