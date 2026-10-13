@@ -1,0 +1,19 @@
+// Faux numéros de documents de la compagnie, pour donner aux panneaux l'air de vraies pièces officielles.
+// Ils ne disent rien de la partie : le matricule et les numéros de rapport sont tirés au hasard.
+
+const pick = (chars: string) => chars[Math.floor(Math.random() * chars.length)];
+const digits = (n: number) => Array.from({ length: n }, () => pick("0123456789")).join("");
+
+/** Matricule du Psychic Agent : tiré au hasard à chaque lancement (format 7A-2093). */
+export const AGENT_ID = `${pick("123456789")}${pick("ABCDEFGHJKLMNPRSTUVWXYZ")}-${digits(4)}`;
+
+/** Numéro de rapport de fin d'entraînement : nouveau à chaque fin de partie (format ENT-884-K / INC-884-K). */
+export const reportNumber = (win: boolean) => `${win ? "ENT" : "INC"}-${digits(3)}-${pick("ABCDEFGHJKLMNPRSTUVWXYZ")}`;
+
+export const DOC_REFS = {
+  welcome: `RÉF. WY-NOS2-TR/0417 · DOSSIER AGENT N° ${AGENT_ID} · DATE STELLAIRE 2122.06.03`,
+  /** Fiche de règle n (1 à 4) du protocole. */
+  rule: (n: number) => `RÉF. WY-NOS2-AIP/113-0${n} · CLASSIFICATION : INTERNE`,
+  report: (win: boolean, number: string) =>
+    `RAPPORT N° ${number} · DOSSIER AGENT N° ${AGENT_ID} · ${win ? "APTITUDE VALIDÉE" : "DOSSIER CLOS"}`,
+};

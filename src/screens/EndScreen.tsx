@@ -2,11 +2,15 @@
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
+import { useMemo } from "preact/hooks";
+import { DOC_REFS, reportNumber } from "../data/documents";
 import { ending, startGame } from "../state/game";
 import { returnHome } from "../state/ui";
 
 export function EndScreen() {
   const end = ending.value;
+  // Nouveau numéro de rapport à chaque fin de partie
+  const number = useMemo(() => (end ? reportNumber(end.win) : ""), [end]);
   return (
     <Overlay id="end" show={!!end} class="briefing">
       <div class={`panel briefing-panel welcome-panel end ${end?.win ? "win" : "dead"}`} id="endPanel">
@@ -14,6 +18,7 @@ export function EndScreen() {
         <div class="briefing-corp">
           WEYLAND-YUTANI CORP · {end?.win ? "RAPPORT D'ENTRAÎNEMENT" : "RAPPORT D'INCIDENT"} · NOSTROMO II
         </div>
+        <div class="doc-ref" id="endRef">{end ? DOC_REFS.report(end.win, number) : ""}</div>
         <div class="briefing-motto">« Building Better Worlds »</div>
         <h2 id="endTitle">{end ? (end.win ? "AGENT SURVIVANT" : "AGENT ÉLIMINÉ") : ""}</h2>
         {end && (end.win ? (
