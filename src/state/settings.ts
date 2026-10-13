@@ -15,9 +15,7 @@ export interface Settings {
   scanlines: boolean;
   transitions: boolean;
   wakeLock: boolean;
-  alertVariant: AlertVariant;   // musique 2 pendant les 5 minutes
-  alertVoice: boolean;          // voix toutes les 30 s
-  alertCountdown: boolean;      // décompte des 10 dernières secondes
+  alertVariant: AlertVariant;   // musique 2 pendant la partie
   settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
   markerDot: boolean;           // repère discret sur le plan
 }
@@ -25,7 +23,7 @@ export interface Settings {
 export type SettingsTab = "display" | "audio" | "alert" | "system";
 
 export const DEFAULTS: Settings = {
-  music: true,        // musique d'ambiance
+  music: false,       // musique (coupée par défaut, à activer dans les Réglages)
   musicVolume: 0.6,   // 0 → 1
   sfxVolume: 1,       // 0 → 1
   voice: true,        // annonce vocale du nom de la salle
@@ -35,8 +33,6 @@ export const DEFAULTS: Settings = {
   transitions: true,  // faux écrans de transition
   wakeLock: true,     // écran toujours allumé
   alertVariant: "siren",
-  alertVoice: true,
-  alertCountdown: true,
   settingsTab: "display",
   markerDot: true,
 };

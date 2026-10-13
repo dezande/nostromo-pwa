@@ -37,9 +37,8 @@ async function startSimulation(page: Page) {
   await expect(page.locator("#home")).not.toHaveClass(/show/);
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await page.locator("#welcomeNext").click();
-  await page.locator("#briefingNext").click();
-  await page.locator("#briefing2Next").click();
-  await expect(page.locator("#briefing2")).not.toHaveClass(/show/);
+  for (const n of [1, 2, 3, 4]) await page.locator(`#rule${n}Next`).click();
+  await expect(page.locator("#rule4")).not.toHaveClass(/show/);
 }
 
 /** Salles mises en avant (accessibles) sur le plan. */
@@ -71,22 +70,25 @@ test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de d
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await expect(page.locator("#welcome h2")).toHaveText("BIENVENUE À BORD, AGENT.");
   await page.locator("#welcomeNext").click();
-  await expect(page.locator("#briefing")).toHaveClass(/show/);
-  await expect(page.locator("#briefing .briefing-steps li")).toHaveCount(2);
-  await expect(page.locator("#briefing")).toContainText("Seul le Coordinateur en connaît l'ordre de fermeture.");
-  await page.locator("#briefingNext").click();
-  await expect(page.locator("#briefing2")).toHaveClass(/show/);
-  await expect(page.locator("#briefing2 .briefing-steps li")).toHaveCount(2);
-  await expect(page.locator("#briefing2")).toContainText("L'entraînement dure 5 minutes.");
-  await expect(page.locator("#briefing")).not.toContainText("contamin");
-  await expect(page.locator("#briefing2")).not.toContainText("contamin");
-  await page.locator("#briefing2Back").click();
-  await page.locator("#briefingBack").click();
+  // Une règle par panneau, de 1/4 à 4/4, chacune avec sa scène animée tirée du vrai plan.
+  const titles = ["POSITION DE DÉPART", "DÉPLACEMENTS", "FERMETURE", "FIN DE L'ENTRAÎNEMENT"];
+  for (const [i, title] of titles.entries()) {
+    const panel = page.locator(`#rule${i + 1}`);
+    await expect(panel).toHaveClass(/show/);
+    await expect(panel.locator(".rule-count")).toHaveText(`${i + 1}/4`);
+    await expect(panel.locator(".rule-title")).toHaveText(title);
+    await expect(panel.locator(".rule-scene .room").first()).toBeVisible();
+    await expect(panel.locator(".rule-scene .pawn")).toHaveCount(1);
+    await expect(panel).not.toContainText("contamin");
+    await expect(panel).not.toContainText("minute");
+    if (i < 3) await page.locator(`#rule${i + 1}Next`).click();
+  }
+  await expect(page.locator("#rule1")).toContainText("Seul le Coordinateur en connaît l'ordre de fermeture.");
+  for (const n of [4, 3, 2, 1]) await page.locator(`#rule${n}Back`).click();
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await page.locator("#welcomeNext").click();
-  await page.locator("#briefingNext").click();
-  await page.locator("#briefing2Next").click();
-  await expect(page.locator("#briefing2")).not.toHaveClass(/show/);
+  for (const n of [1, 2, 3, 4]) await page.locator(`#rule${n}Next`).click();
+  await expect(page.locator("#rule4")).not.toHaveClass(/show/);
   await expect(page.locator(".room.reach")).toHaveCount(ROOM_IDS.filter(k => !room(k).toxic).length);
   // Plus de choix de protocole dans l'app.
   await expect(page.locator("#pick, #protos")).toHaveCount(0);
@@ -332,40 +334,43 @@ test("les panneaux d'accueil tiennent dans l'écran sans défilement (téléphon
   await page.locator("#startBtn").click();
   for (const size of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 412, height: 915 }, { width: 1280, height: 720 }, { width: 1366, height: 768 }]) {
     await page.setViewportSize(size);
-    for (const [id, next] of [["welcome", "#welcomeNext"], ["briefing", "#briefingNext"], ["briefing2", "#briefing2Back"]] as const) {
+    for (const [id, next] of [["welcome", "#welcomeNext"], ["rule1", "#rule1Next"], ["rule2", "#rule2Next"], ["rule3", "#rule3Next"], ["rule4", ""]] as const) {
       await expect(page.locator(`#${id}`)).toHaveClass(/show/);
       const fits = await page.locator(`#${id} .panel`).evaluate(el => ({
         scroll: el.scrollHeight <= el.clientHeight + 1,
         inside: el.getBoundingClientRect().bottom <= window.innerHeight + 1,
       }));
       expect(fits, `${id} à ${size.width}×${size.height}`).toEqual({ scroll: true, inside: true });
-      if (id !== "briefing2") await page.locator(next).click();
+      if (next) await page.locator(next).click();
     }
     // retour au panneau de bienvenue pour la taille suivante
-    await page.locator("#briefing2Back").click();
-    await page.locator("#briefingBack").click();
+    for (const n of [4, 3, 2, 1]) await page.locator(`#rule${n}Back`).click();
   }
 });
 
-test("minuteur de 5 minutes : démarre à la validation, alarme à zéro, la partie continue", async ({ page }) => {
-  const errors = await open(page);
+test("plus de minuteur ; musique d'alerte pendant la partie (si la musique est activée)", async ({ page }) => {
+  const errors = await open(page, { ...FAST, music: true });
   await startSimulation(page);
-  await expect(page.locator("#trainingTimer")).toHaveCount(0);
+  expect(await page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(false);
   await placeAgent(page, "vie");
-  await expect(page.locator("#trainingTimer")).toHaveText("05:00");
-  await page.clock.runFor(60_000);
-  await expect(page.locator("#trainingTimer")).toHaveText("04:00");
-  await page.clock.runFor(185_000);
-  await expect(page.locator("#trainingTimer")).toHaveText("00:55");
-  await expect(page.locator("#trainingTimer")).toHaveClass(/urgent/);
-  await page.clock.runFor(60_000);
-  await expect(page.locator("#trainingTimer")).toHaveText("00:00");
-  await expect(page.locator("#trainingTimer")).toHaveClass(/expired/);
-  // La partie n'est pas bloquée.
-  await clickRoom(page, "cuisine");
-  await expect(page.locator("#pawn")).toHaveAttribute("visibility", "visible");
+  await expect(page.locator("#trainingTimer")).toHaveCount(0);
+  await expect.poll(() => page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
+  await page.clock.runFor(400_000); // bien plus de 5 minutes : rien ne s'arrête
+  expect(await page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
   await expect(page.locator("#closeBtn")).toBeEnabled();
   expect(errors).toEqual([]);
+});
+
+test("musique coupée par défaut au premier lancement", async ({ page }) => {
+  await silence(page);
+  await page.clock.install();
+  await page.goto("/");
+  await page.clock.runFor(500);
+  expect(await page.evaluate(() => window.nostromo!.audio.playing)).toBe(false);
+  await expect(page.locator("#press")).not.toHaveClass(/show/);
+  await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-audio").click();
+  await expect(page.locator("#musicChk")).not.toBeChecked();
 });
 
 test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
@@ -386,11 +391,11 @@ test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet
   await expect(page.locator("#alert-siren")).toHaveAttribute("aria-checked", "true");
   await page.locator("#alert-detector").click();
   await expect(page.locator("#alert-detector")).toHaveAttribute("aria-checked", "true");
-  await page.locator("#alertCountdownChk").uncheck();
+  await expect(page.locator("#alertVoiceChk, #alertCountdownChk")).toHaveCount(0);
   await page.locator("#alertPreview").click();
   await page.clock.runFor(5000);
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!));
-  expect(saved).toMatchObject({ alertVariant: "detector", alertVoice: true, alertCountdown: false, settingsTab: "alert" });
+  expect(saved).toMatchObject({ alertVariant: "detector", settingsTab: "alert" });
   // Le dernier onglet est mémorisé (enregistré ci-dessus, et rouvert à la réouverture)
   await page.locator("#setClose").click();
   await page.locator("#homeSetBtn").click();
@@ -450,11 +455,10 @@ test("le numéro de build est affiché dans les réglages", async ({ page }) => 
   await expect(page.locator("#versionInfo")).toHaveText(/v\d+\.\d+\.\d+ · BUILD \d+ \([0-9a-f]+\) DU \d{2}\/\d{2}\/\d{4}/);
 });
 
-test("retour à l'accueil par les Réglages, avec confirmation : minuteur, alarme et voix s'arrêtent", async ({ page }) => {
+test("retour à l'accueil par les Réglages, avec confirmation : alarme et voix s'arrêtent", async ({ page }) => {
   const errors = await open(page, { ...FAST, music: true });
   await startSimulation(page);
   await placeAgent(page, "cockpit");
-  await expect(page.locator("#trainingTimer")).toHaveText("05:00");
   await expect.poll(() => page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
 
   // Pas de retour à l'accueil hors partie ; ici, partie en cours : le bouton est là.
@@ -471,7 +475,6 @@ test("retour à l'accueil par les Réglages, avec confirmation : minuteur, alarm
   await page.locator("#homeReturnYes").click();
   await expect(page.locator("#home")).toHaveClass(/show/);
   await expect(page.locator("#settings")).not.toHaveClass(/show/);
-  await expect(page.locator("#trainingTimer")).toHaveCount(0);
   expect(await page.evaluate(() => (window as unknown as { cancelled: number }).cancelled)).toBeGreaterThan(0);
   expect(await page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(false);
   expect(await page.evaluate(() => window.nostromo!.audio.playing)).toBe(true); // musique 1

@@ -4,7 +4,6 @@ import { ROOM_IDS, room, type RoomId } from "../data/ship";
 import { audio } from "../audio/audio";
 import { settings } from "./settings";
 import * as game from "./game";
-import { remaining } from "./timer";
 
 const openCount = () => ROOM_IDS.filter(id => !room(id).toxic).length;
 
@@ -84,15 +83,6 @@ describe("pose du pion", () => {
     expect(game.canValidate.value).toBe(false);
     game.validate();
     expect(game.phase.value).toBe("place");
-  });
-
-  test("le minuteur de 5 minutes démarre à la validation de la salle de départ", () => {
-    game.touchRoom("cockpit");
-    expect(remaining.value).toBeNull();
-    game.validate();
-    expect(remaining.value).toBe(300);
-    game.startGame(); // nouvelle partie : minuteur remis à zéro
-    expect(remaining.value).toBeNull();
   });
 
   test("valider la salle de départ passe aux déplacements", () => {
@@ -206,7 +196,6 @@ describe("fermetures", () => {
     await closeRooms("cockpit");
     expect(game.phase.value).toBe("dead");
     expect(game.ending.value).toMatchObject({ win: false });
-    expect(remaining.value).toBeNull(); // minuteur arrêté à la fin
   });
 
   test("après 8 fermetures, l'agent qui n'a jamais été pris survit", async () => {

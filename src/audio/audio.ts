@@ -1,7 +1,7 @@
 // Musique et bruitages générés en direct avec Web Audio : aucun fichier audio, aucun droit d'auteur.
 //
 // Deux bus de volume : la musique (musicBus) et les effets (sfxBus), tous deux reliés au master.
-// La musique a deux couches : l'ambiance (musique 1) et l'alerte des 5 minutes (musique 2),
+// La musique a deux couches : l'ambiance (musique 1) et l'alerte pendant la partie (musique 2),
 // qui passent toutes deux par musicBus : elles suivent le volume et la case « Musique ».
 
 interface Music { nodes: AudioScheduledSourceNode[]; stop(): void; }
@@ -10,7 +10,7 @@ let ctx: AudioContext | null = null;
 let master: GainNode;
 let musicBus: GainNode;
 let ambientBus: GainNode;   // musique 1 : ambiance
-let alertBus: GainNode;     // musique 2 : alerte pendant les 5 minutes
+let alertBus: GainNode;     // musique 2 : alerte pendant la partie
 let sfxBus: GainNode;
 let music: Music | null = null; // musique en cours
 let musicVolume = 0.6;
@@ -294,7 +294,7 @@ function alien(long: boolean) {
   hiss.start(t);
 }
 
-// ---------- musique 2 : alerte pendant les 5 minutes ----------
+// ---------- musique 2 : alerte pendant la partie ----------
 
 export type AlertVariant = "siren" | "klaxon" | "detector";
 
@@ -379,7 +379,7 @@ function buildAlert(variant: AlertVariant, out: GainNode): Alert {
   };
 }
 
-/** Pendant les 5 minutes : l'ambiance s'efface, l'alerte prend sa place. */
+/** Pendant la partie : l'ambiance s'efface, l'alerte prend sa place. */
 function startAlert(variant: AlertVariant) {
   const ctx = init();
   stopAlert();
@@ -388,7 +388,7 @@ function startAlert(variant: AlertVariant) {
   alertBus.gain.setTargetAtTime(1, ctx.currentTime, 0.4);
 }
 
-/** Fin des 5 minutes (ou de la partie) : retour à la musique d'ambiance. */
+/** Fin de la partie : retour à la musique d'ambiance. */
 function stopAlert() {
   if (!alert || !ctx) return;
   alert.stop();
@@ -417,11 +417,6 @@ function previewAlert(variant: AlertVariant, seconds = 4) {
   }, seconds * 1000);
 }
 
-/** Fin des 5 minutes : quatre bips en dent de scie à 440 Hz, à 600 ms d'intervalle. */
-function alarm() {
-  const ctx = init();
-  for (let i = 0; i < 4; i++) blip(musicBus, "sawtooth", 440, ctx.currentTime + i * 0.6, 0.3, 0.4);
-}
 
 /**
  * Cri du xénomorphe à chaque fermeture : sifflement (bruit filtré), grondement grave et cri aigu.
@@ -492,7 +487,7 @@ function victory() {
 
 export const audio = {
   init, startMusic, stopMusic, setMusicVolume, setSfxVolume, duck,
-  beep, tick, siren, slam, alien, xenomorph, victory, alarm,
+  beep, tick, siren, slam, alien, xenomorph, victory,
   startAlert, stopAlert, alertDuck, previewAlert,
   get musicVolume() { return musicVolume; },
   get playing() { return !!music; },
