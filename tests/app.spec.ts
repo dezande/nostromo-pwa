@@ -686,7 +686,17 @@ for (const [layout, width, height] of FORMATS) {
     await expect(page.locator("html")).toHaveClass(new RegExp(`layout-${layout}`));
     await startSimulation(page);
     await expectNoScroll(page, label);
-    for (const sel of ["#deck1", "#deck2", "#infoPanel", "#undoBtn", "#closeBtn", "#setBtn"]) await expectInside(page, sel, label);
+    // Téléphone : un seul pont à la fois (onglets) ; Tablette : les deux ponts.
+    const decks = layout === "phone" ? ["#deck1"] : ["#deck1", "#deck2"];
+    for (const sel of [...decks, "#infoPanel", "#undoBtn", "#closeBtn", "#setBtn"]) await expectInside(page, sel, label);
+    if (layout === "phone") {
+      await expect(page.locator("#deck2")).toBeHidden();
+      await page.locator("#deckTab2").click();
+      await expectInside(page, "#deck2", label);
+      await expect(page.locator("#deck1")).toBeHidden();
+      await expectNoScroll(page, `${label} pont 2`);
+      await page.locator("#deckTab1").click();
+    }
     // Les ponts gardent leurs proportions (jamais déformés)
     const ratio = await page.evaluate(() => ["deck1", "deck2"].map(id => document.getElementById(id)!.getAttribute("preserveAspectRatio")));
     expect(ratio).toEqual(["xMidYMid meet", "xMidYMid meet"]);
@@ -703,10 +713,40 @@ for (const [layout, width, height] of FORMATS) {
     await expect(page.locator("#deck1 .path-step")).toHaveText(["1"]);
     await page.clock.runFor(5000);
     await expectNoScroll(page, `${label} après déplacement`);
-    for (const sel of ["#deck1", "#deck2", "#closeBtn"]) await expectInside(page, sel, label);
+    for (const sel of [...decks, "#closeBtn"]) await expectInside(page, sel, label);
     expect(errors).toEqual([]);
   });
 }
+
+test("téléphone : un pont à la fois, bascule automatique quand le pion prend l'ascenseur", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const errors = await open(page, { ...FAST, layout: "phone" });
+  await startSimulation(page);
+  await expect(page.locator("#deckTab1")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#deck1")).toBeVisible();
+  await expect(page.locator("#deck2")).toBeHidden();
+  await placeAgent(page, "vie");
+  await expect(page.locator("#deckTab1 .deck-tab-led")).toHaveCount(1);
+  await clickRoom(page, "atelier"); // ascenseur vers le pont 2
+  await expect(page.locator("#deckTab2")).toHaveAttribute("aria-selected", "true");
+  await expect(page.locator("#deck2")).toBeVisible();
+  await expect(page.locator("#deck1")).toBeHidden();
+  await expect(page.locator("#deckTab2 .deck-tab-led")).toHaveCount(1);
+  // Bascule à la main : on peut regarder l'autre pont
+  await page.locator("#deckTab1").click();
+  await expect(page.locator("#deck1")).toBeVisible();
+  await expect(page.locator("#deckTab2 .deck-tab-led")).toHaveCount(1);
+  expect(errors).toEqual([]);
+});
+
+test("tablette : pas d'onglets de ponts, les deux ponts visibles", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await open(page, { ...FAST, layout: "tablet" });
+  await startSimulation(page);
+  await expect(page.locator(".deck-tabs")).toBeHidden();
+  await expect(page.locator("#deck1")).toBeVisible();
+  await expect(page.locator("#deck2")).toBeVisible();
+});
 
 test("format : choix Tablette / Téléphone dans les Réglages, appliqué et mémorisé", async ({ page }) => {
   const errors = await open(page, { ...FAST, layout: "tablet" });

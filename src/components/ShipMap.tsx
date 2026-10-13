@@ -2,6 +2,7 @@
 import { ROOM_IDS, VENTS, crossLines, markerPosition, room, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
 import { settings } from "../state/settings";
 import { reachable, closable, closed, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
+import { pawnDeck, phoneDeck } from "../state/deckView";
 import { ProtocolWindow } from "./ProtocolWindow";
 import { DeckReadout, SystemPanel } from "./SystemPanel";
 
@@ -10,8 +11,9 @@ const range = (from: number, to: number, stepBy: number) => Array.from({ length:
 export function ShipMap() {
   return (
     // Tablette : pont 1 à gauche ; à droite le protocole, des relevés et le pont 2.
-    // Téléphone : protocole en haut, puis pont 1, puis relevés et pont 2 (voir _map.scss).
-    <section class="decks">
+    // Téléphone : protocole en haut, onglets PONT 1 / PONT 2, un seul pont à la fois en grand (voir _map.scss).
+    <section class={`decks show-deck-${phoneDeck.value}`}>
+      <DeckTabs />
       <div class="col-main">
         <div class="deck deck-1">
           <div class="deck-head"><h2>PONT 1</h2><DeckReadout text="PRESSION 1.02 · O2 98 %" /></div>
@@ -32,6 +34,22 @@ export function ShipMap() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Onglets du format Téléphone : un pont à la fois ; un voyant indique le pont où se trouve le pion. */
+function DeckTabs() {
+  const shown = phoneDeck.value, pawn = pawnDeck.value;
+  return (
+    <div class="deck-tabs" role="tablist" aria-label="Ponts">
+      {([1, 2] as const).map(d => (
+        <button key={d} type="button" role="tab" id={`deckTab${d}`} class="deck-tab" aria-selected={shown === d}
+          aria-controls={`deck${d}`} onClick={() => { phoneDeck.value = d; }}>
+          PONT {d}
+          {pawn === d && <span class="deck-tab-led" aria-label="pion ici" />}
+        </button>
+      ))}
+    </div>
   );
 }
 

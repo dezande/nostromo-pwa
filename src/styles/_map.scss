@@ -188,20 +188,60 @@
   .layout-tablet .sys-wide { display: flex; }
 }
 
-// ---------- Téléphone : tout empilé, les ponts le plus grand possible ----------
-// Protocole sur deux lignes en haut, puis pont 1, puis pont 2, chacun sur toute la largeur.
-// Pas de relevés décoratifs : toute la place va aux ponts.
+// Onglets PONT 1 / PONT 2 : seulement en format Téléphone
+.deck-tabs { display: none; }
+
+// ---------- Téléphone : un pont à la fois, en grand ----------
+// Protocole sur deux lignes en haut, onglets PONT 1 / PONT 2, puis le pont choisi sur toute la place.
+// Pas de relevés décoratifs : toute la place va au pont.
 .layout-phone {
   .decks {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1.3fr) minmax(0, 1fr);
-    grid-template-areas: "proto" "d1" "d2";
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: "proto" "tabs" "deck";
     gap: 4px;
   }
+  .deck-tabs {
+    grid-area: tabs;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .deck-tab {
+    position: relative;
+    min-height: 40px;
+    padding: 6px;
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    color: var(--dim);
+    font-size: fs(12px);
+    letter-spacing: .3em;
+    &[aria-selected="true"] {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+  }
+  // Voyant : le pion est sur ce pont
+  .deck-tab-led {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: blink 1.6s steps(2) infinite;
+  }
+  .deck-1, .deck-2 { grid-area: deck; }
+  .show-deck-1 .deck-2, .show-deck-2 .deck-1 { display: none; }
+  // Petit effet en changeant de pont
+  .deck { animation: deck-in .35s ease-out; }
   .col-main, .side { display: contents; }
   .info-panel { grid-area: proto; }
-  .deck-1 { grid-area: d1; }
-  .deck-2 { grid-area: d2; }
   .sys-side, .sys-wide { display: none; }
 
   .deck { padding: 2px; }
@@ -329,4 +369,10 @@
 @keyframes ping {
   0% { opacity: .9; transform: scale(.6); }
   100% { opacity: 0; transform: scale(2.2); }
+}
+
+@keyframes deck-in {
+  0% { opacity: 0; filter: brightness(2.5); transform: scaleY(.96); }
+  60% { opacity: 1; filter: brightness(1.4); }
+  100% { opacity: 1; filter: none; transform: none; }
 }
