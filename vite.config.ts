@@ -65,6 +65,8 @@ export default defineConfig({
       workbox: {
         // Fichiers gardés pour le mode hors ligne (dont la police du logo, embarquée).
         globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
+        // Les PDF (fiches, guide du MJ) ne doivent jamais être remplacés par la page de l'app.
+        navigateFallbackDenylist: [/\/fiches\//],
         // Les polices des styles d'écran viennent de Google Fonts : on les garde aussi pour le hors ligne.
         runtimeCaching: [{
           urlPattern: /^https:\/\/fonts\.(googleapis|gstatic)\.com\/.*/,
