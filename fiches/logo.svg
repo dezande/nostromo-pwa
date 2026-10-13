@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 78" fill="#000">
+  <!-- Logo « Weyland Corp » (d'après src/components/WeylandLogo.tsx), noir pour l'impression -->
+  <g stroke="#000" stroke-width="3.2" stroke-linejoin="round">
+    <polygon points="67.4,15.6 112.6,15.6 90,54.8"/>
+    <polygon points="127.4,15.6 172.6,15.6 150,54.8"/>
+    <polygon points="120,17.2 142.6,56.4 97.4,56.4"/>
+  </g>
+  <g>
+    <polygon points="4,14 60,14 66.9,26 12.8,26"/>
+    <polygon points="236,14 180,14 173.1,26 227.2,26"/>
+    <polygon points="15.7,30 69.2,30 76.2,42 24.4,42"/>
+    <polygon points="224.3,30 170.8,30 163.8,42 215.6,42"/>
+    <polygon points="27.4,46 78.5,46 85.4,58 36.1,58"/>
+    <polygon points="212.6,46 161.5,46 154.6,58 203.9,58"/>
+  </g>
+  <text x="120" y="74" text-anchor="middle" textLength="160" lengthAdjust="spacingAndGlyphs"
+        font-family="Questrial, Arial, Helvetica, sans-serif" font-size="15" letter-spacing="2">WEYLAND CORP</text>
+</svg>

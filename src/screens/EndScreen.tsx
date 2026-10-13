@@ -2,13 +2,18 @@
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
+import { Redact } from "../components/Redacted";
 import { useMemo } from "preact/hooks";
 import { DOC_REFS, reportNumber } from "../data/documents";
 import { ending, startGame } from "../state/game";
 import { returnHome } from "../state/ui";
+import { settings } from "../state/settings";
+import { SCENARIOS } from "../data/scenarios";
 
 export function EndScreen() {
   const end = ending.value;
+  const text = SCENARIOS[settings.scenario.value];
+  const report = end ? (end.win ? text.win : text.dead) : null;
   // Nouveau numéro de rapport à chaque fin de partie
   const number = useMemo(() => (end ? reportNumber(end.win) : ""), [end]);
   return (
@@ -16,25 +21,21 @@ export function EndScreen() {
       <div class={`panel briefing-panel welcome-panel end ${end?.win ? "win" : "dead"}`} id="endPanel">
         <WeylandLogo class="logo-watermark logo-in-panel" />
         <div class="briefing-corp">
-          WEYLAND-YUTANI CORP · {end?.win ? "RAPPORT D'ENTRAÎNEMENT" : "RAPPORT D'INCIDENT"} · NOSTROMO II
+          WEYLAND-YUTANI CORP · {report?.header} · NOSTROMO II
         </div>
         <div class="doc-ref" id="endRef">{end ? DOC_REFS.report(end.win, number) : ""}</div>
         <div class="briefing-motto">« Building Better Worlds »</div>
-        <h2 id="endTitle">{end ? (end.win ? "AGENT SURVIVANT" : "AGENT ÉLIMINÉ") : ""}</h2>
-        {end && (end.win ? (
+        <h2 id="endTitle">{report?.title ?? ""}</h2>
+        {end && report && (
           <>
-            <p id="endText" class="end-status">ENTRAÎNEMENT TERMINÉ.</p>
-            <p>Félicitations, Agent. Vous avez survécu à toutes les fermetures du protocole.</p>
-            <p>Position finale : <span class="end-room">{end.room.toUpperCase()}</span>. Vos capacités de Psychic Agent sont confirmées : vous avez ressenti chaque présence xénomorphe à bord du vaisseau-base.</p>
-            <p>La compagnie vous remercie de votre engagement. Votre dossier est transmis pour une première mission.</p>
+            {report.status && <p id="endText" class="end-status">{report.status}</p>}
+            {report.lines.map((line, i) => (
+              <p key={i} id={!report.status && i === 0 ? "endText" : undefined}>
+                <WithRoom line={line} room={end.room} />
+              </p>
+            ))}
           </>
-        ) : (
-          <>
-            <p id="endText">Fermeture de la salle : <span class="end-room">{end.room.toUpperCase()}</span>. Un spécimen y a été introduit. Vous vous y trouviez.</p>
-            <p>Conformément à votre contrat, les risques liés à cet entraînement étaient connus et acceptés.</p>
-            <p>La compagnie regrette la perte de son agent. Un nouveau candidat va être sélectionné.</p>
-          </>
-        ))}
+        )}
         <div class="row icon-row briefing-actions">
           <IconButton id="endMenuBtn" icon="accueil" label="Accueil" onClick={() => { ending.value = null; returnHome(); }} />
           <IconButton id="againBtn" icon="demarrer" label="Rejouer" primary onClick={startGame} />
@@ -42,4 +43,11 @@ export function EndScreen() {
       </div>
     </Overlay>
   );
+}
+
+/** Remplace {room} par le nom de la salle, mis en évidence. */
+function WithRoom({ line, room }: { line: string; room: string }) {
+  const [before, after] = line.split("{room}");
+  if (after === undefined) return <Redact text={line} />;
+  return <><Redact text={before} /><span class="end-room">{room.toUpperCase()}</span><Redact text={after} /></>;
 }

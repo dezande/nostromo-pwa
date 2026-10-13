@@ -19,7 +19,11 @@ export interface Settings {
   settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
   markerDot: boolean;           // repère discret sur le plan
   layout: Layout;               // format de l'écran de jeu : tablette ou téléphone
+  scenario: Scenario;           // entraînement (par défaut) ou recrutement (jeu de rôle)
 }
+
+/** Scénario : « training » (entraînement Psychic Agent, par défaut) ou « recruitment » (jeu de rôle). */
+export type Scenario = "training" | "recruitment";
 
 export type Layout = "tablet" | "phone";
 
@@ -28,7 +32,7 @@ export function defaultLayout(width = window.innerWidth, height = window.innerHe
   return width < 600 && height > width ? "phone" : "tablet";
 }
 
-export type SettingsTab = "display" | "audio" | "alert" | "system";
+export type SettingsTab = "scenario" | "display" | "audio" | "alert" | "system";
 
 export const DEFAULTS: Settings = {
   music: false,       // musique (coupée par défaut, à activer dans les Réglages)
@@ -43,6 +47,7 @@ export const DEFAULTS: Settings = {
   alertVariant: "siren",
   settingsTab: "display",
   markerDot: true,
+  scenario: "training",
   layout: defaultLayout(),
 };
 

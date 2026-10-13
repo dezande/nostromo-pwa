@@ -383,10 +383,10 @@ test("musique coupée par défaut au premier lancement", async ({ page }) => {
   await expect(page.locator("#musicChk")).not.toBeChecked();
 });
 
-test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
+test("réglages en onglets : Scénario, Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
   const errors = await open(page);
   await page.locator("#homeSetBtn").click();
-  await expect(page.locator("#settings").getByRole("tab")).toHaveText(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
+  await expect(page.locator("#settings").getByRole("tab")).toHaveText(["SCÉNARIO", "AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
   await expect(page.locator("#tab-display")).toHaveAttribute("aria-selected", "true");
   await expect(page.locator("#themes")).toBeVisible();
   // Clavier : flèche droite → Audio
@@ -818,3 +818,66 @@ for (const [layout, width, height] of [["phone", 390, 844], ["tablet", 1024, 768
     await expect(page.locator("html")).toHaveClass(new RegExp(`layout-${layout}`));
   });
 }
+
+test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
+  const errors = await open(page);
+  // Par défaut : scénario Entraînement.
+  await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-scenario").click();
+  await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#sheets")).toHaveCount(0);
+  await page.locator("#scenario-recruitment").click();
+  await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("href", /fiches\/fiches-personnages\.pdf$/);
+  await expect(page.locator("#guidePdf")).toHaveAttribute("href", /fiches\/guide-mj\.pdf$/);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
+  await page.locator("#setClose").click();
+  await expect(page.locator("#homeLine")).toContainText("Recrutement");
+
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#hr")).toHaveClass(/show/);
+  await expect(page.locator("#welcome")).not.toHaveClass(/show/);
+  await expect(page.locator("#hr")).toContainText("48 000 crédits");
+  await page.locator("#hrNext").click();
+
+  // Contrat : le lecteur d'empreinte ne s'active qu'en bas du contrat.
+  await expect(page.locator("#contract")).toHaveClass(/show/);
+  const scroll = page.locator("#contractScroll");
+  expect(await scroll.evaluate(el => el.scrollHeight > el.clientHeight * 2)).toBe(true);
+  await expect(page.locator("#fingerprint")).toBeDisabled();
+  await expect(page.locator("#contractNext")).toBeDisabled();
+  // Le panneau tient dans l'écran : seul le contrat défile.
+  expect(await page.locator(".contract-panel").evaluate(el => el.getBoundingClientRect().bottom <= innerHeight + 1)).toBe(true);
+  await scroll.evaluate(el => { el.scrollTop = el.scrollHeight; el.dispatchEvent(new Event("scroll")); });
+  await expect(page.locator("#fingerprint")).toBeEnabled();
+
+  // Appui trop court : pas de signature.
+  const pad = (await page.locator("#fingerprint").boundingBox())!;
+  await page.mouse.move(pad.x + pad.width / 2, pad.y + pad.height / 2);
+  await page.mouse.down();
+  await page.clock.runFor(600);
+  await page.mouse.up();
+  await page.clock.runFor(2000);
+  await expect(page.locator("#contractNext")).toBeDisabled();
+  // Appui long : contrat signé.
+  await page.mouse.down();
+  await page.clock.runFor(1600);
+  await page.mouse.up();
+  await expect(page.locator("#fingerprintMsg")).toHaveText("CONTRAT SIGNÉ · EMPREINTE ENREGISTRÉE");
+  await page.locator("#contractNext").click();
+
+  // Le Coordinateur présente l'examen, puis la partie se joue comme d'habitude.
+  await expect(page.locator("#rule1")).toHaveClass(/show/);
+  await expect(page.locator("#rule1")).toContainText("EXAMEN D'APTITUDE");
+  await page.locator("#rule1Back").click();
+  await expect(page.locator("#contract")).toHaveClass(/show/);
+  await expect(page.locator("#contractNext")).toBeEnabled(); // reste signé
+  await page.locator("#contractNext").click();
+  await expect(page.locator("#rule3")).not.toContainText("xénomorphe");
+  for (const n of [1, 2, 3, 4]) await page.locator(`#rule${n}Next`).click();
+  await placeAgent(page, "cockpit");
+  await closeRoom(page, "cockpit");
+  await page.clock.runFor(2_000);
+  await expect(page.locator("#endTitle")).toHaveText("CANDIDATURE CLOSE");
+  expect(errors).toEqual([]);
+});

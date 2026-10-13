@@ -6,8 +6,11 @@ import { terminalOpen } from "./terminal";
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
 export const settingsOpen = signal(false);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
-/** Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4). */
-export type BriefingPanel = "welcome" | 1 | 2 | 3 | 4;
+/**
+ * Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4).
+ * Scénario « Recrutement » : panneau du RH et contrat à signer à la place du panneau de bienvenue.
+ */
+export type BriefingPanel = "welcome" | "hr" | "contract" | 1 | 2 | 3 | 4;
 export const briefing = signal<BriefingPanel | null>(null);
 
 /**
