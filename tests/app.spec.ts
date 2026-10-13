@@ -539,9 +539,13 @@ test("retour à l'accueil par les Réglages, avec confirmation : alarme et voix 
 
 test("réglages : boutons du bas alignés sur une seule rangée, de même taille", async ({ page }) => {
   const errors = await open(page);
-  const box = async (id: string) => (await page.locator(`#${id}`).boundingBox())!;
+  // Toutes les positions sont lues au même instant (le panneau peut encore se redimensionner).
   const sameRow = async (...ids: string[]) => {
-    const boxes = await Promise.all(ids.map(box));
+    await expect(page.locator(`#${ids[0]}`)).toBeVisible();
+    const boxes = await page.evaluate(list => list.map(id => {
+      const r = document.getElementById(id)!.getBoundingClientRect();
+      return { y: r.y, width: r.width, height: r.height };
+    }), ids);
     for (const b of boxes.slice(1)) {
       expect(Math.abs(b.y - boxes[0].y), ids.join(" / ")).toBeLessThanOrEqual(1);
       expect(Math.abs(b.width - boxes[0].width), ids.join(" / ")).toBeLessThanOrEqual(1);
@@ -825,11 +829,11 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
   await page.locator("#homeSetBtn").click();
   await page.locator("#tab-scenario").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheets")).toHaveCount(0);
+  await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheetsPdf")).toHaveAttribute("href", /fiches\/fiches-personnages\.pdf$/);
-  await expect(page.locator("#guidePdf")).toHaveAttribute("href", /fiches\/guide-mj\.pdf$/);
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiches-recrutement.pdf");
+  await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Recrutement");
@@ -889,7 +893,9 @@ test("scénario Infiltré : archives C.R.F., e-mail de la direction, session dis
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await page.locator("#scenario-infiltrated").click();
   await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/fiche-infiltre.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr.pdf");
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
   await page.locator("#setClose").click();
   await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
 

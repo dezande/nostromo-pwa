@@ -62,6 +62,7 @@ b { font-weight: 700; }
 .title {
   display: flex;
   justify-content: space-between;
+  gap: 3mm;
   align-items: flex-end;
   border-bottom: 1.6pt double var(--ink);
   padding-bottom: 1mm;
