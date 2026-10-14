@@ -4,12 +4,14 @@
 /** @type {import("jest").Config} */
 export default {
   testEnvironment: "jsdom",
-  // Versions CommonJS de preact et @preact/signals (jsdom choisirait sinon leurs versions ESM).
+  // Version CommonJS de @preact/signals (jsdom choisirait sinon sa version ESM « browser »).
   testEnvironmentOptions: { customExportConditions: ["node", "require", "default"] },
+  // Preact 11 n'existe plus qu'en ESM (.mjs) : ses fichiers passent aussi par @swc/jest (→ CommonJS).
+  transformIgnorePatterns: ["/node_modules/(?!preact/)"],
   roots: ["<rootDir>/src"],
   testMatch: ["**/*.test.ts", "**/*.test.tsx"],
   transform: {
-    "^.+\\.(t|j)sx?$": ["@swc/jest", {
+    "^.+\\.(t|j)sx?$|\\.mjs$": ["@swc/jest", {
       jsc: {
         parser: { syntax: "typescript", tsx: true },
         transform: { react: { runtime: "automatic", importSource: "preact" } },

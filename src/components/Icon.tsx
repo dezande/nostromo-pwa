@@ -1,5 +1,5 @@
 // Icônes en SVG (trait de la couleur du style d'écran) et boutons « icône seule ».
-import type { JSX } from "preact";
+import type { ButtonHTMLAttributes } from "preact";
 
 export const ICONS = {
   valider: <path d="M5 12.5l4.5 4.5L19 7.5" />,
@@ -35,7 +35,7 @@ export function Icon({ name }: { name: IconName }) {
   );
 }
 
-type ButtonProps = Omit<JSX.ButtonHTMLAttributes<HTMLButtonElement>, "icon" | "label"> & {
+type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "icon" | "label"> & {
   icon: IconName;
   /** Nom du bouton, dans la langue de l'app : lu par les lecteurs d'écran et affiché au survol. */
   label: string;
