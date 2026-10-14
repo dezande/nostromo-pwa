@@ -1,0 +1,92 @@
+@use "functions" as *;
+
+// ---------- Tutoriel du 3D6 Système (ouvert depuis l'accueil) ----------
+.tuto-panel {
+  .tuto-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .tuto-close { width: 36px; height: 36px; flex: none; }
+  .tuto-title { margin: 12px 0 6px; font-size: fs(15px); letter-spacing: .2em; color: var(--amber); font-weight: normal; }
+  .tuto-example {
+    margin: 10px 0 0;
+    padding: 6px 10px;
+    border-left: 2px solid var(--accent);
+    color: var(--dim);
+    font-size: fs(12px);
+    span { color: var(--accent); font-size: fs(9px); letter-spacing: .2em; margin-right: 6px; }
+  }
+  // Repères de progression : un point par page
+  .tuto-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 18px;
+    span { width: 6px; height: 6px; border: 1px solid var(--dim); border-radius: 50%; }
+    span.on { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 6px var(--accent); }
+  }
+  .briefing-actions { margin-top: 14px; justify-content: center; }
+  .tuto-credit { margin-top: 12px; text-align: center; color: var(--dim); opacity: .7; font-size: fs(9px); letter-spacing: .1em; }
+}
+
+// Pictogramme de la page, dans un cadre comme les scènes des règles
+.tuto-scene {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.tuto-svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  max-height: 26vh;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  font-family: var(--font);
+
+  text { stroke: none; fill: var(--ink); text-anchor: middle; letter-spacing: .12em; }
+  .t-small { font-size: 9px; }
+  .t-mid { font-size: 12px; }
+  .t-big { font-size: 22px; }
+  .t-ok { fill: var(--accent); }
+  .t-warn { fill: var(--amber); }
+  .t-red { fill: var(--red); }
+  .t-dim { fill: var(--dim); }
+
+  // Dés : neutre, réussi (allumé), raté (éteint), échec critique (rouge)
+  .die .face { fill: var(--panel); stroke: var(--ink); }
+  .die .bar-line { fill: var(--ink); stroke: none; }
+  .die-ok .face { fill: color-mix(in srgb, var(--accent) 16%, var(--bg)); stroke: var(--accent); filter: drop-shadow(0 0 3px var(--accent)); }
+  .die-ok .bar-line { fill: var(--accent); }
+  .die-ko { opacity: .4; }
+  .die-crit .face { fill: color-mix(in srgb, var(--red) 14%, var(--bg)); stroke: var(--red); }
+  .die-crit .bar-line { fill: var(--red); }
+
+  .tuto-stat rect { fill: var(--panel); stroke: var(--amber); }
+  .tuto-stat text { fill: var(--amber); }
+
+  .bar { fill: color-mix(in srgb, var(--accent) 20%, var(--bg)); stroke: var(--accent); }
+  .bar-hot { fill: color-mix(in srgb, var(--red) 20%, var(--bg)); stroke: var(--red); }
+  .sq { fill: none; stroke: var(--dim); }
+  .sq.on { fill: var(--accent); stroke: var(--accent); }
+  .cell { fill: color-mix(in srgb, var(--accent) 14%, var(--bg)); stroke: var(--accent); }
+  .cell-warn { fill: color-mix(in srgb, var(--amber) 14%, var(--bg)); stroke: var(--amber); }
+  .cell-red { fill: color-mix(in srgb, var(--red) 14%, var(--bg)); stroke: var(--red); }
+  .sep { stroke: var(--line); stroke-dasharray: 3 3; }
+  .person, .cross { stroke: var(--accent); stroke-width: 2; }
+}
+
+// Petits écrans : tout doit tenir sans défilement
+@media (max-height: 800px), (max-width: 480px) {
+  .tuto-panel {
+    .tuto-title { margin-top: 8px; font-size: fs(13px); }
+    .tuto-example { font-size: fs(11px); margin-top: 6px; }
+    .tuto-dots { margin-top: 10px; }
+    .briefing-actions { margin-top: 10px; }
+    .tuto-credit { margin-top: 8px; }
+  }
+  .tuto-scene { margin-top: 8px; padding: 4px; }
+}

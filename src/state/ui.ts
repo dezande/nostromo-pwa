@@ -6,6 +6,8 @@ import { terminalOpen } from "./terminal";
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
 export const settingsOpen = signal(false);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
+/** Tutoriel du 3D6 Système ouvert depuis l'accueil : numéro de la page affichée (0…), ou null. */
+export const tutorial = signal<number | null>(null);
 /**
  * Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4).
  * Scénario « Recrutement » : panneau du RH et contrat à signer à la place du panneau de bienvenue.
