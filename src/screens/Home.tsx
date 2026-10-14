@@ -87,7 +87,12 @@ function ScenarioChoice() {
           </button>
         ))}
       </div>
-      <p id="scenarioDesc">{SCENARIOS[current].description}</p>
+      {/* Toutes les descriptions empilées, une seule visible : la hauteur suit la plus longue et rien ne bouge au changement de scénario */}
+      <div class="scenario-desc">
+        {(Object.keys(SCENARIOS) as Scenario[]).map(id => id === current
+          ? <p key={id} id="scenarioDesc">{SCENARIOS[id].description}</p>
+          : <p key={id} class="hidden-desc" aria-hidden="true">{SCENARIOS[id].description}</p>)}
+      </div>
       <div class="sheets" id="sheets">
         <span class="set-label">Documents (3D6 Système)</span>
         <div class="sheet-links">

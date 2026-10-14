@@ -34,14 +34,25 @@
   max-width: 720px;
   max-height: calc(var(--app-h) - 32px);
   overflow: auto;
+  // Marge intérieure : le contour de la carte choisie (décalé de 2px) n'est pas rogné par le défilement
+  padding: 6px;
   gap: 12px;
   h2 { font-size: clamp(20px, 5vw, 32px); }
   .scenario-cards { width: 100%; margin: 0; }
   // Nom à gauche, niveau du joueur et durée à droite, sur la même ligne
   .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
   .alert-card .scenario-meta { color: var(--amber); white-space: nowrap; margin-bottom: 4px; }
-  .sheets { margin-top: 0; }
-  .sheet-links { justify-content: center; }
+  .scenario-desc { display: grid; width: 100%; > p { grid-area: 1 / 1; } }
+  .hidden-desc { visibility: hidden; }
+  .sheets { width: 100%; margin-top: 0; container-type: inline-size; }
+  // Documents (toujours 4) en grille régulière : 2 colonnes, 4 si la place le permet, 1 sur très petit écran.
+  // Jamais 3 : le dernier document resterait seul sur sa ligne.
+  .sheet-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @container (min-width: 640px) { .sheet-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @container (max-width: 300px) { .sheet-links { grid-template-columns: minmax(0, 1fr); } }
+  .sheet { min-width: 0; }
+  .sheet > .sheet-link:first-child { flex: 1; min-width: 0; white-space: nowrap; }
+  .sheet-link { padding: 8px 10px; }
 }
 
 // Choix du scénario : documents à lire dans l'app ou en PDF
