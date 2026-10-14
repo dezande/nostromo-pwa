@@ -86,7 +86,7 @@ function Contract() {
 /** Lecteur d'empreinte : maintenir le doigt 1,5 s pour signer (souris, doigt, ou Espace / Entrée). */
 function Fingerprint({ enabled }: { enabled: boolean }) {
   const [scanning, setScanning] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>();
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const signed = contractSigned.value;
 
   const start = () => {
