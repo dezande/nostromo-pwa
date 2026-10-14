@@ -9,6 +9,7 @@ import { Recruitment } from "./screens/Recruitment";
 import { Infiltrated } from "./screens/Infiltrated";
 import { EndScreen } from "./screens/EndScreen";
 import { Settings } from "./screens/Settings";
+import { DocumentViewer } from "./screens/DocumentViewer";
 import { Tutorial } from "./screens/Tutorial";
 import { Transition } from "./screens/Transition";
 import { shake } from "./state/game";
@@ -38,6 +39,7 @@ export function App() {
       <Home />
       <Tutorial />
       <Settings />
+      <DocumentViewer />
       <PressStart />
       <Transition />
     </>

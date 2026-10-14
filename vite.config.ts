@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 import preact from "@preact/preset-vite";
 import { VitePWA } from "vite-plugin-pwa";
@@ -37,12 +38,32 @@ const removeOldServiceWorkerInDev = (): Plugin => ({
   },
 });
 
+// Pages HTML des documents (fiches, guides du MJ) : leur texte est lu dans l'app, en plus des PDF.
+// Servies en développement et copiées dans le build sous fiches/, depuis le dossier fiches/.
+const FICHES = new URL("./fiches/", import.meta.url).pathname;
+const ficheFiles = () => readdirSync(FICHES).filter(f => f.endsWith(".html"));
+const serveFiches = (): Plugin => ({
+  name: "nostromo-fiches-html",
+  configureServer(server) {
+    server.middlewares.use("/fiches", (req, res, next) => {
+      const file = decodeURIComponent((req.url || "").split("?")[0]).replace(/^\//, "");
+      if (!ficheFiles().includes(file)) return next();
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.end(readFileSync(join(FICHES, file)));
+    });
+  },
+  generateBundle() {
+    for (const file of ficheFiles()) this.emitFile({ type: "asset", fileName: `fiches/${file}`, source: readFileSync(join(FICHES, file)) });
+  },
+});
+
 export default defineConfig({
   // Sur GitHub Pages, le site est servi sous /<nom-du-dépôt>/ (voir .github/workflows/pages.yml).
   base: process.env.BASE_PATH || "/",
   define: { __BUILD__: JSON.stringify(build) },
   plugins: [
     removeOldServiceWorkerInDev(),
+    serveFiches(),
     preact(),
     VitePWA({
       registerType: "autoUpdate",
@@ -65,7 +86,7 @@ export default defineConfig({
       workbox: {
         // Fichiers gardés pour le mode hors ligne (dont la police du logo, embarquée).
         globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
-        // Les PDF (fiches, guide du MJ) ne doivent jamais être remplacés par la page de l'app.
+        // Les documents (PDF, pages HTML des fiches et guides du MJ) ne doivent jamais être remplacés par la page de l'app.
         navigateFallbackDenylist: [/\/fiches\//],
         // Les polices des styles d'écran viennent de Google Fonts : on les garde aussi pour le hors ligne.
         runtimeCaching: [{

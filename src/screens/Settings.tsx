@@ -1,11 +1,11 @@
-// Réglages, en onglets : Scénario, Affichage, Audio, Alerte, Système.
+// Réglages, en onglets : Affichage, Audio, Alerte, Système.
 // Le dernier onglet ouvert est mémorisé ; navigation au clavier avec les flèches.
 import type { Signal } from "@preact/signals";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
-import { settings, type Layout, type Scenario, type SettingsTab } from "../state/settings";
+import { settings, type Layout, type SettingsTab } from "../state/settings";
 import { SCENARIOS } from "../data/scenarios";
 import { returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
@@ -13,7 +13,6 @@ import { useState } from "preact/hooks";
 import { BUILD, offline, type OfflineState } from "../state/pwa";
 
 const TABS: { id: SettingsTab; label: string }[] = [
-  { id: "scenario", label: "SCÉNARIO" },
   { id: "display", label: "AFFICHAGE" },
   { id: "audio", label: "AUDIO" },
   { id: "alert", label: "ALERTE" },
@@ -47,7 +46,6 @@ export function Settings() {
         </div>
 
         <div class="tab-panel" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
-          {tab === "scenario" && <ScenarioPicker />}
           {tab === "display" && (
             <>
               <LayoutPicker />
@@ -112,53 +110,6 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
         {!confirm && <IconButton id="setClose" icon="annuler" label="Fermer" onClick={() => { setAsking(false); settingsOpen.value = false; }} />}
       </div>
     </div>
-  );
-}
-
-/** Documents PDF à imprimer pour les scénarios de jeu de rôle (dossier public/fiches). */
-const SHEETS: Record<Scenario, { id: string; file: string; name: string }[]> = {
-  training: [
-    { id: "trainingPdf", file: "nostromo-fiche-psychic-agent.pdf", name: "Psychic Agent (prétiré)" },
-    { id: "trainingGuidePdf", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
-  ],
-  recruitment: [
-    { id: "sheetsPdf", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
-    { id: "guidePdf", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
-  ],
-  infiltrated: [
-    { id: "infiltratedPdf", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
-    { id: "infiltratedGuidePdf", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ" },
-  ],
-};
-
-/** Choix du scénario. Il s'applique à la prochaine partie ; pendant une partie, le choix est bloqué. */
-function ScenarioPicker() {
-  const current = settings.scenario.value;
-  const locked = inGame.value;
-  return (
-    <>
-      <div class="alert-cards scenario-cards" role="radiogroup" aria-label="Scénario">
-        {(Object.keys(SCENARIOS) as Scenario[]).map(id => (
-          <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
-            disabled={locked && current !== id} onClick={() => { settings.scenario.value = id; }}>
-            <strong>{SCENARIOS[id].name}{id === "training" ? " (par défaut)" : ""}</strong>
-            <small>{SCENARIOS[id].description}</small>
-          </button>
-        ))}
-      </div>
-      {locked && <p class="note">Le scénario se change hors partie.</p>}
-      <div class="sheets" id="sheets">
-        <span class="set-label">Documents PDF (3D6 Système)</span>
-        <div class="sheet-links">
-          {SHEETS[current].map(sheet => (
-            <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
-              download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}>
-              {sheet.name}
-            </a>
-          ))}
-        </div>
-      </div>
-    </>
   );
 }
 

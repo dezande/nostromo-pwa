@@ -25,8 +25,8 @@ afterEach(() => { render(null, root); root.remove(); });
 
 const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
 
-test("cinq onglets, un seul panneau visible à la fois", () => {
-  expect([...root.querySelectorAll('[role="tab"]')].map(t => t.textContent)).toEqual(["SCÉNARIO", "AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
+test("quatre onglets, un seul panneau visible à la fois", () => {
+  expect([...root.querySelectorAll('[role="tab"]')].map(t => t.textContent)).toEqual(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
   expect($("#themes")).not.toBeNull();
   expect($("#musicChk")).toBeNull();
   act(() => { $("#tab-audio").click(); });
@@ -60,12 +60,18 @@ test("onglet Affichage : choix du format Tablette / Téléphone", () => {
 });
 
 test("flèches du clavier pour changer d'onglet", () => {
+  act(() => { $("#tab-display").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })); });
+  expect(settings.settingsTab.value).toBe("audio");
+  act(() => { $("#tab-audio").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })); });
   act(() => { $("#tab-display").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })); });
-  expect(settings.settingsTab.value).toBe("scenario");
-  act(() => { $("#tab-scenario").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowLeft", bubbles: true })); });
   expect(settings.settingsTab.value).toBe("system");
   act(() => { $("#tab-system").dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true })); });
-  expect(settings.settingsTab.value).toBe("scenario");
+  expect(settings.settingsTab.value).toBe("display");
+});
+
+test("plus d'onglet Scénario : il se choisit au lancement", () => {
+  expect($("#tab-scenario")).toBeNull();
+  expect($("#scenario-training")).toBeNull();
 });
 
 test("« Retour à l'accueil » seulement pendant une partie, avec confirmation Oui / Non", () => {
