@@ -245,5 +245,5 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
 /* Historique : frise datée, puis la mission encadrée */
 .timeline { row-gap: 1.4mm; }
 .timeline dt { align-items: flex-start; font-size: 8.5pt; letter-spacing: 0.08em; }
-.timeline dd { padding-bottom: 0.8mm; hyphens: auto; }
+.timeline dd { padding-bottom: 0.8mm; hyphens: manual; }
 .mission { margin-top: 2.4mm; border: 1.2pt solid var(--ink); padding: 1.4mm 2.4mm 1.8mm; }
