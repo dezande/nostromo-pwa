@@ -4,7 +4,7 @@
 //   <span class="rank" data-rank="2"></span>         rang de maîtrise, 3 cases dont 2 noircies
 //   <span class="track" data-n="6"></span>           cases de points d'énergie à cocher
 //   <span class="barcode" data-code="…"></span>      code-barres tiré du texte
-//   <div class="illu" data-illu="portrait|horizon|oeuf" data-variant="…"></div>
+//   <div class="illu" data-illu="horizon|oeuf"></div>
 (() => {
   const ICONES = {
     physique: '<path d="M2 12h20M5 8.5v7M8 6v12M16 6v12M19 8.5v7"/>',
@@ -88,39 +88,6 @@
     return `<svg ${SVG} viewBox="0 0 ${x} 20" preserveAspectRatio="none">${barres}</svg>`;
   }
 
-  // Photo d'identité : buste gravé en hachures, repères biométriques.
-  // Variantes, cumulables : « psy » (ondes autour de la tête), « f » (femme). Les yeux sont toujours caviardés.
-  function portrait(variantes = "") {
-    const v = variantes.split(" ");
-    const femme = v.includes("f");
-    const id = `h${++uid}`;
-    const ondes = v.includes("psy")
-      ? [26, 33, 40].map(r => `<path d="M${50 - r} 46a${r} ${r} 0 0 1 ${r * 2} 0" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="${r / 4} 3"/>`).join("")
-      : "";
-    // Yeux caviardés, comme un document censuré
-    const yeux = '<rect x="27" y="38" width="46" height="9" fill="#000"/><text x="50" y="45" font-family="IBM Plex Mono, monospace" font-size="5.6" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="1">CLASSIFIÉ</text>';
-    return `<svg ${SVG} viewBox="0 0 100 124">
-      <defs><pattern id="${id}" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v3" stroke="#000" stroke-width="0.9"/></pattern></defs>
-      <g stroke="#000" stroke-width="0.35">${Array.from({ length: 30 }, (_, i) => `<path d="M4 ${6 + i * 4}h92"/>`).join("")}</g>
-      ${ondes}
-      <path d="M14 124c1-22 14-34 36-34s35 12 36 34z" fill="#fff" stroke="#000" stroke-width="1.6"/>
-      <path d="M14 124c1-22 14-34 36-34s35 12 36 34z" fill="url(#${id})"/>
-      <path d="M43 76v15c2 3 12 3 14 0V76" fill="#fff" stroke="#000" stroke-width="1.6"/>
-      <path d="M36 92l14 12 14-12" fill="none" stroke="#000" stroke-width="1.4"/>
-      ${femme ? `<path d="M29 46c-1-18 9-25 21-25s22 7 21 25c0 16 3 28 9 38H63l-3-12H40l-3 12H20c6-10 9-22 9-38z" fill="#fff" stroke="#000" stroke-width="1.4"/>
-      <path d="M29 46c-1-18 9-25 21-25s22 7 21 25c0 16 3 28 9 38H63l-3-12H40l-3 12H20c6-10 9-22 9-38z" fill="url(#${id})"/>` : ""}
-      <ellipse cx="50" cy="48" rx="18" ry="23" fill="#fff" stroke="#000" stroke-width="1.6"/>
-      ${femme
-        ? `<path d="M32 46c0-16 7-22 18-22s18 6 18 22c-6-4-10-10-12-15-5 7-14 12-24 15z" fill="url(#${id})" stroke="#000" stroke-width="1.2"/>`
-        : `<path d="M33 42c0-14 7-19 17-19s17 5 17 19c-3-6-7-9-17-9s-14 3-17 9z" fill="url(#${id})" stroke="#000" stroke-width="1.2"/>`}
-      ${yeux}
-      <path d="M50 46v8h-3M45 61c3 2 7 2 10 0" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round"/>
-      <g fill="none" stroke="#000" stroke-width="2"><path d="M3 15V3h12M85 3h12v12M97 109v12H85M15 121H3v-12"/></g>
-      <g stroke="#000" stroke-width="0.7" stroke-dasharray="2 2" fill="none"><path d="M22 25h56M22 71h56"/></g>
-      <text x="82" y="8" font-family="IBM Plex Mono, monospace" font-size="5" text-anchor="end">IDENT. 01</text>
-    </svg>`;
-  }
-
   // Bas de page : horizon lunaire, base Nostromo II, vaisseau et planète.
   function horizon() {
     const id = `h${++uid}`;
@@ -168,10 +135,10 @@
     </svg>`;
   }
 
-  const DESSINS = { portrait, horizon, oeuf };
+  const DESSINS = { horizon, oeuf };
 
   // Version femme du prétiré : les pages .joueur sont recopiées juste après, avec les textes de data-f
-  // (accords au féminin) et le portrait « f ». La page d'aide du MJ reste unique, à la fin.
+  // (accords au féminin). La page d'aide du MJ reste unique, à la fin.
   const joueur = [...document.querySelectorAll(".page.joueur")];
   if (joueur.length) {
     let apres = joueur.at(-1);
@@ -179,7 +146,6 @@
       const copie = page.cloneNode(true);
       copie.classList.add("femme");
       for (const el of copie.querySelectorAll("[data-f]")) el.innerHTML = el.dataset.f;
-      for (const el of copie.querySelectorAll('[data-illu="portrait"]')) el.dataset.variant = `${el.dataset.variant ?? ""} f`.trim();
       apres.after(copie);
       apres = copie;
     }

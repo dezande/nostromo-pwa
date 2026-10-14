@@ -113,12 +113,10 @@ ul.dash { list-style: none; margin: 0; padding: 0; }
 ul.dash li { margin: 0 0 0.8mm; padding-left: 3.6mm; text-indent: -3.6mm; }
 ul.dash li::before { content: "— "; }
 
-/* ---------- Carte d'identité ---------- */
-.idcard { display: grid; grid-template-columns: 42mm 1fr; gap: 4mm; }
-.idphoto { display: flex; flex-direction: column; gap: 1.2mm; }
-.idphoto .illu { height: 47mm; }
+/* ---------- Identité ---------- */
+.idcode { display: grid; grid-template-columns: 60mm 1fr; align-items: center; gap: 4mm; margin-top: 2mm; }
 .barcode { display: block; height: 7mm; }
-.idphoto .code { text-align: center; font-size: 9pt; letter-spacing: 0.14em; }
+.idcode .code { font-size: 9pt; letter-spacing: 0.14em; text-align: right; }
 .kv { display: grid; grid-template-columns: auto 1fr; column-gap: 2.4mm; row-gap: 1mm; margin: 0; align-content: start; }
 .kv dt { font-weight: 600; letter-spacing: 0.03em; white-space: nowrap; display: flex; align-items: center; gap: 1.4mm; }
 .kv dd { margin: 0; border-bottom: 0.7pt dotted var(--ink); }
@@ -183,9 +181,6 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
   background-size: 100% 7mm;
   opacity: 1;
 }
-.signature { display: flex; align-items: flex-end; gap: 2.4mm; }
-.signature label { font-weight: 700; letter-spacing: 0.06em; white-space: nowrap; display: flex; align-items: center; gap: 1.4mm; }
-.signature .line { flex: 1; border-bottom: 1pt solid var(--ink); height: 8mm; }
 
 /* ---------- Illustration de bas de page ---------- */
 .horizon { margin-top: auto; height: 19mm; min-height: 12mm; flex-shrink: 1; }
