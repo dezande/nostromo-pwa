@@ -41,18 +41,128 @@
   .sheet-links { justify-content: center; }
 }
 
-// Choix du scénario : documents PDF à télécharger
+// Choix du scénario : documents à lire dans l'app ou en PDF
 .sheets {
   margin-top: 12px;
   .set-label { font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
   .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  .sheet-link {
-    padding: 8px 12px;
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: fs(11px);
-    &::before { content: "▤ "; }
-  }
+  // Un document : « lire dans l'app » (nom) et son PDF, collés
+  .sheet { display: inline-flex; }
+  .sheet > .sheet-link:first-child { border-radius: 6px 0 0 6px; }
+  .sheet > .sheet-pdf { border-left: none; border-radius: 0 6px 6px 0; }
 }
+
+.sheet-link {
+  padding: 8px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: fs(11px);
+  background: none;
+  min-height: 0;
+  &::before { content: "▤ "; }
+  &.sheet-pdf::before { content: "⤓ "; }
+}
+
+// Liseuse de document : en-tête (nom, PDF, Fermer), puis le texte qui défile
+#docViewer { padding: 8px; }
+.panel.doc-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 900px;
+  height: calc(100dvh - 16px);
+  max-height: none;
+  padding: 12px;
+  overflow: hidden;
+}
+.doc-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  .icon-btn { --size: 44px; }
+  h2 { flex: 1; min-width: 0; margin: 0; font-size: fs(13px); letter-spacing: .1em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+}
+
+// Texte des fiches et guides du MJ, remis au style de l'app (les classes viennent des pages de fiches/)
+.doc-text {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+  text-align: left;
+  font-size: fs(13px);
+  line-height: 1.55;
+  color: var(--ink);
+
+  &.doc-status { color: var(--dim); letter-spacing: .15em; }
+  p { margin: 0 0 8px; }
+  b { color: var(--accent); font-weight: normal; }
+  h1, h2, h3, h4 { margin: 0 0 8px; font-weight: normal; letter-spacing: .1em; color: var(--accent); }
+  h1 { font-size: fs(17px); }
+  h2 { font-size: fs(15px); margin-top: 18px; }
+  h3 { font-size: fs(13px); text-transform: uppercase; }
+  h4 { font-size: fs(13px); }
+  ul, ol { margin: 0 0 8px; padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  ul.dash { list-style: none; padding-left: 0; li::before { content: "— "; color: var(--dim); } }
+  .quote li { font-style: italic; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: fs(11px); }
+  th, td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+  th:first-child, td:first-child { padding-left: 0; }
+  .pips { white-space: nowrap; }
+  th { color: var(--dim); font-weight: normal; letter-spacing: .1em; }
+  dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 8px; }
+  dt { color: var(--dim); letter-spacing: .1em; font-size: fs(11px); padding-top: 2px; }
+  dd { margin: 0; }
+
+  // Titre du document
+  .title { margin: 4px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+  .title h1, .title h2 { margin: 0 0 6px; }
+  .sub, .muted, .code, .meta, .memo-sub { color: var(--dim); font-size: fs(11px); letter-spacing: .08em; }
+  .code { margin-left: 6px; font-weight: normal; text-transform: none; }
+
+  // Encadrés, colonnes (une seule sur téléphone)
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .box, .npc, .rules, .report, .secret, .art, .clauses {
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .row > * { margin-bottom: 0; }
+  .box.dashed, .rules { border-style: dashed; }
+  .section { margin-bottom: 12px; }
+  .npc-head { display: flex; justify-content: space-between; gap: 8px; color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 4px; }
+  .npc-name { color: var(--accent); letter-spacing: .1em; margin-bottom: 6px; }
+  .npc-traits, .traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .npc-traits > div, .trait {
+    display: flex; gap: 6px; align-items: baseline;
+    padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px;
+    color: var(--dim); font-size: fs(11px); letter-spacing: .08em;
+  }
+  .t-val, .npc-traits b { color: var(--accent); font-size: fs(14px); }
+  .gauge { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0; color: var(--dim); font-size: fs(11px); label { color: var(--accent); } }
+  .squares { display: inline-flex; gap: 3px; i { width: 10px; height: 10px; border: 1px solid var(--accent); } }
+
+  // Étapes numérotées du déroulé
+  .step { display: flex; gap: 10px; margin-bottom: 10px; }
+  .num {
+    flex: none; width: 26px; height: 26px; display: grid; place-items: center;
+    border: 1px solid var(--accent); border-radius: 4px; color: var(--accent);
+  }
+  .step .body { flex: 1; min-width: 0; }
+
+  // Texte affiché par l'app, tampons, passages censurés, zones à remplir
+  .screen { padding: 0 4px; border: 1px solid var(--line); color: var(--accent); }
+  .stamp { display: inline-block; padding: 0 6px; border: 1px solid var(--amber); color: var(--amber); letter-spacing: .1em; }
+  .redact { display: inline-block; width: 5em; height: .9em; vertical-align: middle; background: var(--dim); opacity: .7; }
+  .cut { margin: 16px 0 12px; padding: 6px 0; border-top: 1px dashed var(--dim); border-bottom: 1px dashed var(--dim); color: var(--dim); font-size: fs(11px); text-align: center; }
+  .signature { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; color: var(--dim); font-size: fs(11px); }
+  .line { flex: 1 1 80px; border-bottom: 1px solid var(--dim); min-height: 1.2em; }
+  .lines span { display: block; height: 1.6em; border-bottom: 1px solid var(--line); }
+}
+
+// Pas d'effet cathodique ni de lignes horizontales par-dessus le texte : il resterait difficile à lire
+html:has(#docViewer.show) { #crt, body::after { display: none; } }

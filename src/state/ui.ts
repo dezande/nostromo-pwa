@@ -6,6 +6,9 @@ import { terminalOpen } from "./terminal";
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
 export const choosingScenario = signal(false); // accueil : choix du scénario avant le lancement
 export const settingsOpen = signal(false);
+/** Document d'un scénario (fiche ou guide du MJ) : page HTML lue dans l'app, et son PDF. */
+export interface ScenarioDocument { name: string; html: string; file: string }
+export const openDocument = signal<ScenarioDocument | null>(null);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
 /**
  * Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4).

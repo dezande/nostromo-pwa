@@ -923,6 +923,15 @@ test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté 
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr.pdf");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr.pdf");
   await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
+  // Le guide du MJ se lit aussi dans l'app : son texte, au style de l'app, sans pages A4 ni en-têtes d'impression
+  await page.locator("#infiltratedGuidePdfRead").click();
+  await expect(page.locator("#docViewer")).toHaveClass(/show/);
+  await expect(page.locator("#docText")).toContainText("Lieutenant D.R.");
+  await expect(page.locator("#docText .page, #docText header.header, #docText footer.footer, #docText img")).toHaveCount(0);
+  expect(await page.locator("#docText").evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
+  await page.locator("#docClose").click();
+  await expect(page.locator("#docViewer")).not.toHaveClass(/show/);
   await expect(page.locator("#scenarioDesc")).toContainText("Lieutenant D.R.");
   await page.locator("#launchBtn").click();
   await expect(page.locator("#email")).toHaveClass(/show/);

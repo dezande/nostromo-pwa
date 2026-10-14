@@ -7,7 +7,7 @@ import { BOOT } from "../data/terminal";
 import { keepAwake } from "../state/device";
 import { showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
-import { briefing, choosingScenario, homeOpen, settingsOpen } from "../state/ui";
+import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, type ScenarioDocument } from "../state/ui";
 import { settings, type Scenario } from "../state/settings";
 import { SCENARIOS } from "../data/scenarios";
 import { contractSigned } from "./Recruitment";
@@ -44,19 +44,19 @@ export function Home() {
   );
 }
 
-/** Documents PDF à imprimer pour les scénarios de jeu de rôle (dossier public/fiches). */
-const SHEETS: Record<Scenario, { id: string; file: string; name: string }[]> = {
+/** Documents de chaque scénario : page HTML lue dans l'app (dossier fiches/) et PDF à imprimer (public/fiches). */
+const SHEETS: Record<Scenario, (ScenarioDocument & { id: string })[]> = {
   training: [
-    { id: "trainingPdf", file: "nostromo-fiche-psychic-agent.pdf", name: "Psychic Agent (prétiré)" },
-    { id: "trainingGuidePdf", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
+    { id: "trainingPdf", html: "psychic-agent.html", file: "nostromo-fiche-psychic-agent.pdf", name: "Psychic Agent (prétiré)" },
+    { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
   ],
   recruitment: [
-    { id: "sheetsPdf", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
-    { id: "guidePdf", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
+    { id: "sheetsPdf", html: "fiches.html", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
+    { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
   ],
   infiltrated: [
-    { id: "infiltratedPdf", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
-    { id: "infiltratedGuidePdf", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ" },
+    { id: "infiltratedPdf", html: "infiltre.html", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
+    { id: "infiltratedGuidePdf", html: "guide-mj-infiltre.html", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ" },
   ],
 };
 
@@ -77,13 +77,19 @@ function ScenarioChoice() {
       </div>
       <p id="scenarioDesc">{SCENARIOS[current].description}</p>
       <div class="sheets" id="sheets">
-        <span class="set-label">Documents PDF (3D6 Système)</span>
+        <span class="set-label">Documents (3D6 Système)</span>
         <div class="sheet-links">
-          {SHEETS[current].map(sheet => (
-            <a key={sheet.id} class="sheet-link" id={sheet.id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
-              download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}>
-              {sheet.name}
-            </a>
+          {SHEETS[current].map(({ id, ...sheet }) => (
+            <span key={id} class="sheet">
+              <button type="button" class="sheet-link" id={`${id}Read`} onClick={() => { openDocument.value = sheet; }}>
+                {sheet.name}
+              </button>
+              <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
+                download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
+                aria-label={`${sheet.name} en PDF`}>
+                PDF
+              </a>
+            </span>
           ))}
         </div>
       </div>
