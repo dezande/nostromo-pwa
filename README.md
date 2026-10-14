@@ -54,7 +54,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   - *Système* : écran toujours allumé, numéro de build et état du mode hors ligne.
 
 - **Sources** (bouton livre de l'accueil) : crédits, inspirations et outils, avec un QR code pour ouvrir
-  depuis un téléphone l'app, son code, le 3D6 Système et cool-retro-term.
+  depuis un téléphone l'app, son code, Claude Code, le 3D6 Système et cool-retro-term.
 
 Musique et bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
 
@@ -164,4 +164,5 @@ est une création de fan, sans lien avec eux.
 
 - Effet *Nostromo II* : Fred Darevil, Marchand de Trucs.
 - Système de jeu des fiches : [3D6 Système](https://3d6.ovh/), François Cedelle, licence ORC.
+- Code, textes et fiches écrits avec [Claude Code](https://claude.com/claude-code) (Anthropic).
 - Styles d'écran inspirés de [cool-retro-term](https://github.com/Swordfish90/cool-retro-term).

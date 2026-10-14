@@ -53,6 +53,7 @@ test("l'app, son code et les inspirations avec une adresse ont un QR code", () =
   expect(withQr).toEqual(expect.arrayContaining([
     "https://dezande.github.io/nostromo-pwa/",
     "https://github.com/dezande/nostromo-pwa",
+    "https://claude.com/claude-code",
     "https://3d6.ovh/",
     "https://github.com/Swordfish90/cool-retro-term",
   ]));
