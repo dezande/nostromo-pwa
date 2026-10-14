@@ -53,8 +53,6 @@
   @container (min-width: 640px) { .sheet-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   @container (max-width: 300px) { .sheet-links { grid-template-columns: minmax(0, 1fr); } }
   .sheet { min-width: 0; }
-  // Petits rôles : un seul document, à sa largeur, sous la grille des documents du scénario
-  .sheets.roles .sheet-links { display: flex; justify-content: center; }
   .sheet > .sheet-link:first-child { flex: 1; min-width: 0; white-space: nowrap; }
   .sheet-link { padding: 8px 10px; }
 }
@@ -63,6 +61,8 @@
 .sheets {
   margin-top: 12px;
   .set-label { font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
+  // Titre à gauche, cartes des petits rôles à droite
+  .sheets-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; }
   .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
   // Un document : « lire dans l'app » (nom) et son PDF, collés
   .sheet { display: inline-flex; }

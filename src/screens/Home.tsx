@@ -70,7 +70,7 @@ const SHEETS: Record<Scenario, (ScenarioDocument & { id: string; label: string }
 };
 
 /** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios. */
-const ROLES = { id: "rolesPdf", html: "roles.html", file: "nostromo-cartes-roles.pdf", name: "Cartes des petits rôles", label: "Cartes rôles" };
+const ROLES = { id: "rolesPdf", html: "roles.html", file: "nostromo-cartes-roles.pdf", name: "Cartes des petits rôles", label: "Rôles" };
 
 /** Un document : « lire dans l'app » (bouton court) et son PDF. */
 function SheetLink({ id, label, ...sheet }: ScenarioDocument & { id: string; label: string }) {
@@ -113,14 +113,14 @@ function ScenarioChoice() {
           : <p key={id} class="hidden-desc" aria-hidden="true">{SCENARIOS[id].description}</p>)}
       </div>
       <div class="sheets" id="sheets">
-        <span class="set-label">Documents (3D6 Système)</span>
+        {/* Les cartes des rôles sur la ligne du titre : l'écran tient encore sur un petit téléphone */}
+        <div class="sheets-head">
+          <span class="set-label">Documents (3D6 Système)</span>
+          <SheetLink {...ROLES} />
+        </div>
         <div class="sheet-links">
           {SHEETS[current].map(sheet => <SheetLink key={sheet.id} {...sheet} />)}
         </div>
-      </div>
-      <div class="sheets roles" id="roles">
-        <span class="set-label">Petits rôles (spectateurs)</span>
-        <div class="sheet-links"><SheetLink {...ROLES} /></div>
       </div>
       <div class="row icon-row home-actions">
         <IconButton id="scenarioBack" icon="retour" label="Retour" onClick={() => { choosingScenario.value = false; }} />
