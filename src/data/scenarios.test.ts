@@ -12,7 +12,7 @@ test.each(Object.entries(SCENARIOS))("%s : 4 règles et deux rapports de fin ave
 
 test("Infiltré : session disciplinaire, survie avec un message de la C.R.F.", () => {
   const s = SCENARIOS.infiltrated;
-  expect(s.firstPanel).toBe("archives");
+  expect(s.firstPanel).toBe("email");
   expect(s.lastPanel).toBe("email");
   expect(s.rules[3].title).toBe("FIN DE LA SESSION");
   expect(s.rules.flatMap(r => r.points).join(" ")).not.toContain("entraînement");

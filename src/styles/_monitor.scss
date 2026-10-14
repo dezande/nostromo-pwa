@@ -6,6 +6,7 @@
 .monitor {
   --chrome: 64px; // hauteur prise par le cadre (étiquette, voyant, marges)
   width: 100%;
+  min-width: 0;
   max-width: 744px;
   padding: 8px 12px 6px;
   border-radius: 20px;

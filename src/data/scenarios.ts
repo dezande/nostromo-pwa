@@ -171,7 +171,7 @@ const RECRUITMENT: ScenarioText = {
 };
 
 const INFILTRATED: ScenarioText = {
-  firstPanel: "archives",
+  firstPanel: "email",
   lastPanel: "email",
   name: "Infiltré",
   description: "Vous êtes le Lieutenant D.R., agent de la C.R.F. infiltré. La direction sait tout : pour vous punir, elle vous envoie à l'entraînement.",

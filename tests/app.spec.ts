@@ -896,7 +896,7 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
   expect(errors).toEqual([]);
 });
 
-test("scénario Infiltré : archives C.R.F., e-mail de la direction, session disciplinaire, sanction", async ({ page }) => {
+test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
   const errors = await open(page);
   await page.locator("#homeSetBtn").click();
   await page.locator("#tab-scenario").click();
@@ -910,14 +910,15 @@ test("scénario Infiltré : archives C.R.F., e-mail de la direction, session dis
   await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
 
   await page.locator("#startBtn").click();
-  await expect(page.locator("#archives")).toHaveClass(/show/);
-  await expect(page.locator("#archives")).toContainText("LIEUTENANT D.R.");
-  await page.locator("#archivesNext").click();
   await expect(page.locator("#email")).toHaveClass(/show/);
-  await expect(page.locator("#emailSubject")).toHaveText("Agent infiltré – Lieutenant D.R. – affectation disciplinaire");
+  await expect(page.locator("#emailSubject")).toHaveText("Nostromo II – rapport d'infiltration");
+  await expect(page.locator("#email")).toContainText("QG terrestre de la Civil Resistance Force");
+  await expect(page.locator("#emailIntercepted")).toContainText("INTERCEPTÉ");
+  await expect(page.locator("#emailIntercepted")).toContainText("prochaine session d'entraînement, sans dérogation");
   await expect(page.locator("#email .redacted").first()).toBeVisible();
   // L'e-mail tient dans l'écran (seul son corps peut défiler).
   expect(await page.locator(".email-panel").evaluate(el => el.getBoundingClientRect().bottom <= innerHeight + 1)).toBe(true);
+  expect(await page.locator("#email .monitor").evaluate(el => el.getBoundingClientRect().right <= innerWidth + 1)).toBe(true);
   await page.locator("#emailNext").click();
 
   await expect(page.locator("#rule1")).toContainText("SESSION DISCIPLINAIRE");
