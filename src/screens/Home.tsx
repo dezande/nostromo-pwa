@@ -69,6 +69,25 @@ const SHEETS: Record<Scenario, (ScenarioDocument & { id: string; label: string }
   ],
 };
 
+/** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios. */
+const ROLES = { id: "rolesPdf", html: "roles.html", file: "nostromo-cartes-roles.pdf", name: "Cartes des petits rôles", label: "Rôles" };
+
+/** Un document : « lire dans l'app » (bouton court) et son PDF. */
+function SheetLink({ id, label, ...sheet }: ScenarioDocument & { id: string; label: string }) {
+  return (
+    <span class="sheet">
+      <button type="button" class="sheet-link" id={`${id}Read`} aria-label={`Lire : ${sheet.name}`} onClick={() => { openDocument.value = sheet; }}>
+        {label}
+      </button>
+      <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
+        download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
+        aria-label={`${sheet.name} en PDF`}>
+        PDF
+      </a>
+    </span>
+  );
+}
+
 /** Choix du scénario au lancement ; le dernier choisi est proposé par défaut. */
 function ScenarioChoice() {
   const current = settings.scenario.value;
@@ -94,20 +113,13 @@ function ScenarioChoice() {
           : <p key={id} class="hidden-desc" aria-hidden="true">{SCENARIOS[id].description}</p>)}
       </div>
       <div class="sheets" id="sheets">
-        <span class="set-label">Documents (3D6 Système)</span>
+        {/* Les cartes des rôles sur la ligne du titre : l'écran tient encore sur un petit téléphone */}
+        <div class="sheets-head">
+          <span class="set-label">Documents (3D6 Système)</span>
+          <SheetLink {...ROLES} />
+        </div>
         <div class="sheet-links">
-          {SHEETS[current].map(({ id, label, ...sheet }) => (
-            <span key={id} class="sheet">
-              <button type="button" class="sheet-link" id={`${id}Read`} aria-label={`Lire : ${sheet.name}`} onClick={() => { openDocument.value = sheet; }}>
-                {label}
-              </button>
-              <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
-                download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
-                aria-label={`${sheet.name} en PDF`}>
-                PDF
-              </a>
-            </span>
-          ))}
+          {SHEETS[current].map(sheet => <SheetLink key={sheet.id} {...sheet} />)}
         </div>
       </div>
       <div class="row icon-row home-actions">

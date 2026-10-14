@@ -44,7 +44,10 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 - **Documents à imprimer** (PDF noir et blanc, système de jeu de rôle
   [3D6 Système](https://3d6.ovh/) de François Cedelle, licence ORC) : fiches de personnage prétirées
   (recto verso et illustrées, lisibles en A4 comme en A5 ; un PDF pour la version homme, un pour la
-  version femme, un pour l'aide du MJ) et guide du MJ pour chaque scénario. Depuis l'écran de choix du scénario, on les lit directement dans l'app
+  version femme, un pour l'aide du MJ) et guide du MJ pour chaque scénario, plus les cartes des
+  petits rôles des spectateurs (format poker, neuf par page A4 : l'IA W.Y.C. TYCHE montre la carte et dit le
+  nombre de déplacements, l'IA Protocole CERBÈRE annonce les salles qui ferment, un Xénomorphe par salle pousse
+  le cri quand la sienne ferme, et deux Brutes (Sgt Voss, Cpl Brekke) gardent le Lieutenant D.R. dans la « Session disciplinaire »). Depuis l'écran de choix du scénario, on les lit directement dans l'app
   (texte remis au style de l'app, aussi hors ligne) ou on télécharge le PDF.
 - **Réglages en onglets** :
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
@@ -112,7 +115,7 @@ src/
   styles/               Sass : un fichier par partie, réunis dans main.scss
   **/*.test.ts(x)       tests unitaires Jest, à côté du code testé
 tests/                  tests de bout en bout Playwright
-fiches/                 sources HTML des PDF (fiches de personnage, guides du MJ)
+fiches/                 sources HTML des PDF (fiches de personnage, guides du MJ, cartes des rôles)
 scripts/fiches.mjs      génération des PDF avec Playwright
 public/fiches/          PDF publiés avec l'app
 public/icons/           icônes de l'app
@@ -123,7 +126,7 @@ public/icons/           icônes de l'app
   `screens/Infiltrated.tsx` pour les panneaux d'introduction). Dans ces textes, `[[…]]` affiche un passage
   censuré (███) ; le texte caché n'est pas mis dans la page.
 - Pour changer un PDF : modifier le fichier HTML de `fiches/`, puis `npm run fiches`. Le script s'arrête
-  si une fiche déborde de sa page.
+  si une fiche déborde de sa page (ou une carte de rôle de sa carte).
 - Les protocoles ne sont pas dans l'app : le Coordinateur utilise ses fiches papier et touche sur le plan
   la ou les salles à fermer.
 

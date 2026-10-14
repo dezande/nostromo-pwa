@@ -61,6 +61,8 @@
 .sheets {
   margin-top: 12px;
   .set-label { font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
+  // Titre à gauche, cartes des petits rôles à droite
+  .sheets-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; }
   .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
   // Un document : « lire dans l'app » (nom) et son PDF, collés
   .sheet { display: inline-flex; }
