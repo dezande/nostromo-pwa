@@ -31,9 +31,15 @@ async function open(page: Page, settings = FAST) {
   return errors;
 }
 
+/** « Démarrer », puis « Lancer » avec le scénario proposé (le dernier choisi, Entraînement par défaut). */
+async function launch(page: Page) {
+  await page.locator("#startBtn").click();
+  await page.locator("#launchBtn").click();
+}
+
 /** « Démarrer la simulation », puis les panneaux Bienvenue et Protocole : la partie commence. */
 async function startSimulation(page: Page) {
-  await page.locator("#startBtn").click();
+  await launch(page);
   await expect(page.locator("#home")).not.toHaveClass(/show/);
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await page.locator("#welcomeNext").click();
@@ -66,7 +72,7 @@ test("accueil, puis panneaux Bienvenue et Protocole, puis choix de la salle de d
   await expect(page.locator("#home")).toHaveClass(/show/);
   await expect(page.locator("#home h2")).toHaveText("NOSTROMO II");
 
-  await page.locator("#startBtn").click();
+  await launch(page);
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await expect(page.locator("#welcome h2")).toHaveText("BIENVENUE À BORD, AGENTS.");
   await page.locator("#welcomeNext").click();
@@ -278,7 +284,7 @@ test("musique coupée : pas d'écran « touchez pour commencer »", async ({ pag
 
 test("faux écran de transition au démarrage, puis panneau de bienvenue", async ({ page }) => {
   const errors = await open(page, { ...FAST, transitions: true });
-  await page.locator("#startBtn").click();
+  await launch(page);
   await expect(page.locator("#trans")).toHaveClass(/show/);
   await expect(page.locator("#transHd")).toHaveText("INITIALISATION DE LA SIMULATION");
   await page.clock.runFor(10_000);
@@ -292,7 +298,7 @@ test("faux écran de transition au démarrage, puis panneau de bienvenue", async
 
 test("toucher l'écran passe la transition", async ({ page }) => {
   await open(page, { ...FAST, transitions: true });
-  await page.locator("#startBtn").click();
+  await launch(page);
   await expect(page.locator("#trans")).toHaveClass(/show/);
   await page.clock.runFor(100);
   await page.locator("#trans").click();
@@ -341,7 +347,7 @@ test("chemin du pion : tracé, trajet en texte, annulation et remise à zéro ap
 
 test("les panneaux d'accueil tiennent dans l'écran sans défilement (téléphones et ordinateurs portables)", async ({ page }) => {
   await open(page);
-  await page.locator("#startBtn").click();
+  await launch(page);
   for (const size of [{ width: 375, height: 667 }, { width: 390, height: 844 }, { width: 412, height: 915 }, { width: 1280, height: 720 }, { width: 1366, height: 768 }]) {
     await page.setViewportSize(size);
     for (const [id, next] of [["welcome", "#welcomeNext"], ["rule1", "#rule1Next"], ["rule2", "#rule2Next"], ["rule3", "#rule3Next"], ["rule4", ""]] as const) {
@@ -383,10 +389,10 @@ test("musique coupée par défaut au premier lancement", async ({ page }) => {
   await expect(page.locator("#musicChk")).not.toBeChecked();
 });
 
-test("réglages en onglets : Scénario, Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
+test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
   const errors = await open(page);
   await page.locator("#homeSetBtn").click();
-  await expect(page.locator("#settings").getByRole("tab")).toHaveText(["SCÉNARIO", "AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
+  await expect(page.locator("#settings").getByRole("tab")).toHaveText(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
   await expect(page.locator("#tab-display")).toHaveAttribute("aria-selected", "true");
   await expect(page.locator("#themes")).toBeVisible();
   // Clavier : flèche droite → Audio
@@ -481,7 +487,7 @@ test("5 déplacements au maximum, sans compteur visible ; Annuler et Valider res
 
 test("logo Weyland Corp en filigrane : transition, bienvenue, et discret sur l'écran de jeu", async ({ page }) => {
   await open(page, { ...FAST, transitions: true });
-  await page.locator("#startBtn").click();
+  await launch(page);
   await expect(page.locator("#trans .weyland-logo")).toBeVisible();
   await page.clock.runFor(10_000);
   await expect(page.locator("#welcome .weyland-logo")).toBeVisible();
@@ -622,7 +628,7 @@ test("boutons icône seule : nom accessible et icône SVG partout", async ({ pag
   await expect(page.getByRole("button", { name: "Fermer" })).toBeVisible();
   await page.getByRole("button", { name: "Fermer" }).click();
 
-  await page.locator("#startBtn").click();
+  await launch(page);
   await expect(page.locator("#welcome")).toHaveClass(/show/);
   await checkIconButtons(page, "#welcome");
   await page.locator("#welcome").getByRole("button", { name: "Continuer" }).click();
@@ -833,22 +839,34 @@ for (const [layout, width, height] of [["phone", 390, 844], ["tablet", 1024, 768
   });
 }
 
-test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
+test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
   const errors = await open(page);
-  // Par défaut : scénario Entraînement.
+  // Plus de choix dans les Réglages ; par défaut au lancement : scénario Entraînement.
   await page.locator("#homeSetBtn").click();
-  await page.locator("#tab-scenario").click();
+  await expect(page.locator("#tab-scenario")).toHaveCount(0);
+  await page.locator("#setClose").click();
+  await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator("#scenarioDesc")).toContainText("Psychic Agent en formation");
   await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiches-recrutement.pdf");
   await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
-  await page.locator("#setClose").click();
-  await expect(page.locator("#homeLine")).toContainText("Recrutement");
-
+  await expect(page.locator("#scenarioDesc")).toContainText("signe un contrat");
+  // « Retour » revient à l'accueil en gardant le choix
+  await page.locator("#scenarioBack").click();
+  await expect(page.locator("#startBtn")).toBeVisible();
+  // Le choix du scénario tient dans l'écran (téléphones et ordinateurs portables)
   await page.locator("#startBtn").click();
+  for (const size of [{ width: 375, height: 667 }, { width: 1280, height: 720 }]) {
+    await page.setViewportSize(size);
+    const fits = await page.locator(".scenario-choice").evaluate(el => el.scrollHeight <= el.clientHeight + 1 && el.getBoundingClientRect().bottom <= innerHeight + 1);
+    expect(fits, `${size.width}×${size.height}`).toBe(true);
+  }
+  await page.locator("#scenarioBack").click();
+  await launch(page);
   await expect(page.locator("#hr")).toHaveClass(/show/);
   await expect(page.locator("#welcome")).not.toHaveClass(/show/);
   await expect(page.locator("#hr")).toContainText("48 000 crédits");
@@ -898,18 +916,15 @@ test("scénario Recrutement : choix dans les Réglages, RH, contrat à faire dé
 
 test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
   const errors = await open(page);
-  await page.locator("#homeSetBtn").click();
-  await page.locator("#tab-scenario").click();
+  await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await page.locator("#scenario-infiltrated").click();
   await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr.pdf");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr.pdf");
   await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
-  await page.locator("#setClose").click();
-  await expect(page.locator("#homeLine")).toContainText("Agent infiltré");
-
-  await page.locator("#startBtn").click();
+  await expect(page.locator("#scenarioDesc")).toContainText("Lieutenant D.R.");
+  await page.locator("#launchBtn").click();
   await expect(page.locator("#email")).toHaveClass(/show/);
   await expect(page.locator("#emailSubject")).toHaveText("Nostromo II – rapport d'infiltration");
   await expect(page.locator("#email")).toContainText("QG terrestre de la Civil Resistance Force");

@@ -4,6 +4,7 @@ import { busy, inGame, showIntro } from "./game";
 import { terminalOpen } from "./terminal";
 
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
+export const choosingScenario = signal(false); // accueil : choix du scénario avant le lancement
 export const settingsOpen = signal(false);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
 /**

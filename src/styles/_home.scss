@@ -28,3 +28,31 @@
   p { margin: 0; color: var(--dim); font-size: fs(13px); line-height: 1.6; }
   .home-actions { margin-top: 4px; }
 }
+
+// Choix du scénario, après « Démarrer »
+.home.scenario-choice {
+  max-width: 720px;
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  gap: 12px;
+  h2 { font-size: clamp(20px, 5vw, 32px); }
+  .scenario-cards { width: 100%; margin: 0; }
+  .sheets { margin-top: 0; }
+  .sheet-links { justify-content: center; }
+}
+
+// Choix du scénario : documents PDF à télécharger
+.sheets {
+  margin-top: 12px;
+  .set-label { font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
+  .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+  .sheet-link {
+    padding: 8px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: fs(11px);
+    &::before { content: "▤ "; }
+  }
+}

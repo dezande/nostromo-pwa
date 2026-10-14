@@ -25,7 +25,7 @@ export interface ScenarioText {
   /** Premier panneau après « Démarrer », et celui où ramène « Retour » depuis la première règle. */
   firstPanel: BriefingPanel;
   lastPanel: BriefingPanel;
-  /** Nom dans les Réglages et sous-titre de l'accueil. */
+  /** Choix au lancement : nom et ligne courte sur la carte, description sous les cartes. */
   name: string;
   description: string;
   homeLine: string;
