@@ -5,6 +5,7 @@
 import type { RuleName } from "../components/RuleScenes";
 import type { Scenario } from "../state/settings";
 import type { BriefingPanel } from "../state/ui";
+import { lang, type Lang } from "../i18n";
 
 /** Règle affichée sur un moniteur : titre, scène animée, puces ([[…]] = passage censuré). */
 export interface Rule { id: string; title: string; scene: RuleName; points: string[] }
@@ -30,7 +31,7 @@ export interface ScenarioText {
   description: string;
   homeLine: string;
   /** Difficulté pour le joueur et durée indicative, affichées sur la carte et dans le guide du MJ. */
-  level: "Débutant" | "Intermédiaire" | "Confirmé";
+  level: string;
   duration: string;
   /** En-tête des panneaux de règles. */
   rulesHeader: string;
@@ -217,4 +218,181 @@ const INFILTRATED: ScenarioText = {
   },
 };
 
-export const SCENARIOS: Record<Scenario, ScenarioText> = { training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED };
+const TRAINING_EN: ScenarioText = {
+  ...TRAINING,
+  name: "Sixth Sense",
+  description: "Psychic Agent in training aboard Nostromo II. The original scenario.",
+  homeLine: "Alien intrusion simulation for Psychic Agents.",
+  level: "Beginner",
+  rulesIntro: "Protocol set by the company. Only the Coordinator knows the sealing order.",
+  rules: [
+    {
+      id: "start", title: "STARTING POSITION", scene: "start",
+      points: [
+        "Each agent chooses the room where they start the training.",
+        "You may change rooms until you confirm.",
+      ],
+    },
+    {
+      id: "moves", title: "MOVES", scene: "moves",
+      points: [
+        "Before each sealing, the Coordinator draws a W.Y.C. card: it sets the number of mandatory moves.",
+        "One move = one adjacent room, through a door, a lift or a ventilation passage.",
+        "Lifts and air ducts: transit only, no stopping.",
+      ],
+    },
+    {
+      id: "close", title: "SEALING", scene: "close",
+      points: [
+        "The Coordinator announces the sealed room.",
+        "A xenomorph is released into it.",
+        "Any agent inside that room is eliminated.",
+      ],
+    },
+    {
+      id: "end", title: "END OF TRAINING", scene: "end",
+      points: [
+        "Eight successive sealings.",
+        "Survivors: the agents in the last room left open.",
+      ],
+    },
+  ],
+  rulesSign: "Trust your instinct, Agents.",
+  quitQuestion: "Abandon the current training?",
+  win: {
+    header: "TRAINING REPORT",
+    title: "AGENT SURVIVED",
+    stamp: "APTITUDE CONFIRMED",
+    status: "TRAINING COMPLETE.",
+    lines: [
+      "Congratulations, Agent. You survived every sealing of the protocol.",
+      "Final position: {room}. Your Psychic Agent abilities are confirmed: you sensed every xenomorph presence aboard the base ship.",
+      "The company thanks you for your commitment. Your file is being forwarded for a first mission.",
+    ],
+  },
+  dead: {
+    header: "INCIDENT REPORT",
+    title: "AGENT ELIMINATED",
+    stamp: "FILE CLOSED",
+    lines: [
+      "Room sealed: {room}. A specimen was released into it. You were inside.",
+      "Under the terms of your contract, the risks of this training were known and accepted.",
+      "The company regrets the loss of its agent. A new candidate will be selected.",
+    ],
+  },
+};
+
+const RECRUITMENT_EN: ScenarioText = {
+  ...RECRUITMENT,
+  name: "A Mere Formality",
+  description: "Role-playing: a candidate signs a very well-paid contract, then takes the aptitude test. The GM plays HR and the Coordinator.",
+  homeLine: "Weyland-Yutani recruitment.",
+  level: "Intermediate",
+  rulesHeader: "APTITUDE TEST · COORDINATOR",
+  rulesIntro: "Candidates, look at the screen. Procedure set by the [[Science Division of the]] company. Only the Coordinator knows the sealing order.",
+  rules: [
+    {
+      id: "start", title: "STARTING POSITION", scene: "start",
+      points: [
+        "Each candidate chooses the room where they start the test [[under observation]].",
+        "You may change rooms until you confirm.",
+      ],
+    },
+    {
+      id: "moves", title: "MOVES", scene: "moves",
+      points: [
+        "Before each sealing, the Coordinator draws a W.Y.C. card: it sets the number of mandatory moves.",
+        "One move = one adjacent room, through a door, a lift or a ventilation passage.",
+        "Lifts and air ducts: transit only, no stopping. [[Do not linger near the grates.]]",
+      ],
+    },
+    {
+      id: "close", title: "SEALING", scene: "close",
+      points: [
+        "The Coordinator announces the sealed room.",
+        "A test element [[XX-121]] is released into it.",
+        "Any candidate inside that room is [[permanently]] disqualified.",
+      ],
+    },
+    {
+      id: "end", title: "END OF THE TEST", scene: "end",
+      points: [
+        "Eight successive sealings.",
+        "Candidates retained: those in the last room left open. [[The others are not repatriated.]]",
+      ],
+    },
+  ],
+  rulesSign: "Stay calm and follow instructions, Candidates.",
+  quitQuestion: "Abandon the current test?",
+  win: {
+    header: "TEST REPORT",
+    title: "CANDIDATE RETAINED",
+    stamp: "HIRING APPROVED",
+    status: "APTITUDE TEST PASSED.",
+    lines: [
+      "Congratulations. You have completed every stage of the test.",
+      "Final position: {room}. Your composure was noted with interest by the Coordinator.",
+      "The Human Resources Department will contact you about your assignment. Welcome to Weyland-Yutani.",
+    ],
+  },
+  dead: {
+    header: "INCIDENT REPORT",
+    title: "APPLICATION CLOSED",
+    stamp: "APPLICATION REJECTED",
+    lines: [
+      "Room sealed: {room}. A test element [[XX-121]] was released into it. You were inside.",
+      "Under article 13 of your contract, the company accepts no liability.",
+      "The position remains open. [[Remains not recoverable.]] The company thanks your family for its understanding.",
+    ],
+  },
+};
+
+const INFILTRATED_EN: ScenarioText = {
+  ...INFILTRATED,
+  name: "Disciplinary Session",
+  description: "You are Lieutenant D.R., undercover agent of the C.R.F. (Civil Resistance Force). Management knows everything: as punishment, they send you to training.",
+  homeLine: "C.R.F. agent exposed.",
+  level: "Experienced",
+  rulesHeader: "DISCIPLINARY SESSION · ALIEN INTRUSION PROTOCOL",
+  rulesIntro: "Session ordered by the Security Directorate. Protocol set by the company. Only the Coordinator knows the sealing order.",
+  rules: TRAINING_EN.rules.map(rule => ({
+    ...rule,
+    title: rule.title.replace("END OF TRAINING", "END OF THE SESSION"),
+    points: rule.points.map(point => point.replace("the training", "the session")),
+  })),
+  rulesSign: "Trust your instinct, Agents.",
+  quitQuestion: "Abandon the current session?",
+  win: {
+    header: "SECURITY DIRECTORATE REPORT",
+    title: "THE INFILTRATOR SURVIVED",
+    stamp: "NON-COMPLIANT RESULT",
+    status: "DISCIPLINARY SESSION COMPLETE.",
+    lines: [
+      "Final position: {room}. The individual “Lieutenant D.R.” survived every sealing of the protocol.",
+      "Result not in line with Management's expectations. [[Procedure 7-B initiated.]]",
+    ],
+    note: { from: "DECRYPTED C.R.F. MESSAGE", text: "Received, Lieutenant. Extraction tonight, airlock 3. Keep the protocols." },
+  },
+  dead: {
+    header: "SECURITY DIRECTORATE REPORT",
+    title: "SANCTION ENFORCED",
+    stamp: "SANCTION EXECUTED",
+    lines: [
+      "Room sealed: {room}. A specimen was released into it. The individual “Lieutenant D.R.” was inside.",
+      "The disciplinary decision has been carried out. No record will reach the C.R.F.",
+      "File closed. [[Stolen documents recovered from the remains.]]",
+    ],
+  },
+};
+
+/** Textes des scénarios, par langue. */
+export const SCENARIOS: Record<Lang, Record<Scenario, ScenarioText>> = {
+  fr: { training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED },
+  en: { training: TRAINING_EN, recruitment: RECRUITMENT_EN, infiltrated: INFILTRATED_EN },
+};
+
+/** Identifiants des scénarios, dans l'ordre du choix au lancement. */
+export const SCENARIO_IDS = Object.keys(SCENARIOS.fr) as Scenario[];
+
+/** Textes d'un scénario dans la langue de l'app. */
+export const scenarioText = (id: Scenario): ScenarioText => SCENARIOS[lang.value][id];

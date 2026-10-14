@@ -7,9 +7,10 @@ import { Monitor } from "../components/Monitor";
 import { IconButton } from "../components/Icon";
 import { Redact } from "../components/Redacted";
 import { briefing } from "../state/ui";
+import { byLang, tr } from "../i18n";
 
 /** E-mail du Lieutenant D.R. à la C.R.F. : en-têtes, puis corps ([[…]] = passage censuré). */
-export const EMAIL = {
+const EMAIL_FR = {
   from: "Lieutenant D.R. · canal chiffré C.R.F.-7",
   to: "QG terrestre de la Civil Resistance Force",
   date: "22/10/2184 · 23:47",
@@ -26,7 +27,7 @@ export const EMAIL = {
 };
 
 /** Bandeau de la direction, en tête de la copie transférée au Coordinateur. */
-export const INTERCEPT = {
+const INTERCEPT_FR = {
   stamp: "INTERCEPTÉ",
   forwardedBy: "Direction de la sécurité W.Y.C.",
   to: "Coordinateur, base lunaire Nostromo II",
@@ -38,31 +39,65 @@ export const INTERCEPT = {
   footer: "Transmis au Coordinateur pour exécution.",
 };
 
+const EMAIL_EN: typeof EMAIL_FR = {
+  from: "Lieutenant D.R. · encrypted channel C.R.F.-7",
+  to: "Civil Resistance Force Earth HQ",
+  date: "10/22/2184 · 23:47",
+  subject: "Nostromo II – infiltration report",
+  attachments: EMAIL_FR.attachments,
+  body: [
+    "HQ,",
+    "I have infiltrated the secret lunar base Nostromo II. Weyland-Yutani is training Psychic Agents there to sense the presence of Aliens.",
+    "Its xenomorph control project goes on, despite the failures and the deaths. Adult specimens are confined beneath the floor. [[The hosts are said to be death-row convicts.]]",
+    "I am attaching the base map and a copy of the intrusion protocols: the order in which they seal the rooms during training. If they catch me with these documents, the company will feed me to its creatures.",
+    "The NS-X III keeps me going. Prepare the extraction.",
+    "— Lieutenant D.R.",
+  ],
+};
+
+const INTERCEPT_EN: typeof INTERCEPT_FR = {
+  stamp: "INTERCEPTED",
+  forwardedBy: "W.Y.C. Security Directorate",
+  to: "Coordinator, Nostromo II lunar base",
+  notes: [
+    "Message intercepted and decrypted.",
+    "The sender will take part in the next training session, no exemptions. NS-X III withdrawn.",
+    "No other sanction will be notified. [[If the sender survives, procedure 7-B.]]",
+  ],
+  footer: "Forwarded to the Coordinator for execution.",
+};
+
+/** E-mail et bandeau de la direction, par langue. */
+export const EMAIL = { fr: EMAIL_FR, en: EMAIL_EN };
+export const INTERCEPT = { fr: INTERCEPT_FR, en: INTERCEPT_EN };
+
 export function Infiltrated() {
   const panel = briefing.value;
+  const email = byLang(EMAIL), intercept = byLang(INTERCEPT);
   return (
     <Overlay id="email" show={panel === "email"} class="briefing">
-      <Monitor label="TERMINAL DU COORDINATEUR · COPIE INTERCEPTÉE" status="IMPRIMER / TRANSMETTRE : INTERDIT">
+      <Monitor label={tr("TERMINAL DU COORDINATEUR · COPIE INTERCEPTÉE", "COORDINATOR'S TERMINAL · INTERCEPTED COPY")}
+        status={tr("IMPRIMER / TRANSMETTRE : INTERDIT", "PRINT / FORWARD: FORBIDDEN")}>
         <div class="panel briefing-panel email-panel">
           <div class="email-intercept" id="emailIntercepted">
-            <span class="email-stamp">{INTERCEPT.stamp}</span>
-            <div class="email-intercept-head">TRANSFÉRÉ PAR : {INTERCEPT.forwardedBy} · À : {INTERCEPT.to}</div>
-            {INTERCEPT.notes.map((note, i) => <div key={i} class="email-intercept-note"><Redact text={note} /></div>)}
+            <span class="email-stamp">{intercept.stamp}</span>
+            <div class="email-intercept-head">{tr("TRANSFÉRÉ PAR :", "FORWARDED BY:")} {intercept.forwardedBy} · {tr("À :", "TO:")} {intercept.to}</div>
+            {intercept.notes.map((note, i) => <div key={i} class="email-intercept-note"><Redact text={note} /></div>)}
           </div>
-          <div class="briefing-corp">MESSAGE ORIGINAL · CANAL C.R.F. · CHIFFREMENT NIVEAU 5</div>
+          <div class="briefing-corp">{tr("MESSAGE ORIGINAL · CANAL C.R.F. · CHIFFREMENT NIVEAU 5", "ORIGINAL MESSAGE · C.R.F. CHANNEL · LEVEL 5 ENCRYPTION")}</div>
           <dl class="email-head">
-            <dt>DE</dt><dd>{EMAIL.from}</dd>
-            <dt>À</dt><dd>{EMAIL.to}</dd>
-            <dt>DATE</dt><dd>{EMAIL.date}</dd>
-            <dt>OBJET</dt><dd class="email-subject" id="emailSubject">{EMAIL.subject}</dd>
-            <dt>P.J.</dt><dd>{EMAIL.attachments.map(a => <span key={a} class="email-attachment">▤ {a}</span>)}</dd>
+            <dt>{tr("DE", "FROM")}</dt><dd>{email.from}</dd>
+            <dt>{tr("À", "TO")}</dt><dd>{email.to}</dd>
+            <dt>DATE</dt><dd>{email.date}</dd>
+            <dt>{tr("OBJET", "SUBJECT")}</dt><dd class="email-subject" id="emailSubject">{email.subject}</dd>
+            <dt>{tr("P.J.", "ATT.")}</dt><dd>{email.attachments.map(a => <span key={a} class="email-attachment">▤ {a}</span>)}</dd>
           </dl>
-          <div class="contract-scroll email-body" id="emailBody" tabIndex={0} aria-label="Corps de l'e-mail">
-            {EMAIL.body.map((p, i) => <p key={i}><Redact text={p} /></p>)}
+          <div class="contract-scroll email-body" id="emailBody" tabIndex={0} aria-label={tr("Corps de l'e-mail", "E-mail body")}>
+            {email.body.map((p, i) => <p key={i}><Redact text={p} /></p>)}
           </div>
-          <div class="email-foot">{INTERCEPT.footer}</div>
+          <div class="email-foot">{intercept.footer}</div>
           <div class="row icon-row briefing-actions">
-            <IconButton id="emailNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = 1; }} />
+            <IconButton id="emailNext" icon="continuer" label={tr("Continuer", "Continue")} primary onClick={() => { briefing.value = 1; }} />
           </div>
         </div>
       </Monitor>

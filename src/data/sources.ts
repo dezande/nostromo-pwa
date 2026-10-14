@@ -52,3 +52,41 @@ export const SOURCES: SourceGroup[] = [
     ],
   },
 ];
+
+// Version anglaise.
+export const SOURCES_EN: SourceGroup[] = [
+  {
+    title: "This app",
+    items: [
+      { name: "Nostromo II · rocket game", by: "Fan creation", use: "The online app, to install on your home screen",
+        url: "https://dezande.github.io/nostromo-pwa/", qr: true },
+      { name: "Source code", by: "GitHub · dezande/nostromo-pwa", use: "The code of the app and the sheets",
+        url: "https://github.com/dezande/nostromo-pwa", qr: true },
+      { name: "Claude Code", by: "Anthropic", use: "AI assistant that wrote the code, the texts and the sheets with the author",
+        url: "https://claude.com/claude-code", qr: true },
+    ],
+  },
+  {
+    title: "Inspirations",
+    items: [
+      { name: "Nostromo II", by: "Fred Darevil · Marchand de Trucs", use: "The effect the app accompanies: map, protocols and cards",
+        url: "https://www.marchanddetrucs.com/magasin-de-magie/nos-produits/nostromo-ii.html", qr: true },
+      { name: "3D6 Système", by: "François Cedelle · ORC licence", use: "Game system of the sheets, the GM guides and the tutorial",
+        url: "https://3d6.ovh/", qr: true },
+      { name: "cool-retro-term", by: "Swordfish90", use: "Screen style profiles and CRT effects",
+        url: "https://github.com/Swordfish90/cool-retro-term", qr: true },
+      { name: "Alien", by: "Trademarks of their rights holders", use: "Weyland-Yutani, Nostromo and related names, not affiliated with the app" },
+    ],
+  },
+  {
+    title: "Tools",
+    items: [
+      { name: "Preact", by: "MIT licence", use: "Interface components", url: "https://preactjs.com" },
+      { name: "Vite", by: "MIT licence", use: "Build and offline mode", url: "https://vite.dev" },
+      { name: "TypeScript", by: "Apache 2.0 licence", use: "Language of the code", url: "https://www.typescriptlang.org" },
+      { name: "Sass", by: "MIT licence", use: "Styles", url: "https://sass-lang.com" },
+      { name: "uqr", by: "MIT licence", use: "QR codes on this page", url: "https://github.com/unjs/uqr" },
+      { name: "Fonts", by: "Google Fonts · Fontsource", use: "IBM Plex Mono, JetBrains Mono, Fira Code, Questrial", url: "https://fonts.google.com" },
+    ],
+  },
+];

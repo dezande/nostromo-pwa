@@ -29,6 +29,28 @@
   .home-actions { margin-top: 4px; }
 }
 
+// Choix de la langue (accueil) : FR · EN, la langue choisie éclairée
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  button {
+    min-width: 44px;
+    padding: 6px 10px;
+    border: none;
+    background: none;
+    color: var(--dim);
+    font: inherit;
+    font-size: fs(11px);
+    letter-spacing: .15em;
+    cursor: pointer;
+    & + button { border-left: 1px solid var(--line); }
+    &[aria-checked="true"] { color: var(--bg); background: var(--accent); }
+    &:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  }
+}
+
 // Choix du scénario, après « Démarrer »
 .home.scenario-choice {
   max-width: 720px;

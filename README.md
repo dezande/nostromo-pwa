@@ -27,6 +27,10 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 
 ## Ce que fait l'app
 
+- **Bilingue français / anglais** : sélecteur FR · EN sur l'accueil (et *Réglages → Affichage*). Au premier lancement,
+  la langue du navigateur est choisie. Tout est traduit : interface, scénarios, contrat, plan, annonce vocale,
+  et les documents à imprimer (pages `fiches/*-en.html`, PDF aux noms anglais générés par `npm run fiches`).
+
 - **Trois scénarios**, au choix au lancement (« Démarrer », puis « Lancer ») ; le dernier choisi est proposé la fois suivante :
   - **Sixième sens** (par défaut ; joueur débutant, 20 à 30 min) : un Psychic Agent en formation sur la base lunaire Nostromo II.
     Panneau « Bienvenue à bord », puis quatre règles, chacune avec une scène animée tirée du vrai plan.

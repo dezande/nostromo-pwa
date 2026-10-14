@@ -1,5 +1,6 @@
 // Faux numéros de documents de la compagnie, pour donner aux panneaux l'air de vraies pièces officielles.
 // Ils ne disent rien de la partie : le matricule et les numéros de rapport sont tirés au hasard.
+import { tr } from "../i18n";
 
 const pick = (chars: string) => chars[Math.floor(Math.random() * chars.length)];
 const digits = (n: number) => Array.from({ length: n }, () => pick("0123456789")).join("");
@@ -11,9 +12,13 @@ export const AGENT_ID = `${pick("123456789")}${pick("ABCDEFGHJKLMNPRSTUVWXYZ")}-
 export const reportNumber = (win: boolean) => `${win ? "ENT" : "INC"}-${digits(3)}-${pick("ABCDEFGHJKLMNPRSTUVWXYZ")}`;
 
 export const DOC_REFS = {
-  welcome: `RÉF. WY-NOS2-TR/0417 · DOSSIER AGENT N° ${AGENT_ID} · DATE STELLAIRE 2122.06.03`,
+  get welcome() {
+    return tr(`RÉF. WY-NOS2-TR/0417 · DOSSIER AGENT N° ${AGENT_ID} · DATE STELLAIRE 2122.06.03`,
+      `REF. WY-NOS2-TR/0417 · AGENT FILE NO. ${AGENT_ID} · STARDATE 2122.06.03`);
+  },
   /** Fiche de règle n (1 à 4) du protocole. */
-  rule: (n: number) => `RÉF. WY-NOS2-AIP/113-0${n} · CLASSIFICATION : INTERNE`,
-  report: (win: boolean, number: string) =>
+  rule: (n: number) => tr(`RÉF. WY-NOS2-AIP/113-0${n} · CLASSIFICATION : INTERNE`, `REF. WY-NOS2-AIP/113-0${n} · CLASSIFICATION: INTERNAL`),
+  report: (win: boolean, number: string) => tr(
     `RAPPORT N° ${number} · DOSSIER AGENT N° ${AGENT_ID} · ${win ? "APTITUDE VALIDÉE" : "DOSSIER CLOS"}`,
+    `REPORT NO. ${number} · AGENT FILE NO. ${AGENT_ID} · ${win ? "APTITUDE CONFIRMED" : "FILE CLOSED"}`),
 };

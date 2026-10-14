@@ -1,10 +1,11 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
-import { ROOM_IDS, VENTS, crossLines, markerPosition, room, roomLines, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
+import { ROOM_IDS, VENTS, crossLines, markerPosition, room, roomLines, roomName, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
 import { settings } from "../state/settings";
 import { reachable, closable, closed, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
 import { pawnDeck, phoneDeck } from "../state/deckView";
 import { ProtocolWindow } from "./ProtocolWindow";
 import { DeckReadout, SystemPanel } from "./SystemPanel";
+import { tr } from "../i18n";
 
 const range = (from: number, to: number, stepBy: number) => Array.from({ length: Math.ceil((to - from) / stepBy) }, (_, i) => from + i * stepBy);
 
@@ -16,8 +17,8 @@ export function ShipMap() {
       <DeckTabs />
       <div class="col-main">
         <div class="deck deck-1">
-          <div class="deck-head"><h2>PONT 1</h2><DeckReadout text="PRESSION 1.02 · O2 98 %" /></div>
-          <svg id="deck1" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet" aria-label="Plan du pont 1">
+          <div class="deck-head"><h2>{tr("PONT 1", "DECK 1")}</h2><DeckReadout text={tr("PRESSION 1.02 · O2 98 %", "PRESSURE 1.02 · O2 98 %")} /></div>
+          <svg id="deck1" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet" aria-label={tr("Plan du pont 1", "Deck 1 map")}>
             <Deck1 />
           </svg>
         </div>
@@ -27,8 +28,8 @@ export function ShipMap() {
         <ProtocolWindow />
         <SystemPanel id="sysSide" class="sys-side" />
         <div class="deck deck-2">
-          <div class="deck-head"><h2>PONT 2</h2><DeckReadout text="LIAISON PONT 1/2 OK" /></div>
-          <svg id="deck2" viewBox="0 0 320 330" preserveAspectRatio="xMidYMid meet" aria-label="Plan du pont 2">
+          <div class="deck-head"><h2>{tr("PONT 2", "DECK 2")}</h2><DeckReadout text={tr("LIAISON PONT 1/2 OK", "DECK 1/2 LINK OK")} /></div>
+          <svg id="deck2" viewBox="0 0 320 330" preserveAspectRatio="xMidYMid meet" aria-label={tr("Plan du pont 2", "Deck 2 map")}>
             <Deck2 />
           </svg>
         </div>
@@ -41,12 +42,12 @@ export function ShipMap() {
 function DeckTabs() {
   const shown = phoneDeck.value, pawn = pawnDeck.value;
   return (
-    <div class="deck-tabs" role="tablist" aria-label="Ponts">
+    <div class="deck-tabs" role="tablist" aria-label={tr("Ponts", "Decks")}>
       {([1, 2] as const).map(d => (
         <button key={d} type="button" role="tab" id={`deckTab${d}`} class="deck-tab" aria-selected={shown === d}
           aria-controls={`deck${d}`} onClick={() => { phoneDeck.value = d; }}>
-          PONT {d}
-          {pawn === d && <span class="deck-tab-led" aria-label="pion ici" />}
+          {tr("PONT", "DECK")} {d}
+          {pawn === d && <span class="deck-tab-led" aria-label={tr("pion ici", "pawn here")} />}
         </button>
       ))}
     </div>
@@ -108,7 +109,7 @@ function Deck1() {
 
       {/* Ascenseurs */}
       <Lift x={186} y={290} w={28} h={26} />
-      <text x="200" y="326" class="vent-label">ASCENSEURS</text>
+      <text x="200" y="326" class="vent-label">{tr("ASCENSEURS", "LIFTS")}</text>
 
       <Doors list={[
         [155, 190, "v"], [245, 190, "v"], [200, 205, "h"],
@@ -135,8 +136,8 @@ function Deck2() {
       <line x1="135" y1="59" x2="145" y2="59" class="door" />
       <line x1="175" y1="59" x2="185" y2="59" class="door" />
       <line x1="160" y1="74" x2="160" y2="130" class="vent" />
-      <text x="160" y="24" class="vent-label">↑ VERS SALLE DE VIE</text>
-      <text x="160" y="36" class="vent-label">ASCENSEURS</text>
+      <text x="160" y="24" class="vent-label">{tr("↑ VERS SALLE DE VIE", "↑ TO LIVING QUARTERS")}</text>
+      <text x="160" y="36" class="vent-label">{tr("ASCENSEURS", "LIFTS")}</text>
       <Doors list={[[87, 130, "h"], [232, 130, "h"], [135, 215, "v"], [185, 215, "v"]]} />
       <PathTrace deck={2} />
       <Pawn deck={2} />
@@ -197,7 +198,7 @@ function Room({ id }: { id: RoomId }) {
   const onKey = (e: KeyboardEvent) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); touchRoom(id); } };
 
   return (
-    <g class={classes} data-room={id} role="button" tabIndex={canTouch ? 0 : -1} aria-label={r.name}
+    <g class={classes} data-room={id} role="button" tabIndex={canTouch ? 0 : -1} aria-label={roomName(id)}
       onClick={() => touchRoom(id)} onKeyDown={onKey}>
       {r.rect
         ? <rect x={r.rect[0]} y={r.rect[1]} width={r.rect[2]} height={r.rect[3]} />
@@ -240,8 +241,8 @@ function Vent({ vent }: { vent: VentCorridor }) {
       <path class="vent-arrow" d={`M${cx} ${top} V${bottom} M${cx - 3} ${top + 4} L${cx} ${top} L${cx + 3} ${top + 4} M${cx - 3} ${bottom - 4} L${cx} ${bottom} L${cx + 3} ${bottom - 4}`} />
       <line class="vent-pointer" x1={px1} y1={py1} x2={px2} y2={py2} />
       <text class="vent-label" x={vent.label.x} y={vent.label.y}>
-        <tspan x={vent.label.x}>PASSAGE</tspan>
-        <tspan x={vent.label.x} dy="8">VENTILATION</tspan>
+        <tspan x={vent.label.x}>{tr("PASSAGE", "VENT")}</tspan>
+        <tspan x={vent.label.x} dy="8">{tr("VENTILATION", "PASSAGE")}</tspan>
       </text>
     </g>
   );
