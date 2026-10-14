@@ -1,4 +1,4 @@
-// Contrat de travail du scénario « Recrutement » : très long, à faire défiler, signé par empreinte.
+// Contrat de travail du scénario « Une simple formalité » : très long, à faire défiler, signé par empreinte.
 // Les clauses inquiétantes sont noyées dans le jargon ; le contrat ne dit jamais clairement que l'examen est mortel.
 // [[…]] : passage censuré (voir src/components/Redacted.tsx).
 

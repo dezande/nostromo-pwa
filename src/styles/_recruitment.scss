@@ -1,6 +1,6 @@
 @use "functions" as *;
 
-// ---------- Scénario « Recrutement » : contrat à faire défiler, signé par empreinte ----------
+// ---------- Scénario « Une simple formalité » : contrat à faire défiler, signé par empreinte ----------
 // Le panneau tient dans l'écran ; seul le texte du contrat défile (c'est voulu).
 .contract-panel {
   display: flex;
@@ -114,7 +114,7 @@
   -webkit-user-select: none;
 }
 
-// ---------- Scénario « Infiltré » : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction ----------
+// ---------- Scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction ----------
 .email-intercept {
   position: relative;
   margin: 0 0 10px;

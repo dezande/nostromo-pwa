@@ -10,7 +10,7 @@ test.each(Object.entries(SCENARIOS))("%s : 4 règles et deux rapports de fin ave
   expect(s.dead.lines.join(" ")).toContain("{room}");
 });
 
-test("Infiltré : session disciplinaire, survie avec un message de la C.R.F.", () => {
+test("Session disciplinaire : survie avec un message de la C.R.F.", () => {
   const s = SCENARIOS.infiltrated;
   expect(s.firstPanel).toBe("email");
   expect(s.lastPanel).toBe("email");
@@ -22,4 +22,9 @@ test("Infiltré : session disciplinaire, survie avec un message de la C.R.F.", (
 test("aucun texte ne parle de parité", () => {
   const all = JSON.stringify(SCENARIOS).toLowerCase();
   for (const word of ["parité", "pair", "impair"]) expect(all).not.toContain(word);
+});
+
+test("difficulté croissante pour le joueur, avec une durée indicative", () => {
+  expect(Object.values(SCENARIOS).map(s => s.level)).toEqual(["Débutant", "Intermédiaire", "Confirmé"]);
+  for (const s of Object.values(SCENARIOS)) expect(s.duration).toMatch(/\d+.*min/);
 });

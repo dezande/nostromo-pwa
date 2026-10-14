@@ -24,8 +24,8 @@ export const tutorial = signal<number | null>(null);
 export const sourcesOpen = signal(false);
 /**
  * Panneaux d'accueil après « Démarrer la simulation » : bienvenue, puis une règle par panneau (1 à 4).
- * Scénario « Recrutement » : panneau du RH et contrat à signer à la place du panneau de bienvenue.
- * Scénario « Infiltré » : l'e-mail envoyé à la C.R.F., intercepté et annoté par la direction.
+ * Scénario « Une simple formalité » : panneau du RH et contrat à signer à la place du panneau de bienvenue.
+ * Scénario « Session disciplinaire » : l'e-mail envoyé à la C.R.F., intercepté et annoté par la direction.
  */
 export type BriefingPanel = "welcome" | "hr" | "contract" | "email" | 1 | 2 | 3 | 4;
 export const briefing = signal<BriefingPanel | null>(null);

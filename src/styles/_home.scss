@@ -39,6 +39,11 @@
   gap: 12px;
   h2 { font-size: clamp(20px, 5vw, 32px); }
   .scenario-cards { width: 100%; margin: 0; }
+  // Nom à gauche, niveau du joueur et durée à droite, sur la même ligne
+  .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
+  .alert-card .scenario-meta { color: var(--amber); white-space: nowrap; margin-bottom: 4px; }
+  // Écran bas : la carte garde le nom, le niveau et la durée ; la description sous les cartes suffit
+  @media (max-height: 700px) { .alert-card .scenario-line { display: none; } }
   .scenario-desc { display: grid; width: 100%; > p { grid-area: 1 / 1; } }
   .hidden-desc { visibility: hidden; }
   .sheets { width: 100%; margin-top: 0; container-type: inline-size; }
@@ -127,6 +132,8 @@
   dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 8px; }
   dt { color: var(--dim); letter-spacing: .1em; font-size: fs(11px); padding-top: 2px; }
   dd { margin: 0; }
+  // Historique de l'agent infiltré : la mission encadrée
+  .mission { margin-top: 10px; padding: 8px 12px; border: 1px solid var(--amber); border-radius: 6px; .sub-h { color: var(--amber); } }
 
   // Titre du document
   .title { margin: 4px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
@@ -147,13 +154,39 @@
   .section { margin-bottom: 12px; }
   .npc-head { display: flex; justify-content: space-between; gap: 8px; color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 4px; }
   .npc-name { color: var(--accent); letter-spacing: .1em; margin-bottom: 6px; }
-  .npc-traits, .traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .npc-traits > div, .trait {
+  .npc-traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .npc-traits > div {
     display: flex; gap: 6px; align-items: baseline;
     padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px;
     color: var(--dim); font-size: fs(11px); letter-spacing: .08em;
   }
-  .t-val, .npc-traits b { color: var(--accent); font-size: fs(14px); }
+  .npc-traits b { color: var(--accent); font-size: fs(14px); }
+
+  // Caractéristiques d'un prétiré : une carte par caractéristique, valeur en grand et jauge sur 5
+  .traits-help { color: var(--dim); font-size: fs(12px); }
+  .traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .trait {
+    display: grid; grid-template-columns: auto 1fr; grid-template-areas: "val text" "pips text";
+    align-items: center; column-gap: 12px; row-gap: 4px;
+    padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px;
+    > div { grid-area: text; }
+  }
+  .t-val { grid-area: val; color: var(--accent); font-size: fs(28px); line-height: 1; text-align: center; }
+  .t-pips { grid-area: pips; display: flex; gap: 2px; i { width: 6px; height: 6px; border: 1px solid var(--accent); } .on { background: var(--accent); } }
+  .t-name { color: var(--accent); letter-spacing: .12em; }
+  .t-level { font-size: fs(12px); }
+  .t-hint { color: var(--dim); font-size: fs(11px); }
+
+  // Points d'énergie : cases à cocher, puis l'explication ; atout et défaut en dessous
+  .energy {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+    margin-bottom: 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px;
+    .lab { color: var(--accent); letter-spacing: .12em; }
+    .track { display: inline-flex; gap: 4px; i { width: 14px; height: 14px; border: 1px solid var(--accent); border-radius: 2px; } }
+    .note { flex-basis: 100%; margin: 0; color: var(--dim); font-size: fs(11px); }
+  }
+  .perks { margin-bottom: 0; }
+  .sub-h { color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 2px; }
   .gauge { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0; color: var(--dim); font-size: fs(11px); label { color: var(--accent); } }
   .squares { display: inline-flex; gap: 3px; i { width: 10px; height: 10px; border: 1px solid var(--accent); } }
 
@@ -168,6 +201,8 @@
   // Texte affiché par l'app, tampons, passages censurés, zones à remplir
   .screen { padding: 0 4px; border: 1px solid var(--line); color: var(--accent); }
   .stamp { display: inline-block; padding: 0 6px; border: 1px solid var(--amber); color: var(--amber); letter-spacing: .1em; }
+  .sub .stamp { margin-left: 8px; }
+  .sex { font-size: 1.5em; line-height: 1; color: var(--accent); }
   .redact { display: inline-block; width: 5em; height: .9em; vertical-align: middle; background: var(--dim); opacity: .7; }
   .cut { margin: 16px 0 12px; padding: 6px 0; border-top: 1px dashed var(--dim); border-bottom: 1px dashed var(--dim); color: var(--dim); font-size: fs(11px); text-align: center; }
   .signature { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; color: var(--dim); font-size: fs(11px); }

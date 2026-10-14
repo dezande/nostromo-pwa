@@ -31,7 +31,7 @@ async function open(page: Page, settings = FAST) {
   return errors;
 }
 
-/** « Démarrer », puis « Lancer » avec le scénario proposé (le dernier choisi, Entraînement par défaut). */
+/** « Démarrer », puis « Lancer » avec le scénario proposé (le dernier choisi, Sixième sens par défaut). */
 async function launch(page: Page) {
   await page.locator("#startBtn").click();
   await page.locator("#launchBtn").click();
@@ -839,9 +839,9 @@ for (const [layout, width, height] of [["phone", 390, 844], ["tablet", 1024, 768
   });
 }
 
-test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
+test("scénario « Une simple formalité » : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
   const errors = await open(page);
-  // Plus de choix dans les Réglages ; par défaut au lancement : scénario Entraînement.
+  // Plus de choix dans les Réglages ; par défaut au lancement : scénario « Sixième sens ».
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#tab-scenario")).toHaveCount(0);
   await page.locator("#setClose").click();
@@ -851,8 +851,8 @@ test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler 
   await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiche-jordan-reyes-homme.pdf");
-  await expect(page.locator("#sheetsFemPdf")).toHaveAttribute("download", "nostromo-fiche-jordan-reyes-femme.pdf");
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiche-reyes-homme.pdf");
+  await expect(page.locator("#sheetsFemPdf")).toHaveAttribute("download", "nostromo-fiche-reyes-femme.pdf");
   await expect(page.locator("#sheetsMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-recrutement.pdf");
   await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
@@ -916,7 +916,7 @@ test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler 
   expect(errors).toEqual([]);
 });
 
-test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
+test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
   const errors = await open(page);
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");

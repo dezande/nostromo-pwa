@@ -1,4 +1,4 @@
-// Scénario « Infiltré » : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré sur Nostromo II.
+// Scénario « Session disciplinaire » : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré sur Nostromo II.
 // L'écran montre l'e-mail chiffré qu'il a envoyé à sa base secrète, le QG terrestre de la C.R.F. Il a été intercepté :
 // la direction de la W.Y.C. le transfère au Coordinateur, avec un bandeau qui envoie l'expéditeur à l'entraînement.
 // Viennent ensuite les règles, puis la partie.
@@ -18,8 +18,8 @@ export const EMAIL = {
   body: [
     "QG,",
     "J'ai infiltré la base lunaire secrète Nostromo II. La Weyland-Yutani y entraîne des Psychic Agents à ressentir la présence des Aliens.",
-    "Son projet de contrôle des xénomorphes continue, malgré les échecs et les morts. Huit spécimens adultes de génération IV sont confinés sous le plancher. [[Les hôtes seraient des condamnés à mort.]]",
-    "Je joins la copie de quatre protocoles et le plan de la base. S'ils me surprennent avec ces documents, la compagnie me jettera en pâture à ses créatures.",
+    "Son projet de contrôle des xénomorphes continue, malgré les échecs et les morts. Des spécimens adultes sont confinés sous le plancher. [[Les hôtes seraient des condamnés à mort.]]",
+    "Je joins le plan de la base et la copie des protocoles d'intrusion : l'ordre dans lequel ils ferment les salles pendant les entraînements. S'ils me surprennent avec ces documents, la compagnie me jettera en pâture à ses créatures.",
     "Je tiens grâce au NS-X III. Prévoyez l'exfiltration.",
     "— Lieutenant D.R.",
   ],

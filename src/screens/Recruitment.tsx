@@ -1,4 +1,4 @@
-// Scénario « Recrutement » (jeu de rôle) : panneau du RH, puis contrat à faire défiler et à signer
+// Scénario « Une simple formalité » (jeu de rôle) : panneau du RH, puis contrat à faire défiler et à signer
 // par empreinte digitale. Viennent ensuite les panneaux du Coordinateur (règles), puis la partie.
 import { signal } from "@preact/signals";
 import { useEffect, useRef, useState } from "preact/hooks";

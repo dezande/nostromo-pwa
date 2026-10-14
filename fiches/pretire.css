@@ -80,7 +80,7 @@ b { font-weight: 700; }
 }
 .title h1 { margin: 0; white-space: nowrap; font-size: 18pt; line-height: 1.1; letter-spacing: 0.09em; }
 .title h1::before { content: "> "; }
-.title .sub { flex: none; font-size: 9pt; letter-spacing: 0.06em; text-align: right; }
+.title .sub { flex: 0 1 auto; min-width: 0; font-size: 9pt; letter-spacing: 0.06em; text-align: right; }
 .title .sub .stamp { display: flex; width: max-content; margin: 1.2mm 0 0 auto; }
 .stamp {
   display: inline-flex; align-items: center; gap: 1.4mm;
@@ -161,7 +161,7 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
 
 /* ---------- Historique ---------- */
 .story { display: grid; grid-template-columns: 1fr; }
-.story p { hyphens: auto; }
+.story p { hyphens: manual; }
 
 /* ---------- Aide-mémoire 3D6 ---------- */
 .rules3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4mm; }
@@ -241,3 +241,6 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
   color: transparent;
   user-select: none;
 }
+
+/* Historique, puis la mission encadrée */
+.mission { margin-top: 2.4mm; border: 1.2pt solid var(--ink); padding: 1.4mm 2.4mm 1.8mm; }
