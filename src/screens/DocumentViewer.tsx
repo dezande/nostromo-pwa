@@ -37,7 +37,7 @@ export function documentText(html: string, { pages = ".page", feminine = false }
   if (feminine) doc.querySelectorAll<HTMLElement>("[data-f]").forEach(el => { el.innerHTML = el.dataset.f!; });
   // Seules icônes gardées : le symbole du sexe, en texte (U+FE0E : pas d'emoji)
   doc.querySelectorAll<HTMLElement>(".ic[data-ic=homme], .ic[data-ic=femme]").forEach(el => {
-    el.replaceWith(Object.assign(doc.createElement("span"), { className: "sex", textContent: el.dataset.ic === "femme" ? "♀︎ " : "♂︎ " }));
+    el.replaceWith(Object.assign(doc.createElement("span"), { className: "sex", textContent: el.dataset.ic === "femme" ? "♀︎" : "♂︎" }));
   });
   doc.querySelectorAll(PRINT_ONLY).forEach(el => el.remove());
   explainTraits(doc);
