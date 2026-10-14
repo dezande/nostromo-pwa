@@ -3,18 +3,22 @@
 import { useEffect, useState } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
-import { openDocument } from "../state/ui";
+import { openDocument, type ScenarioDocument } from "../state/ui";
 
-/** Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page. */
-const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc)";
+/**
+ * Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page,
+ * icônes, dessins, code-barres et cases à cocher des prétirés (tracés par fiches/pretire.js).
+ */
+const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu, .barcode, .track, .notes";
 
-/** Garde le contenu des pages A4, sans la mise en page imprimée. */
-export function documentText(html: string): string {
+/** Garde le contenu des pages A4 choisies, sans la mise en page imprimée ; au féminin si demandé (data-f). */
+export function documentText(html: string, { pages = ".page", feminine = false }: Pick<ScenarioDocument, "pages" | "feminine"> = {}): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
+  if (feminine) doc.querySelectorAll<HTMLElement>("[data-f]").forEach(el => { el.innerHTML = el.dataset.f!; });
   doc.querySelectorAll(PRINT_ONLY).forEach(el => el.remove());
   doc.querySelectorAll(".title .sub").forEach(el => { if (/PAGE \d/.test(el.textContent || "")) el.remove(); });
   doc.querySelectorAll("[style]").forEach(el => el.removeAttribute("style")); // tailles en mm
-  return [...doc.querySelectorAll(".page")].map(page => page.innerHTML).join("");
+  return [...doc.querySelectorAll(pages)].map(page => page.innerHTML).join("");
 }
 
 export function DocumentViewer() {
@@ -29,7 +33,7 @@ export function DocumentViewer() {
     let current = true;
     fetch(`fiches/${doc.html}`)
       .then(res => { if (!res.ok) throw new Error(String(res.status)); return res.text(); })
-      .then(html => { if (current) setText(documentText(html)); })
+      .then(html => { if (current) setText(documentText(html, doc)); })
       .catch(() => { if (current) setFailed(true); });
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") openDocument.value = null; };
     addEventListener("keydown", onKey);

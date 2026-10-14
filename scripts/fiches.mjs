@@ -1,15 +1,12 @@
 // Génère les documents imprimables des scénarios « Entraînement », « Recrutement » et « Infiltré » (A4, noir et blanc,
 // règles du 3D6 Système de François Cedelle, licence ORC)
 // à partir des pages HTML de fiches/, dans public/fiches/ :
-//   - nostromo-fiches-recrutement.pdf : le prétiré du scénario Recrutement (Jordan Reyes) et l'aide du MJ (RH, Coordinateur) ;
-//   - nostromo-guide-mj-recrutement.pdf : le guide du MJ du scénario Recrutement, de 2 à 4 pages ;
-//   - nostromo-fiche-lieutenant-dr.pdf : le prétiré du scénario « Infiltré » (Lieutenant D.R.) et l'aide du MJ ;
-//   - nostromo-guide-mj-infiltre.pdf : le guide du MJ du scénario « Infiltré », de 2 à 4 pages ;
-//   - nostromo-fiche-psychic-agent.pdf : le prétiré du scénario « Entraînement » (Psychic Agent) et l'aide du MJ ;
-//   - nostromo-guide-mj-entrainement.pdf : le guide du MJ du scénario « Entraînement », de 2 à 4 pages.
-// Prétirés (fiches/pretire.css) : fiche joueur recto verso en version homme puis femme (pages recopiées par
-// fiches/pretire.js), puis l'aide du MJ sur une feuille à part ; lisibles en A4 comme réduits en A5.
-// Le <title> de chaque page HTML devient le titre du PDF.
+//   - le prétiré de chaque scénario (fiches.html : Jordan Reyes ; infiltre.html : Lieutenant D.R. ;
+//     psychic-agent.html : Psychic Agent), en trois PDF : la fiche joueur recto verso en version homme
+//     (pages 1–2), en version femme (pages 3–4, recopiées par fiches/pretire.js) et l'aide du MJ (page 5 et suivante) ;
+//     lisibles en A4 comme réduits en A5 (fiches/pretire.css) ;
+//   - le guide du MJ de chaque scénario, de 2 à 4 pages.
+// Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
 import { mkdir } from "node:fs/promises";
@@ -20,12 +17,18 @@ import { chromium } from "@playwright/test";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
+// Les trois PDF d'un prétiré : version homme, version femme, aide du MJ.
+const pretire = (fiche, nom, scenario, mj) => [
+  { pdf: `nostromo-fiche-${fiche}-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})` },
+  { pdf: `nostromo-fiche-${fiche}-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})` },
+  { pdf: `nostromo-aide-mj-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du MJ (${scenario})` },
+];
 const documents = [
-  { html: "fiches.html", pdf: "nostromo-fiches-recrutement.pdf", pages: [5, 6] },
+  { html: "fiches.html", pages: [5, 6], parts: pretire("jordan-reyes", "Jordan Reyes", "Recrutement", "recrutement") },
   { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
-  { html: "infiltre.html", pdf: "nostromo-fiche-lieutenant-dr.pdf", pages: [5, 6] },
+  { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Infiltré", "infiltre") },
   { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 4] },
-  { html: "psychic-agent.html", pdf: "nostromo-fiche-psychic-agent.pdf", pages: [5, 6] },
+  { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Entraînement", "entrainement") },
   { html: "guide-mj-entrainement.html", pdf: "nostromo-guide-mj-entrainement.pdf", pages: [2, 4] },
 ];
 
@@ -58,14 +61,19 @@ try {
       if (depasse > 1) throw new Error(`fiches/${doc.html} : la page ${i + 1} dépasse le format A4 de ${depasse} px`);
     });
 
-    const file = join(output, doc.pdf);
-    await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true });
-    console.log(`PDF : ${file} (${pages.length} page${pages.length > 1 ? "s" : ""})`);
+    for (const part of doc.parts ?? [{ pdf: doc.pdf, from: 1 }]) {
+      const to = part.to ?? pages.length;
+      if (part.title) await page.evaluate(title => { document.title = title; }, part.title);
+      const file = join(output, part.pdf);
+      await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true, pageRanges: `${part.from}-${to}` });
+      const n = to - part.from + 1;
+      console.log(`PDF : ${file} (${n} page${n > 1 ? "s" : ""})`);
+    }
 
     if (pngDir) {
       const elements = await page.$$(".page");
       for (const [i, el] of elements.entries()) {
-        const png = join(pngDir, `${doc.pdf.replace(/\.pdf$/, "")}-p${i + 1}.png`);
+        const png = join(pngDir, `${doc.html.replace(/\.html$/, "")}-p${i + 1}.png`);
         await el.screenshot({ path: png });
         console.log(`PNG : ${png}`);
       }
