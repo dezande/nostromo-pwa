@@ -152,13 +152,39 @@
   .section { margin-bottom: 12px; }
   .npc-head { display: flex; justify-content: space-between; gap: 8px; color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 4px; }
   .npc-name { color: var(--accent); letter-spacing: .1em; margin-bottom: 6px; }
-  .npc-traits, .traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .npc-traits > div, .trait {
+  .npc-traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  .npc-traits > div {
     display: flex; gap: 6px; align-items: baseline;
     padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px;
     color: var(--dim); font-size: fs(11px); letter-spacing: .08em;
   }
-  .t-val, .npc-traits b { color: var(--accent); font-size: fs(14px); }
+  .npc-traits b { color: var(--accent); font-size: fs(14px); }
+
+  // Caractéristiques d'un prétiré : une carte par caractéristique, valeur en grand et jauge sur 5
+  .traits-help { color: var(--dim); font-size: fs(12px); }
+  .traits { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 12px; }
+  .trait {
+    display: grid; grid-template-columns: auto 1fr; grid-template-areas: "val text" "pips text";
+    align-items: center; column-gap: 12px; row-gap: 4px;
+    padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px;
+    > div { grid-area: text; }
+  }
+  .t-val { grid-area: val; color: var(--accent); font-size: fs(28px); line-height: 1; text-align: center; }
+  .t-pips { grid-area: pips; display: flex; gap: 2px; i { width: 6px; height: 6px; border: 1px solid var(--accent); } .on { background: var(--accent); } }
+  .t-name { color: var(--accent); letter-spacing: .12em; }
+  .t-level { font-size: fs(12px); }
+  .t-hint { color: var(--dim); font-size: fs(11px); }
+
+  // Points d'énergie : cases à cocher, puis l'explication ; atout et défaut en dessous
+  .energy {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+    margin-bottom: 12px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 6px;
+    .lab { color: var(--accent); letter-spacing: .12em; }
+    .track { display: inline-flex; gap: 4px; i { width: 14px; height: 14px; border: 1px solid var(--accent); border-radius: 2px; } }
+    .note { flex-basis: 100%; margin: 0; color: var(--dim); font-size: fs(11px); }
+  }
+  .perks { margin-bottom: 0; }
+  .sub-h { color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 2px; }
   .gauge { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0; color: var(--dim); font-size: fs(11px); label { color: var(--accent); } }
   .squares { display: inline-flex; gap: 3px; i { width: 10px; height: 10px; border: 1px solid var(--accent); } }
 

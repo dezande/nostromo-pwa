@@ -7,15 +7,36 @@ import { openDocument, type ScenarioDocument } from "../state/ui";
 
 /**
  * Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page,
- * icônes, dessins, code-barres et cases à cocher des prétirés (tracés par fiches/pretire.js).
+ * icônes, dessins et code-barres des prétirés (tracés par fiches/pretire.js).
  */
-const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu, .barcode, .track, .notes";
+const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu, .barcode, .notes";
+
+/** Caractéristiques d'un prétiré, lisibles à l'écran : comment s'en servir, jauge sur 5, cases de PE. */
+function explainTraits(doc: Document) {
+  doc.querySelectorAll(".traits").forEach(traits => {
+    const help = doc.createElement("p");
+    help.className = "traits-help";
+    help.innerHTML = "Pour un test, lancez <b>3 dés</b> : chaque dé <b>inférieur ou égal</b> à la caractéristique testée compte pour <b>1 succès</b>.";
+    traits.before(help);
+  });
+  doc.querySelectorAll<HTMLElement>(".trait .t-val").forEach(val => {
+    const n = Number(val.textContent);
+    const pips = doc.createElement("span");
+    pips.className = "t-pips";
+    pips.setAttribute("aria-label", `${n} sur 5`);
+    pips.innerHTML = Array.from({ length: 5 }, (_, i) => `<i${i < n ? ' class="on"' : ""}></i>`).join("");
+    val.after(pips);
+  });
+  doc.querySelectorAll<HTMLElement>(".t-hint").forEach(hint => { hint.textContent = hint.textContent!.replace(/^dé ≤ (\d) = succès$/, "succès : 1–$1"); });
+  doc.querySelectorAll<HTMLElement>(".energy .track").forEach(track => { track.innerHTML = "<i></i>".repeat(Number(track.dataset.n)); });
+}
 
 /** Garde le contenu des pages A4 choisies, sans la mise en page imprimée ; au féminin si demandé (data-f). */
 export function documentText(html: string, { pages = ".page", feminine = false }: Pick<ScenarioDocument, "pages" | "feminine"> = {}): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
   if (feminine) doc.querySelectorAll<HTMLElement>("[data-f]").forEach(el => { el.innerHTML = el.dataset.f!; });
   doc.querySelectorAll(PRINT_ONLY).forEach(el => el.remove());
+  explainTraits(doc);
   doc.querySelectorAll(".title .sub").forEach(el => { if (/PAGE \d/.test(el.textContent || "")) el.remove(); });
   doc.querySelectorAll("[style]").forEach(el => el.removeAttribute("style")); // tailles en mm
   return [...doc.querySelectorAll(pages)].map(page => page.innerHTML).join("");
