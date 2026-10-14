@@ -46,7 +46,6 @@
     micro: '<rect x="9" y="2.5" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>',
     plan: '<path d="M3 6l6-2.5 6 2.5 6-2.5v15l-6 2.5-6-2.5-6 2.5z"/><path d="M9 3.5v15M15 6v15"/>',
     protocole: '<rect x="5" y="4" width="14" height="17.5" rx="1.5"/><path d="M9 4V2.5h6V4M8.5 9.5h7M8.5 13h7M8.5 16.5h4"/>',
-    credits: '<ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12v6c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3v-6"/>',
     sas: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="12" cy="12" r="5.5"/><path d="M12 6.5v11M6.5 12h11"/>',
     horloge: '<circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2.5"/>',
     epee: '<path d="M14.5 3.5H20.5V9.5L9 21 3 15z"/><path d="M6 12l6 6"/>',
