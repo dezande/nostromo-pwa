@@ -1,7 +1,7 @@
 // Génère les documents imprimables des scénarios « Sixième sens », « Une simple formalité » et « Session disciplinaire » (A4, noir et blanc,
 // règles du 3D6 Système de François Cedelle, licence ORC)
 // à partir des pages HTML de fiches/, dans public/fiches/ :
-//   - le prétiré de chaque scénario (fiches.html : Jordan Reyes ; infiltre.html : Lieutenant D.R. ;
+//   - le prétiré de chaque scénario (fiches.html : Daniel ou Sofia Reyes ; infiltre.html : Lieutenant D.R. ;
 //     psychic-agent.html : Psychic Agent), en trois PDF : la fiche joueur recto verso en version homme
 //     (pages 1–2), en version femme (pages 3–4, recopiées par fiches/pretire.js) et l'aide du MJ (page 5 et suivante) ;
 //     lisibles en A4 comme réduits en A5 (fiches/pretire.css) ;
@@ -24,7 +24,7 @@ const pretire = (fiche, nom, scenario, mj) => [
   { pdf: `nostromo-aide-mj-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du MJ (${scenario})` },
 ];
 const documents = [
-  { html: "fiches.html", pages: [5, 6], parts: pretire("jordan-reyes", "Jordan Reyes", "Une simple formalité", "recrutement") },
+  { html: "fiches.html", pages: [5, 6], parts: pretire("reyes", "Reyes", "Une simple formalité", "recrutement") },
   { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
   { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Session disciplinaire", "infiltre") },
   { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 4] },

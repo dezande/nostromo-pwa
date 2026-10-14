@@ -851,8 +851,8 @@ test("scénario « Une simple formalité » : choix au lancement, RH, contrat à
   await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiche-jordan-reyes-homme.pdf");
-  await expect(page.locator("#sheetsFemPdf")).toHaveAttribute("download", "nostromo-fiche-jordan-reyes-femme.pdf");
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiche-reyes-homme.pdf");
+  await expect(page.locator("#sheetsFemPdf")).toHaveAttribute("download", "nostromo-fiche-reyes-femme.pdf");
   await expect(page.locator("#sheetsMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-recrutement.pdf");
   await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
