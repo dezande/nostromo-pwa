@@ -80,7 +80,8 @@ b { font-weight: 700; }
 }
 .title h1 { margin: 0; white-space: nowrap; font-size: 18pt; line-height: 1.1; letter-spacing: 0.09em; }
 .title h1::before { content: "> "; }
-.title .sub { flex: none; font-size: 9pt; letter-spacing: 0.06em; text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 1.2mm; }
+.title .sub { flex: none; font-size: 9pt; letter-spacing: 0.06em; text-align: right; }
+.title .sub .stamp { display: flex; width: max-content; margin: 1.2mm 0 0 auto; }
 .stamp {
   display: inline-flex; align-items: center; gap: 1.4mm;
   border: 1.4pt solid var(--ink); padding: 0.5mm 2.2mm;
@@ -162,7 +163,7 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
 
 /* ---------- Historique ---------- */
 .story { display: grid; grid-template-columns: 1fr; }
-.story p { text-align: justify; hyphens: auto; }
+.story p { hyphens: auto; }
 
 /* ---------- Aide-mémoire 3D6 ---------- */
 .rules3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.4mm; }
@@ -187,7 +188,7 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
 .signature .line { flex: 1; border-bottom: 1pt solid var(--ink); height: 8mm; }
 
 /* ---------- Illustration de bas de page ---------- */
-.horizon { margin-top: auto; height: 19mm; }
+.horizon { margin-top: auto; height: 19mm; min-height: 12mm; flex-shrink: 1; }
 
 /* ---------- Aide du MJ ---------- */
 .npc-name { font-weight: 700; font-size: 12pt; letter-spacing: 0.03em; display: flex; align-items: center; gap: 2mm; }
@@ -222,6 +223,7 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
 
 /* ---------- Pied de page ---------- */
 .footer {
+  margin-top: auto;
   border-top: 0.8pt solid var(--ink);
   padding-top: 1mm;
   display: flex;

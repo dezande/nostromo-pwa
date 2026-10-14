@@ -59,17 +59,19 @@
   const trait = 'fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
   let uid = 0;
 
-  // Points d'un dé (repère 24 × 24)
-  const POINTS = {
-    1: [[12, 12]], 2: [[7.5, 7.5], [16.5, 16.5]], 3: [[7, 7], [12, 12], [17, 17]],
-    4: [[7.5, 7.5], [16.5, 7.5], [7.5, 16.5], [16.5, 16.5]],
-    5: [[7, 7], [17, 7], [12, 12], [7, 17], [17, 17]],
-    6: [[7.5, 6.5], [16.5, 6.5], [7.5, 12], [16.5, 12], [7.5, 17.5], [16.5, 17.5]],
-  };
+  // Dé « à traits », comme dans le tutoriel de l'app (src/screens/Tutorial.tsx) : de 1 à 3 traits horizontaux,
+  // puis pour 4 à 6, trois traits horizontaux raccourcis et 1 à 3 traits verticaux. Repère de 0 à 1.
+  const LIGNES = { 1: [.5], 2: [.38, .62], 3: [.3, .5, .7] };
+  const COLONNES = { 1: [.7], 2: [.63, .77], 3: [.57, .695, .82] };
+  const T = .075; // épaisseur d'un trait
   function de(face, noirci) {
-    const fond = noirci ? "#000" : "#fff", point = noirci ? "#fff" : "#000";
-    const pts = (POINTS[face] || []).map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2" fill="${point}"/>`).join("");
-    return `<svg ${SVG} viewBox="0 0 24 24"><rect x="1.2" y="1.2" width="21.6" height="21.6" rx="4.5" fill="${fond}" stroke="#000" stroke-width="1.6"/>${pts}</svg>`;
+    const large = face <= 3 ? .6 : .3, gauche = face <= 3 ? .2 : .16;
+    const traits = [
+      ...LIGNES[Math.min(face, 3)].map(y => [gauche, y - T / 2, large, T]),
+      ...(COLONNES[face - 3] ?? []).map(x => [x - T / 2, .2, T, .6]),
+    ].map(([x, y, w, h]) => `<rect x="${x * 24}" y="${y * 24}" width="${w * 24}" height="${h * 24}" rx="0.7"/>`).join("");
+    const fond = noirci ? "#000" : "#fff", encre = noirci ? "#fff" : "#000";
+    return `<svg ${SVG} viewBox="0 0 24 24"><rect x="1" y="1" width="22" height="22" rx="4.3" fill="${fond}" stroke="#000" stroke-width="1.6"/><g fill="${encre}">${traits}</g></svg>`;
   }
 
   function codeBarres(texte) {
@@ -87,15 +89,16 @@
   }
 
   // Photo d'identité : buste gravé en hachures, repères biométriques.
-  // Variantes : « psy » (ondes autour de la tête), « infiltre » (yeux caviardés).
-  function portrait(variante) {
+  // Variantes, cumulables : « psy » (ondes autour de la tête), « f » (femme). Les yeux sont toujours caviardés.
+  function portrait(variantes = "") {
+    const v = variantes.split(" ");
+    const femme = v.includes("f");
     const id = `h${++uid}`;
-    const ondes = variante === "psy"
+    const ondes = v.includes("psy")
       ? [26, 33, 40].map(r => `<path d="M${50 - r} 46a${r} ${r} 0 0 1 ${r * 2} 0" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="${r / 4} 3"/>`).join("")
       : "";
-    const yeux = variante === "infiltre"
-      ? '<rect x="27" y="38" width="46" height="9" fill="#000"/><text x="50" y="45" font-family="IBM Plex Mono, monospace" font-size="5.6" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="1">CLASSIFIÉ</text>'
-      : '<path d="M38 42h7M55 42h7" stroke="#000" stroke-width="1.6"/><g stroke="#000" stroke-width="0.6"><path d="M41.5 38.5v7M38 42h7M58.5 38.5v7M55 42h7"/></g>';
+    // Yeux caviardés, comme un document censuré
+    const yeux = '<rect x="27" y="38" width="46" height="9" fill="#000"/><text x="50" y="45" font-family="IBM Plex Mono, monospace" font-size="5.6" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="1">CLASSIFIÉ</text>';
     return `<svg ${SVG} viewBox="0 0 100 124">
       <defs><pattern id="${id}" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v3" stroke="#000" stroke-width="0.9"/></pattern></defs>
       <g stroke="#000" stroke-width="0.35">${Array.from({ length: 30 }, (_, i) => `<path d="M4 ${6 + i * 4}h92"/>`).join("")}</g>
@@ -104,8 +107,12 @@
       <path d="M14 124c1-22 14-34 36-34s35 12 36 34z" fill="url(#${id})"/>
       <path d="M43 76v15c2 3 12 3 14 0V76" fill="#fff" stroke="#000" stroke-width="1.6"/>
       <path d="M36 92l14 12 14-12" fill="none" stroke="#000" stroke-width="1.4"/>
+      ${femme ? `<path d="M29 46c-1-18 9-25 21-25s22 7 21 25c0 16 3 28 9 38H63l-3-12H40l-3 12H20c6-10 9-22 9-38z" fill="#fff" stroke="#000" stroke-width="1.4"/>
+      <path d="M29 46c-1-18 9-25 21-25s22 7 21 25c0 16 3 28 9 38H63l-3-12H40l-3 12H20c6-10 9-22 9-38z" fill="url(#${id})"/>` : ""}
       <ellipse cx="50" cy="48" rx="18" ry="23" fill="#fff" stroke="#000" stroke-width="1.6"/>
-      <path d="M33 42c0-14 7-19 17-19s17 5 17 19c-3-6-7-9-17-9s-14 3-17 9z" fill="url(#${id})" stroke="#000" stroke-width="1.2"/>
+      ${femme
+        ? `<path d="M32 46c0-16 7-22 18-22s18 6 18 22c-6-4-10-10-12-15-5 7-14 12-24 15z" fill="url(#${id})" stroke="#000" stroke-width="1.2"/>`
+        : `<path d="M33 42c0-14 7-19 17-19s17 5 17 19c-3-6-7-9-17-9s-14 3-17 9z" fill="url(#${id})" stroke="#000" stroke-width="1.2"/>`}
       ${yeux}
       <path d="M50 46v8h-3M45 61c3 2 7 2 10 0" fill="none" stroke="#000" stroke-width="1.2" stroke-linecap="round"/>
       <g fill="none" stroke="#000" stroke-width="2"><path d="M3 15V3h12M85 3h12v12M97 109v12H85M15 121H3v-12"/></g>
@@ -163,11 +170,26 @@
 
   const DESSINS = { portrait, horizon, oeuf };
 
+  // Version femme du prétiré : les pages .joueur sont recopiées juste après, avec les textes de data-f
+  // (accords au féminin) et le portrait « f ». La page d'aide du MJ reste unique, à la fin.
+  const joueur = [...document.querySelectorAll(".page.joueur")];
+  if (joueur.length) {
+    let apres = joueur.at(-1);
+    for (const page of joueur) {
+      const copie = page.cloneNode(true);
+      copie.classList.add("femme");
+      for (const el of copie.querySelectorAll("[data-f]")) el.innerHTML = el.dataset.f;
+      for (const el of copie.querySelectorAll('[data-illu="portrait"]')) el.dataset.variant = `${el.dataset.variant ?? ""} f`.trim();
+      apres.after(copie);
+      apres = copie;
+    }
+  }
+
   for (const el of document.querySelectorAll("[data-ic]")) {
     el.innerHTML = `<svg ${SVG} viewBox="0 0 24 24" ${trait}>${ICONES[el.dataset.ic] ?? ""}</svg>`;
   }
   for (const el of document.querySelectorAll(".die")) el.innerHTML = de(+el.dataset.face, el.hasAttribute("data-hit"));
-  for (const el of document.querySelectorAll(".rank")) {
+  for (const el of document.querySelectorAll(".rank[data-rank]")) {
     el.innerHTML = [1, 2, 3].map(k => `<i${k <= +el.dataset.rank ? ' class="on"' : ""}></i>`).join("");
   }
   for (const el of document.querySelectorAll(".track")) el.innerHTML = "<i></i>".repeat(+el.dataset.n);

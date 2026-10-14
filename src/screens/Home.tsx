@@ -52,7 +52,7 @@ const SHEETS: Record<Scenario, (ScenarioDocument & { id: string })[]> = {
     { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
   ],
   recruitment: [
-    { id: "sheetsPdf", html: "fiches.html", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
+    { id: "sheetsPdf", html: "fiches.html", file: "nostromo-fiches-recrutement.pdf", name: "Candidat (prétiré) · RH · Coordinateur" },
     { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
   ],
   infiltrated: [
