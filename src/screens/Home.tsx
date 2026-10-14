@@ -56,8 +56,8 @@ const SHEETS: Record<Scenario, (ScenarioDocument & { id: string; label: string }
     { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ", label: "Guide MJ" },
   ],
   recruitment: [
-    { id: "sheetsPdf", html: "fiches.html", pages: ".page.joueur", file: "nostromo-fiche-jordan-reyes-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
-    { id: "sheetsFemPdf", html: "fiches.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-jordan-reyes-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
+    { id: "sheetsPdf", html: "fiches.html", pages: ".page.joueur", file: "nostromo-fiche-reyes-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
+    { id: "sheetsFemPdf", html: "fiches.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-reyes-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
     { id: "sheetsMjPdf", html: "fiches.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-recrutement.pdf", name: "Aide du MJ", label: "Aide MJ" },
     { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ", label: "Guide MJ" },
   ],
@@ -98,8 +98,11 @@ function ScenarioChoice() {
         {(Object.keys(SCENARIOS) as Scenario[]).map(id => (
           <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
             onClick={() => { settings.scenario.value = id; }}>
-            <strong>{SCENARIOS[id].name}</strong>
-            <small>{SCENARIOS[id].homeLine}</small>
+            <span class="scenario-head">
+              <strong>{SCENARIOS[id].name}</strong>
+              <small class="scenario-meta" title="Niveau du joueur et durée indicative">{SCENARIOS[id].level} · {SCENARIOS[id].duration}</small>
+            </span>
+            <small class="scenario-line">{SCENARIOS[id].homeLine}</small>
           </button>
         ))}
       </div>

@@ -1,4 +1,4 @@
-/* Fiches de personnage du scénario « RECRUTEMENT » — Nostromo II.
+/* Fiches de personnage du scénario « UNE SIMPLE FORMALITÉ » — Nostromo II.
    Les trois fiches sur une seule page A4 portrait : le Candidat (à remplir) en haut,
    les deux PNJ côte à côte en bas. Style terminal MU/TH/UR 6000, mais imprimable :
    fond blanc, encre noire uniquement, corps de texte ≥ 7 pt. */
@@ -71,7 +71,8 @@ b { font-weight: 700; }
 .title h1 { font-size: 13pt; }
 .title h2 { font-size: 10.5pt; }
 .title h1::before, .title h2::before { content: "> "; }
-.title .sub { font-size: 7pt; letter-spacing: 0.06em; text-align: right; }
+.title .sub { font-size: 7pt; letter-spacing: 0.06em; text-align: right; white-space: nowrap; }
+.title .sub .stamp { margin-left: 2mm; }
 .stamp { display: inline-block; border: 1pt solid var(--ink); padding: 0.2mm 1.6mm; font-weight: 700; letter-spacing: 0.1em; }
 
 /* ---------- Grilles et blocs ---------- */

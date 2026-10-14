@@ -28,12 +28,12 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 ## Ce que fait l'app
 
 - **Trois scénarios**, au choix au lancement (« Démarrer », puis « Lancer ») ; le dernier choisi est proposé la fois suivante :
-  - **Entraînement** (par défaut) : un Psychic Agent en formation sur la base lunaire Nostromo II.
+  - **Sixième sens** (par défaut ; joueur débutant, 20 à 30 min) : un Psychic Agent en formation sur la base lunaire Nostromo II.
     Panneau « Bienvenue à bord », puis quatre règles, chacune avec une scène animée tirée du vrai plan.
-  - **Recrutement** (jeu de rôle) : un candidat postule à un poste très bien payé. Le RH lui fait lire
+  - **Une simple formalité** (jeu de rôle ; joueur intermédiaire, 30 à 45 min) : un candidat postule à un poste très bien payé. Le RH lui fait lire
     un long contrat (qui défile, avec des passages censurés), qu'il signe en gardant le doigt posé sur
     un lecteur d'empreinte. Le Coordinateur lui fait ensuite passer « l'examen d'aptitude ».
-  - **Infiltré** : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré. Après ses
+  - **Session disciplinaire** (joueur confirmé, 30 min environ) : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré. Après ses
     archives, il découvre un e-mail de la direction : elle sait tout et l'envoie à l'entraînement
     pour le punir.
 - **La partie** : choix de la salle de départ, déplacements (5 au plus, sans compteur), « Valider »,
@@ -93,7 +93,7 @@ src/
   data/                 données et textes, sans code d'affichage
     ship.ts             salles, liaisons, positions sur le plan
     scenarios.ts        textes des trois scénarios : règles, rapports de fin
-    contract.ts         contrat du scénario Recrutement ([[…]] = passage censuré)
+    contract.ts         contrat du scénario « Une simple formalité » ([[…]] = passage censuré)
     documents.ts        faux numéros de documents
     themes.ts           styles d'écran (inspirés de cool-retro-term)
     terminal.ts         textes des écrans de transition (MU/TH/UR 6000)
@@ -110,8 +110,8 @@ src/
   audio/audio.ts        musique et bruitages
   components/           morceaux d'interface : plan, barre d'actions, fenêtre du protocole,
                         scènes des règles, logo Weyland Corp, passages censurés…
-  screens/              écrans superposés : accueil, bienvenue et règles, Recrutement (RH, contrat,
-                        empreinte), Infiltré (archives, e-mail), fin, réglages
+  screens/              écrans superposés : accueil, bienvenue et règles, « Une simple formalité » (RH, contrat,
+                        empreinte), « Session disciplinaire » (archives, e-mail), fin, réglages
   styles/               Sass : un fichier par partie, réunis dans main.scss
   **/*.test.ts(x)       tests unitaires Jest, à côté du code testé
 tests/                  tests de bout en bout Playwright
