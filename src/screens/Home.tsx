@@ -46,18 +46,25 @@ export function Home() {
 }
 
 /** Documents de chaque scénario : page HTML lue dans l'app (dossier fiches/) et PDF à imprimer (public/fiches). */
-const SHEETS: Record<Scenario, (ScenarioDocument & { id: string })[]> = {
+/** label : texte court du bouton (name, complet, sert à la liseuse et aux lecteurs d'écran). */
+const SHEETS: Record<Scenario, (ScenarioDocument & { id: string; label: string })[]> = {
   training: [
-    { id: "trainingPdf", html: "psychic-agent.html", file: "nostromo-fiche-psychic-agent.pdf", name: "Psychic Agent (prétiré)" },
-    { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
+    { id: "trainingPdf", html: "psychic-agent.html", pages: ".page.joueur", file: "nostromo-fiche-psychic-agent-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
+    { id: "trainingFemPdf", html: "psychic-agent.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-psychic-agent-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
+    { id: "trainingMjPdf", html: "psychic-agent.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-entrainement.pdf", name: "Aide du MJ", label: "Aide MJ" },
+    { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ", label: "Guide MJ" },
   ],
   recruitment: [
-    { id: "sheetsPdf", html: "fiches.html", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
-    { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
+    { id: "sheetsPdf", html: "fiches.html", pages: ".page.joueur", file: "nostromo-fiche-jordan-reyes-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
+    { id: "sheetsFemPdf", html: "fiches.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-jordan-reyes-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
+    { id: "sheetsMjPdf", html: "fiches.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-recrutement.pdf", name: "Aide du MJ", label: "Aide MJ" },
+    { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ", label: "Guide MJ" },
   ],
   infiltrated: [
-    { id: "infiltratedPdf", html: "infiltre.html", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
-    { id: "infiltratedGuidePdf", html: "guide-mj-infiltre.html", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ" },
+    { id: "infiltratedPdf", html: "infiltre.html", pages: ".page.joueur", file: "nostromo-fiche-lieutenant-dr-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
+    { id: "infiltratedFemPdf", html: "infiltre.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-lieutenant-dr-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
+    { id: "infiltratedMjPdf", html: "infiltre.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-infiltre.pdf", name: "Aide du MJ", label: "Aide MJ" },
+    { id: "infiltratedGuidePdf", html: "guide-mj-infiltre.html", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ", label: "Guide MJ" },
   ],
 };
 
@@ -80,10 +87,10 @@ function ScenarioChoice() {
       <div class="sheets" id="sheets">
         <span class="set-label">Documents (3D6 Système)</span>
         <div class="sheet-links">
-          {SHEETS[current].map(({ id, ...sheet }) => (
+          {SHEETS[current].map(({ id, label, ...sheet }) => (
             <span key={id} class="sheet">
-              <button type="button" class="sheet-link" id={`${id}Read`} onClick={() => { openDocument.value = sheet; }}>
-                {sheet.name}
+              <button type="button" class="sheet-link" id={`${id}Read`} aria-label={`Lire : ${sheet.name}`} onClick={() => { openDocument.value = sheet; }}>
+                {label}
               </button>
               <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
                 download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}

@@ -851,7 +851,9 @@ test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler 
   await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiches-recrutement.pdf");
+  await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiche-jordan-reyes-homme.pdf");
+  await expect(page.locator("#sheetsFemPdf")).toHaveAttribute("download", "nostromo-fiche-jordan-reyes-femme.pdf");
+  await expect(page.locator("#sheetsMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-recrutement.pdf");
   await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
   await expect(page.locator("#scenarioDesc")).toContainText("signe un contrat");
@@ -920,8 +922,10 @@ test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté 
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await page.locator("#scenario-infiltrated").click();
   await expect(page.locator("#scenario-infiltrated")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr.pdf");
-  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr-homme.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-homme.pdf");
+  await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-femme.pdf");
+  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-infiltre.pdf");
   await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
   // Le guide du MJ se lit aussi dans l'app : son texte, au style de l'app, sans pages A4 ni en-têtes d'impression
   await page.locator("#infiltratedGuidePdfRead").click();
@@ -932,6 +936,12 @@ test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté 
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
   await page.locator("#docClose").click();
   await expect(page.locator("#docViewer")).not.toHaveClass(/show/);
+  // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du MJ
+  await page.locator("#infiltratedFemPdfRead").click();
+  await expect(page.locator("#docText")).toContainText("Agent de renseignement infiltrée");
+  await expect(page.locator("#docText")).not.toContainText("AIDE DU MJ");
+  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-femme.pdf");
+  await page.locator("#docClose").click();
   await expect(page.locator("#scenarioDesc")).toContainText("Lieutenant D.R.");
   await page.locator("#launchBtn").click();
   await expect(page.locator("#email")).toHaveClass(/show/);

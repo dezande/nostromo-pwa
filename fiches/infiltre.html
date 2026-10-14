@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <title>Nostromo II — Fiche du Lieutenant D.R. (Infiltré)</title>
-<link rel="stylesheet" href="fiche.css">
+<link rel="stylesheet" href="pretire.css">
 </head>
 <body>
-<main class="page">
 
+<!-- ================= RECTO : LE LIEUTENANT D.R. (personnage du joueur, prétiré) ================= -->
+<main class="page joueur">
   <header class="header">
     <img src="logo.svg" alt="Weyland Corp">
     <div>
@@ -22,111 +23,229 @@
     </div>
   </header>
 
-  <!-- ================= LE LIEUTENANT D.R. (personnage du joueur, prétiré) ================= -->
   <div class="title">
     <h1>DOSSIER AGENT — INFILTRÉ</h1>
-    <div class="sub">FICHE JOUEUR · SCÉNARIO « INFILTRÉ » &nbsp;<span class="stamp">C.R.F. · CHIFFRÉ</span></div>
+    <div class="sub"><span data-f="FICHE JOUEUSE">FICHE JOUEUR</span> · SCÉNARIO « INFILTRÉ »<span class="stamp"><i class="ic" data-ic="cadenas"></i>C.R.F. · CHIFFRÉ</span></div>
   </div>
 
-  <div class="row cand-top">
-    <section class="box">
-      <h3>01 · Identité <span class="code">VRAIE / COUVERTURE</span></h3>
-      <dl class="kv">
-        <dt>NOM DE CODE</dt><dd><b>Lieutenant D.R.</b> · 31 ans</dd>
-        <dt>ORGANISATION</dt><dd>C.R.F. — Civil Resistance Force</dd>
-        <dt>COUVERTURE</dt><dd>Psychic Agent en formation, Weyland-Yutani</dd>
-        <dt>MATRICULE</dt><dd>PA-2184-<span class="redact" style="--w:10mm"></span></dd>
-        <dt>PEUPLE</dt><dd>Humain</dd>
-        <dt>ATOUT</dt><dd><b>Nerfs d'acier</b> : une fois par séance, ignorer un désavantage.</dd>
-        <dt>OCCUPATION</dt><dd>Agent de renseignement infiltré</dd>
-        <dt>AFFECTATION</dt><dd>Base lunaire secrète Nostromo II</dd>
-      </dl>
-    </section>
-    <section class="box">
-      <h3>02 · Caractéristiques <span class="code">8 points · 1 à 5</span></h3>
-      <div class="traits">
-        <div class="trait"><span class="t-name">PHYSIQUE</span><span class="t-level">Compétent</span><span class="t-val">3</span></div>
-        <div class="trait"><span class="t-name">MENTAL</span><span class="t-level">Compétent</span><span class="t-val">3</span></div>
-        <div class="trait"><span class="t-name">SOCIAL</span><span class="t-level">Amateur</span><span class="t-val">2</span></div>
-      </div>
-      <div class="gauge" style="margin-top:1.4mm"><label>PE 6</label><span class="squares"><i></i><i></i><i></i><i></i><i></i><i></i></span><span>= Physique + Mental</span></div>
-      <div class="muted">Points d'énergie : santé physique et psychique. 1–2 PE : affaibli (désavantage). 0 : inconscient. Négatif : état critique.</div>
-      <h3 style="margin:1.4mm 0 0.6mm;font-size:7.2pt;letter-spacing:0.12em">DÉFAUT</h3>
-      <p><b>Manque de NS-X III</b> : privé de son neuro-stimulant, il a un <b>désavantage à tous les tests de Mental tant qu'il a 3 PE ou moins</b>.</p>
-    </section>
-  </div>
-
-  <div class="row c2">
-    <section class="box">
-      <h3>03 · Maîtrises <span class="code">■ avantage · ■■ effet · ■■■ majeur</span></h3>
-      <table class="mastery">
-        <tr><th>MAÎTRISE</th><th>CAR.</th><th class="c">RANG</th><th>NOTE</th></tr>
-        <tr><td><b>Infiltration</b></td><td>Physique</td><td class="c pips">■■□</td><td>occupation · passer inaperçu</td></tr>
-        <tr><td><b>Investigation</b></td><td>Mental</td><td class="c pips">■■□</td><td>fouiller, recouper</td></tr>
-        <tr><td><b>Méditation</b></td><td>Mental</td><td class="c pips">■■□</td><td>tenir sans NS-X III</td></tr>
-        <tr><td>Technologie</td><td>Mental</td><td class="c pips">■□□</td><td>terminaux, serrures</td></tr>
-        <tr><td>Combat extrême</td><td>Physique</td><td class="c pips">■□□</td><td>gravité lunaire, vide</td></tr>
-        <tr><td>Discipline</td><td>Social</td><td class="c pips">■□□</td><td>tenir sa couverture</td></tr>
-      </table>
-    </section>
-    <section class="box">
-      <h3>04 · Équipement <span class="code">SUR LUI</span></h3>
-      <ul class="dash">
-        <li>Uniforme et badge de Psychic Agent stagiaire</li>
-        <li>Microfilm cousu dans la doublure : <b>copie de 4 protocoles et du plan</b> de la base</li>
-        <li>Injecteur de NS-X III, <b>vide</b></li>
-        <li>Lame de céramique (dégâts 2), passée aux détecteurs</li>
-        <li><span class="redact" style="--w:30mm"></span> (fréquence C.R.F.)</li>
-      </ul>
-    </section>
-  </div>
-
-  <section class="box">
-    <h3>05 · Historique et mission <span class="code">TRANSMISSION C.R.F. · 2184</span></h3>
-    <p>Infiltré depuis des mois dans le programme Psychic Agents. Le <b>22/10/2184</b>, il a envoyé au QG terrestre de la C.R.F. un <b>rapport chiffré</b> : la W.Y.C. poursuit son projet de <b>contrôle des xénomorphes</b> ; <b>8 spécimens adultes de génération IV</b> sont gardés <b>sous le plancher</b> de la base ; on soupçonne l'usage d'<b>hôtes condamnés à mort</b> <span class="redact" style="--w:32mm"></span>.</p>
-    <p>Il y a joint la copie de <b>4 protocoles</b> et le <b>plan</b> de la base. Il ne tenait que grâce au <b>NS-X III</b>, un neuro-stimulant ; sa réserve est épuisée depuis <span class="redact" style="--w:14mm"></span>. <b>Mission</b> : tenir sa couverture jusqu'à l'exfiltration demandée à la C.R.F., et ramener les preuves.</p>
+  <section class="sec">
+    <h2><i class="ic" data-ic="badge"></i>01 · Identité <span class="code">VRAIE / COUVERTURE</span></h2>
+    <dl class="kv">
+      <dt>NOM DE CODE</dt><dd><span class="name">Lieutenant D.R.</span></dd>
+      <dt>ÂGE</dt><dd>31 ans</dd>
+      <dt><i class="ic" data-ic="radio"></i>ORGANISATION</dt><dd>C.R.F. — Civil Resistance Force</dd>
+      <dt><i class="ic" data-ic="badge"></i>COUVERTURE</dt><dd>Psychic Agent en formation, Weyland-Yutani</dd>
+      <dt>MATRICULE</dt><dd>PA-2184-<span class="redact" style="--w:10mm"></span></dd>
+      <dt>PEUPLE</dt><dd>Humain</dd>
+      <dt><i class="ic" data-ic="oeil"></i>OCCUPATION</dt><dd>Agent de renseignement <span data-f="infiltrée">infiltré</span></dd>
+      <dt><i class="ic" data-ic="lieu"></i>AFFECTATION</dt><dd>Base lunaire secrète Nostromo II</dd>
+    </dl>
+    <div class="idcode"><span class="barcode" data-code="PA2184CRF"></span><div class="code">PA-2184-<span class="redact" style="--w:10mm"></span></div></div>
   </section>
 
-  <div class="cut">✂ PARTIE RÉSERVÉE AU MJ — DÉCOUPER OU PLIER ICI AVANT DE REMETTRE LA FICHE AU JOUEUR</div>
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>02 · Caractéristiques <span class="code">8 points · de 1 à 5</span></h2>
+    <div class="traits">
+      <div class="trait"><i class="ic" data-ic="physique"></i><div><div class="t-name">PHYSIQUE</div><div class="t-level"><span data-f="Compétente">Compétent</span></div><div class="t-hint">dé ≤ 3 = succès</div></div><span class="t-val">3</span></div>
+      <div class="trait"><i class="ic" data-ic="mental"></i><div><div class="t-name">MENTAL</div><div class="t-level"><span data-f="Compétente">Compétent</span></div><div class="t-hint">dé ≤ 3 = succès</div></div><span class="t-val">3</span></div>
+      <div class="trait"><i class="ic" data-ic="social"></i><div><div class="t-name">SOCIAL</div><div class="t-level">Amateur</div><div class="t-hint">dé ≤ 2 = succès</div></div><span class="t-val">2</span></div>
+    </div>
+    <div class="energy">
+      <div class="lab"><i class="ic" data-ic="pe"></i>PE 6</div>
+      <span class="track" data-n="6"></span>
+      <div class="note">Points d'énergie = Physique + Mental. Cochez une case par PE perdu. 1–2 : affaibli · 0 : inconscient.</div>
+    </div>
+    <div class="row c2 perks">
+      <div><div class="sub-h"><i class="ic" data-ic="atout"></i>ATOUT</div><b>Nerfs d'acier</b> : une fois par séance, ignorer un désavantage.</div>
+      <div><div class="sub-h"><i class="ic" data-ic="defaut"></i>DÉFAUT</div><b>Manque de NS-X III</b> : privé de son neuro-stimulant, désavantage à tous les tests de Mental <b>tant qu'il reste 3 PE ou moins</b>.</div>
+    </div>
+  </section>
 
-  <!-- ================= PARTIE MJ ================= -->
-  <div class="row c2">
-    <section class="box dashed">
-      <h3>Ce que l'agent ignore <span class="code">SECRET DU SCÉNARIO</span></h3>
-      <p><b>La direction sait tout.</b> Son rapport au QG a été <b>intercepté</b> et transféré au Coordinateur « pour exécution ». Plutôt que de l'arrêter, la Weyland-Yutani l'envoie à la <b>session d'entraînement</b>, sans dérogation, NS-X III retiré : une punition déguisée en exercice. Il le découvre sur l'écran d'introduction.</p>
-      <p>Le Coordinateur fait passer la session comme d'habitude : il annonce et touche les fermetures en suivant <b>ses fiches de protocole papier</b>. Il suit le protocole de la compagnie, point. Les dés ne changent jamais les fermetures.</p>
-      <div class="memo-sub" style="font-weight:700;letter-spacing:0.1em;border-bottom:0.6pt solid #000;margin:1mm 0 0.6mm">JETS UTILES</div>
-      <ul class="dash">
-        <li><b>Mental</b> (Méditation) : garder son sang-froid devant le tampon INTERCEPTÉ ; échec = −1 PE.</li>
-        <li><b>Mental</b> : ressentir une présence derrière une cloison.</li>
-        <li><b>Physique</b> (Infiltration) : se déplacer sans être vu.</li>
-      </ul>
-      <p><b>Esquives</b> : « Tout est sur l'écran. » · « Question suivante. »</p>
-    </section>
-    <section class="box">
-      <h3>Déroulé du scénario « Infiltré » <span class="code">RÉSUMÉ</span></h3>
-      <ol>
-        <li><b>L'e-mail intercepté</b> : son propre rapport au QG, surmonté du tampon INTERCEPTÉ et du bandeau de la direction. Il comprend qu'il est découvert.</li>
-        <li><b>Règles de la « session disciplinaire »</b> (moniteurs 1 à 4, salle B-7) : mêmes règles de déplacement (carte W.Y.C.) et de fermeture que l'entraînement.</li>
-        <li><b>La partie</b> : salle de départ, déplacements, fermetures selon la fiche de protocole. 8 fermetures.</li>
-        <li><b>Fin</b> : lire le rapport de l'application.</li>
-      </ol>
-      <div class="row c2" style="margin-top:1.2mm">
-        <div class="report"><div class="rt" style="font-size:8pt">L'AGENT INFILTRÉ A SURVÉCU</div><p>Exfiltration C.R.F. par le <b>sas 3</b>, avec les preuves.</p></div>
-        <div class="report"><div class="rt" style="font-size:8pt">SANCTION APPLIQUÉE</div><p>La Compagnie a puni son traître. Dossier clos <span class="redact" style="--w:10mm"></span>.</p></div>
+  <section class="sec">
+    <h2><i class="ic" data-ic="cible"></i>03 · Maîtrises <span class="code">rang 1 à 3</span></h2>
+    <table class="mastery">
+      <tr><th>MAÎTRISE</th><th>CARACTÉRISTIQUE</th><th class="c">RANG</th><th>UTILE POUR…</th></tr>
+      <tr><td><b>Infiltration</b></td><td class="car"><i class="ic" data-ic="physique"></i>Physique</td><td class="c"><span class="rank" data-rank="2">■■□</span></td><td>occupation · passer inaperçu</td></tr>
+      <tr><td><b>Investigation</b></td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="2">■■□</span></td><td>fouiller, recouper</td></tr>
+      <tr><td><b>Méditation</b></td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="2">■■□</span></td><td>tenir sans NS-X III</td></tr>
+      <tr><td>Technologie</td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="1">■□□</span></td><td>terminaux, serrures</td></tr>
+      <tr><td>Combat extrême</td><td class="car"><i class="ic" data-ic="physique"></i>Physique</td><td class="c"><span class="rank" data-rank="1">■□□</span></td><td>gravité lunaire, vide</td></tr>
+      <tr><td>Discipline</td><td class="car"><i class="ic" data-ic="social"></i>Social</td><td class="c"><span class="rank" data-rank="1">■□□</span></td><td>tenir sa couverture</td></tr>
+    </table>
+    <div class="legend">
+      <span><span class="rank" data-rank="1">■□□</span> avantage</span>
+      <span><span class="rank" data-rank="2">■■□</span> effet narratif</span>
+      <span><span class="rank" data-rank="3">■■■</span> effet majeur</span>
+    </div>
+  </section>
+
+  <div class="illu horizon" data-illu="horizon"></div>
+
+  <footer class="footer">
+    <span>W.Y.C. · WY-NOS2-PA/2184</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">RECTO 1/2 ►</span>
+  </footer>
+</main>
+
+<!-- ================= VERSO : LE LIEUTENANT D.R. (suite) ================= -->
+<main class="page joueur">
+  <div class="title">
+    <h1>LIEUTENANT D.R. · SUITE</h1>
+    <div class="sub"><span data-f="FICHE JOUEUSE">FICHE JOUEUR</span> · VERSO<span class="stamp">C.R.F. · CHIFFRÉ</span></div>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="sac"></i>04 · Équipement <span class="code">SUR SOI</span></h2>
+    <ul class="gear">
+      <li><i class="ic" data-ic="badge"></i><span>Uniforme et badge de Psychic Agent stagiaire</span></li>
+      <li><i class="ic" data-ic="film"></i><span>Microfilm cousu dans la doublure : <b>copie de 4 protocoles et du plan</b> de la base</span></li>
+      <li><i class="ic" data-ic="seringue"></i><span>Injecteur de NS-X III, <b>vide</b></span></li>
+      <li><i class="ic" data-ic="lame"></i><span>Lame de céramique (<b>dégâts 2</b>), passée aux détecteurs</span></li>
+      <li><i class="ic" data-ic="radio"></i><span><span class="redact" style="--w:26mm"></span> (fréquence C.R.F.)</span></li>
+    </ul>
+  </section>
+
+  <section class="sec story">
+    <h2><i class="ic" data-ic="courrier"></i>05 · Historique et mission <span class="code">TRANSMISSION C.R.F. · 2184</span></h2>
+    <p><span data-f="Infiltrée">Infiltré</span> depuis des mois dans le programme Psychic Agents. Le <b>22/10/2184</b>, <span data-f="elle">il</span> a envoyé au QG terrestre de la C.R.F. un <b>rapport chiffré</b> : la W.Y.C. poursuit son projet de <b>contrôle des xénomorphes</b> ; <b>8 spécimens adultes de génération IV</b> sont gardés <b>sous le plancher</b> de la base ; on soupçonne l'usage d'<b>hôtes condamnés à mort</b> <span class="redact" style="--w:32mm"></span>.</p>
+    <p><span data-f="Elle">Il</span> y a joint la copie de <b>4 protocoles</b> et le <b>plan</b> de la base. <span data-f="Elle">Il</span> ne tenait que grâce au <b>NS-X III</b>, un neuro-stimulant ; sa réserve est épuisée depuis <span class="redact" style="--w:14mm"></span>. <b>Mission</b> : tenir sa couverture jusqu'à l'exfiltration demandée à la C.R.F., et ramener les preuves.</p>
+  </section>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>Aide-mémoire du 3D6 Système <span class="code">pour le joueur</span></h2>
+    <div class="rules3">
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="de"></i>LANCER 3D6</div>
+        <p>Chaque dé <b>≤ la caractéristique</b> testée = <b>1 succès</b>.</p>
+        <div class="ex">Physique 3 : <span class="dice"><span class="die" data-face="2" data-hit>2</span><span class="die" data-face="5">5</span><span class="die" data-face="1" data-hit>1</span></span></div>
+        <p>= <b>2 succès</b> (dés noirs).</p>
       </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="cible"></i>DIFFICULTÉ</div>
+        <p>Nombre de succès à obtenir :</p>
+        <div class="ladder">
+          <span>Facile</span><span class="rank four"><i class="on"></i></span>
+          <span>Moyenne</span><span class="rank four"><i class="on"></i><i class="on"></i></span>
+          <span>Difficile</span><span class="rank four"><i class="on"></i><i class="on"></i><i class="on"></i></span>
+          <span>Extrême</span><span class="rank four"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+        </div>
+        <p><b>Opposition</b> : le plus de succès l'emporte.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="atout"></i>AVANTAGE</div>
+        <div class="ex"><b>Avantage</b> <span class="dice"><span class="die s" data-face="1">1</span><span class="die s" data-face="2">2</span><span class="die s" data-face="3">3</span><span class="die s" data-face="4">4</span></span> 4D6</div>
+        <div class="ex"><b>Désavantage</b> <span class="dice"><span class="die s" data-face="5">5</span><span class="die s" data-face="6">6</span></span> 2D6</div>
+        <p>Tous les dés comptent. Pas de cumul : un avantage et un désavantage s'annulent.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="alien"></i>TRIPLE</div>
+        <div class="ex"><span class="dice"><span class="die s" data-face="4">4</span><span class="die s" data-face="4">4</span><span class="die s" data-face="4">4</span></span> 111 à 666</div>
+        <p>≤ caractéristique : <b>réussite critique</b>.<br>&gt; caractéristique : <b>échec critique</b>.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="pe"></i>POINTS D'ÉNERGIE</div>
+        <p>PE = Physique + Mental.<br><b>1–2</b> : affaibli (désavantage)<br><b>0</b> : inconscient<br><b>négatif</b> : état critique.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="epee"></i>COMBAT</div>
+        <p><b>2 actions</b> par tour. Attaque = test de Physique ; <b>1 succès touche</b>.</p>
+        <p>Dégâts = arme (1–5) + 1 par succès en plus − protection.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec notes">
+    <h2><i class="ic" data-ic="crayon"></i>Notes de terrain <span class="code">salles, preuves, PE perdus…</span></h2>
+    <div class="lines"></div>
+  </section>
+
+  <footer class="footer">
+    <span>W.Y.C. · WY-NOS2-PA/2184</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">◄ VERSO 2/2</span>
+  </footer>
+</main>
+
+<!-- ================= AIDE DU MJ (feuille à part) ================= -->
+<main class="page">
+  <div class="title">
+    <h1>AIDE DU MJ · INFILTRÉ</h1>
+    <div class="sub">FEUILLE À PART<span class="stamp black"><i class="ic" data-ic="secret"></i>NE PAS MONTRER AU JOUEUR</span></div>
+  </div>
+
+  <section class="sec dashed">
+    <h2><i class="ic" data-ic="secret"></i>Ce que l'agent ignore <span class="code">SECRET DU SCÉNARIO</span></h2>
+    <p><b>La direction sait tout.</b> Le rapport au QG a été <b>intercepté</b> et transféré au Coordinateur « pour exécution ». Plutôt que d'arrêter l'agent, la Weyland-Yutani l'envoie à la <b>session d'entraînement</b>, sans dérogation, NS-X III retiré : une punition déguisée en exercice. L'agent le découvre sur l'écran d'introduction.</p>
+    <p>Le Coordinateur fait passer la session comme d'habitude : il annonce et touche les fermetures en suivant <b>ses fiches de protocole papier</b>. Il suit le protocole de la compagnie, point. <b>Les dés ne changent jamais les fermetures.</b></p>
+  </section>
+
+  <div class="row c2">
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="micro"></i>Le Coordinateur <span class="code">PNJ</span></h2>
+      <div class="npc-name">Coordinateur HALVORSEN</div>
+      <div class="meta">Destinataire du rapport intercepté · 52 ans · ex-affectation : <span class="redact" style="--w:12mm"></span></div>
+      <div class="npc-traits">
+        <div>PHY<b>3</b></div><div>MEN<b>4</b></div><div>SOC<b>2</b></div><div>PE<b>7</b></div>
+      </div>
+      <table class="mastery">
+        <tr><td><b>Discipline</b> (Soc.)</td><td class="c"><span class="rank" data-rank="3">■■■</span></td></tr>
+        <tr><td><b>Technologie</b> (Men.)</td><td class="c"><span class="rank" data-rank="2">■■□</span></td></tr>
+        <tr><td>Tactique (Men.)</td><td class="c"><span class="rank" data-rank="2">■■□</span></td></tr>
+        <tr><td>Investigation (Men.)</td><td class="c"><span class="rank" data-rank="1">■□□</span></td></tr>
+        <tr><td>Médecine (Men.)</td><td class="c"><span class="rank" data-rank="1">■□□</span></td></tr>
+        <tr><td>Commandement (Soc.)</td><td class="c"><span class="rank" data-rank="1">■□□</span></td></tr>
+      </table>
+      <p><b>Défaut</b> : rigide (hors protocole : désavantage à tous ses tests).</p>
+      <p>Froid, parle <b>au micro</b>, voix plate. Ne donne jamais d'indice.</p>
+      <ul class="quotes">
+        <li><i class="ic" data-ic="bulle"></i><span>« Veuillez rejoindre la salle de votre choix. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Fermeture en cours. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Session disciplinaire, Agent. »</span></li>
+      </ul>
+      <div class="secret"><i class="ic" data-ic="protocole"></i><div><b>RÔLE</b> : il suit <b>ses fiches de protocole papier</b>, point ; il annonce les fermetures et les touche sur le plan.</div></div>
+    </section>
+
+    <section class="sec">
+      <h2><i class="ic" data-ic="liste"></i>Déroulé du scénario « Infiltré » <span class="code">RÉSUMÉ</span></h2>
+      <ol class="steps">
+        <li><div><b>L'e-mail intercepté</b> : son propre rapport au QG, surmonté du tampon INTERCEPTÉ et du bandeau de la direction. L'agent comprend qu'on l'a découvert.</div></li>
+        <li><div><b>Règles de la « session disciplinaire »</b> (moniteurs 1 à 4, salle B-7) : mêmes règles de déplacement (carte W.Y.C.) et de fermeture que l'entraînement.</div></li>
+        <li><div><b>La partie</b> : salle de départ, déplacements, fermetures selon la fiche de protocole. 8 fermetures.</div></li>
+        <li><div><b>Fin</b> : lire le rapport de l'application.</div></li>
+      </ol>
     </section>
   </div>
 
-  <aside class="rules">
-    <p><b>## 3D6 SYSTÈME :</b> lancer 3D6 ; <b>chaque dé ≤ la caractéristique testée</b> (Physique, Mental ou Social, de 1 à 5) <b>= 1 succès</b> · <b>difficulté</b> = succès requis : Facile 1, Moyenne 2, Difficile 3, Extrême 4 · <b>avantage</b> = 4D6, <b>désavantage</b> = 2D6 (tous les dés comptent ; pas de cumul, un avantage et un désavantage s'annulent) · <b>triple</b> (111…666) : ≤ caractéristique = réussite critique, &gt; caractéristique = échec critique · <b>opposition</b> : le plus de succès l'emporte · <b>maîtrise</b> : rang 1 = avantage, rang 2 = effet narratif (souvent 1 PE), rang 3 = effet majeur · <b>PE</b> = Physique + Mental ; 1–2 affaibli, 0 inconscient, négatif = état critique · <b>combat</b> : 2 actions par tour, attaque = test de Physique, 1 succès touche, dégâts = arme (1–5) + 1 par succès excédentaire − protection.</p>
-  </aside>
+  <div class="ends">
+    <div class="end"><i class="ic" data-ic="sas"></i><div><div class="et">L'AGENT INFILTRÉ A SURVÉCU</div>Exfiltration C.R.F. par le <b>sas 3</b>, avec les preuves.</div></div>
+    <div class="end"><i class="ic" data-ic="crane"></i><div><div class="et">SANCTION APPLIQUÉE</div>La Compagnie a puni son traître. Dossier clos <span class="redact" style="--w:10mm"></span>.</div></div>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>Jets utiles et esquives</h2>
+    <div class="with-egg">
+      <div>
+        <ul class="dash">
+          <li><b>Mental</b> (Méditation) : garder son sang-froid devant le tampon INTERCEPTÉ ; échec = −1 PE.</li>
+          <li><b>Mental</b> : ressentir une présence derrière une cloison.</li>
+          <li><b>Physique</b> (Infiltration) : se déplacer sans être vu.</li>
+        </ul>
+        <ul class="quotes">
+          <li><i class="ic" data-ic="bulle"></i><span>« Tout est sur l'écran. » · « Question suivante. »</span></li>
+        </ul>
+      </div>
+      <div class="illu" data-illu="oeuf"></div>
+    </div>
+  </section>
 
   <footer class="footer">
-    <span>WEYLAND-YUTANI CORP · PSYCHIC AGENTS · WY-NOS2-PA/2184</span>
+    <span>W.Y.C. · WY-NOS2-PA/2184</span>
     <span>3D6 Système – François Cedelle – licence ORC</span>
-    <span class="cursor">MU/TH/UR 6000</span>
+    <span class="side">AIDE DU MJ</span>
   </footer>
 </main>
+
+<script src="pretire.js"></script>
 </body>
 </html>

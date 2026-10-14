@@ -7,7 +7,15 @@ export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé co
 export const choosingScenario = signal(false); // accueil : choix du scénario avant le lancement
 export const settingsOpen = signal(false);
 /** Document d'un scénario (fiche ou guide du MJ) : page HTML lue dans l'app, et son PDF. */
-export interface ScenarioDocument { name: string; html: string; file: string }
+export interface ScenarioDocument {
+  name: string;
+  html: string;
+  file: string;
+  /** Pages de la page HTML lues dans l'app (sélecteur CSS, par défaut toutes : « .page »). */
+  pages?: string;
+  /** Version femme d'un prétiré : textes au féminin donnés par data-f. */
+  feminine?: boolean;
+}
 export const openDocument = signal<ScenarioDocument | null>(null);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »
 /** Tutoriel du 3D6 Système ouvert depuis l'accueil : numéro de la page affichée (0…), ou null. */
