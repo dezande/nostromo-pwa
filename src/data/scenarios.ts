@@ -181,7 +181,7 @@ const INFILTRATED: ScenarioText = {
   firstPanel: "email",
   lastPanel: "email",
   name: "Session disciplinaire",
-  description: "Vous êtes le Lieutenant D.R., agent de la C.R.F. infiltré. La direction sait tout : pour vous punir, elle vous envoie à l'entraînement.",
+  description: "Vous êtes le Lieutenant D.R., agent infiltré de la C.R.F. (Civil Resistance Force). La direction sait tout : pour vous punir, elle vous envoie à l'entraînement.",
   homeLine: "Agent C.R.F. démasqué.",
   level: "Confirmé",
   duration: "30 min",
