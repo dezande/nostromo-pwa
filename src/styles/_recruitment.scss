@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   height: calc(100vh - 32px);
-  height: calc(100dvh - 32px);
+  height: calc(var(--app-h) - 32px);
   max-height: 900px;
   overflow: hidden;
 
@@ -100,7 +100,7 @@
 
 // Petits écrans
 @media (max-height: 800px), (max-width: 480px) {
-  .contract-panel { height: calc(100dvh - 16px); }
+  .contract-panel { height: calc(var(--app-h) - 16px); }
   .contract-scroll { font-size: fs(10px); }
   .fingerprint { margin-top: 8px; .fingerprint-pad { width: 60px; height: 70px; } }
 }
@@ -141,7 +141,7 @@
 .email-panel {
   display: flex;
   flex-direction: column;
-  max-height: calc(100dvh - 32px);
+  max-height: calc(var(--app-h) - 32px);
   overflow: hidden;
   .email-alert { color: var(--red); font-size: fs(10px); letter-spacing: .2em; margin: 6px 0 8px; }
   .email-head {
@@ -171,5 +171,5 @@
 }
 
 @media (max-height: 800px), (max-width: 480px) {
-  .email-panel { max-height: calc(100dvh - 16px); .email-head { font-size: fs(10px); } }
+  .email-panel { max-height: calc(var(--app-h) - 16px); .email-head { font-size: fs(10px); } }
 }

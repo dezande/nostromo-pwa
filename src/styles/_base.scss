@@ -5,6 +5,10 @@
 
 // L'application tient exactement dans la fenêtre : jamais de défilement de la page.
 // (les écrans superposés font défiler leur propre panneau si besoin)
+// Hauteur visible de la fenêtre : remplacée par la mesure de src/state/viewport.ts dès le chargement.
+:root { --app-h: 100vh; }
+@supports (height: 100dvh) { :root { --app-h: 100dvh; } }
+
 html, body { margin: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
 
 body {
