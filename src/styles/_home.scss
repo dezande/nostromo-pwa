@@ -132,6 +132,9 @@
   dl.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 8px; }
   dt { color: var(--dim); letter-spacing: .1em; font-size: fs(11px); padding-top: 2px; }
   dd { margin: 0; }
+  // Historique de l'agent infiltré : frise datée, puis la mission encadrée
+  .timeline { row-gap: 8px; dd { padding-bottom: 6px; border-bottom: 1px dashed var(--line); } }
+  .mission { margin-top: 10px; padding: 8px 12px; border: 1px solid var(--amber); border-radius: 6px; .sub-h { color: var(--amber); } }
 
   // Titre du document
   .title { margin: 4px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }

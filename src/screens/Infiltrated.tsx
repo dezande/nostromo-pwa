@@ -18,8 +18,8 @@ export const EMAIL = {
   body: [
     "QG,",
     "J'ai infiltré la base lunaire secrète Nostromo II. La Weyland-Yutani y entraîne des Psychic Agents à ressentir la présence des Aliens.",
-    "Son projet de contrôle des xénomorphes continue, malgré les échecs et les morts. Huit spécimens adultes de génération IV sont confinés sous le plancher. [[Les hôtes seraient des condamnés à mort.]]",
-    "Je joins la copie de quatre protocoles et le plan de la base. S'ils me surprennent avec ces documents, la compagnie me jettera en pâture à ses créatures.",
+    "Son projet de contrôle des xénomorphes continue, malgré les échecs et les morts. Des spécimens adultes sont confinés sous le plancher. [[Les hôtes seraient des condamnés à mort.]]",
+    "Je joins le plan de la base et la copie de quatre protocoles d'intrusion : l'ordre dans lequel ils ferment les salles pendant les entraînements. S'ils me surprennent avec ces documents, la compagnie me jettera en pâture à ses créatures.",
     "Je tiens grâce au NS-X III. Prévoyez l'exfiltration.",
     "— Lieutenant D.R.",
   ],
