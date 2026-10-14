@@ -27,6 +27,10 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 
 ## Ce que fait l'app
 
+- **Bilingue français / anglais** : sélecteur FR · EN sur l'accueil (et *Réglages → Affichage*). Au premier lancement,
+  la langue du navigateur est choisie. Tout est traduit : interface, scénarios, contrat, plan, annonce vocale,
+  et les documents à imprimer (pages `fiches/*-en.html`, PDF aux noms anglais générés par `npm run fiches`).
+
 - **Trois scénarios**, au choix au lancement (« Démarrer », puis « Lancer ») ; le dernier choisi est proposé la fois suivante :
   - **Sixième sens** (par défaut ; joueur débutant, 20 à 30 min) : un Psychic Agent en formation sur la base lunaire Nostromo II.
     Panneau « Bienvenue à bord », puis quatre règles, chacune avec une scène animée tirée du vrai plan.
@@ -44,7 +48,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 - **Documents à imprimer** (PDF noir et blanc, système de jeu de rôle
   [3D6 Système](https://3d6.ovh/) de François Cedelle, licence ORC) : fiches de personnage prétirées
   (recto verso et illustrées, lisibles en A4 comme en A5 ; un PDF pour la version homme, un pour la
-  version femme, un pour l'aide du MJ) et guide du MJ pour chaque scénario, plus les cartes des
+  version femme, un pour l'aide du Superviseur) et guide du Superviseur pour chaque scénario, plus les cartes des
   petits rôles des spectateurs (format poker, neuf par page A4 : l'IA W.Y.C. TYCHE montre la carte et dit le
   nombre de déplacements, l'IA Protocole CERBÈRE annonce les salles qui ferment, un Xénomorphe par salle pousse
   le cri quand la sienne ferme, et deux Brutes (Sgt Voss, Cpl Brekke) gardent le Lieutenant D.R. dans la « Session disciplinaire »). Depuis l'écran de choix du scénario, on les lit directement dans l'app
@@ -115,7 +119,7 @@ src/
   styles/               Sass : un fichier par partie, réunis dans main.scss
   **/*.test.ts(x)       tests unitaires Jest, à côté du code testé
 tests/                  tests de bout en bout Playwright
-fiches/                 sources HTML des PDF (fiches de personnage, guides du MJ, cartes des rôles)
+fiches/                 sources HTML des PDF (fiches de personnage, guides du Superviseur, cartes des rôles)
 scripts/fiches.mjs      génération des PDF avec Playwright
 public/fiches/          PDF publiés avec l'app
 public/icons/           icônes de l'app
@@ -178,7 +182,7 @@ Les mêmes sources s'affichent dans l'app (bouton livre de l'accueil), à partir
 **Inspirations**
 
 - [*Nostromo II*](https://www.marchanddetrucs.com/magasin-de-magie/nos-produits/nostromo-ii.html) : Fred Darevil, Marchand de Trucs. L'effet que l'app accompagne : plan, protocoles et cartes.
-- [3D6 Système](https://3d6.ovh/) : François Cedelle, licence ORC. Système de jeu des fiches, des guides du MJ
+- [3D6 Système](https://3d6.ovh/) : François Cedelle, licence ORC. Système de jeu des fiches, des guides du Superviseur
   et du tutoriel.
 - [cool-retro-term](https://github.com/Swordfish90/cool-retro-term) : Swordfish90. Profils des styles d'écran
   et effets cathodiques.

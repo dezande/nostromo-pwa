@@ -9,6 +9,7 @@ import { render } from "preact";
 import { act } from "preact/test-utils";
 import { audio } from "../audio/audio";
 import { settings } from "../state/settings";
+import { lang } from "../i18n";
 import { homeOpen, settingsOpen } from "../state/ui";
 import * as game from "../state/game";
 import { Settings } from "./Settings";
@@ -49,8 +50,8 @@ test("onglet Alerte : trois fonds sonores et écoute", () => {
 });
 
 test("onglet Affichage : choix du format Tablette / Téléphone", () => {
-  expect($(".layouts").getAttribute("role")).toBe("radiogroup");
-  expect([...root.querySelectorAll(".layout-card")].map(e => e.textContent)).toEqual(["Tablette", "Téléphone"]);
+  expect($("#layout-tablet").parentElement!.getAttribute("role")).toBe("radiogroup");
+  expect([...root.querySelectorAll('[id^="layout-"]')].map(e => e.textContent)).toEqual(["Tablette", "Téléphone"]);
   act(() => { $("#layout-phone").click(); });
   expect(settings.layout.value).toBe("phone");
   expect($("#layout-phone").getAttribute("aria-checked")).toBe("true");
@@ -95,4 +96,19 @@ test("« Retour à l'accueil » seulement pendant une partie, avec confirmation 
   expect(settingsOpen.value).toBe(false);
   expect(game.inGame.value).toBe(false);
   expect((window as unknown as { speechSynthesis: { cancel: jest.Mock } }).speechSynthesis.cancel).toHaveBeenCalled();
+});
+
+test("onglet Affichage : choix de la langue, l'écran passe aussitôt en anglais", () => {
+  expect($("#setLang-fr").getAttribute("aria-checked")).toBe("true");
+  act(() => { $("#setLang-en").click(); });
+  try {
+    expect(lang.value).toBe("en");
+    expect(localStorage.getItem("nostromo-lang")).toBe("en");
+    expect(document.documentElement.lang).toBe("en");
+    expect($("h2").textContent).toBe("SETTINGS");
+    expect([...root.querySelectorAll('[role="tab"]')].map(t => t.textContent)).toEqual(["DISPLAY", "AUDIO", "ALERT", "SYSTEM"]);
+  } finally {
+    act(() => { $("#setLang-fr").click(); });
+  }
+  expect($("h2").textContent).toBe("RÉGLAGES");
 });

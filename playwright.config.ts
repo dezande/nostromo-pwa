@@ -9,9 +9,11 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:4173",
     serviceWorkers: "block",
-    // Tests silencieux : pas de son (la voix est aussi neutralisée dans tests/app.spec.ts).
+    // Tests silencieux : pas de son (la voix est aussi neutralisée dans tests/helpers.ts).
     launchOptions: { args: ["--mute-audio"] },
     headless: true,
+    // Navigateur en français : l'app s'ouvre en français (la version anglaise a son propre test).
+    locale: "fr-FR",
     trace: "retain-on-failure",
     // En local on utilise le Chrome installé ; en CI, le Chromium de Playwright.
     ...(process.env.CI ? {} : { channel: "chrome" }),

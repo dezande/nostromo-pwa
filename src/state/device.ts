@@ -1,5 +1,6 @@
 // Fonctions du navigateur : garder l'écran allumé, annonce vocale.
 import { settings } from "./settings";
+import { lang } from "../i18n";
 
 let wakeLock: WakeLockSentinel | null = null;
 
@@ -19,10 +20,10 @@ export function say(text: string) {
   if (!settings.voice.value || !("speechSynthesis" in window)) return;
   try {
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = "fr-FR";
+    u.lang = lang.value === "en" ? "en-US" : "fr-FR";
     u.rate = 0.9;
     u.pitch = 0.7;
-    const voice = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith("fr"));
+    const voice = speechSynthesis.getVoices().find(v => v.lang && v.lang.startsWith(lang.value));
     if (voice) u.voice = voice;
     speechSynthesis.cancel();
     speechSynthesis.speak(u);

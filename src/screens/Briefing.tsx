@@ -4,21 +4,22 @@
 // Chaque panneau est un moniteur mural de la salle de briefing, que l'instructeur fait défiler.
 import { useEffect } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
-import { Monitor, BRIEFING_ROOM } from "../components/Monitor";
+import { Monitor, briefingRoom } from "../components/Monitor";
 import { audio } from "../audio/audio";
 import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { RuleScene } from "../components/RuleScenes";
 import { Redact } from "../components/Redacted";
-import { SCENARIOS } from "../data/scenarios";
+import { scenarioText } from "../data/scenarios";
 import { settings } from "../state/settings";
 import { DOC_REFS } from "../data/documents";
 import { startGame } from "../state/game";
 import { briefing, type BriefingPanel } from "../state/ui";
+import { lang, tr } from "../i18n";
 
 export function Briefing() {
   const panel = briefing.value;
-  const text = SCENARIOS[settings.scenario.value];
+  const text = scenarioText(settings.scenario.value);
   const RULES = text.rules;
   // Retour depuis la première règle : dernier panneau d'introduction du scénario.
   const first = text.lastPanel;
@@ -27,18 +28,29 @@ export function Briefing() {
   return (
     <>
       <Overlay id="welcome" show={panel === "welcome"} class="briefing">
-        <Monitor label={`MONITEUR 00 · ${BRIEFING_ROOM}`}>
+        <Monitor label={`${tr("MONITEUR", "MONITOR")} 00 · ${briefingRoom()}`}>
         <div class="panel briefing-panel welcome-panel">
           <WeylandLogo class="logo-watermark logo-in-panel" />
-          <div class="briefing-corp">WEYLAND-YUTANI CORP · BASE LUNAIRE D'ENTRAÎNEMENT NOSTROMO II</div>
+          <div class="briefing-corp">WEYLAND-YUTANI CORP · {tr("BASE LUNAIRE D'ENTRAÎNEMENT NOSTROMO II", "NOSTROMO II LUNAR TRAINING BASE")}</div>
           <div class="doc-ref" id="welcomeRef">{DOC_REFS.welcome}</div>
           <div class="briefing-motto">« Building Better Worlds »</div>
-          <h2>BIENVENUE À BORD, AGENTS.</h2>
-          <p>Vous avez été sélectionnés pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
-          <p>Le vaisseau-base Nostromo II reproduit un cargo de taille moyenne de la compagnie. L'entraînement se déroule en conditions réelles. Huit spécimens adultes sont confinés sous le plancher du vaisseau.</p>
-          <p>Votre contrat prévoit les risques liés à cet entraînement. La compagnie vous remercie de votre engagement.</p>
+          {lang.value === "en" ? (
+            <>
+              <h2>WELCOME ABOARD, AGENTS.</h2>
+              <p>You have been selected to join the Weyland-Yutani Corporation's Psychic Agents program. Your future mission: to sense the presence of xenomorph creatures hidden aboard our colony ships.</p>
+              <p>The Nostromo II base ship replicates one of the company's medium-sized cargo vessels. Training takes place under real conditions. Eight adult specimens are confined beneath the ship's floor.</p>
+              <p>Your contract covers the risks of this training. The company thanks you for your commitment.</p>
+            </>
+          ) : (
+            <>
+              <h2>BIENVENUE À BORD, AGENTS.</h2>
+              <p>Vous avez été sélectionnés pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
+              <p>Le vaisseau-base Nostromo II reproduit un cargo de taille moyenne de la compagnie. L'entraînement se déroule en conditions réelles. Huit spécimens adultes sont confinés sous le plancher du vaisseau.</p>
+              <p>Votre contrat prévoit les risques liés à cet entraînement. La compagnie vous remercie de votre engagement.</p>
+            </>
+          )}
           <div class="row icon-row briefing-actions">
-            <IconButton id="welcomeNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = 1; }} />
+            <IconButton id="welcomeNext" icon="continuer" label={tr("Continuer", "Continue")} primary onClick={() => { briefing.value = 1; }} />
           </div>
         </div>
         </Monitor>
@@ -47,10 +59,10 @@ export function Briefing() {
       {/* Une règle par panneau, pour tenir dans l'écran sans défilement */}
       {RULES.map((rule, i) => (
         <Overlay key={rule.id} id={`rule${i + 1}`} show={panel === i + 1} class="briefing">
-          <Monitor label={`MONITEUR 0${i + 1}/0${RULES.length} · ${BRIEFING_ROOM}`} status="QUESTIONS : NON AUTORISÉES">
+          <Monitor label={`${tr("MONITEUR", "MONITOR")} 0${i + 1}/0${RULES.length} · ${briefingRoom()}`} status={tr("QUESTIONS : NON AUTORISÉES", "QUESTIONS: NOT AUTHORIZED")}>
           <div class="panel briefing-panel rule-panel">
             <div class="briefing-corp">
-              {text.rulesHeader} · RÈGLE <span class="rule-count">{i + 1}/{RULES.length}</span>
+              {text.rulesHeader} · {tr("RÈGLE", "RULE")} <span class="rule-count">{i + 1}/{RULES.length}</span>
             </div>
             <div class="doc-ref">{DOC_REFS.rule(i + 1)}</div>
             {i === 0 && <p class="briefing-intro"><Redact text={text.rulesIntro} /></p>}
@@ -62,9 +74,9 @@ export function Briefing() {
             </ul>
             {i === RULES.length - 1 && <p class="briefing-sign">{text.rulesSign}</p>}
             <div class="row icon-row briefing-actions">
-              <IconButton id={`rule${i + 1}Back`} icon="retour" label="Retour"
+              <IconButton id={`rule${i + 1}Back`} icon="retour" label={tr("Retour", "Back")}
                 onClick={() => { briefing.value = i === 0 ? first : (i as BriefingPanel); }} />
-              <IconButton id={`rule${i + 1}Next`} icon="continuer" label="Continuer" primary
+              <IconButton id={`rule${i + 1}Next`} icon="continuer" label={tr("Continuer", "Continue")} primary
                 onClick={() => { if (i === RULES.length - 1) { briefing.value = null; startGame(); } else briefing.value = (i + 2) as BriefingPanel; }} />
             </div>
           </div>

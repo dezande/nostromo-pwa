@@ -3,25 +3,26 @@
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { audio } from "../audio/audio";
-import { BOOT } from "../data/terminal";
+import { BOOT, BOOT_EN } from "../data/terminal";
 import { keepAwake } from "../state/device";
 import { showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
 import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, sourcesOpen, tutorial, type ScenarioDocument } from "../state/ui";
 import { settings, type Scenario } from "../state/settings";
-import { SCENARIOS } from "../data/scenarios";
+import { SCENARIO_IDS, scenarioText } from "../data/scenarios";
+import { LANGS, byLang, lang, tr } from "../i18n";
 import { contractSigned } from "./Recruitment";
 
 async function startSimulation() {
   if (terminalOpen.value) return;
   audio.init();
   keepAwake();
-  await runTerminal(BOOT);
+  await runTerminal(byLang({ fr: BOOT, en: BOOT_EN }));
   homeOpen.value = false;
   choosingScenario.value = false;
   showIntro();
   contractSigned.value = false;
-  briefing.value = SCENARIOS[settings.scenario.value].firstPanel;
+  briefing.value = scenarioText(settings.scenario.value).firstPanel;
 }
 
 export function Home() {
@@ -32,56 +33,89 @@ export function Home() {
           <Rocket />
           <div class="corp">WEYLAND-YUTANI CORP</div>
           <h2>NOSTROMO&nbsp;II</h2>
-          <div class="base">TRAINING BASE · LUNE</div>
+          <div class="base">TRAINING BASE · {tr("LUNE", "MOON")}</div>
           <div class="row icon-row home-actions">
-            <IconButton id="startBtn" icon="demarrer" label="Démarrer" primary onClick={() => { choosingScenario.value = true; }} />
-            <IconButton id="homeSetBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />
-            <IconButton id="tutoBtn" icon="tuto" label="Tutoriel 3D6 Système" onClick={() => { tutorial.value = 0; }} />
-            <IconButton id="sourcesBtn" icon="sources" label="Sources et crédits" onClick={() => { sourcesOpen.value = true; }} />
+            <IconButton id="startBtn" icon="demarrer" label={tr("Démarrer", "Start")} primary onClick={() => { choosingScenario.value = true; }} />
+            <IconButton id="homeSetBtn" icon="reglages" label={tr("Réglages", "Settings")} onClick={() => { settingsOpen.value = true; }} />
+            <IconButton id="tutoBtn" icon="tuto" label={tr("Tutoriel 3D6 Système", "3D6 Système tutorial")} onClick={() => { tutorial.value = 0; }} />
+            <IconButton id="sourcesBtn" icon="sources" label={tr("Sources et crédits", "Sources and credits")} onClick={() => { sourcesOpen.value = true; }} />
           </div>
-          <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
+          <LangSwitch />
+          <div class="blink">{tr("ACCÈS AUTORISÉ · NIVEAU 5", "ACCESS GRANTED · LEVEL 5")}</div>
         </div>
       )}
     </Overlay>
   );
 }
 
-/** Documents de chaque scénario : page HTML lue dans l'app (dossier fiches/) et PDF à imprimer (public/fiches). */
-/** label : texte court du bouton (name, complet, sert à la liseuse et aux lecteurs d'écran). */
-const SHEETS: Record<Scenario, (ScenarioDocument & { id: string; label: string })[]> = {
+/** Sorte de document : son nom (complet, pour la liseuse et les lecteurs d'écran) et le texte court du bouton. */
+type SheetKind = "male" | "female" | "aid" | "guide" | "roles";
+const SHEET_NAMES = (): Record<SheetKind, { name: string; label: string }> => ({
+  male: { name: tr("Prétiré homme", "Pre-gen (male)"), label: tr("Prétiré H", "Pre-gen M") },
+  female: { name: tr("Prétiré femme", "Pre-gen (female)"), label: tr("Prétiré F", "Pre-gen F") },
+  aid: { name: tr("Aide du Superviseur", "Supervisor aid"), label: tr("Aide", "Aid") },
+  guide: { name: tr("Guide du Superviseur", "Supervisor guide"), label: tr("Guide", "Guide") },
+  roles: { name: tr("Cartes des petits rôles", "Minor role cards"), label: tr("Rôles", "Roles") },
+});
+
+/**
+ * Un document : page HTML lue dans l'app (dossier fiches/) et PDF à imprimer (public/fiches),
+ * en français, avec leur version anglaise dans `en`.
+ */
+type Sheet = Omit<ScenarioDocument, "name"> & { id: string; kind: SheetKind; en: { html: string; file: string } };
+
+/** Document dans la langue de l'app, avec son nom et le texte court de son bouton. */
+const localized = ({ kind, en, ...sheet }: Sheet): ScenarioDocument & { id: string; label: string } =>
+  ({ ...sheet, ...(lang.value === "en" ? en : {}), ...SHEET_NAMES()[kind] });
+
+/** Documents de chaque scénario. */
+const SHEETS: Record<Scenario, Sheet[]> = {
   training: [
-    { id: "trainingPdf", html: "psychic-agent.html", pages: ".page.joueur", file: "nostromo-fiche-psychic-agent-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
-    { id: "trainingFemPdf", html: "psychic-agent.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-psychic-agent-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
-    { id: "trainingMjPdf", html: "psychic-agent.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-entrainement.pdf", name: "Aide du MJ", label: "Aide MJ" },
-    { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ", label: "Guide MJ" },
+    { id: "trainingPdf", kind: "male", html: "psychic-agent.html", pages: ".page.joueur", file: "nostromo-fiche-psychic-agent-homme.pdf",
+      en: { html: "psychic-agent-en.html", file: "nostromo-sheet-psychic-agent-male.pdf" } },
+    { id: "trainingFemPdf", kind: "female", html: "psychic-agent.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-psychic-agent-femme.pdf",
+      en: { html: "psychic-agent-en.html", file: "nostromo-sheet-psychic-agent-female.pdf" } },
+    { id: "trainingMjPdf", kind: "aid", html: "psychic-agent.html", pages: ".page:not(.joueur)", file: "nostromo-aide-superviseur-entrainement.pdf",
+      en: { html: "psychic-agent-en.html", file: "nostromo-supervisor-aid-training.pdf" } },
+    { id: "trainingGuidePdf", kind: "guide", html: "guide-superviseur-entrainement.html", file: "nostromo-guide-superviseur-entrainement.pdf",
+      en: { html: "guide-superviseur-entrainement-en.html", file: "nostromo-supervisor-guide-training.pdf" } },
   ],
   recruitment: [
-    { id: "sheetsPdf", html: "fiches.html", pages: ".page.joueur", file: "nostromo-fiche-reyes-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
-    { id: "sheetsFemPdf", html: "fiches.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-reyes-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
-    { id: "sheetsMjPdf", html: "fiches.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-recrutement.pdf", name: "Aide du MJ", label: "Aide MJ" },
-    { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ", label: "Guide MJ" },
+    { id: "sheetsPdf", kind: "male", html: "fiches.html", pages: ".page.joueur", file: "nostromo-fiche-reyes-homme.pdf",
+      en: { html: "fiches-en.html", file: "nostromo-sheet-reyes-male.pdf" } },
+    { id: "sheetsFemPdf", kind: "female", html: "fiches.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-reyes-femme.pdf",
+      en: { html: "fiches-en.html", file: "nostromo-sheet-reyes-female.pdf" } },
+    { id: "sheetsMjPdf", kind: "aid", html: "fiches.html", pages: ".page:not(.joueur)", file: "nostromo-aide-superviseur-recrutement.pdf",
+      en: { html: "fiches-en.html", file: "nostromo-supervisor-aid-recruitment.pdf" } },
+    { id: "guidePdf", kind: "guide", html: "guide-superviseur.html", file: "nostromo-guide-superviseur-recrutement.pdf",
+      en: { html: "guide-superviseur-en.html", file: "nostromo-supervisor-guide-recruitment.pdf" } },
   ],
   infiltrated: [
-    { id: "infiltratedPdf", html: "infiltre.html", pages: ".page.joueur", file: "nostromo-fiche-lieutenant-dr-homme.pdf", name: "Prétiré homme", label: "Prétiré H" },
-    { id: "infiltratedFemPdf", html: "infiltre.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-lieutenant-dr-femme.pdf", name: "Prétiré femme", label: "Prétiré F" },
-    { id: "infiltratedMjPdf", html: "infiltre.html", pages: ".page:not(.joueur)", file: "nostromo-aide-mj-infiltre.pdf", name: "Aide du MJ", label: "Aide MJ" },
-    { id: "infiltratedGuidePdf", html: "guide-mj-infiltre.html", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ", label: "Guide MJ" },
+    { id: "infiltratedPdf", kind: "male", html: "infiltre.html", pages: ".page.joueur", file: "nostromo-fiche-lieutenant-dr-homme.pdf",
+      en: { html: "infiltre-en.html", file: "nostromo-sheet-lieutenant-dr-male.pdf" } },
+    { id: "infiltratedFemPdf", kind: "female", html: "infiltre.html", pages: ".page.joueur", feminine: true, file: "nostromo-fiche-lieutenant-dr-femme.pdf",
+      en: { html: "infiltre-en.html", file: "nostromo-sheet-lieutenant-dr-female.pdf" } },
+    { id: "infiltratedMjPdf", kind: "aid", html: "infiltre.html", pages: ".page:not(.joueur)", file: "nostromo-aide-superviseur-infiltre.pdf",
+      en: { html: "infiltre-en.html", file: "nostromo-supervisor-aid-infiltrated.pdf" } },
+    { id: "infiltratedGuidePdf", kind: "guide", html: "guide-superviseur-infiltre.html", file: "nostromo-guide-superviseur-infiltre.pdf",
+      en: { html: "guide-superviseur-infiltre-en.html", file: "nostromo-supervisor-guide-infiltrated.pdf" } },
   ],
 };
 
 /** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios. */
-const ROLES = { id: "rolesPdf", html: "roles.html", file: "nostromo-cartes-roles.pdf", name: "Cartes des petits rôles", label: "Rôles" };
+const ROLES: Sheet = { id: "rolesPdf", kind: "roles", html: "roles.html", file: "nostromo-cartes-roles.pdf",
+  en: { html: "roles-en.html", file: "nostromo-role-cards.pdf" } };
 
 /** Un document : « lire dans l'app » (bouton court) et son PDF. */
 function SheetLink({ id, label, ...sheet }: ScenarioDocument & { id: string; label: string }) {
   return (
     <span class="sheet">
-      <button type="button" class="sheet-link" id={`${id}Read`} aria-label={`Lire : ${sheet.name}`} onClick={() => { openDocument.value = sheet; }}>
+      <button type="button" class="sheet-link" id={`${id}Read`} aria-label={tr(`Lire : ${sheet.name}`, `Read: ${sheet.name}`)} onClick={() => { openDocument.value = sheet; }}>
         {label}
       </button>
       <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
         download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
-        aria-label={`${sheet.name} en PDF`}>
+        aria-label={tr(`${sheet.name} en PDF`, `${sheet.name} as PDF`)}>
         PDF
       </a>
     </span>
@@ -93,39 +127,53 @@ function ScenarioChoice() {
   const current = settings.scenario.value;
   return (
     <div class="home scenario-choice">
-      <h2 id="scenarioTitle">SCÉNARIO</h2>
+      <h2 id="scenarioTitle">{tr("SCÉNARIO", "SCENARIO")}</h2>
       <div class="alert-cards scenario-cards" role="radiogroup" aria-labelledby="scenarioTitle">
-        {(Object.keys(SCENARIOS) as Scenario[]).map(id => (
+        {SCENARIO_IDS.map(id => (
           <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
             onClick={() => { settings.scenario.value = id; }}>
             <span class="scenario-head">
-              <strong>{SCENARIOS[id].name}</strong>
-              <small class="scenario-meta" title="Niveau du joueur et durée indicative">{SCENARIOS[id].level} · {SCENARIOS[id].duration}</small>
+              <strong>{scenarioText(id).name}</strong>
+              <small class="scenario-meta" title={tr("Niveau du joueur et durée indicative", "Player level and approximate duration")}>{scenarioText(id).level} · {scenarioText(id).duration}</small>
             </span>
-            <small class="scenario-line">{SCENARIOS[id].homeLine}</small>
+            <small class="scenario-line">{scenarioText(id).homeLine}</small>
           </button>
         ))}
       </div>
       {/* Toutes les descriptions empilées, une seule visible : la hauteur suit la plus longue et rien ne bouge au changement de scénario */}
       <div class="scenario-desc">
-        {(Object.keys(SCENARIOS) as Scenario[]).map(id => id === current
-          ? <p key={id} id="scenarioDesc">{SCENARIOS[id].description}</p>
-          : <p key={id} class="hidden-desc" aria-hidden="true">{SCENARIOS[id].description}</p>)}
+        {SCENARIO_IDS.map(id => id === current
+          ? <p key={id} id="scenarioDesc">{scenarioText(id).description}</p>
+          : <p key={id} class="hidden-desc" aria-hidden="true">{scenarioText(id).description}</p>)}
       </div>
       <div class="sheets" id="sheets">
         {/* Les cartes des rôles sur la ligne du titre : l'écran tient encore sur un petit téléphone */}
         <div class="sheets-head">
           <span class="set-label">Documents (3D6 Système)</span>
-          <SheetLink {...ROLES} />
+          <SheetLink {...localized(ROLES)} />
         </div>
         <div class="sheet-links">
-          {SHEETS[current].map(sheet => <SheetLink key={sheet.id} {...sheet} />)}
+          {SHEETS[current].map(sheet => <SheetLink key={sheet.id} {...localized(sheet)} />)}
         </div>
       </div>
       <div class="row icon-row home-actions">
-        <IconButton id="scenarioBack" icon="retour" label="Retour" onClick={() => { choosingScenario.value = false; }} />
-        <IconButton id="launchBtn" icon="demarrer" label="Lancer" primary onClick={startSimulation} />
+        <IconButton id="scenarioBack" icon="retour" label={tr("Retour", "Back")} onClick={() => { choosingScenario.value = false; }} />
+        <IconButton id="launchBtn" icon="demarrer" label={tr("Lancer", "Launch")} primary onClick={startSimulation} />
       </div>
+    </div>
+  );
+}
+
+/** Choix de la langue, à l'accueil : FR · EN. */
+function LangSwitch() {
+  return (
+    <div class="lang-switch" role="radiogroup" aria-label="Langue / Language">
+      {LANGS.map(l => (
+        <button key={l} type="button" id={`lang-${l}`} role="radio" aria-checked={lang.value === l}
+          lang={l} aria-label={l === "fr" ? "Français" : "English"} onClick={() => { lang.value = l; }}>
+          {l.toUpperCase()}
+        </button>
+      ))}
     </div>
   );
 }

@@ -37,7 +37,7 @@ export function Icon({ name }: { name: IconName }) {
 
 type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "icon" | "label"> & {
   icon: IconName;
-  /** Nom du bouton en français : lu par les lecteurs d'écran et affiché au survol. */
+  /** Nom du bouton, dans la langue de l'app : lu par les lecteurs d'écran et affiché au survol. */
   label: string;
   primary?: boolean;
 };

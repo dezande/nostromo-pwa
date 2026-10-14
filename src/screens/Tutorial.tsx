@@ -7,11 +7,13 @@ import { Overlay } from "../components/Overlay";
 import { Monitor } from "../components/Monitor";
 import { IconButton } from "../components/Icon";
 import { audio } from "../audio/audio";
-import { TUTORIAL, type TutorialScene } from "../data/tutorial";
+import { TUTORIAL as TUTORIAL_FR, TUTORIAL_EN, type TutorialScene } from "../data/tutorial";
 import { tutorial } from "../state/ui";
+import { byLang, lang, tr } from "../i18n";
 
 export function Tutorial() {
   const i = tutorial.value;
+  const TUTORIAL = byLang({ fr: TUTORIAL_FR, en: TUTORIAL_EN });
   const page = i === null ? null : TUTORIAL[i];
   const last = TUTORIAL.length - 1;
   useEffect(() => { if (i !== null) audio.tick(); }, [i]);
@@ -19,29 +21,29 @@ export function Tutorial() {
   return (
     <Overlay id="tutorial" show={page !== null} class="briefing">
       {page && i !== null && (
-        <Monitor label={`TUTORIEL ${String(i + 1).padStart(2, "0")}/${String(TUTORIAL.length).padStart(2, "0")} · 3D6 SYSTÈME`}>
+        <Monitor label={`${tr("TUTORIEL", "TUTORIAL")} ${String(i + 1).padStart(2, "0")}/${String(TUTORIAL.length).padStart(2, "0")} · 3D6 SYSTÈME`}>
           <div class="panel briefing-panel tuto-panel">
             <div class="tuto-head">
-              <div class="briefing-corp">JEU DE RÔLE · 3D6 SYSTÈME</div>
-              <IconButton id="tutoClose" icon="annuler" label="Fermer le tutoriel" class="tuto-close" onClick={close} />
+              <div class="briefing-corp">{tr("JEU DE RÔLE", "ROLE-PLAYING GAME")} · 3D6 SYSTÈME</div>
+              <IconButton id="tutoClose" icon="annuler" label={tr("Fermer le tutoriel", "Close the tutorial")} class="tuto-close" onClick={close} />
             </div>
             <div class="tuto-scene"><Scene name={page.scene} /></div>
             <h3 class="tuto-title">{page.title}</h3>
             <ul class="rule-points">
               {page.points.map(p => <li key={p}>{p}</li>)}
             </ul>
-            {page.example && <p class="tuto-example"><span>EXEMPLE</span> {page.example}</p>}
+            {page.example && <p class="tuto-example"><span>{tr("EXEMPLE", "EXAMPLE")}</span> {page.example}</p>}
             <div class="tuto-dots" aria-hidden="true">
               {TUTORIAL.map((_, n) => <span key={n} class={n === i ? "on" : ""} />)}
             </div>
             <div class="row icon-row briefing-actions">
-              <IconButton id="tutoBack" icon="retour" label="Précédent" disabled={i === 0}
+              <IconButton id="tutoBack" icon="retour" label={tr("Précédent", "Previous")} disabled={i === 0}
                 onClick={() => { tutorial.value = i - 1; }} />
               {i < last
-                ? <IconButton id="tutoNext" icon="continuer" label="Suivant" primary onClick={() => { tutorial.value = i + 1; }} />
-                : <IconButton id="tutoDone" icon="valider" label="Terminer" primary onClick={close} />}
+                ? <IconButton id="tutoNext" icon="continuer" label={tr("Suivant", "Next")} primary onClick={() => { tutorial.value = i + 1; }} />
+                : <IconButton id="tutoDone" icon="valider" label={tr("Terminer", "Finish")} primary onClick={close} />}
             </div>
-            <div class="tuto-credit">3D6 Système – François Cedelle – licence ORC</div>
+            <div class="tuto-credit">3D6 Système – François Cedelle – {tr("licence ORC", "ORC licence")}</div>
           </div>
         </Monitor>
       )}
@@ -101,30 +103,30 @@ function Scene({ name }: { name: TutorialScene }) {
   switch (name) {
     case "test":
       return (
-        <Svg label="Trois dés lancés, comparés à une caractéristique">
+        <Svg label={tr("Trois dés lancés, comparés à une caractéristique", "Three dice rolled, compared to an attribute")}>
           <Die x={20} y={30} v={3} /><Die x={62} y={22} v={5} /><Die x={104} y={34} v={1} />
           <text x="78" y="88" class="t-small">3D6</text>
           <text x="172" y="58" class="t-big t-dim">⇄</text>
-          <Stat x={204} y={14} name="MEN" v={4} />
-          <text x="232" y="88" class="t-small">1 À 5</text>
+          <Stat x={204} y={14} name={tr("MEN", "MEN")} v={4} />
+          <text x="232" y="88" class="t-small">{tr("1 À 5", "1 TO 5")}</text>
         </Svg>
       );
     case "succes":
       return (
-        <Svg label="Mental 4 : les dés 2 et 4 réussissent, le 6 échoue, soit 2 succès">
+        <Svg label={tr("Mental 4 : les dés 2 et 4 réussissent, le 6 échoue, soit 2 succès", "Mental 4: dice 2 and 4 succeed, the 6 fails, so 2 successes")}>
           <Stat x={10} y={20} name="MEN" v={4} />
           <Die x={84} y={25} v={2} s="ok" /><Die x={126} y={25} v={4} s="ok" /><Die x={168} y={25} v={6} s="ko" />
           <text x="101" y="80" class="t-small t-ok">✓</text>
           <text x="143" y="80" class="t-small t-ok">✓</text>
           <text x="185" y="80" class="t-small t-dim">✗</text>
           <text x="258" y="48" class="t-big t-ok">2</text>
-          <text x="258" y="66" class="t-small t-ok">SUCCÈS</text>
+          <text x="258" y="66" class="t-small t-ok">{tr("SUCCÈS", "SUCCESS")}</text>
         </Svg>
       );
     case "difficulte":
       return (
-        <Svg label="Difficulté : Facile 1, Moyenne 2, Difficile 3, Extrême 4 succès">
-          {["FACILE", "MOYENNE", "DIFFICILE", "EXTRÊME"].map((lbl, n) => (
+        <Svg label={tr("Difficulté : Facile 1, Moyenne 2, Difficile 3, Extrême 4 succès", "Difficulty: Easy 1, Average 2, Hard 3, Extreme 4 successes")}>
+          {(lang.value === "en" ? ["EASY", "AVERAGE", "HARD", "EXTREME"] : ["FACILE", "MOYENNE", "DIFFICILE", "EXTRÊME"]).map((lbl, n) => (
             <g key={lbl} transform={`translate(${14 + n * 72} 0)`}>
               {Array.from({ length: n + 1 }, (_, k) => (
                 <rect key={k} class={n === 3 ? "bar bar-hot" : "bar"} x="16" y={58 - k * 14} width="30" height="10" rx="2" />
@@ -136,46 +138,46 @@ function Scene({ name }: { name: TutorialScene }) {
       );
     case "avantage":
       return (
-        <Svg label="Avantage : 4 dés. Désavantage : 2 dés">
-          <text x="76" y="16" class="t-small t-ok">AVANTAGE · 4D6</text>
+        <Svg label={tr("Avantage : 4 dés. Désavantage : 2 dés", "Advantage: 4 dice. Disadvantage: 2 dice")}>
+          <text x="76" y="16" class="t-small t-ok">{tr("AVANTAGE · 4D6", "ADVANTAGE · 4D6")}</text>
           <Die x={6} y={30} v={4} size={30} /><Die x={42} y={30} v={2} size={30} />
           <Die x={78} y={30} v={6} size={30} /><Die x={114} y={30} v={3} size={30} />
-          <text x="76" y="86" class="t-mid t-ok">+1 DÉ</text>
+          <text x="76" y="86" class="t-mid t-ok">{tr("+1 DÉ", "+1 DIE")}</text>
           <line class="sep" x1="160" y1="12" x2="160" y2="88" />
-          <text x="228" y="16" class="t-small t-warn">DÉSAVANTAGE · 2D6</text>
+          <text x="228" y="16" class="t-small t-warn">{tr("DÉSAVANTAGE · 2D6", "DISADVANTAGE · 2D6")}</text>
           <Die x={192} y={30} v={5} size={30} /><Die x={234} y={30} v={1} size={30} />
-          <text x="228" y="86" class="t-mid t-warn">−1 DÉ</text>
+          <text x="228" y="86" class="t-mid t-warn">{tr("−1 DÉ", "−1 DIE")}</text>
         </Svg>
       );
     case "critique":
       return (
-        <Svg label="Triple 1 : réussite critique. Triple 6 : échec critique">
+        <Svg label={tr("Triple 1 : réussite critique. Triple 6 : échec critique", "Triple 1: critical success. Triple 6: critical failure")}>
           <Die x={6} y={22} v={1} s="ok" size={30} /><Die x={42} y={22} v={1} s="ok" size={30} /><Die x={78} y={22} v={1} s="ok" size={30} />
-          <text x="68" y="78" class="t-small t-ok">RÉUSSITE CRITIQUE</text>
+          <text x="68" y="78" class="t-small t-ok">{tr("RÉUSSITE CRITIQUE", "CRITICAL SUCCESS")}</text>
           <Die x={164} y={22} v={6} s="crit" size={30} /><Die x={200} y={22} v={6} s="crit" size={30} /><Die x={236} y={22} v={6} s="crit" size={30} />
-          <text x="226" y="78" class="t-small t-red">ÉCHEC CRITIQUE</text>
+          <text x="226" y="78" class="t-small t-red">{tr("ÉCHEC CRITIQUE", "CRITICAL FAILURE")}</text>
         </Svg>
       );
     case "opposition":
       return (
-        <Svg label="Opposition : 2 succès contre 1, le plus de succès l'emporte">
+        <Svg label={tr("Opposition : 2 succès contre 1, le plus de succès l'emporte", "Opposed test: 2 successes against 1, most successes wins")}>
           <Person x={16} />
           <text x="86" y="40" class="t-big t-ok">2</text>
-          <text x="86" y="58" class="t-small t-ok">SUCCÈS</text>
+          <text x="86" y="58" class="t-small t-ok">{tr("SUCCÈS", "SUCCESS")}</text>
           <text x="150" y="54" class="t-big t-dim">VS</text>
           <text x="214" y="40" class="t-big t-dim">1</text>
-          <text x="214" y="58" class="t-small t-dim">SUCCÈS</text>
+          <text x="214" y="58" class="t-small t-dim">{tr("SUCCÈS", "SUCCESS")}</text>
           <Person x={244} />
-          <text x="86" y="86" class="t-small t-ok">L'EMPORTE</text>
+          <text x="86" y="86" class="t-small t-ok">{tr("L'EMPORTE", "WINS")}</text>
         </Svg>
       );
     case "maitrise":
       return (
-        <Svg label="Maîtrises : rang 1 avantage, rang 2 effet, rang 3 effet majeur">
-          {["AVANTAGE", "EFFET", "MAJEUR"].map((lbl, r) => (
+        <Svg label={tr("Maîtrises : rang 1 avantage, rang 2 effet, rang 3 effet majeur", "Masteries: rank 1 advantage, rank 2 effect, rank 3 major effect")}>
+          {(lang.value === "en" ? ["ADVANTAGE", "EFFECT", "MAJOR"] : ["AVANTAGE", "EFFET", "MAJEUR"]).map((lbl, r) => (
             <g key={lbl} transform={`translate(${12 + r * 96} 18)`}>
               {[0, 1, 2].map(k => <rect key={k} class={k <= r ? "sq on" : "sq"} x={k * 24} y="10" width="18" height="18" />)}
-              <text x="33" y="52" class="t-small">RANG {r + 1}</text>
+              <text x="33" y="52" class="t-small">{tr("RANG", "RANK")} {r + 1}</text>
               <text x="33" y="68" class="t-small t-ok">{lbl}</text>
             </g>
           ))}
@@ -183,28 +185,28 @@ function Scene({ name }: { name: TutorialScene }) {
       );
     case "pe":
       return (
-        <Svg label="Jauge de points d'énergie : 1 ou 2 affaibli, 0 inconscient">
+        <Svg label={tr("Jauge de points d'énergie : 1 ou 2 affaibli, 0 inconscient", "Energy points gauge: 1 or 2 weakened, 0 unconscious")}>
           {[0, 1, 2, 3, 4, 5, 6].map(n => (
             <g key={n} transform={`translate(${18 + n * 38} 22)`}>
               <rect class={n === 0 ? "cell cell-red" : n <= 2 ? "cell cell-warn" : "cell"} width="30" height="30" rx="3" />
               <text x="15" y="20" class={n === 0 ? "t-small t-red" : n <= 2 ? "t-small t-warn" : "t-small"}>{n}</text>
             </g>
           ))}
-          <text x="42" y="76" class="t-small t-red">INCONSCIENT</text>
-          <text x="109" y="76" class="t-small t-warn">AFFAIBLI</text>
-          <text x="223" y="76" class="t-small t-ok">EN FORME</text>
+          <text x="42" y="76" class="t-small t-red">{tr("INCONSCIENT", "UNCONSCIOUS")}</text>
+          <text x="109" y="76" class="t-small t-warn">{tr("AFFAIBLI", "WEAKENED")}</text>
+          <text x="223" y="76" class="t-small t-ok">{tr("EN FORME", "FIT")}</text>
         </Svg>
       );
     case "combat":
       return (
-        <Svg label="Combat : arme plus succès en plus, moins la protection">
+        <Svg label={tr("Combat : arme plus succès en plus, moins la protection", "Combat: weapon plus extra successes, minus armor")}>
           <g class="cross" transform="translate(44 46)">
             <circle r="26" /><circle r="10" />
             <path d="M0 -36V-16M0 16V36M-36 0H-16M16 0H36" />
           </g>
-          <text x="190" y="30" class="t-small">DÉGÂTS</text>
-          <text x="190" y="56" class="t-mid t-ok">ARME + SUCCÈS EN PLUS</text>
-          <text x="190" y="80" class="t-mid t-warn">− PROTECTION</text>
+          <text x="190" y="30" class="t-small">{tr("DÉGÂTS", "DAMAGE")}</text>
+          <text x="190" y="56" class="t-mid t-ok">{tr("ARME + SUCCÈS EN PLUS", "WEAPON + EXTRA SUCCESSES")}</text>
+          <text x="190" y="80" class="t-mid t-warn">{tr("− PROTECTION", "− ARMOR")}</text>
         </Svg>
       );
   }
