@@ -119,6 +119,7 @@ ul.dash li::before { content: "— "; }
 .idcode .code { font-size: 9pt; letter-spacing: 0.14em; text-align: right; }
 .kv { display: grid; grid-template-columns: auto 1fr; column-gap: 2.4mm; row-gap: 1mm; margin: 0; align-content: start; }
 .kv dt { font-weight: 600; letter-spacing: 0.03em; white-space: nowrap; display: flex; align-items: center; gap: 1.4mm; }
+.kv dt > span { display: contents; } /* icône du sexe (variante au féminin) */
 .kv dd { margin: 0; border-bottom: 0.7pt dotted var(--ink); }
 .kv .name { font-size: 13pt; font-weight: 700; letter-spacing: 0.04em; }
 

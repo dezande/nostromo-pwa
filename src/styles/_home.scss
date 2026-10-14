@@ -200,6 +200,7 @@
   .screen { padding: 0 4px; border: 1px solid var(--line); color: var(--accent); }
   .stamp { display: inline-block; padding: 0 6px; border: 1px solid var(--amber); color: var(--amber); letter-spacing: .1em; }
   .sub .stamp { margin-left: 8px; }
+  .sex { font-size: 1.5em; line-height: 1; color: var(--accent); }
   .redact { display: inline-block; width: 5em; height: .9em; vertical-align: middle; background: var(--dim); opacity: .7; }
   .cut { margin: 16px 0 12px; padding: 6px 0; border-top: 1px dashed var(--dim); border-bottom: 1px dashed var(--dim); color: var(--dim); font-size: fs(11px); text-align: center; }
   .signature { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; color: var(--dim); font-size: fs(11px); }
