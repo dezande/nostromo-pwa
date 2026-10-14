@@ -16,6 +16,8 @@ export const ICONS = {
   ),
   // Dé « à traits » sur sa face 4 (tutoriel du 3D6 Système)
   tuto: <><rect x="4" y="4" width="16" height="16" rx="2.5" /><path d="M8 8.5h4.5M8 12h4.5M8 15.5h4.5M16 8v8" /></>,
+  // Livre ouvert (sources et crédits)
+  sources: <><path d="M12 6.5C10 5 7 4.5 3.5 5v13.5C7 18 10 18.5 12 20c2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z" /><path d="M12 6.5V20" /></>,
   accueil: <><path d="M3.5 11.5L12 4l8.5 7.5" /><path d="M6 10v9.5h4.5v-5h3v5H18V10" /></>,
   son: <><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" /></>,
   muet: <><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M16 9.5l5 5M21 9.5l-5 5" /></>,

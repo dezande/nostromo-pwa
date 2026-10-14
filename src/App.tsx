@@ -11,6 +11,7 @@ import { EndScreen } from "./screens/EndScreen";
 import { Settings } from "./screens/Settings";
 import { DocumentViewer } from "./screens/DocumentViewer";
 import { Tutorial } from "./screens/Tutorial";
+import { Sources } from "./screens/Sources";
 import { Transition } from "./screens/Transition";
 import { shake } from "./state/game";
 
@@ -38,6 +39,7 @@ export function App() {
       <EndScreen />
       <Home />
       <Tutorial />
+      <Sources />
       <Settings />
       <DocumentViewer />
       <PressStart />

@@ -1,0 +1,52 @@
+@use "functions" as *;
+
+// ---------- Sources et crédits (ouvert depuis l'accueil) ----------
+.sources-panel {
+  .tuto-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .tuto-close { width: 36px; height: 36px; flex: none; }
+  h2 { margin: 10px 0 4px; }
+
+  .source-group { margin-top: 14px; }
+  .source-group h3 { margin: 0 0 6px; font-size: fs(11px); font-weight: normal; letter-spacing: .25em; text-transform: uppercase; color: var(--dim); }
+
+  .source-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .source-list.with-qr { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+  .source {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 6px 10px;
+    border-left: 2px solid var(--line);
+  }
+  .source-qr { align-items: center; padding: 8px; border: 1px solid var(--line); border-radius: 8px; }
+
+  .source-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+  strong { color: var(--accent); font-weight: normal; letter-spacing: .08em; }
+  .source-by { color: var(--amber); font-size: fs(11px); }
+  .source-use { color: var(--ink); font-size: fs(12px); }
+  .source-url { color: var(--dim); font-size: fs(11px); overflow-wrap: anywhere; }
+  .source-url:hover, .source-url:focus-visible { color: var(--accent); }
+
+  .source-note { margin-top: 14px; color: var(--dim); font-size: fs(11px); font-style: italic; }
+  .briefing-actions { margin-top: 12px; justify-content: center; }
+}
+
+// QR code : modules sombres sur fond clair, aux couleurs du style d'écran
+.qr {
+  flex: none;
+  width: 104px;
+  height: 104px;
+  border-radius: 4px;
+  .qr-bg { fill: var(--ink); }
+  .qr-on { fill: var(--bg); }
+}
+
+@media (max-height: 800px), (max-width: 480px) {
+  .sources-panel {
+    .source-group { margin-top: 10px; }
+    .source-list.with-qr { grid-template-columns: 1fr; }
+    .source-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  }
+  .qr { width: 88px; height: 88px; }
+}

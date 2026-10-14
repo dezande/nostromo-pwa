@@ -53,6 +53,9 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   - *Alerte* : musique jouée pendant la partie (sirène, klaxon ou détecteur) ;
   - *Système* : écran toujours allumé, numéro de build et état du mode hors ligne.
 
+- **Sources** (bouton livre de l'accueil) : crédits, inspirations et outils, avec un QR code pour ouvrir
+  depuis un téléphone l'app, son code, le 3D6 Système et cool-retro-term.
+
 Musique et bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
 
 ## Démarrer
@@ -90,6 +93,7 @@ src/
     documents.ts        faux numéros de documents
     themes.ts           styles d'écran (inspirés de cool-retro-term)
     terminal.ts         textes des écrans de transition (MU/TH/UR 6000)
+    sources.ts          sources et crédits de l'écran « Sources »
   state/                état et actions
     game.ts             partie : pion, déplacements, fermetures, fin
     settings.ts         réglages enregistrés dans le navigateur
