@@ -48,6 +48,8 @@
   @container (min-width: 640px) { .sheet-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   @container (max-width: 300px) { .sheet-links { grid-template-columns: minmax(0, 1fr); } }
   .sheet { min-width: 0; }
+  // Petits rôles : un seul document, à sa largeur, sous la grille des documents du scénario
+  .sheets.roles .sheet-links { display: flex; justify-content: center; }
   .sheet > .sheet-link:first-child { flex: 1; min-width: 0; white-space: nowrap; }
   .sheet-link { padding: 8px 10px; }
 }

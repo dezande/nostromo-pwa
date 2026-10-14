@@ -7,9 +7,9 @@ import { openDocument, type ScenarioDocument } from "../state/ui";
 
 /**
  * Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page,
- * icônes, dessins, code-barres et cases à cocher des prétirés (tracés par fiches/pretire.js).
+ * icônes, dessins, code-barres et cases à cocher des prétirés (tracés par fiches/pretire.js), icônes des cartes de rôle.
  */
-const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu, .barcode, .track, .notes";
+const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu, .barcode, .track, .notes, .symbol, .xeno-head";
 
 /** Garde le contenu des pages A4 choisies, sans la mise en page imprimée ; au féminin si demandé (data-f). */
 export function documentText(html: string, { pages = ".page", feminine = false }: Pick<ScenarioDocument, "pages" | "feminine"> = {}): string {

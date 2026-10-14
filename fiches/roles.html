@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Nostromo II — Cartes des petits rôles</title>
+<link rel="stylesheet" href="fiche.css">
+<link rel="stylesheet" href="roles.css">
+</head>
+<body class="roles">
+
+<!-- Cartes des spectateurs : les deux IA (une pour les cartes W.Y.C., une pour le protocole)
+     et un Xénomorphe par salle qu'on peut fermer
+     (src/data/ship.ts, sans l'armurerie ni le labo, salles toxiques). -->
+
+<!-- ============================ PAGE 1 ============================ -->
+<main class="page">
+  <article class="card">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · IA</span></div>
+      <h2>IA W.Y.C.</h2>
+      <div class="sub">MU/TH/UR 6000 · DÉPLACEMENTS</div>
+      <div class="symbol"><svg viewBox="0 0 40 40" fill="none" stroke="#000" stroke-width="2.4"><rect x="10" y="5" width="20" height="30" rx="2.5"/><text x="20" y="28" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="15" fill="#000" stroke="none">3</text><text x="20" y="12" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-weight="700" font-size="5" fill="#000" stroke="none">W.Y.C.</text></svg></div>
+      <div class="text">
+        <p>À chaque tour, prenez la carte <b>W.Y.C.</b> du dessus, <b>montrez-la</b> au joueur et annoncez le nombre inscrit, d'une voix neutre de machine :</p>
+      </div>
+      <div class="say">« Déplacements autorisés : [nombre]. »</div>
+      <div class="foot"><span>WY-NOS2-IA/01</span><span>NOSTROMO II</span></div>
+    </div>
+  </article>
+
+  <article class="card">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · IA</span></div>
+      <h2>IA PROTOCOLE</h2>
+      <div class="sub">MU/TH/UR 6000 · FERMETURES</div>
+      <div class="symbol"><svg viewBox="0 0 40 40" fill="none" stroke="#000" stroke-width="3"><rect x="6" y="5" width="28" height="30"/><path d="M6 20h28M20 5v30" stroke-width="2"/><path d="M11 12l18 16M29 12L11 28"/></svg></div>
+      <div class="text">
+        <p>Après les déplacements, lisez la <b>fiche de protocole</b> et annoncez la ou les salles qui ferment à ce tour, sans rien commenter :</p>
+      </div>
+      <div class="say">« Fermeture en cours : [salle]. »</div>
+      <div class="foot"><span>WY-NOS2-IA/02</span><span>NOSTROMO II</span></div>
+    </div>
+  </article>
+
+
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Cockpit</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/01</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Salle de réunion</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/02</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Infirmerie</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/03</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Salle de vie</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/04</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Dortoir 1</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/05</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Dortoir 2</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/06</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Cuisine &amp; salle à manger</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/07</span><span>PONT 1</span></div>
+    </div>
+  </article>
+</main>
+
+<!-- ============================ PAGE 2 ============================ -->
+<main class="page">
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Entrepôt 1</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/08</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Entrepôt 2</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/09</span><span>PONT 1</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Atelier</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/10</span><span>PONT 2</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Salle de sport</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/11</span><span>PONT 2</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Serre hydroponique</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/12</span><span>PONT 2</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Entrepôt 3</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/13</span><span>PONT 2</span></div>
+    </div>
+  </article>
+  <article class="card xeno">
+    <div class="frame">
+      <div class="top"><img src="logo.svg" alt="Weyland Corp"><span class="kind">Rôle · Spécimen</span></div>
+      <h2>XÉNOMORPHE</h2>
+      <div class="sub">SPÉCIMEN ADULTE · GÉN. IV</div>
+      <div class="xeno-head"><svg viewBox="0 0 100 52" fill="#000"><path d="M3 5 C 22 2, 46 8, 64 19 C 72 23, 84 26, 93 30 L 94 32.6 L 71 32.6 L 71 38.4 L 92 38.4 L 90 40.5 C 84 41.5, 77 42, 73 43.5 L 70 52 L 47 52 C 46 44, 40 37, 30 30 C 20 23, 10 15, 3 5 Z"/><path d="M72.0 32.6 L 73.2 35.4 L 74.4 32.6 Z M74.4 32.6 L 75.60000000000001 35.4 L 76.80000000000001 32.6 Z M76.8 32.6 L 78.0 35.4 L 79.2 32.6 Z M79.2 32.6 L 80.4 35.4 L 81.60000000000001 32.6 Z M81.6 32.6 L 82.8 35.4 L 84.0 32.6 Z M84.0 32.6 L 85.2 35.4 L 86.4 32.6 Z M86.4 32.6 L 87.60000000000001 35.4 L 88.80000000000001 32.6 Z M88.8 32.6 L 90.0 35.4 L 91.2 32.6 Z M73.2 38.4 L 74.4 35.8 L 75.60000000000001 38.4 Z M75.6 38.4 L 76.8 35.8 L 78.0 38.4 Z M78.0 38.4 L 79.2 35.8 L 80.4 38.4 Z M80.4 38.4 L 81.60000000000001 35.8 L 82.80000000000001 38.4 Z M82.8 38.4 L 84.0 35.8 L 85.2 38.4 Z M85.2 38.4 L 86.4 35.8 L 87.60000000000001 38.4 Z M87.6 38.4 L 88.8 35.8 L 90.0 38.4 Z"/><rect x="76" y="34.4" width="7" height="2.4" rx="1"/><rect x="83" y="35" width="3" height="1.2" fill="#fff"/><path d="M14 8 C 22 14, 30 21, 36 28 M22 8.5 C 30 14.5, 38 21, 44 28 M30 10 C 38 15.5, 46 21, 52 27.5 M38 12 C 46 17, 53 21.5, 58 26 M46 14.5 C 53 18.5, 59 22, 63 25" stroke="#fff" stroke-width="1" fill="none"/><path d="M64 25.5 C 70 28, 76 29, 84 30.5" stroke="#fff" stroke-width="0.8" fill="none"/><path d="M50 44 C 56 43, 63 43, 70 44.5 M49 48 C 56 47, 63 47, 69 48.5" stroke="#fff" stroke-width="1.1" fill="none"/></svg></div>
+      <div class="text"><p>Vous êtes tapi sous le plancher de :</p></div>
+      <div class="room">Entrepôt 4</div>
+      <div class="text"><p>Restez silencieux. Quand l'IA annonce la <b>fermeture de votre salle</b>, poussez le <b>cri de la créature</b>, fort et long.</p></div>
+      <div class="scream">« HHHHIIIIIAAAAA ! »</div>
+      <div class="foot"><span>WY-NOS2-XN/14</span><span>PONT 2</span></div>
+    </div>
+  </article>
+</main>
+
+
+</body>
+</html>

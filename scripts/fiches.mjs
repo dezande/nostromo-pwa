@@ -5,7 +5,8 @@
 //     psychic-agent.html : Psychic Agent), en trois PDF : la fiche joueur recto verso en version homme
 //     (pages 1–2), en version femme (pages 3–4, recopiées par fiches/pretire.js) et l'aide du MJ (page 5 et suivante) ;
 //     lisibles en A4 comme réduits en A5 (fiches/pretire.css) ;
-//   - le guide du MJ de chaque scénario, de 2 à 4 pages.
+//   - le guide du MJ de chaque scénario, de 2 à 4 pages ;
+//   - les cartes des petits rôles des spectateurs (roles.html : IA et Xénomorphes), format poker, 9 par page.
 // Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
@@ -30,6 +31,7 @@ const documents = [
   { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 4] },
   { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Entraînement", "entrainement") },
   { html: "guide-mj-entrainement.html", pdf: "nostromo-guide-mj-entrainement.pdf", pages: [2, 4] },
+  { html: "roles.html", pdf: "nostromo-cartes-roles.pdf", pages: [2, 2] },
 ];
 
 const pngIndex = process.argv.indexOf("--png");
@@ -59,6 +61,12 @@ try {
     }
     pages.forEach((depasse, i) => {
       if (depasse > 1) throw new Error(`fiches/${doc.html} : la page ${i + 1} dépasse le format A4 de ${depasse} px`);
+    });
+    // Cartes (roles.html) : chaque carte garde aussi sa taille fixe.
+    const cards = await page.evaluate(() => [...document.querySelectorAll(".card .frame")]
+      .map(el => el.scrollHeight - el.clientHeight));
+    cards.forEach((depasse, i) => {
+      if (depasse > 1) throw new Error(`fiches/${doc.html} : la carte ${i + 1} dépasse de ${depasse} px`);
     });
 
     for (const part of doc.parts ?? [{ pdf: doc.pdf, from: 1 }]) {

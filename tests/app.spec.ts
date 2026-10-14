@@ -927,6 +927,16 @@ test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté 
   await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-femme.pdf");
   await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-infiltre.pdf");
   await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
+  // Les cartes des petits rôles (IA, Xénomorphes) : les mêmes dans chaque scénario
+  await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
+  await page.locator("#rolesPdfRead").click();
+  await expect(page.locator("#docText")).toContainText("IA PROTOCOLE");
+  await expect(page.locator("#docText")).toContainText("Entrepôt 4");
+  await expect(page.locator("#docText svg")).toHaveCount(0);
+  await page.locator("#docClose").click();
+  await page.locator("#scenario-training").click();
+  await expect(page.locator("#rolesPdf")).toHaveAttribute("href", "fiches/nostromo-cartes-roles.pdf");
+  await page.locator("#scenario-infiltrated").click();
   // Le guide du MJ se lit aussi dans l'app : son texte, au style de l'app, sans pages A4 ni en-têtes d'impression
   await page.locator("#infiltratedGuidePdfRead").click();
   await expect(page.locator("#docViewer")).toHaveClass(/show/);
