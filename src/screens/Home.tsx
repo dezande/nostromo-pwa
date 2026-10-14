@@ -83,7 +83,7 @@ function ScenarioChoice() {
               <strong>{SCENARIOS[id].name}</strong>
               <small class="scenario-meta" title="Niveau du joueur et durée indicative">{SCENARIOS[id].level} · {SCENARIOS[id].duration}</small>
             </span>
-            <small>{SCENARIOS[id].homeLine}</small>
+            <small class="scenario-line">{SCENARIOS[id].homeLine}</small>
           </button>
         ))}
       </div>
