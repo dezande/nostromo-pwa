@@ -71,8 +71,9 @@ test("écran de fin : rapport sur un moniteur, lignes une à une, tampon, puis C
   await open(page);
   await startSimulation(page);
   await placeAgent(page, "cockpit");
+  // closeRoom avance déjà l'horloge de 3 s : l'écran de fin (2,8 s après la fermeture) vient de s'afficher,
+  // le tampon n'arrive que REPORT_MS (1,5 s) plus tard. Ne pas avancer davantage ici (le temps réel s'écoule aussi).
   await closeRoom(page, "cockpit");
-  await page.clock.runFor(1_000);
   await expect(page.locator("#end")).toHaveClass(/show/);
   await expect(page.locator("#end .monitor-label")).toHaveText("MU/TH/UR 6000 · RAPPORT DE FIN DE SESSION");
   await expect(page.locator("#endStamp")).toHaveCount(0); // rapport en cours de génération
