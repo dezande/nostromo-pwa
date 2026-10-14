@@ -156,13 +156,36 @@ Sur GitHub, la vérification TypeScript et les deux séries de tests se lancent 
 `.github/workflows/pages.yml` publie le site à chaque fusion sur `main`, à l'adresse
 https://dezande.github.io/nostromo-pwa/ (réglage du dépôt : **Settings → Pages → Source : GitHub Actions**).
 
-## Crédits
+## Sources et crédits
 
 Le dépôt n'a pas de licence. *Nostromo II* est un effet de Fred Darevil, édité par Marchand de Trucs ;
 *Alien*, Weyland-Yutani, Nostromo et les noms associés sont des marques de leurs ayants droit. Cette app
 est une création de fan, sans lien avec eux.
 
-- Effet *Nostromo II* : Fred Darevil, Marchand de Trucs.
-- Système de jeu des fiches : [3D6 Système](https://3d6.ovh/), François Cedelle, licence ORC.
-- Code, textes et fiches écrits avec [Claude Code](https://claude.com/claude-code) (Anthropic).
-- Styles d'écran inspirés de [cool-retro-term](https://github.com/Swordfish90/cool-retro-term).
+Les mêmes sources s'affichent dans l'app (bouton livre de l'accueil), à partir de `src/data/sources.ts`.
+
+**Cette app**
+
+- [Nostromo II · partie fusée](https://dezande.github.io/nostromo-pwa/) : l'app en ligne, création de fan.
+- [Code source](https://github.com/dezande/nostromo-pwa) : le code de l'app et des fiches, sur GitHub.
+- [Claude Code](https://claude.com/claude-code) (Anthropic) : assistant IA qui a écrit le code, les textes et
+  les fiches avec l'auteur.
+
+**Inspirations**
+
+- *Nostromo II* : Fred Darevil, Marchand de Trucs. L'effet que l'app accompagne : plan, protocoles et cartes.
+- [3D6 Système](https://3d6.ovh/) : François Cedelle, licence ORC. Système de jeu des fiches, des guides du MJ
+  et du tutoriel.
+- [cool-retro-term](https://github.com/Swordfish90/cool-retro-term) : Swordfish90. Profils des styles d'écran
+  et effets cathodiques.
+- *Alien* : marques de leurs ayants droit (Weyland-Yutani, Nostromo et les noms associés).
+
+**Outils**
+
+- [Preact](https://preactjs.com) (MIT) : composants de l'interface.
+- [Vite](https://vite.dev) (MIT) : compilation et mode hors ligne.
+- [TypeScript](https://www.typescriptlang.org) (Apache 2.0) : langage du code.
+- [Sass](https://sass-lang.com) (MIT) : styles.
+- [uqr](https://github.com/unjs/uqr) (MIT) : QR codes de l'écran Sources.
+- Polices : IBM Plex Mono, JetBrains Mono, Fira Code ([Google Fonts](https://fonts.google.com)) et Questrial
+  (Fontsource).
