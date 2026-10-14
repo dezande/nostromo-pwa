@@ -31,7 +31,8 @@ export const SOURCES: SourceGroup[] = [
   {
     title: "Inspirations",
     items: [
-      { name: "Nostromo II", by: "Fred Darevil · Marchand de Trucs", use: "L'effet que l'app accompagne : plan, protocoles et cartes" },
+      { name: "Nostromo II", by: "Fred Darevil · Marchand de Trucs", use: "L'effet que l'app accompagne : plan, protocoles et cartes",
+        url: "https://www.marchanddetrucs.com/magasin-de-magie/nos-produits/nostromo-ii.html", qr: true },
       { name: "3D6 Système", by: "François Cedelle · licence ORC", use: "Système de jeu des fiches, des guides du MJ et du tutoriel",
         url: "https://3d6.ovh/", qr: true },
       { name: "cool-retro-term", by: "Swordfish90", use: "Profils des styles d'écran et effets cathodiques",
