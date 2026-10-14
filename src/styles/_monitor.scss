@@ -19,14 +19,14 @@
 
   > .panel {
     max-height: calc(100vh - 32px - var(--chrome));
-    max-height: calc(100dvh - 32px - var(--chrome));
+    max-height: calc(var(--app-h) - 32px - var(--chrome));
     border-radius: 12px;
     border-color: #000;
     box-shadow: inset 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
     background-image: linear-gradient(180deg, #ffffff06, transparent 40%);
   }
   // Panneaux dont la hauteur est fixée (contrat, e-mail) : on retire aussi le cadre
-  > .contract-panel { height: calc(100dvh - 32px - var(--chrome)); }
+  > .contract-panel { height: calc(var(--app-h) - 32px - var(--chrome)); }
 
   .monitor-top, .monitor-foot {
     display: flex;
@@ -62,10 +62,10 @@
     padding: 5px 6px 4px;
     border-radius: 14px;
     > .panel {
-      max-height: calc(100dvh - 16px - var(--chrome));
+      max-height: calc(var(--app-h) - 16px - var(--chrome));
       border-radius: 9px;
     }
-    > .contract-panel { height: calc(100dvh - 16px - var(--chrome)); }
+    > .contract-panel { height: calc(var(--app-h) - 16px - var(--chrome)); }
     .monitor-top { margin-bottom: 4px; font-size: fs(8px); }
     .monitor-foot { margin-top: 4px; font-size: fs(8px); }
   }

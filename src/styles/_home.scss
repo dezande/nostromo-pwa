@@ -32,7 +32,7 @@
 // Choix du scénario, après « Démarrer »
 .home.scenario-choice {
   max-width: 720px;
-  max-height: calc(100dvh - 32px);
+  max-height: calc(var(--app-h) - 32px);
   overflow: auto;
   gap: 12px;
   h2 { font-size: clamp(20px, 5vw, 32px); }
@@ -72,7 +72,7 @@
   flex-direction: column;
   gap: 10px;
   max-width: 900px;
-  height: calc(100dvh - 16px);
+  height: calc(var(--app-h) - 16px);
   max-height: none;
   padding: 12px;
   overflow: hidden;
