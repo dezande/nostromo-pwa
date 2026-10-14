@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <title>Nostromo II — Fiches de personnage (Recrutement)</title>
-<link rel="stylesheet" href="fiche.css">
+<link rel="stylesheet" href="pretire.css">
 </head>
 <body>
-<main class="page">
 
+<!-- ================= RECTO : LE CANDIDAT (personnage du joueur, prétiré) ================= -->
+<main class="page">
   <header class="header">
     <img src="logo.svg" alt="Weyland Corp">
     <div>
@@ -17,161 +18,269 @@
     </div>
     <div class="ref">
       RÉF. <b>WY-NOS2-RH/0612</b><br>
-      FICHES DE PERSONNAGE · RÉV. 6<br>
+      FICHE DE PERSONNAGE · RÉV. 7<br>
       CLASSIFICATION : <b>INTERNE</b>
     </div>
   </header>
 
-  <!-- ================= LE CANDIDAT (personnage du joueur, prétiré) ================= -->
   <div class="title">
     <h1>DOSSIER DE CANDIDATURE</h1>
-    <div class="sub">FICHE JOUEUR · LE CANDIDAT &nbsp;<span class="stamp">DOSSIER COMPLET</span></div>
+    <div class="sub">FICHE JOUEUR · SCÉNARIO « RECRUTEMENT »<span class="stamp">DOSSIER COMPLET</span></div>
   </div>
 
-  <div class="row cand-top">
-    <section class="box">
-      <h3>01 · Identité du candidat <span class="code">SECTION A</span></h3>
-      <dl class="kv">
-        <dt>NOM</dt><dd><b>Jordan REYES</b></dd>
-        <dt>ÂGE · ORIGINE</dt><dd>34 ans · docks orbitaux de Gateway Station</dd>
-        <dt>PEUPLE</dt><dd>Humain</dd>
-        <dt>ATOUT</dt><dd><b>Débrouillard</b> : une fois par séance, relancer un dé d'un test.</dd>
-        <dt>OCCUPATION</dt><dd>Technicien de maintenance orbitale (licencié)</dd>
-        <dt>MATRICULE</dt><dd>WY-C-2184-0612</dd>
-        <dt>POSTE VISÉ</dt><dd>Agent de mission · rémunération très élevée</dd>
-        <dt>AFFECTATION</dt><dd><span class="redact" style="--w:36mm"></span></dd>
-      </dl>
-    </section>
-    <section class="box">
-      <h3>02 · Caractéristiques <span class="code">8 points · 1 à 5</span></h3>
-      <div class="traits">
-        <div class="trait"><span class="t-name">PHYSIQUE</span><span class="t-level">Compétent</span><span class="t-val">3</span></div>
-        <div class="trait"><span class="t-name">MENTAL</span><span class="t-level">Amateur</span><span class="t-val">2</span></div>
-        <div class="trait"><span class="t-name">SOCIAL</span><span class="t-level">Compétent</span><span class="t-val">3</span></div>
+  <section class="sec">
+    <h2><i class="ic" data-ic="badge"></i>01 · Identité du candidat <span class="code">SECTION A</span></h2>
+    <div class="idcard">
+      <div class="idphoto">
+        <div class="illu" data-illu="portrait"></div>
+        <span class="barcode" data-code="WYC21840612"></span>
+        <div class="code">WY-C-2184-0612</div>
       </div>
-      <div class="gauge" style="margin-top:1.4mm"><label>PE 5</label><span class="squares"><i></i><i></i><i></i><i></i><i></i></span><span>= Physique + Mental</span></div>
-      <div class="muted">Points d'énergie : santé physique et psychique. 1–2 PE : affaibli (désavantage). 0 : inconscient.</div>
-      <h3 style="margin:1.4mm 0 0.6mm;font-size:7.2pt;letter-spacing:0.12em">DÉFAUT</h3>
-      <p><b>Confiance aveugle en la Compagnie</b> : désavantage pour mettre en doute la parole d'un représentant de la Weyland-Yutani.</p>
-    </section>
+      <dl class="kv">
+        <dt>NOM</dt><dd><span class="name">Jordan REYES</span></dd>
+        <dt>ÂGE</dt><dd>34 ans</dd>
+        <dt><i class="ic" data-ic="lieu"></i>ORIGINE</dt><dd>Docks orbitaux de Gateway Station</dd>
+        <dt>PEUPLE</dt><dd>Humain</dd>
+        <dt><i class="ic" data-ic="outil"></i>OCCUPATION</dt><dd>Technicien de maintenance orbitale (licencié)</dd>
+        <dt>MATRICULE</dt><dd>WY-C-2184-0612</dd>
+        <dt><i class="ic" data-ic="cible"></i>POSTE VISÉ</dt><dd>Agent de mission</dd>
+        <dt><i class="ic" data-ic="credits"></i>SALAIRE</dt><dd>48 000 crédits par mois</dd>
+        <dt>AFFECTATION</dt><dd><span class="redact" style="--w:40mm"></span></dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>02 · Caractéristiques <span class="code">8 points · de 1 à 5</span></h2>
+    <div class="traits">
+      <div class="trait"><i class="ic" data-ic="physique"></i><div><div class="t-name">PHYSIQUE</div><div class="t-level">Compétent</div><div class="t-hint">dé ≤ 3 = succès</div></div><span class="t-val">3</span></div>
+      <div class="trait"><i class="ic" data-ic="mental"></i><div><div class="t-name">MENTAL</div><div class="t-level">Amateur</div><div class="t-hint">dé ≤ 2 = succès</div></div><span class="t-val">2</span></div>
+      <div class="trait"><i class="ic" data-ic="social"></i><div><div class="t-name">SOCIAL</div><div class="t-level">Compétent</div><div class="t-hint">dé ≤ 3 = succès</div></div><span class="t-val">3</span></div>
+    </div>
+    <div class="energy">
+      <div class="lab"><i class="ic" data-ic="pe"></i>PE 5</div>
+      <span class="track" data-n="5"></span>
+      <div class="note">Points d'énergie = Physique + Mental. Cochez une case par PE perdu. 1–2 : affaibli · 0 : inconscient.</div>
+    </div>
+    <div class="row c2 perks">
+      <div><div class="sub-h"><i class="ic" data-ic="atout"></i>ATOUT</div><b>Débrouillard</b> : une fois par séance, relancer un dé d'un test.</div>
+      <div><div class="sub-h"><i class="ic" data-ic="defaut"></i>DÉFAUT</div><b>Confiance aveugle en la Compagnie</b> : désavantage pour mettre en doute la parole d'un représentant de la Weyland-Yutani.</div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="cible"></i>03 · Maîtrises <span class="code">rang 1 à 3</span></h2>
+    <table class="mastery">
+      <tr><th>MAÎTRISE</th><th>CARACTÉRISTIQUE</th><th class="c">RANG</th><th>UTILE POUR…</th></tr>
+      <tr><td><b>Technologie</b></td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="2"></span></td><td>occupation · réparer</td></tr>
+      <tr><td><b>Athlétisme</b></td><td class="car"><i class="ic" data-ic="physique"></i>Physique</td><td class="c"><span class="rank" data-rank="2"></span></td><td>courir, grimper, tenir</td></tr>
+      <tr><td><b>Discussion</b></td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="2"></span></td><td>convaincre, négocier</td></tr>
+      <tr><td>Survie</td><td class="car"><i class="ic" data-ic="physique"></i>Physique</td><td class="c"><span class="rank" data-rank="1"></span></td><td>milieux hostiles, froid, vide</td></tr>
+      <tr><td>Empathie</td><td class="car"><i class="ic" data-ic="social"></i>Social</td><td class="c"><span class="rank" data-rank="1"></span></td><td>sentir le mensonge</td></tr>
+      <tr><td>Contacts</td><td class="car"><i class="ic" data-ic="social"></i>Social</td><td class="c"><span class="rank" data-rank="1"></span></td><td>réseau : <span class="redact" style="--w:18mm"></span></td></tr>
+    </table>
+    <div class="legend">
+      <span><span class="rank" data-rank="1"></span> avantage</span>
+      <span><span class="rank" data-rank="2"></span> effet narratif</span>
+      <span><span class="rank" data-rank="3"></span> effet majeur</span>
+    </div>
+  </section>
+
+  <div class="illu horizon" data-illu="horizon"></div>
+
+  <footer class="footer">
+    <span>W.Y.C. · DRH · WY-NOS2-RH/0612</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">RECTO 1/2 ►</span>
+  </footer>
+</main>
+
+<!-- ================= VERSO : LE CANDIDAT (suite) ================= -->
+<main class="page">
+  <div class="title">
+    <h1>JORDAN REYES · SUITE</h1>
+    <div class="sub">FICHE JOUEUR · VERSO<span class="stamp">WY-C-2184-0612</span></div>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="sac"></i>04 · Équipement <span class="code">INVENTAIRE À L'ENTRÉE</span></h2>
+    <ul class="gear">
+      <li><i class="ic" data-ic="badge"></i><span>Badge visiteur Weyland-Yutani (accès temporaire)</span></li>
+      <li><i class="ic" data-ic="courrier"></i><span>Convocation imprimée à l'entretien</span></li>
+      <li><i class="ic" data-ic="outil"></i><span>Multi-outil de maintenance usé (arme improvisée : <b>dégâts 1</b>)</span></li>
+      <li><i class="ic" data-ic="portefeuille"></i><span>Portefeuille presque vide</span></li>
+      <li><i class="ic" data-ic="flamme"></i><span>Briquet</span></li>
+      <li><i class="ic" data-ic="photo"></i><span>Photo de sa sœur</span></li>
+      <li><i class="ic" data-ic="cadenas"></i><span><span class="redact" style="--w:26mm"></span> (consigné à l'accueil)</span></li>
+    </ul>
+  </section>
+
+  <section class="sec story">
+    <h2><i class="ic" data-ic="dossier"></i>05 · Historique, motivation et dettes <span class="code">DÉCLARATION DU CANDIDAT</span></h2>
+    <p>Quinze ans sur les docks orbitaux de Gateway Station, à réparer ce que les autres cassaient. Licencié après un accident de sas dont la direction l'a tenu pour responsable <span class="redact" style="--w:34mm"></span>. Depuis : petits contrats, nuits courtes, <b>dettes de 212 000 crédits</b> auprès d'un prêteur qui ne prévient qu'une fois.</p>
+    <p><b>Pourquoi ce poste ?</b> 48 000 crédits par mois. Effacer la dette en un an, payer les études de sa sœur, repartir de zéro. Il signera presque n'importe quoi.</p>
+  </section>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>Aide-mémoire du 3D6 Système <span class="code">pour le joueur</span></h2>
+    <div class="rules3">
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="de"></i>LANCER 3D6</div>
+        <p>Chaque dé <b>≤ la caractéristique</b> testée = <b>1 succès</b>.</p>
+        <div class="ex">Physique 3 : <span class="dice"><span class="die" data-face="2" data-hit></span><span class="die" data-face="5"></span><span class="die" data-face="1" data-hit></span></span></div>
+        <p>= <b>2 succès</b> (dés noirs).</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="cible"></i>DIFFICULTÉ</div>
+        <p>Nombre de succès à obtenir :</p>
+        <div class="ladder">
+          <span>Facile</span><span class="rank four"><i class="on"></i></span>
+          <span>Moyenne</span><span class="rank four"><i class="on"></i><i class="on"></i></span>
+          <span>Difficile</span><span class="rank four"><i class="on"></i><i class="on"></i><i class="on"></i></span>
+          <span>Extrême</span><span class="rank four"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+        </div>
+        <p><b>Opposition</b> : le plus de succès l'emporte.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="atout"></i>AVANTAGE</div>
+        <div class="ex"><b>Avantage</b> <span class="dice"><span class="die s" data-face="1"></span><span class="die s" data-face="2"></span><span class="die s" data-face="3"></span><span class="die s" data-face="4"></span></span> 4D6</div>
+        <div class="ex"><b>Désavantage</b> <span class="dice"><span class="die s" data-face="5"></span><span class="die s" data-face="6"></span></span> 2D6</div>
+        <p>Tous les dés comptent. Pas de cumul : un avantage et un désavantage s'annulent.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="alien"></i>TRIPLE</div>
+        <div class="ex"><span class="dice"><span class="die s" data-face="4"></span><span class="die s" data-face="4"></span><span class="die s" data-face="4"></span></span> 111 à 666</div>
+        <p>≤ caractéristique : <b>réussite critique</b>.<br>&gt; caractéristique : <b>échec critique</b>.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="pe"></i>POINTS D'ÉNERGIE</div>
+        <p>PE = Physique + Mental.<br><b>1–2</b> : affaibli (désavantage)<br><b>0</b> : inconscient<br><b>négatif</b> : état critique.</p>
+      </div>
+      <div class="rule">
+        <div class="rh"><i class="ic" data-ic="epee"></i>COMBAT</div>
+        <p><b>2 actions</b> par tour. Attaque = test de Physique ; <b>1 succès touche</b>.</p>
+        <p>Dégâts = arme (1–5) + 1 par succès en plus − protection.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec notes">
+    <h2><i class="ic" data-ic="crayon"></i>Notes du candidat <span class="code">salles, indices, PE perdus…</span></h2>
+    <div class="lines"></div>
+  </section>
+
+  <div class="signature">
+    <label><i class="ic" data-ic="crayon"></i>SIGNATURE DU CANDIDAT</label><span class="line"></span>
+    <label>DATE</label><span class="line" style="flex:0 0 30mm"></span>
+  </div>
+
+  <footer class="footer">
+    <span>W.Y.C. · DRH · WY-NOS2-RH/0612</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">◄ VERSO 2/2</span>
+  </footer>
+</main>
+
+<!-- ================= AIDE DU MJ : les deux PNJ et le pense-bête (feuille à part) ================= -->
+<main class="page">
+
+  <div class="title">
+    <h1>AIDE DU MJ · RECRUTEMENT</h1>
+    <div class="sub">FEUILLE À PART<span class="stamp black"><i class="ic" data-ic="secret"></i>NE PAS MONTRER AU JOUEUR</span></div>
   </div>
 
   <div class="row c2">
-    <section class="box">
-      <h3>03 · Maîtrises <span class="code">■ avantage · ■■ effet · ■■■ majeur</span></h3>
-      <table class="mastery">
-        <tr><th>MAÎTRISE</th><th>CAR.</th><th class="c">RANG</th><th>NOTE</th></tr>
-        <tr><td><b>Technologie</b></td><td>Mental</td><td class="c pips">■■□</td><td>occupation · réparer</td></tr>
-        <tr><td><b>Athlétisme</b></td><td>Physique</td><td class="c pips">■■□</td><td>courir, grimper, tenir</td></tr>
-        <tr><td><b>Discussion</b></td><td>Mental</td><td class="c pips">■■□</td><td>convaincre, négocier</td></tr>
-        <tr><td>Survie</td><td>Physique</td><td class="c pips">■□□</td><td>milieux hostiles, froid, vide</td></tr>
-        <tr><td>Empathie</td><td>Social</td><td class="c pips">■□□</td><td>sentir le mensonge</td></tr>
-        <tr><td>Contacts</td><td>Social</td><td class="c pips">■□□</td><td>réseau : <span class="redact" style="--w:16mm"></span></td></tr>
-      </table>
-    </section>
-    <section class="box">
-      <h3>04 · Équipement <span class="code">INVENTAIRE À L'ENTRÉE</span></h3>
-      <ul class="dash">
-        <li>Badge visiteur Weyland-Yutani (accès temporaire)</li>
-        <li>Convocation imprimée à l'entretien</li>
-        <li>Multi-outil de maintenance usé (arme improvisée : dégâts 1)</li>
-        <li>Portefeuille presque vide, briquet, photo de sa sœur</li>
-        <li><span class="redact" style="--w:26mm"></span> (consigné à l'accueil)</li>
-      </ul>
-    </section>
-  </div>
-
-  <section class="box">
-    <h3>05 · Historique, motivation et dettes <span class="code">DÉCLARATION DU CANDIDAT</span></h3>
-    <p>Quinze ans sur les docks orbitaux de Gateway Station, à réparer ce que les autres cassaient. Licencié après un accident de sas dont la direction l'a tenu pour responsable <span class="redact" style="--w:34mm"></span>. Depuis : petits contrats, nuits courtes, <b>dettes de 212 000 crédits</b> auprès d'un prêteur qui ne prévient qu'une fois.</p>
-    <p><b>Pourquoi ce poste ?</b> 48 000 crédits par mois. Effacer la dette en un an, payer les études de sa sœur, repartir de zéro. Il signera presque n'importe quoi.</p>
-    <div class="signature" style="margin-top:1.4mm"><label>SIGNATURE DU CANDIDAT</label><span class="line"></span><label>DATE</label><span class="line" style="flex:0 0 24mm"></span></div>
-  </section>
-
-  <div class="cut">✂ PARTIE RÉSERVÉE AU MJ — DÉCOUPER OU PLIER ICI AVANT DE REMETTRE LE DOSSIER AU JOUEUR</div>
-
-  <!-- ================= PARTIE MJ : les deux PNJ et le pense-bête ================= -->
-  <div class="row c3 mj">
-
     <!-- LE RH -->
-    <section class="npc">
-      <div class="npc-head"><span class="who">LE RH</span><span class="ref">PNJ-01</span></div>
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="protocole"></i>Le RH <span class="code">PNJ-01</span></h2>
       <div class="npc-name">Mme Diane KESSLER</div>
       <div class="meta">Chargée de recrutement senior · 44 ans · dossier : <span class="redact" style="--w:14mm"></span></div>
       <div class="npc-traits">
         <div>PHY<b>2</b></div><div>MEN<b>4</b></div><div>SOC<b>5</b></div><div>PE<b>6</b></div>
       </div>
       <table class="mastery">
-        <tr><td><b>Discussion</b> (Men.)</td><td class="c pips">■■■</td></tr>
-        <tr><td><b>Performance</b> (Soc.)</td><td class="c pips">■■□</td></tr>
-        <tr><td><b>Empathie</b> (Soc.)</td><td class="c pips">■■□</td></tr>
-        <tr><td>Contacts (Soc.)</td><td class="c pips">■■□</td></tr>
-        <tr><td>Érudition : droit (Men.)</td><td class="c pips">■□□</td></tr>
-        <tr><td>Séduction (Soc.)</td><td class="c pips">■□□</td></tr>
+        <tr><td><b>Discussion</b> (Men.)</td><td class="c"><span class="rank" data-rank="3"></span></td></tr>
+        <tr><td><b>Performance</b> (Soc.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td><b>Empathie</b> (Soc.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td>Contacts (Soc.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td>Érudition : droit (Men.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
+        <tr><td>Séduction (Soc.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
       </table>
       <p><b>Défaut</b> : ne supporte pas l'échec (refus de signer : désavantage en Social).</p>
       <p>Sourire permanent, <b>rassurante</b> ; élude les risques (parle salaire).</p>
-      <ul class="dash quote">
-        <li>« Une simple formalité. »</li>
-        <li>« Le contrat couvre absolument tout. »</li>
+      <ul class="quotes">
+        <li><i class="ic" data-ic="bulle"></i><span>« Une simple formalité. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Le contrat couvre absolument tout. »</span></li>
       </ul>
-      <div class="secret"><b>OBJECTIF SECRET</b> : faire signer (empreinte). <b>Ne jamais dire « danger »</b> ni qu'on peut mourir : l'examen est « une routine ».</div>
+      <div class="secret"><i class="ic" data-ic="cadenas"></i><div><b>OBJECTIF SECRET</b> : faire signer (empreinte). <b>Ne jamais dire « danger »</b> ni qu'on peut mourir : l'examen est « une routine ».</div></div>
     </section>
 
     <!-- LE COORDINATEUR -->
-    <section class="npc">
-      <div class="npc-head"><span class="who">LE COORDINATEUR</span><span class="ref">PNJ-02</span></div>
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="micro"></i>Le Coordinateur <span class="code">PNJ-02</span></h2>
       <div class="npc-name">Coordinateur HALVORSEN</div>
       <div class="meta">Responsable de l'examen · 52 ans · ex-affectation : <span class="redact" style="--w:12mm"></span></div>
       <div class="npc-traits">
         <div>PHY<b>3</b></div><div>MEN<b>4</b></div><div>SOC<b>2</b></div><div>PE<b>7</b></div>
       </div>
       <table class="mastery">
-        <tr><td><b>Discipline</b> (Soc.)</td><td class="c pips">■■■</td></tr>
-        <tr><td><b>Technologie</b> (Men.)</td><td class="c pips">■■□</td></tr>
-        <tr><td>Tactique (Men.)</td><td class="c pips">■■□</td></tr>
-        <tr><td>Investigation (Men.)</td><td class="c pips">■□□</td></tr>
-        <tr><td>Médecine (Men.)</td><td class="c pips">■□□</td></tr>
-        <tr><td>Commandement (Soc.)</td><td class="c pips">■□□</td></tr>
+        <tr><td><b>Discipline</b> (Soc.)</td><td class="c"><span class="rank" data-rank="3"></span></td></tr>
+        <tr><td><b>Technologie</b> (Men.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td>Tactique (Men.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td>Investigation (Men.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
+        <tr><td>Médecine (Men.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
+        <tr><td>Commandement (Soc.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
       </table>
       <p><b>Défaut</b> : rigide (hors protocole : désavantage à tous ses tests).</p>
       <p>Grand, sec. <b>Froid, procédurier</b> ; parle <b>au micro</b>, voix plate.</p>
-      <ul class="dash quote">
-        <li>« Veuillez rejoindre la salle de votre choix. »</li>
-        <li>« Fermeture en cours. »</li>
+      <ul class="quotes">
+        <li><i class="ic" data-ic="bulle"></i><span>« Veuillez rejoindre la salle de votre choix. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Fermeture en cours. »</span></li>
       </ul>
-      <div class="secret"><b>RÔLE</b> : fait passer l'examen avec l'app ; annonce les fermetures en suivant <b>ses fiches de protocole papier</b> et les touche sur le plan. Il suit le protocole, point.</div>
-    </section>
-
-    <!-- PENSE-BÊTE -->
-    <section class="npc memo">
-      <div class="npc-head"><span class="who">PENSE-BÊTE DU MJ</span><span class="ref">DÉROULÉ</span></div>
-      <ol>
-        <li><b>RH</b> : accueil dans l'app, vanter le poste, présenter le dossier.</li>
-        <li><b>Contrat</b> : défiler jusqu'en bas, puis empreinte maintenue 1,5 s.</li>
-        <li><b>Coordinateur</b> : salle de briefing B-7, moniteurs de règles 1 à 4.</li>
-        <li><b>Examen sur le plan</b> : salle de départ au choix ; carte W.Y.C. (déplacements), puis fermeture selon la fiche de protocole. 8 fois.</li>
-        <li><b>Fin</b> : lire le rapport, jouer l'épilogue.</li>
-      </ol>
-      <div class="memo-sub">FINS</div>
-      <p><b>CANDIDAT RETENU</b> : dernière salle ouverte. « Bienvenue à la Weyland-Yutani. »</p>
-      <p><b>CANDIDATURE CLOSE</b> : sa salle est fermée. « Conformément à l'article 13… »</p>
-      <div class="memo-sub">JETS UTILES</div>
-      <p>Mental : négocier, ressentir une présence (Moyenne 2) ; Physique : courir. Peur : −1 PE. Les dés ne changent jamais les fermetures.</p>
-      <p><b>Esquives</b> : « Tout est sur l'écran. » · « Question suivante. »</p>
-      <p><b>3D6</b> : chaque dé ≤ caractéristique = 1 succès.</p>
+      <div class="secret"><i class="ic" data-ic="protocole"></i><div><b>RÔLE</b> : fait passer l'examen avec l'app ; annonce les fermetures en suivant <b>ses fiches de protocole papier</b> et les touche sur le plan. Il suit le protocole, point.</div></div>
     </section>
   </div>
 
-  <aside class="rules">
-    <p><b>## 3D6 SYSTÈME :</b> lancer 3D6 ; <b>chaque dé ≤ la caractéristique testée</b> (Physique, Mental ou Social, de 1 à 5) <b>= 1 succès</b> · <b>difficulté</b> = succès requis : Facile 1, Moyenne 2, Difficile 3, Extrême 4 · <b>avantage</b> = 4D6, <b>désavantage</b> = 2D6 (tous les dés comptent ; pas de cumul, un avantage et un désavantage s'annulent) · <b>triple</b> (111…666) : ≤ caractéristique = réussite critique, &gt; caractéristique = échec critique · <b>opposition</b> : le plus de succès l'emporte · <b>maîtrise</b> : rang 1 = avantage, rang 2 = effet narratif (souvent 1 PE), rang 3 = effet majeur · <b>PE</b> = Physique + Mental ; 1–2 affaibli, 0 inconscient, négatif = état critique · <b>combat</b> : 2 actions par tour, attaque = test de Physique, 1 succès touche, dégâts = arme (1–5) + 1 par succès excédentaire − protection.</p>
-  </aside>
+  <section class="sec">
+    <h2><i class="ic" data-ic="liste"></i>Pense-bête du MJ <span class="code">DÉROULÉ</span></h2>
+    <ol class="steps">
+      <li><div><b>RH</b> : accueil dans l'app, vanter le poste, présenter le dossier.</div></li>
+      <li><div><b>Contrat</b> : défiler jusqu'en bas, puis empreinte maintenue 1,5 s.</div></li>
+      <li><div><b>Coordinateur</b> : salle de briefing B-7, moniteurs de règles 1 à 4.</div></li>
+      <li><div><b>Examen sur le plan</b> : salle de départ au choix ; carte W.Y.C. (déplacements), puis fermeture selon la fiche de protocole. 8 fois.</div></li>
+      <li><div><b>Fin</b> : lire le rapport, jouer l'épilogue.</div></li>
+    </ol>
+  </section>
+
+  <div class="ends">
+    <div class="end"><i class="ic" data-ic="valide"></i><div><div class="et">CANDIDAT RETENU</div>Dernière salle ouverte. « Bienvenue à la Weyland-Yutani. »</div></div>
+    <div class="end"><i class="ic" data-ic="crane"></i><div><div class="et">CANDIDATURE CLOSE</div>Sa salle est fermée. « Conformément à l'article 13… »</div></div>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>Jets utiles et esquives</h2>
+    <div class="with-egg">
+      <div>
+        <ul class="dash">
+          <li><b>Mental</b> : négocier, ressentir une présence (Moyenne, 2 succès).</li>
+          <li><b>Physique</b> : courir. <b>Peur</b> : −1 PE.</li>
+          <li><b>Les dés ne changent jamais les fermetures.</b></li>
+        </ul>
+        <ul class="quotes">
+          <li><i class="ic" data-ic="bulle"></i><span>« Tout est sur l'écran. » · « Question suivante. »</span></li>
+        </ul>
+      </div>
+      <div class="illu" data-illu="oeuf"></div>
+    </div>
+  </section>
 
   <footer class="footer">
-    <span>WEYLAND-YUTANI CORP · DRH · WY-NOS2-RH/0612</span>
+    <span>W.Y.C. · DRH · WY-NOS2-RH/0612</span>
     <span>3D6 Système – François Cedelle – licence ORC</span>
-    <span class="cursor">MU/TH/UR 6000</span>
+    <span class="side">AIDE DU MJ</span>
   </footer>
 </main>
+
+<script src="pretire.js"></script>
 </body>
 </html>

@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <title>Nostromo II — Fiche du Psychic Agent (Entraînement)</title>
-<link rel="stylesheet" href="fiche.css">
+<link rel="stylesheet" href="pretire.css">
 </head>
 <body>
-<main class="page">
 
+<!-- ================= RECTO : LE PSYCHIC AGENT (personnage du joueur, prétiré) ================= -->
+<main class="page">
   <header class="header">
     <img src="logo.svg" alt="Weyland Corp">
     <div>
@@ -17,117 +18,200 @@
     </div>
     <div class="ref">
       RÉF. <b>WY-NOS2-PA/0417</b><br>
-      DOSSIER AGENT · RÉV. 2<br>
+      DOSSIER AGENT · RÉV. 3<br>
       CLASSIFICATION : <b>CONFIDENTIEL</b>
     </div>
   </header>
 
-  <!-- ================= LE PSYCHIC AGENT (personnage du joueur, prétiré) ================= -->
   <div class="title">
     <h1>DOSSIER PSYCHIC AGENT</h1>
-    <div class="sub">FICHE JOUEUR · ENTRAÎNEMENT &nbsp;<span class="stamp">AGENT EN FORMATION</span></div>
+    <div class="sub">FICHE JOUEUR · SCÉNARIO « ENTRAÎNEMENT »<span class="stamp">AGENT EN FORMATION</span></div>
   </div>
 
-  <div class="row cand-top">
-    <section class="box">
-      <h3>01 · Identité de l'agent <span class="code">PROGRAMME PSYCHIC AGENTS</span></h3>
+  <section class="sec">
+    <h2><i class="ic" data-ic="badge"></i>01 · Identité de l'agent <span class="code">PROGRAMME PSYCHIC AGENTS</span></h2>
+    <div class="idcard">
+      <div class="idphoto">
+        <div class="illu" data-illu="portrait" data-variant="psy"></div>
+        <span class="barcode" data-code="PA21840417"></span>
+        <div class="code">PA-2184-0417</div>
+      </div>
       <dl class="kv">
-        <dt>NOM</dt><dd><b>Agent Alex NOVAK</b> · 27 ans</dd>
+        <dt>NOM</dt><dd><span class="name">Agent Alex NOVAK</span></dd>
+        <dt>ÂGE</dt><dd>27 ans</dd>
         <dt>MATRICULE</dt><dd>PA-2184-0417</dd>
         <dt>PEUPLE</dt><dd>Humain</dd>
-        <dt>ATOUT</dt><dd><b>Sixième sens</b> : une fois par séance, avantage à un test de Mental pour ressentir une présence.</dd>
-        <dt>OCCUPATION</dt><dd>Ancien opérateur de veille, colonie minière <span class="redact" style="--w:12mm"></span></dd>
-        <dt>STATUT</dt><dd>Volontaire · rémunération très élevée</dd>
-        <dt>AFFECTATION</dt><dd>Base lunaire d'entraînement Nostromo II</dd>
+        <dt><i class="ic" data-ic="oeil"></i>OCCUPATION</dt><dd>Ancien opérateur de veille, colonie minière <span class="redact" style="--w:12mm"></span></dd>
+        <dt><i class="ic" data-ic="cible"></i>STATUT</dt><dd>Volontaire</dd>
+        <dt><i class="ic" data-ic="credits"></i>SALAIRE</dt><dd>Très élevé, prime de mission</dd>
+        <dt><i class="ic" data-ic="lieu"></i>AFFECTATION</dt><dd>Base lunaire d'entraînement Nostromo II</dd>
       </dl>
-    </section>
-    <section class="box">
-      <h3>02 · Caractéristiques <span class="code">8 points · 1 à 5</span></h3>
-      <div class="traits">
-        <div class="trait"><span class="t-name">PHYSIQUE</span><span class="t-level">Amateur</span><span class="t-val">2</span></div>
-        <div class="trait"><span class="t-name">MENTAL</span><span class="t-level">Excellent</span><span class="t-val">4</span></div>
-        <div class="trait"><span class="t-name">SOCIAL</span><span class="t-level">Amateur</span><span class="t-val">2</span></div>
-      </div>
-      <div class="gauge" style="margin-top:1.4mm"><label>PE 6</label><span class="squares"><i></i><i></i><i></i><i></i><i></i><i></i></span><span>= Physique + Mental</span></div>
-      <div class="muted">Points d'énergie : santé physique et psychique. 1–2 PE : affaibli (désavantage). 0 : inconscient. Négatif : état critique.</div>
-      <h3 style="margin:1.4mm 0 0.6mm;font-size:7.2pt;letter-spacing:0.12em">DÉFAUT</h3>
-      <p><b>Claustrophobe</b> : désavantage aux tests faits dans un conduit d'aération ou un ascenseur.</p>
-    </section>
-  </div>
-
-  <div class="row c2">
-    <section class="box">
-      <h3>03 · Maîtrises <span class="code">■ avantage · ■■ effet · ■■■ majeur</span></h3>
-      <table class="mastery">
-        <tr><th>MAÎTRISE</th><th>CAR.</th><th class="c">RANG</th><th>NOTE</th></tr>
-        <tr><td><b>Investigation</b></td><td>Mental</td><td class="c pips">■■□</td><td>occupation · repérer, recouper</td></tr>
-        <tr><td><b>Méditation</b></td><td>Mental</td><td class="c pips">■■□</td><td>calme, concentration</td></tr>
-        <tr><td><b>Athlétisme</b></td><td>Physique</td><td class="c pips">■■□</td><td>courir, se faufiler</td></tr>
-        <tr><td>Survie</td><td>Physique</td><td class="c pips">■□□</td><td>milieux hostiles</td></tr>
-        <tr><td>Empathie</td><td>Social</td><td class="c pips">■□□</td><td>lire les visages</td></tr>
-        <tr><td>Discipline</td><td>Social</td><td class="c pips">■□□</td><td>obéir sous pression</td></tr>
-      </table>
-    </section>
-    <section class="box">
-      <h3>04 · Équipement <span class="code">DOTATION D'ENTRAÎNEMENT</span></h3>
-      <ul class="dash">
-        <li>Combinaison d'entraînement W.Y.C. et badge Psychic Agent</li>
-        <li>Bracelet biométrique (constantes transmises au Coordinateur)</li>
-        <li>Lampe frontale, ration de survie</li>
-        <li>Photo de famille, glissée dans la manche</li>
-        <li><span class="redact" style="--w:30mm"></span> (implant, protocole <span class="redact" style="--w:8mm"></span>)</li>
-      </ul>
-    </section>
-  </div>
-
-  <section class="box">
-    <h3>05 · Historique et motivation <span class="code">DÉCLARATION DE L'AGENT</span></h3>
-    <p>Six ans à surveiller des écrans sur une colonie minière, à sentir avant tout le monde que quelque chose clochait. Les tests de perception de la Weyland-Yutani ont donné des résultats hors norme <span class="redact" style="--w:30mm"></span>. L'offre est arrivée le lendemain : <b>Psychic Agent</b>, salaire très élevé, prime de mission.</p>
-    <p><b>Mission future</b> : ressentir la présence de créatures xénomorphes à bord des vaisseaux de colonisation. <b>Avant cela</b> : réussir l'entraînement sur Nostromo II, en conditions réelles. Le contrat prévoit les risques. Il a signé.</p>
-    <div class="signature" style="margin-top:1.4mm"><label>SIGNATURE DE L'AGENT</label><span class="line"></span><label>DATE</label><span class="line" style="flex:0 0 24mm"></span></div>
+    </div>
   </section>
 
-  <div class="cut">✂ PARTIE RÉSERVÉE AU MJ (FACULTATIVE) — DÉCOUPER OU PLIER ICI AVANT DE REMETTRE LA FICHE AU JOUEUR</div>
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>02 · Caractéristiques <span class="code">8 points · de 1 à 5</span></h2>
+    <div class="traits">
+      <div class="trait"><i class="ic" data-ic="physique"></i><div><div class="t-name">PHYSIQUE</div><div class="t-level">Amateur</div><div class="t-hint">dé ≤ 2 = succès</div></div><span class="t-val">2</span></div>
+      <div class="trait"><i class="ic" data-ic="mental"></i><div><div class="t-name">MENTAL</div><div class="t-level">Excellent</div><div class="t-hint">dé ≤ 4 = succès</div></div><span class="t-val">4</span></div>
+      <div class="trait"><i class="ic" data-ic="social"></i><div><div class="t-name">SOCIAL</div><div class="t-level">Amateur</div><div class="t-hint">dé ≤ 2 = succès</div></div><span class="t-val">2</span></div>
+    </div>
+    <div class="energy">
+      <div class="lab"><i class="ic" data-ic="pe"></i>PE 6</div>
+      <span class="track" data-n="6"></span>
+      <div class="note">Points d'énergie = Physique + Mental. Cochez une case par PE perdu. 1–2 : affaibli · 0 : inconscient.</div>
+    </div>
+    <div class="row c2 perks">
+      <div><div class="sub-h"><i class="ic" data-ic="atout"></i>ATOUT</div><b>Sixième sens</b> : une fois par séance, avantage à un test de Mental pour ressentir une présence.</div>
+      <div><div class="sub-h"><i class="ic" data-ic="defaut"></i>DÉFAUT</div><b>Claustrophobe</b> : désavantage aux tests faits dans un conduit d'aération ou un ascenseur.</div>
+    </div>
+  </section>
 
-  <!-- ================= PARTIE MJ ================= -->
+  <section class="sec">
+    <h2><i class="ic" data-ic="cible"></i>03 · Maîtrises <span class="code">rang 1 à 3</span></h2>
+    <table class="mastery">
+      <tr><th>MAÎTRISE</th><th>CARACTÉRISTIQUE</th><th class="c">RANG</th><th>UTILE POUR…</th></tr>
+      <tr><td><b>Investigation</b></td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="2"></span></td><td>occupation · repérer, recouper</td></tr>
+      <tr><td><b>Méditation</b></td><td class="car"><i class="ic" data-ic="mental"></i>Mental</td><td class="c"><span class="rank" data-rank="2"></span></td><td>calme, concentration</td></tr>
+      <tr><td><b>Athlétisme</b></td><td class="car"><i class="ic" data-ic="physique"></i>Physique</td><td class="c"><span class="rank" data-rank="2"></span></td><td>courir, se faufiler</td></tr>
+      <tr><td>Survie</td><td class="car"><i class="ic" data-ic="physique"></i>Physique</td><td class="c"><span class="rank" data-rank="1"></span></td><td>milieux hostiles</td></tr>
+      <tr><td>Empathie</td><td class="car"><i class="ic" data-ic="social"></i>Social</td><td class="c"><span class="rank" data-rank="1"></span></td><td>lire les visages</td></tr>
+      <tr><td>Discipline</td><td class="car"><i class="ic" data-ic="social"></i>Social</td><td class="c"><span class="rank" data-rank="1"></span></td><td>obéir sous pression</td></tr>
+    </table>
+    <div class="legend">
+      <span><span class="rank" data-rank="1"></span> avantage</span>
+      <span><span class="rank" data-rank="2"></span> effet narratif</span>
+      <span><span class="rank" data-rank="3"></span> effet majeur</span>
+    </div>
+  </section>
+
+  <div class="illu horizon" data-illu="horizon"></div>
+
+  <footer class="footer">
+    <span>W.Y.C. · PSYCHIC AGENTS · WY-NOS2-PA/0417</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">RECTO 1/2 ►</span>
+  </footer>
+</main>
+
+<!-- ================= VERSO : LE PSYCHIC AGENT (suite) ================= -->
+<main class="page">
+  <div class="title">
+    <h1>AGENT NOVAK · SUITE</h1>
+    <div class="sub">FICHE JOUEUR · VERSO<span class="stamp">PA-2184-0417</span></div>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="sac"></i>04 · Équipement <span class="code">DOTATION D'ENTRAÎNEMENT</span></h2>
+    <ul class="gear">
+      <li><i class="ic" data-ic="tenue"></i><span>Combinaison d'entraînement W.Y.C.</span></li>
+      <li><i class="ic" data-ic="badge"></i><span>Badge Psychic Agent</span></li>
+      <li><i class="ic" data-ic="montre"></i><span>Bracelet biométrique (constantes transmises au Coordinateur)</span></li>
+      <li><i class="ic" data-ic="lampe"></i><span>Lampe frontale</span></li>
+      <li><i class="ic" data-ic="ration"></i><span>Ration de survie</span></li>
+      <li><i class="ic" data-ic="photo"></i><span>Photo de famille, glissée dans la manche</span></li>
+      <li><i class="ic" data-ic="puce"></i><span><span class="redact" style="--w:24mm"></span> (implant, protocole <span class="redact" style="--w:8mm"></span>)</span></li>
+    </ul>
+  </section>
+
+  <section class="sec story">
+    <h2><i class="ic" data-ic="dossier"></i>05 · Historique et motivation <span class="code">DÉCLARATION DE L'AGENT</span></h2>
+    <p>Six ans à surveiller des écrans sur une colonie minière, à sentir avant tout le monde que quelque chose clochait. Les tests de perception de la Weyland-Yutani ont donné des résultats hors norme <span class="redact" style="--w:30mm"></span>. L'offre est arrivée le lendemain : <b>Psychic Agent</b>, salaire très élevé, prime de mission.</p>
+    <p><b>Mission future</b> : ressentir la présence de créatures xénomorphes à bord des vaisseaux de colonisation. <b>Avant cela</b> : réussir l'entraînement sur Nostromo II, en conditions réelles. Le contrat prévoit les risques. Il a signé.</p>
+  </section>
+
+<!--RULES-->
+  <section class="sec notes">
+    <h2><i class="ic" data-ic="crayon"></i>Notes de l'agent <span class="code">salles, présences, PE perdus…</span></h2>
+    <div class="lines"></div>
+  </section>
+
+  <div class="signature">
+    <label><i class="ic" data-ic="crayon"></i>SIGNATURE DE L'AGENT</label><span class="line"></span>
+    <label>DATE</label><span class="line" style="flex:0 0 30mm"></span>
+  </div>
+
+  <footer class="footer">
+    <span>W.Y.C. · PSYCHIC AGENTS · WY-NOS2-PA/0417</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">◄ VERSO 2/2</span>
+  </footer>
+</main>
+
+<!-- ================= AIDE DU MJ (feuille à part, facultative) ================= -->
+<main class="page">
+  <div class="title">
+    <h1>AIDE DU MJ · ENTRAÎNEMENT</h1>
+    <div class="sub">FEUILLE À PART · FACULTATIVE<span class="stamp black"><i class="ic" data-ic="secret"></i>NE PAS MONTRER AU JOUEUR</span></div>
+  </div>
+
   <div class="row c2">
-    <section class="npc">
-      <div class="npc-head"><span class="who">LE COORDINATEUR</span><span class="ref">PNJ</span></div>
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="micro"></i>Le Coordinateur <span class="code">PNJ</span></h2>
       <div class="npc-name">Coordinateur HALVORSEN</div>
+      <div class="meta">Responsable de l'entraînement · 52 ans · ex-affectation : <span class="redact" style="--w:12mm"></span></div>
       <div class="npc-traits">
         <div>PHY<b>3</b></div><div>MEN<b>4</b></div><div>SOC<b>2</b></div><div>PE<b>7</b></div>
       </div>
-      <p>Discipline ■■■, Technologie ■■, Tactique ■■, Investigation ■, Médecine ■, Commandement ■. <b>Défaut</b> : rigide.</p>
-      <p>Froid, parle <b>au micro</b>, voix plate. <b>Il suit ses fiches de protocole papier</b>, point ; ne donne jamais d'indice.</p>
-      <ul class="dash quote">
-        <li>« Veuillez rejoindre la salle de votre choix. »</li>
-        <li>« Fermeture en cours. »</li>
-        <li>« Fiez-vous à votre instinct, Agent. »</li>
+      <table class="mastery">
+        <tr><td><b>Discipline</b> (Soc.)</td><td class="c"><span class="rank" data-rank="3"></span></td></tr>
+        <tr><td><b>Technologie</b> (Men.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td>Tactique (Men.)</td><td class="c"><span class="rank" data-rank="2"></span></td></tr>
+        <tr><td>Investigation (Men.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
+        <tr><td>Médecine (Men.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
+        <tr><td>Commandement (Soc.)</td><td class="c"><span class="rank" data-rank="1"></span></td></tr>
+      </table>
+      <p><b>Défaut</b> : rigide (hors protocole : désavantage à tous ses tests).</p>
+      <p>Froid, parle <b>au micro</b>, voix plate. Ne donne jamais d'indice.</p>
+      <ul class="quotes">
+        <li><i class="ic" data-ic="bulle"></i><span>« Veuillez rejoindre la salle de votre choix. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Fermeture en cours. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Fiez-vous à votre instinct, Agent. »</span></li>
       </ul>
+      <div class="secret"><i class="ic" data-ic="protocole"></i><div><b>RÔLE</b> : il suit <b>ses fiches de protocole papier</b>, point ; il annonce les fermetures et les touche sur le plan.</div></div>
     </section>
-    <section class="npc memo">
-      <div class="npc-head"><span class="who">PENSE-BÊTE DU MJ</span><span class="ref">DÉROULÉ</span></div>
-      <ol>
-        <li><b>Bienvenue à bord</b> : écran d'accueil, signature de la fiche.</li>
-        <li><b>Moniteurs 1 à 4</b> (salle B-7) : départ, déplacements (carte W.Y.C.), fermeture, fin.</li>
-        <li><b>Partie sur le plan</b> : fermeture selon la fiche de protocole, 8 fois.</li>
-        <li><b>Rapport de fin</b> et épilogue.</li>
+
+    <section class="sec">
+      <h2><i class="ic" data-ic="liste"></i>Pense-bête du MJ <span class="code">DÉROULÉ</span></h2>
+      <ol class="steps">
+        <li><div><b>Bienvenue à bord</b> : écran d'accueil, signature de la fiche.</div></li>
+        <li><div><b>Moniteurs 1 à 4</b> (salle B-7) : départ, déplacements (carte W.Y.C.), fermeture, fin.</div></li>
+        <li><div><b>Partie sur le plan</b> : fermeture selon la fiche de protocole, 8 fois.</div></li>
+        <li><div><b>Rapport de fin</b> et épilogue.</div></li>
       </ol>
-      <p><b>AGENT SURVIVANT</b> : aptitude validée, première mission. <b>AGENT ÉLIMINÉ</b> : rapport d'incident, « un nouveau candidat va être sélectionné ».</p>
-      <p><b>Esquives</b> : « Tout est sur l'écran. » · « Question suivante. »</p>
-      <p><b>Jets</b> : Mental, Moyenne (2), pour ressentir une présence ; Méditation après une fermeture voisine (échec −1 PE) ; Athlétisme pour courir. Les dés ne changent jamais les fermetures.</p>
+      <div class="sub-h" style="margin-top:3mm"><i class="ic" data-ic="bulle"></i>ESQUIVES</div>
+      <ul class="quotes">
+        <li><i class="ic" data-ic="bulle"></i><span>« Tout est sur l'écran. »</span></li>
+        <li><i class="ic" data-ic="bulle"></i><span>« Question suivante. »</span></li>
+      </ul>
     </section>
   </div>
 
-  <aside class="rules">
-    <p><b>## 3D6 SYSTÈME :</b> lancer 3D6 ; <b>chaque dé ≤ la caractéristique testée</b> (Physique, Mental ou Social, de 1 à 5) <b>= 1 succès</b> · <b>difficulté</b> = succès requis : Facile 1, Moyenne 2, Difficile 3, Extrême 4 · <b>avantage</b> = 4D6, <b>désavantage</b> = 2D6 (tous les dés comptent ; pas de cumul, un avantage et un désavantage s'annulent) · <b>triple</b> (111…666) : ≤ caractéristique = réussite critique, &gt; caractéristique = échec critique · <b>opposition</b> : le plus de succès l'emporte · <b>maîtrise</b> : rang 1 = avantage, rang 2 = effet narratif (souvent 1 PE), rang 3 = effet majeur · <b>PE</b> = Physique + Mental ; 1–2 affaibli, 0 inconscient, négatif = état critique · <b>combat</b> : 2 actions par tour, attaque = test de Physique, 1 succès touche, dégâts = arme (1–5) + 1 par succès excédentaire − protection.</p>
-  </aside>
+  <div class="ends">
+    <div class="end"><i class="ic" data-ic="valide"></i><div><div class="et">AGENT SURVIVANT</div>Aptitude validée, première mission.</div></div>
+    <div class="end"><i class="ic" data-ic="crane"></i><div><div class="et">AGENT ÉLIMINÉ</div>Rapport d'incident : « Un nouveau candidat va être sélectionné. »</div></div>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="de"></i>Jets utiles</h2>
+    <div class="with-egg">
+      <ul class="dash">
+        <li><b>Mental</b>, Moyenne (2 succès) : ressentir une présence.</li>
+        <li><b>Méditation</b> après une fermeture voisine : échec = −1 PE.</li>
+        <li><b>Athlétisme</b> : courir.</li>
+        <li><b>Les dés ne changent jamais les fermetures.</b></li>
+      </ul>
+      <div class="illu" data-illu="oeuf"></div>
+    </div>
+  </section>
 
   <footer class="footer">
-    <span>WEYLAND-YUTANI CORP · PSYCHIC AGENTS · WY-NOS2-PA/0417</span>
+    <span>W.Y.C. · PSYCHIC AGENTS · WY-NOS2-PA/0417</span>
     <span>3D6 Système – François Cedelle – licence ORC</span>
-    <span class="cursor">MU/TH/UR 6000</span>
+    <span class="side">AIDE DU MJ</span>
   </footer>
 </main>
+
+<script src="pretire.js"></script>
 </body>
 </html>

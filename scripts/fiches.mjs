@@ -19,11 +19,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
 const documents = [
-  { html: "fiches.html", pdf: "nostromo-fiches-recrutement.pdf", pages: [1, 1] },
+  { html: "fiches.html", pdf: "nostromo-fiches-recrutement.pdf", pages: [3, 4] },
   { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
-  { html: "infiltre.html", pdf: "nostromo-fiche-lieutenant-dr.pdf", pages: [1, 1] },
+  { html: "infiltre.html", pdf: "nostromo-fiche-lieutenant-dr.pdf", pages: [3, 4] },
   { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 4] },
-  { html: "psychic-agent.html", pdf: "nostromo-fiche-psychic-agent.pdf", pages: [1, 1] },
+  { html: "psychic-agent.html", pdf: "nostromo-fiche-psychic-agent.pdf", pages: [3, 4] },
   { html: "guide-mj-entrainement.html", pdf: "nostromo-guide-mj-entrainement.pdf", pages: [2, 4] },
 ];
 
