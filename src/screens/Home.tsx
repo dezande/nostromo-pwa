@@ -1,4 +1,5 @@
 // Écran d'accueil. On y revient par les Réglages (« Retour à l'accueil »), ce qui abandonne la partie.
+// « Démarrer » affiche le choix du scénario, puis « Lancer » démarre la simulation.
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { audio } from "../audio/audio";
@@ -6,8 +7,8 @@ import { BOOT } from "../data/terminal";
 import { keepAwake } from "../state/device";
 import { showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
-import { briefing, homeOpen, settingsOpen } from "../state/ui";
-import { settings } from "../state/settings";
+import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, tutorial, type ScenarioDocument } from "../state/ui";
+import { settings, type Scenario } from "../state/settings";
 import { SCENARIOS } from "../data/scenarios";
 import { contractSigned } from "./Recruitment";
 
@@ -17,6 +18,7 @@ async function startSimulation() {
   keepAwake();
   await runTerminal(BOOT);
   homeOpen.value = false;
+  choosingScenario.value = false;
   showIntro();
   contractSigned.value = false;
   briefing.value = SCENARIOS[settings.scenario.value].firstPanel;
@@ -25,19 +27,78 @@ async function startSimulation() {
 export function Home() {
   return (
     <Overlay id="home" show={homeOpen.value}>
-      <div class="home">
-        <Rocket />
-        <div class="corp">WEYLAND-YUTANI CORP</div>
-        <h2>NOSTROMO&nbsp;II</h2>
-        <div class="base">TRAINING BASE · LUNE</div>
-        <p id="homeLine">{SCENARIOS[settings.scenario.value].homeLine}</p>
-        <div class="row icon-row home-actions">
-          <IconButton id="startBtn" icon="demarrer" label="Démarrer" primary onClick={startSimulation} />
-          <IconButton id="homeSetBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />
+      {choosingScenario.value ? <ScenarioChoice /> : (
+        <div class="home">
+          <Rocket />
+          <div class="corp">WEYLAND-YUTANI CORP</div>
+          <h2>NOSTROMO&nbsp;II</h2>
+          <div class="base">TRAINING BASE · LUNE</div>
+          <div class="row icon-row home-actions">
+            <IconButton id="startBtn" icon="demarrer" label="Démarrer" primary onClick={() => { choosingScenario.value = true; }} />
+            <IconButton id="homeSetBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />
+            <IconButton id="tutoBtn" icon="tuto" label="Tutoriel 3D6 Système" onClick={() => { tutorial.value = 0; }} />
+          </div>
+          <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
         </div>
-        <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
-      </div>
+      )}
     </Overlay>
+  );
+}
+
+/** Documents de chaque scénario : page HTML lue dans l'app (dossier fiches/) et PDF à imprimer (public/fiches). */
+const SHEETS: Record<Scenario, (ScenarioDocument & { id: string })[]> = {
+  training: [
+    { id: "trainingPdf", html: "psychic-agent.html", file: "nostromo-fiche-psychic-agent.pdf", name: "Psychic Agent (prétiré)" },
+    { id: "trainingGuidePdf", html: "guide-mj-entrainement.html", file: "nostromo-guide-mj-entrainement.pdf", name: "Guide du MJ" },
+  ],
+  recruitment: [
+    { id: "sheetsPdf", html: "fiches.html", file: "nostromo-fiches-recrutement.pdf", name: "Candidat · RH · Coordinateur (1 page A4)" },
+    { id: "guidePdf", html: "guide-mj.html", file: "nostromo-guide-mj-recrutement.pdf", name: "Guide du MJ" },
+  ],
+  infiltrated: [
+    { id: "infiltratedPdf", html: "infiltre.html", file: "nostromo-fiche-lieutenant-dr.pdf", name: "Lieutenant D.R. (prétiré)" },
+    { id: "infiltratedGuidePdf", html: "guide-mj-infiltre.html", file: "nostromo-guide-mj-infiltre.pdf", name: "Guide du MJ" },
+  ],
+};
+
+/** Choix du scénario au lancement ; le dernier choisi est proposé par défaut. */
+function ScenarioChoice() {
+  const current = settings.scenario.value;
+  return (
+    <div class="home scenario-choice">
+      <h2 id="scenarioTitle">SCÉNARIO</h2>
+      <div class="alert-cards scenario-cards" role="radiogroup" aria-labelledby="scenarioTitle">
+        {(Object.keys(SCENARIOS) as Scenario[]).map(id => (
+          <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
+            onClick={() => { settings.scenario.value = id; }}>
+            <strong>{SCENARIOS[id].name}</strong>
+            <small>{SCENARIOS[id].homeLine}</small>
+          </button>
+        ))}
+      </div>
+      <p id="scenarioDesc">{SCENARIOS[current].description}</p>
+      <div class="sheets" id="sheets">
+        <span class="set-label">Documents (3D6 Système)</span>
+        <div class="sheet-links">
+          {SHEETS[current].map(({ id, ...sheet }) => (
+            <span key={id} class="sheet">
+              <button type="button" class="sheet-link" id={`${id}Read`} onClick={() => { openDocument.value = sheet; }}>
+                {sheet.name}
+              </button>
+              <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
+                download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
+                aria-label={`${sheet.name} en PDF`}>
+                PDF
+              </a>
+            </span>
+          ))}
+        </div>
+      </div>
+      <div class="row icon-row home-actions">
+        <IconButton id="scenarioBack" icon="retour" label="Retour" onClick={() => { choosingScenario.value = false; }} />
+        <IconButton id="launchBtn" icon="demarrer" label="Lancer" primary onClick={startSimulation} />
+      </div>
+    </div>
   );
 }
 

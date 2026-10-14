@@ -19,7 +19,7 @@ export interface Settings {
   settingsTab: SettingsTab;     // dernier onglet ouvert dans les Réglages
   markerDot: boolean;           // repère discret sur le plan
   layout: Layout;               // format de l'écran de jeu : tablette ou téléphone
-  scenario: Scenario;           // entraînement (par défaut), recrutement (jeu de rôle) ou infiltré
+  scenario: Scenario;           // dernier scénario choisi au lancement (entraînement par défaut)
 }
 
 /**
@@ -35,7 +35,7 @@ export function defaultLayout(width = window.innerWidth, height = window.innerHe
   return width < 600 && height > width ? "phone" : "tablet";
 }
 
-export type SettingsTab = "scenario" | "display" | "audio" | "alert" | "system";
+export type SettingsTab = "display" | "audio" | "alert" | "system";
 
 export const DEFAULTS: Settings = {
   music: false,       // musique (coupée par défaut, à activer dans les Réglages)
@@ -65,6 +65,7 @@ export function loadSettings(): Settings {
       delete stored[old];
     }
     if ("theme" in stored) stored.theme = themeName(stored.theme);
+    if (stored.settingsTab === "scenario") delete stored.settingsTab; // onglet supprimé : le scénario se choisit au lancement
     return { ...DEFAULTS, ...stored };
   } catch {
     return { ...DEFAULTS };

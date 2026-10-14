@@ -1,5 +1,5 @@
 // Panneaux affichés après « Démarrer la simulation » : bienvenue, puis explication du protocole.
-// Les textes dépendent du scénario choisi dans les Réglages (src/data/scenarios.ts).
+// Les textes dépendent du scénario choisi au lancement (src/data/scenarios.ts).
 // Pas de choix de protocole dans l'app : le Coordinateur utilise ses fiches papier.
 // Chaque panneau est un moniteur mural de la salle de briefing, que l'instructeur fait défiler.
 import { useEffect } from "preact/hooks";

@@ -93,7 +93,7 @@ label.set {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
   margin: 8px 0 12px;
   border-bottom: 1px solid var(--line);
@@ -158,23 +158,7 @@ label.set {
   }
 }
 
-// Onglet Scénario : fiches de personnage à télécharger
-.sheets {
-  margin-top: 12px;
-  .set-label { font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
-  .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  .sheet-link {
-    padding: 8px 12px;
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: fs(11px);
-    &::before { content: "▤ "; }
-  }
-}
-
-// Téléphone : les cinq onglets tiennent sur une ligne
+// Téléphone : les quatre onglets tiennent sur une ligne
 @media (max-width: 480px) {
   .tab { padding: 8px 1px; letter-spacing: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
