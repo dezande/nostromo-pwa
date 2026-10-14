@@ -2,7 +2,8 @@
 // Il n'y a pas de protocole dans l'app : le Coordinateur suit sa fiche papier et touche
 // lui-même, sur le plan, la ou les salles à fermer.
 import { signal, computed, batch } from "@preact/signals";
-import { ADJ, ROOM_IDS, room, stepLabel, xenoVolume, type RoomId } from "../data/ship";
+import { ADJ, ROOM_IDS, room, roomName, stepLabel, xenoVolume, type RoomId } from "../data/ship";
+import { tr } from "../i18n";
 import { audio } from "../audio/audio";
 import { keepAwake, say, sleep } from "./device";
 
@@ -186,14 +187,16 @@ export async function closeRooms() {
   audio.slam();
   // Cri du xénomorphe, plus ou moins fort selon la distance entre le pion et la salle fermée.
   audio.xenomorph(xenoVolume(agent, rooms));
-  say((rooms.length > 1 ? "Fermeture des salles : " : "Fermeture de la salle : ") + label.replace("+", "et"));
+  say(rooms.length > 1
+    ? tr("Fermeture des salles : ", "Sealing rooms: ") + label.replace("+", tr("et", "and"))
+    : tr("Fermeture de la salle : ", "Sealing room: ") + label);
   setTimeout(() => { shake.value = false; }, 600);
   setTimeout(() => { flashing.value = new Set(); }, 1000);
 
   await sleep(finished || dead ? 2600 : 1400);
   busy.value = false;
 
-  const name = room(agent).name;
+  const name = roomName(agent);
   if (dead) {
     phase.value = "dead";
     showEnding(false, name);

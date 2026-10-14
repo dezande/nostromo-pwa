@@ -3,6 +3,7 @@ import { useEffect } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { terminal, terminalOpen, skipTerminal } from "../state/terminal";
+import { tr } from "../i18n";
 
 export function Transition() {
   useEffect(() => {
@@ -29,7 +30,7 @@ export function Transition() {
           ))}
         </div>
         <div class="bar"><i id="transBar" style={{ width: `${Math.round(progress * 100)}%` }} /></div>
-        <div class="skip">TOUCHEZ POUR PASSER</div>
+        <div class="skip">{tr("TOUCHEZ POUR PASSER", "TOUCH TO SKIP")}</div>
       </div>
     </Overlay>
   );

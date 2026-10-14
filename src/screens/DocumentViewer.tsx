@@ -1,9 +1,10 @@
-// Liseuse des documents d'un scénario (fiches, guide du MJ) : le texte des pages HTML d'où sont tirés
+// Liseuse des documents d'un scénario (fiches, guide du Superviseur) : le texte des pages HTML d'où sont tirés
 // les PDF (dossier fiches/), remis en forme au style de l'app, sans pages A4.
 import { useEffect, useState } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { openDocument, type ScenarioDocument } from "../state/ui";
+import { tr } from "../i18n";
 
 /**
  * Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page,
@@ -16,18 +17,20 @@ function explainTraits(doc: Document) {
   doc.querySelectorAll(".traits").forEach(traits => {
     const help = doc.createElement("p");
     help.className = "traits-help";
-    help.innerHTML = "Pour un test, lancez <b>3 dés</b> : chaque dé <b>inférieur ou égal</b> à la caractéristique testée compte pour <b>1 succès</b>.";
+    help.innerHTML = tr("Pour un test, lancez <b>3 dés</b> : chaque dé <b>inférieur ou égal</b> à la caractéristique testée compte pour <b>1 succès</b>.",
+      "For a test, roll <b>3 dice</b>: each die <b>less than or equal</b> to the tested attribute counts as <b>1 success</b>.");
     traits.before(help);
   });
   doc.querySelectorAll<HTMLElement>(".trait .t-val").forEach(val => {
     const n = Number(val.textContent);
     const pips = doc.createElement("span");
     pips.className = "t-pips";
-    pips.setAttribute("aria-label", `${n} sur 5`);
+    pips.setAttribute("aria-label", tr(`${n} sur 5`, `${n} out of 5`));
     pips.innerHTML = Array.from({ length: 5 }, (_, i) => `<i${i < n ? ' class="on"' : ""}></i>`).join("");
     val.after(pips);
   });
-  doc.querySelectorAll<HTMLElement>(".t-hint").forEach(hint => { hint.textContent = hint.textContent!.replace(/^dé ≤ (\d) = succès$/, "succès : 1–$1"); });
+  doc.querySelectorAll<HTMLElement>(".t-hint").forEach(hint => { hint.textContent = hint.textContent!
+    .replace(/^dé ≤ (\d) = succès$/, "succès : 1–$1").replace(/^die ≤ (\d) = success$/, "success: 1–$1"); });
   doc.querySelectorAll<HTMLElement>(".energy .track").forEach(track => { track.innerHTML = "<i></i>".repeat(Number(track.dataset.n)); });
 }
 
@@ -72,12 +75,12 @@ export function DocumentViewer() {
           <div class="doc-head">
             <h2 id="docTitle">{doc.name}</h2>
             <a class="sheet-link sheet-pdf" id="docPdf" href={`fiches/${doc.file}`} target="_blank" rel="noopener"
-              download={doc.file} aria-label={`${doc.name} en PDF`}>PDF</a>
-            <IconButton id="docClose" icon="annuler" label="Fermer" onClick={() => { openDocument.value = null; }} />
+              download={doc.file} aria-label={tr(`${doc.name} en PDF`, `${doc.name} as PDF`)}>PDF</a>
+            <IconButton id="docClose" icon="annuler" label={tr("Fermer", "Close")} onClick={() => { openDocument.value = null; }} />
           </div>
           {text !== null
             ? <article id="docText" class="doc-text" dangerouslySetInnerHTML={{ __html: text }} />
-            : <p class="doc-text doc-status">{failed ? "DOCUMENT INDISPONIBLE · UTILISEZ LE PDF" : "CHARGEMENT…"}</p>}
+            : <p class="doc-text doc-status">{failed ? tr("DOCUMENT INDISPONIBLE · UTILISEZ LE PDF", "DOCUMENT UNAVAILABLE · USE THE PDF") : tr("CHARGEMENT…", "LOADING…")}</p>}
         </div>
       )}
     </Overlay>

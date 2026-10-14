@@ -8,8 +8,9 @@ import { IconButton } from "../components/Icon";
 import { WeylandLogo } from "../components/WeylandLogo";
 import { Redact } from "../components/Redacted";
 import { audio } from "../audio/audio";
-import { CONTRACT_ARTICLES, CONTRACT_PREAMBLE, CONTRACT_REF } from "../data/contract";
+import { CONTRACT_ARTICLES, CONTRACT_ARTICLES_EN, CONTRACT_PREAMBLE, CONTRACT_PREAMBLE_EN, CONTRACT_REF } from "../data/contract";
 import { briefing } from "../state/ui";
+import { lang, tr } from "../i18n";
 
 /** Durée d'appui sur le lecteur d'empreinte pour signer. */
 export const HOLD_MS = 1500;
@@ -22,24 +23,35 @@ export function Recruitment() {
   return (
     <>
       <Overlay id="hr" show={panel === "hr"} class="briefing">
-        <Monitor label="BUREAU DU RECRUTEMENT · TERMINAL RH">
+        <Monitor label={tr("BUREAU DU RECRUTEMENT · TERMINAL RH", "RECRUITMENT OFFICE · HR TERMINAL")}>
         <div class="panel briefing-panel welcome-panel">
           <WeylandLogo class="logo-watermark logo-in-panel" />
-          <div class="briefing-corp">WEYLAND-YUTANI CORP · SERVICE DES RESSOURCES HUMAINES · NOSTROMO II</div>
+          <div class="briefing-corp">WEYLAND-YUTANI CORP · {tr("SERVICE DES RESSOURCES HUMAINES", "HUMAN RESOURCES DEPARTMENT")} · NOSTROMO II</div>
           <div class="briefing-motto">« Building Better Worlds »</div>
-          <h2>BIENVENUE PARMI NOUS, CANDIDAT.</h2>
-          <p>Merci d'avoir répondu à notre offre. Le poste que nous vous proposons est l'un des mieux rémunérés de la compagnie : 48 000 crédits par mois, logement de fonction, prime d'affectation et couverture médicale complète.</p>
-          <p>Avant votre affectation, vous passerez un court examen d'aptitude à bord du vaisseau-base Nostromo II, sous la supervision de notre Coordinateur <Redact text="[[et de la Division scientifique]]" />. Une simple formalité : restez calme et suivez ses instructions.</p>
-          <p>Il ne vous reste qu'à prendre connaissance de votre contrat et à le signer.</p>
+          {lang.value === "en" ? (
+            <>
+              <h2>WELCOME ABOARD, CANDIDATE.</h2>
+              <p>Thank you for answering our offer. The position we are offering you is one of the best paid in the company: 48,000 credits a month, company housing, an assignment bonus and full medical coverage.</p>
+              <p>Before your assignment, you will take a short aptitude test aboard the Nostromo II base ship, supervised by our Coordinator <Redact text="[[and the Science Division]]" />. Just a formality: stay calm and follow his instructions.</p>
+              <p>All that remains is for you to read your contract and sign it.</p>
+            </>
+          ) : (
+            <>
+              <h2>BIENVENUE PARMI NOUS, CANDIDAT.</h2>
+              <p>Merci d'avoir répondu à notre offre. Le poste que nous vous proposons est l'un des mieux rémunérés de la compagnie : 48 000 crédits par mois, logement de fonction, prime d'affectation et couverture médicale complète.</p>
+              <p>Avant votre affectation, vous passerez un court examen d'aptitude à bord du vaisseau-base Nostromo II, sous la supervision de notre Coordinateur <Redact text="[[et de la Division scientifique]]" />. Une simple formalité : restez calme et suivez ses instructions.</p>
+              <p>Il ne vous reste qu'à prendre connaissance de votre contrat et à le signer.</p>
+            </>
+          )}
           <div class="row icon-row briefing-actions">
-            <IconButton id="hrNext" icon="continuer" label="Continuer" primary onClick={() => { briefing.value = "contract"; }} />
+            <IconButton id="hrNext" icon="continuer" label={tr("Continuer", "Continue")} primary onClick={() => { briefing.value = "contract"; }} />
           </div>
         </div>
         </Monitor>
       </Overlay>
 
       <Overlay id="contract" show={panel === "contract"} class="briefing">
-        {panel === "contract" && <Monitor label="BUREAU DU RECRUTEMENT · LECTEUR BIOMÉTRIQUE" status="EN ATTENTE DE SIGNATURE"><Contract /></Monitor>}
+        {panel === "contract" && <Monitor label={tr("BUREAU DU RECRUTEMENT · LECTEUR BIOMÉTRIQUE", "RECRUITMENT OFFICE · BIOMETRIC READER")} status={tr("EN ATTENTE DE SIGNATURE", "AWAITING SIGNATURE")}><Contract /></Monitor>}
       </Overlay>
     </>
   );
@@ -49,6 +61,9 @@ function Contract() {
   const scroller = useRef<HTMLDivElement>(null);
   const [readToEnd, setReadToEnd] = useState(contractSigned.value);
   const signed = contractSigned.value;
+  const en = lang.value === "en";
+  const preamble = en ? CONTRACT_PREAMBLE_EN : CONTRACT_PREAMBLE;
+  const articles = en ? CONTRACT_ARTICLES_EN : CONTRACT_ARTICLES;
 
   const check = () => {
     const el = scroller.current;
@@ -58,25 +73,25 @@ function Contract() {
 
   return (
     <div class="panel briefing-panel contract-panel">
-      <div class="briefing-corp">WEYLAND-YUTANI CORP · SERVICE DES RESSOURCES HUMAINES</div>
-      <h2 class="contract-title">CONTRAT DE TRAVAIL N° {CONTRACT_REF}</h2>
+      <div class="briefing-corp">WEYLAND-YUTANI CORP · {tr("SERVICE DES RESSOURCES HUMAINES", "HUMAN RESOURCES DEPARTMENT")}</div>
+      <h2 class="contract-title">{tr("CONTRAT DE TRAVAIL N°", "EMPLOYMENT CONTRACT NO.")} {CONTRACT_REF}</h2>
       <div class="contract-scroll" id="contractScroll" ref={scroller} onScroll={check} tabIndex={0}
-        aria-label="Contrat de travail, à lire jusqu'en bas">
-        {CONTRACT_PREAMBLE.map((p, i) => <p key={i} class={i % 2 === 0 && i !== 1 ? "contract-lead" : undefined}><Redact text={p} /></p>)}
-        {CONTRACT_ARTICLES.map((article, i) => (
+        aria-label={tr("Contrat de travail, à lire jusqu'en bas", "Employment contract, read it to the end")}>
+        {preamble.map((p, i) => <p key={i} class={i % 2 === 0 && i !== 1 ? "contract-lead" : undefined}><Redact text={p} /></p>)}
+        {articles.map((article, i) => (
           <section key={article.title} class="contract-article">
             <h3>ARTICLE {i + 1} · {article.title}</h3>
             {article.paragraphs.map((p, j) => <p key={j}><span class="contract-num">{i + 1}.{j + 1}</span> <Redact text={p} /></p>)}
           </section>
         ))}
-        <p class="contract-end">— FIN DU DOCUMENT · {CONTRACT_ARTICLES.length} ARTICLES —</p>
+        <p class="contract-end">— {tr("FIN DU DOCUMENT", "END OF DOCUMENT")} · {articles.length} ARTICLES —</p>
       </div>
 
       <Fingerprint enabled={readToEnd} />
 
       <div class="row icon-row briefing-actions contract-actions">
-        <IconButton id="contractBack" icon="retour" label="Retour" onClick={() => { briefing.value = "hr"; }} />
-        <IconButton id="contractNext" icon="continuer" label="Continuer" primary disabled={!signed}
+        <IconButton id="contractBack" icon="retour" label={tr("Retour", "Back")} onClick={() => { briefing.value = "hr"; }} />
+        <IconButton id="contractNext" icon="continuer" label={tr("Continuer", "Continue")} primary disabled={!signed}
           onClick={() => { briefing.value = 1; }} />
       </div>
     </div>
@@ -108,15 +123,15 @@ function Fingerprint({ enabled }: { enabled: boolean }) {
   };
   useEffect(() => stop, []);
 
-  const message = signed ? "CONTRAT SIGNÉ · EMPREINTE ENREGISTRÉE"
-    : !enabled ? "LISEZ LE CONTRAT JUSQU'EN BAS"
-    : scanning ? "ANALYSE EN COURS… GARDEZ LE DOIGT POSÉ"
-    : "APPOSEZ VOTRE EMPREINTE POUR SIGNER";
+  const message = signed ? tr("CONTRAT SIGNÉ · EMPREINTE ENREGISTRÉE", "CONTRACT SIGNED · FINGERPRINT RECORDED")
+    : !enabled ? tr("LISEZ LE CONTRAT JUSQU'EN BAS", "READ THE CONTRACT TO THE END")
+    : scanning ? tr("ANALYSE EN COURS… GARDEZ LE DOIGT POSÉ", "SCANNING… KEEP YOUR FINGER IN PLACE")
+    : tr("APPOSEZ VOTRE EMPREINTE POUR SIGNER", "PLACE YOUR FINGERPRINT TO SIGN");
 
   return (
     <div class={["fingerprint", enabled && "ready", scanning && "scanning", signed && "signed"].filter(Boolean).join(" ")}>
       <button type="button" id="fingerprint" class="fingerprint-pad" disabled={!enabled || signed}
-        aria-label="Lecteur d'empreinte : maintenir le doigt posé pour signer"
+        aria-label={tr("Lecteur d'empreinte : maintenir le doigt posé pour signer", "Fingerprint reader: hold your finger down to sign")}
         onPointerDown={e => { e.preventDefault(); start(); }} onPointerUp={stop} onPointerLeave={stop} onPointerCancel={stop}
         onKeyDown={e => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); start(); } }}
         onKeyUp={e => { if (e.key === " " || e.key === "Enter") stop(); }}
@@ -132,7 +147,7 @@ function Fingerprint({ enabled }: { enabled: boolean }) {
         <span class="fingerprint-beam" aria-hidden="true" />
       </button>
       <div class="fingerprint-msg" id="fingerprintMsg" role="status">{message}</div>
-      {signed && <div class="fingerprint-ref">RÉF. {CONTRACT_REF} · SIGNATURE BIOMÉTRIQUE VALIDE</div>}
+      {signed && <div class="fingerprint-ref">{tr("RÉF.", "REF.")} {CONTRACT_REF} · {tr("SIGNATURE BIOMÉTRIQUE VALIDE", "VALID BIOMETRIC SIGNATURE")}</div>}
     </div>
   );
 }

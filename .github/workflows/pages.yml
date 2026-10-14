@@ -1,9 +1,18 @@
 name: GitHub Pages
 
 # Publie le site à chaque fusion sur main (ou à la demande depuis l'onglet Actions).
+# Pas de nouvelle publication quand seuls les tests ou la documentation du dépôt changent : le site serait le même.
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "tests/**"
+      - "**/*.test.ts"
+      - "**/*.test.tsx"
+      - "src/test/**"
+      - "docs/**"
+      - "README.md"
+      - ".github/workflows/tests.yml"
   workflow_dispatch:
 
 permissions:

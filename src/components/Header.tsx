@@ -1,13 +1,14 @@
 import { IconButton } from "./Icon";
 import { settingsOpen } from "../state/ui";
 import { settings } from "../state/settings";
+import { tr } from "../i18n";
 
 export function Header() {
   return (
     <header class="top-bar">
       <h1>NOSTROMO II <small>· TRAINING BASE</small></h1>
       <SoundButton />
-      <IconButton id="setBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />
+      <IconButton id="setBtn" icon="reglages" label={tr("Réglages", "Settings")} onClick={() => { settingsOpen.value = true; }} />
     </header>
   );
 }
@@ -16,8 +17,8 @@ export function Header() {
 function SoundButton() {
   const on = settings.music.value;
   return (
-    <IconButton id="soundBtn" icon={on ? "son" : "muet"} title={on ? "Son" : "Muet"}
-      label={on ? "Musique activée" : "Musique coupée"} aria-pressed={on}
+    <IconButton id="soundBtn" icon={on ? "son" : "muet"} title={on ? tr("Son", "Sound") : tr("Muet", "Muted")}
+      label={on ? tr("Musique activée", "Music on") : tr("Musique coupée", "Music off")} aria-pressed={on}
       onClick={() => { settings.music.value = !on; }} />
   );
 }

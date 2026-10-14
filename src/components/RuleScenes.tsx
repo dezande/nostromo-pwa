@@ -2,7 +2,8 @@
 // (formes et noms des salles, couleurs, pion, tracé du chemin, croix rouge, fenêtre du
 // protocole, bouton Valider), pour montrer exactement ce que le joueur verra.
 import { useEffect, useState } from "preact/hooks";
-import { crossLines, pathSegments, pawnPosition, room, roomLines, roomPolygon, type RoomId } from "../data/ship";
+import { crossLines, pathSegments, pawnPosition, room, roomLines, roomName, roomPolygon, type RoomId } from "../data/ship";
+import { tr } from "../i18n";
 
 export type RuleName = "start" | "moves" | "close" | "end";
 
@@ -46,7 +47,7 @@ function MiniUi({ x, y, w, text, pressed }: { x: number; y: number; w: number; t
   return (
     <g class="mini-ui">
       <rect class="mini-info" x={x} y={y} width={w} height="26" rx="4" />
-      <text class="mini-info-title" x={x + 6} y={y + 9}>PROTOCOLE A.I.P.</text>
+      <text class="mini-info-title" x={x + 6} y={y + 9}>{tr("PROTOCOLE A.I.P.", "A.I.P. PROTOCOL")}</text>
       <text class="mini-info-text" x={x + 6} y={y + 20}>{text}</text>
       {/* Bouton « Valider » carré, icône seule, comme dans la barre d'actions */}
       <rect class={`mini-validate ${pressed ? "pressed" : ""}`} x={x + w - 20} y={y + 32} width="20" height="20" rx="3" />
@@ -66,6 +67,9 @@ const Defs = () => (
 
 const TOP_ROOMS: RoomId[] = ["cockpit", "reunion", "infirmerie", "vie", "dortoir1", "dortoir2"];
 
+/** « POSITION ENREGISTRÉE : SALLE DE VIE » */
+const recorded = () => tr("POSITION ENREGISTRÉE : ", "POSITION RECORDED: ") + roomName("vie").toUpperCase();
+
 // 1. Choisir sa salle de départ : le pion hésite, puis on valide.
 function StartScene() {
   const step = useLoop(5, 1100);
@@ -77,7 +81,7 @@ function StartScene() {
       {TOP_ROOMS.map(id => <MiniRoom key={id} id={id} class={validated ? "" : "reach pulse"} />)}
       <MiniPawn at={at} />
       <MiniUi x={70} y={338} w={260} pressed={step === 3}
-        text={validated ? "POSITION ENREGISTRÉE : SALLE DE VIE" : `SALLE DE DÉPART : ${room(at).name.toUpperCase()}`} />
+        text={validated ? recorded() : tr("SALLE DE DÉPART : ", "STARTING ROOM: ") + roomName(at).toUpperCase()} />
     </svg>
   );
 }
@@ -103,7 +107,7 @@ function MovesScene() {
       </g>
       <MiniPawn at={MOVES[done]} />
       <MiniUi x={70} y={338} w={260} pressed={step === MOVES.length}
-        text={done === 0 ? "POSITION ENREGISTRÉE : SALLE DE VIE" : "DÉPLACEMENTS EN COURS"} />
+        text={done === 0 ? recorded() : tr("DÉPLACEMENTS EN COURS", "MOVES IN PROGRESS")} />
     </svg>
   );
 }
@@ -114,6 +118,7 @@ function CloseScene() {
   const step = useLoop(5, 1100);
   const selected = step === 1 || step === 2;
   const closed = step >= 3;
+  const galley = roomName("cuisine").toUpperCase();
   return (
     <svg class={`rule-scene ${step === 3 ? "shake" : ""}`} viewBox="60 200 280 260" aria-hidden="true">
       <Defs />
@@ -122,7 +127,8 @@ function CloseScene() {
       ))}
       <MiniPawn at="dortoir2" />
       <MiniUi x={70} y={405} w={260} pressed={step === 2}
-        text={closed ? "FERMETURE DE LA SALLE : CUISINE" : selected ? "SALLE À FERMER : CUISINE" : "COORDINATEUR : TOUCHEZ LA SALLE"} />
+        text={closed ? tr("FERMETURE DE LA SALLE : ", "SEALING ROOM: ") + galley : selected ? tr("SALLE À FERMER : ", "ROOM TO SEAL: ") + galley
+          : tr("COORDINATEUR : TOUCHEZ LA SALLE", "COORDINATOR: TOUCH THE ROOM")} />
     </svg>
   );
 }
@@ -139,7 +145,7 @@ function EndScene() {
       <Defs />
       {ALL_ROOMS.map(id => <MiniRoom key={id} id={id} class={closedRooms.has(id) ? "closed mini-closed" : id === "vie" && over ? "reach" : ""} />)}
       <MiniPawn at="vie" />
-      <MiniUi x={60} y={488} w={280} text={over ? "AGENT SURVIVANT" : `FERMETURE ${Math.min(step + 1, 8)}/8`} />
+      <MiniUi x={60} y={488} w={280} text={over ? tr("AGENT SURVIVANT", "AGENT SURVIVED") : `${tr("FERMETURE", "SEALING")} ${Math.min(step + 1, 8)}/8`} />
     </svg>
   );
 }

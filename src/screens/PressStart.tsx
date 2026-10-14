@@ -5,6 +5,7 @@ import { audio } from "../audio/audio";
 import { keepAwake } from "../state/device";
 import { settings } from "../state/settings";
 import { pressToStart } from "../state/ui";
+import { tr } from "../i18n";
 
 function start() {
   audio.init();
@@ -24,8 +25,8 @@ export function PressStart() {
   }, []);
 
   return (
-    <Overlay id="press" show={pressToStart.value} role="button" tabIndex={0} aria-label="Commencer" onPointerDown={start}>
-      <div class="blink">▶ TOUCHEZ L'ÉCRAN POUR COMMENCER</div>
+    <Overlay id="press" show={pressToStart.value} role="button" tabIndex={0} aria-label={tr("Commencer", "Start")} onPointerDown={start}>
+      <div class="blink">▶ {tr("TOUCHEZ L'ÉCRAN POUR COMMENCER", "TOUCH THE SCREEN TO START")}</div>
     </Overlay>
   );
 }

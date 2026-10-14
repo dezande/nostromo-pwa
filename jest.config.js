@@ -22,5 +22,7 @@ export default {
   },
   // Les feuilles de style (ex. police du logo) ne servent à rien dans les tests.
   moduleNameMapper: { "\\.css$": "<rootDir>/src/test/styleStub.cjs" },
+  // Langue de l'app : français par défaut dans les tests.
+  setupFiles: ["<rootDir>/src/test/setup.ts"],
   clearMocks: true,
 };

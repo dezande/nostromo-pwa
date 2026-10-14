@@ -1,7 +1,10 @@
 // Plan du vaisseau-base : salles des deux ponts et liaisons entre elles.
+import { lang } from "../i18n";
 
 export interface Room {
   name: string;
+  /** nom anglais, et son découpage en lignes sur le plan s'il en faut un */
+  en: { name: string; label?: string[] };
   deck: 1 | 2;
   /** [x, y, largeur, hauteur] dans le repère du plan */
   rect?: [number, number, number, number];
@@ -29,22 +32,22 @@ export interface Room {
  * - toxic : salle inaccessible (atmosphère toxique)
  */
 export const ROOMS = {
-  cockpit:    { name: "Cockpit",            deck: 1, points: "155,100 245,100 245,205 155,205", center: [200, 160] },
-  reunion:    { name: "Salle de réunion",   deck: 1, rect: [75, 150, 80, 100],  center: [115, 200], label: ["Salle de", "réunion"], marker: true },
-  infirmerie: { name: "Infirmerie",         deck: 1, rect: [245, 150, 80, 100], center: [285, 200], marker: true },
-  vie:        { name: "Salle de vie",       deck: 1, rect: [155, 205, 90, 125], center: [200, 240], label: ["Salle", "de vie"], labelY: 228, pawnY: 262, marker: true },
-  dortoir1:   { name: "Dortoir 1",          deck: 1, rect: [75, 250, 80, 80],   center: [115, 290] },
-  dortoir2:   { name: "Dortoir 2",          deck: 1, rect: [245, 250, 80, 80],  center: [285, 290] },
-  armurerie:  { name: "Armurerie",          deck: 1, rect: [95, 330, 60, 70],   center: [125, 365], label: ["Armu-", "rerie"], toxic: true },
-  cuisine:    { name: "Cuisine",            deck: 1, rect: [155, 330, 90, 100], center: [200, 380], label: ["Cuisine &", "salle à", "manger"] },
-  labo:       { name: "Labo",               deck: 1, rect: [245, 330, 60, 70],  center: [275, 365], toxic: true },
-  entrepot1:  { name: "Entrepôt 1",         deck: 1, points: "75,400 155,400 155,480 50,480 50,425", center: [105, 445], marker: true },
-  entrepot2:  { name: "Entrepôt 2",         deck: 1, points: "245,400 325,400 350,425 350,480 245,480", center: [295, 445], marker: true },
-  atelier:    { name: "Atelier",            deck: 2, rect: [40, 40, 95, 90],    center: [87, 85] },
-  sport:      { name: "Salle de sport",     deck: 2, rect: [185, 40, 95, 90],   center: [232, 85], label: ["Salle de", "sport"] },
-  serre:      { name: "Serre hydroponique", deck: 2, rect: [135, 130, 50, 150], center: [160, 200], label: ["Serre", "hydro-", "ponique"] },
-  entrepot3:  { name: "Entrepôt 3",         deck: 2, points: "40,130 135,130 135,300 20,300 20,215 40,195", center: [78, 250], marker: true },
-  entrepot4:  { name: "Entrepôt 4",         deck: 2, points: "185,130 280,130 280,195 300,215 300,300 185,300", center: [242, 250], marker: true },
+  cockpit:    { name: "Cockpit",            en: { name: "Cockpit" }, deck: 1, points: "155,100 245,100 245,205 155,205", center: [200, 160] },
+  reunion:    { name: "Salle de réunion",   en: { name: "Meeting room", label: ["Meeting", "room"] }, deck: 1, rect: [75, 150, 80, 100],  center: [115, 200], label: ["Salle de", "réunion"], marker: true },
+  infirmerie: { name: "Infirmerie",         en: { name: "Infirmary" }, deck: 1, rect: [245, 150, 80, 100], center: [285, 200], marker: true },
+  vie:        { name: "Salle de vie",       en: { name: "Living quarters", label: ["Living", "quarters"] }, deck: 1, rect: [155, 205, 90, 125], center: [200, 240], label: ["Salle", "de vie"], labelY: 228, pawnY: 262, marker: true },
+  dortoir1:   { name: "Dortoir 1",          en: { name: "Dorm 1" }, deck: 1, rect: [75, 250, 80, 80],   center: [115, 290] },
+  dortoir2:   { name: "Dortoir 2",          en: { name: "Dorm 2" }, deck: 1, rect: [245, 250, 80, 80],  center: [285, 290] },
+  armurerie:  { name: "Armurerie",          en: { name: "Armory" }, deck: 1, rect: [95, 330, 60, 70],   center: [125, 365], label: ["Armu-", "rerie"], toxic: true },
+  cuisine:    { name: "Cuisine",            en: { name: "Galley", label: ["Galley &", "mess", "hall"] }, deck: 1, rect: [155, 330, 90, 100], center: [200, 380], label: ["Cuisine &", "salle à", "manger"] },
+  labo:       { name: "Labo",               en: { name: "Lab" }, deck: 1, rect: [245, 330, 60, 70],  center: [275, 365], toxic: true },
+  entrepot1:  { name: "Entrepôt 1",         en: { name: "Storage 1" }, deck: 1, points: "75,400 155,400 155,480 50,480 50,425", center: [105, 445], marker: true },
+  entrepot2:  { name: "Entrepôt 2",         en: { name: "Storage 2" }, deck: 1, points: "245,400 325,400 350,425 350,480 245,480", center: [295, 445], marker: true },
+  atelier:    { name: "Atelier",            en: { name: "Workshop" }, deck: 2, rect: [40, 40, 95, 90],    center: [87, 85] },
+  sport:      { name: "Salle de sport",     en: { name: "Fitness room", label: ["Fitness", "room"] }, deck: 2, rect: [185, 40, 95, 90],   center: [232, 85], label: ["Salle de", "sport"] },
+  serre:      { name: "Serre hydroponique", en: { name: "Hydroponic garden", label: ["Hydro-", "ponic", "garden"] }, deck: 2, rect: [135, 130, 50, 150], center: [160, 200], label: ["Serre", "hydro-", "ponique"] },
+  entrepot3:  { name: "Entrepôt 3",         en: { name: "Storage 3" }, deck: 2, points: "40,130 135,130 135,300 20,300 20,215 40,195", center: [78, 250], marker: true },
+  entrepot4:  { name: "Entrepôt 4",         en: { name: "Storage 4" }, deck: 2, points: "185,130 280,130 280,195 300,215 300,300 185,300", center: [242, 250], marker: true },
 } satisfies Record<string, Room>;
 
 export type RoomId = keyof typeof ROOMS;
@@ -147,11 +150,17 @@ export function roomBox(id: RoomId): [number, number, number, number] {
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)];
 }
 
-/** Lignes du nom d'une salle sur le plan. */
-export const roomLines = (id: RoomId): string[] => room(id).label || [room(id).name];
+/** Nom d'une salle dans la langue de l'app. */
+export const roomName = (id: RoomId): string => (lang.value === "en" ? room(id).en.name : room(id).name);
+
+/** Lignes du nom d'une salle sur le plan, dans la langue de l'app. */
+export const roomLines = (id: RoomId): string[] => {
+  const r = room(id);
+  return lang.value === "en" ? r.en.label || [r.en.name] : r.label || [r.name];
+};
 
 /** « Cuisine + Labo » pour une étape qui ferme plusieurs salles. */
-export const stepLabel = (rooms: RoomId[]): string => rooms.map(k => room(k).name).join(" + ");
+export const stepLabel = (rooms: RoomId[]): string => rooms.map(roomName).join(" + ");
 
 /**
  * Conduits d'aération du pont 1 (d'après le plan du manuel) : une bande étroite à l'intérieur de
@@ -223,5 +232,6 @@ export function pawnPosition(id: RoomId): [number, number] {
   const r = room(id);
   const [x, y] = r.center;
   if (r.pawnY) return [x, r.pawnY];
-  return [x, y + (r.label ? r.label.length * 6 + 8 : 16)];
+  const lines = roomLines(id);
+  return [x, y + (lines.length > 1 ? lines.length * 6 + 8 : 16)];
 }
