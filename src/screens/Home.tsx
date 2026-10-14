@@ -7,7 +7,7 @@ import { BOOT } from "../data/terminal";
 import { keepAwake } from "../state/device";
 import { showIntro } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
-import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, type ScenarioDocument } from "../state/ui";
+import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, tutorial, type ScenarioDocument } from "../state/ui";
 import { settings, type Scenario } from "../state/settings";
 import { SCENARIOS } from "../data/scenarios";
 import { contractSigned } from "./Recruitment";
@@ -36,6 +36,7 @@ export function Home() {
           <div class="row icon-row home-actions">
             <IconButton id="startBtn" icon="demarrer" label="Démarrer" primary onClick={() => { choosingScenario.value = true; }} />
             <IconButton id="homeSetBtn" icon="reglages" label="Réglages" onClick={() => { settingsOpen.value = true; }} />
+            <IconButton id="tutoBtn" icon="tuto" label="Tutoriel 3D6 Système" onClick={() => { tutorial.value = 0; }} />
           </div>
           <div class="blink">ACCÈS AUTORISÉ · NIVEAU 5</div>
         </div>
