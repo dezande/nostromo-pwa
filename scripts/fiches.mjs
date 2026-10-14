@@ -3,9 +3,9 @@
 // à partir des pages HTML de fiches/, dans public/fiches/ :
 //   - le prétiré de chaque scénario (fiches.html : Daniel ou Sofia Reyes ; infiltre.html : Lieutenant D.R. ;
 //     psychic-agent.html : Psychic Agent), en trois PDF : la fiche joueur recto verso en version homme
-//     (pages 1–2), en version femme (pages 3–4, recopiées par fiches/pretire.js) et l'aide du MJ (page 5 et suivante) ;
+//     (pages 1–2), en version femme (pages 3–4, recopiées par fiches/pretire.js) et l'aide du Superviseur (page 5 et suivante) ;
 //     lisibles en A4 comme réduits en A5 (fiches/pretire.css) ;
-//   - le guide du MJ de chaque scénario, de 2 à 4 pages ;
+//   - le guide du Superviseur de chaque scénario, de 2 à 4 pages ;
 //   - les cartes des petits rôles des spectateurs (roles.html : IA et Xénomorphes), format poker, 9 par page ;
 //   - la version anglaise de chacun (pages suffixées -en, PDF aux noms anglais).
 // Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
@@ -19,33 +19,33 @@ import { chromium } from "@playwright/test";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
-// Les trois PDF d'un prétiré : version homme, version femme, aide du MJ.
+// Les trois PDF d'un prétiré : version homme, version femme, aide du Superviseur.
 const pretire = (fiche, nom, scenario, mj) => [
   { pdf: `nostromo-fiche-${fiche}-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})` },
   { pdf: `nostromo-fiche-${fiche}-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})` },
-  { pdf: `nostromo-aide-mj-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du MJ (${scenario})` },
+  { pdf: `nostromo-aide-superviseur-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})` },
 ];
 // Les mêmes, pour la version anglaise.
 const pregen = (sheet, name, scenario, gm) => [
   { pdf: `nostromo-sheet-${sheet}-male.pdf`, from: 1, to: 2, title: `Nostromo II — ${name}, male version (${scenario})` },
   { pdf: `nostromo-sheet-${sheet}-female.pdf`, from: 3, to: 4, title: `Nostromo II — ${name}, female version (${scenario})` },
-  { pdf: `nostromo-gm-aid-${gm}.pdf`, from: 5, title: `Nostromo II — GM Aid (${scenario})` },
+  { pdf: `nostromo-supervisor-aid-${gm}.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})` },
 ];
 const documents = [
   { html: "fiches.html", pages: [5, 6], parts: pretire("reyes", "Reyes", "Une simple formalité", "recrutement") },
-  { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
+  { html: "guide-superviseur.html", pdf: "nostromo-guide-superviseur-recrutement.pdf", pages: [2, 4] },
   { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Session disciplinaire", "infiltre") },
-  { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-guide-superviseur-infiltre.pdf", pages: [2, 4] },
   { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Sixième sens", "entrainement") },
-  { html: "guide-mj-entrainement.html", pdf: "nostromo-guide-mj-entrainement.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-guide-superviseur-entrainement.pdf", pages: [2, 4] },
   { html: "roles.html", pdf: "nostromo-cartes-roles.pdf", pages: [2, 2] },
   // Version anglaise : mêmes pages HTML suffixées -en, PDF aux noms anglais.
   { html: "fiches-en.html", pages: [5, 6], parts: pregen("reyes", "Reyes", "A Mere Formality", "recruitment") },
-  { html: "guide-mj-en.html", pdf: "nostromo-gm-guide-recruitment.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-en.html", pdf: "nostromo-supervisor-guide-recruitment.pdf", pages: [2, 4] },
   { html: "infiltre-en.html", pages: [5, 6], parts: pregen("lieutenant-dr", "Lieutenant D.R.", "Disciplinary Session", "infiltrated") },
-  { html: "guide-mj-infiltre-en.html", pdf: "nostromo-gm-guide-infiltrated.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-supervisor-guide-infiltrated.pdf", pages: [2, 4] },
   { html: "psychic-agent-en.html", pages: [5, 6], parts: pregen("psychic-agent", "Psychic Agent", "Sixth Sense", "training") },
-  { html: "guide-mj-entrainement-en.html", pdf: "nostromo-gm-guide-training.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-supervisor-guide-training.pdf", pages: [2, 4] },
   { html: "roles-en.html", pdf: "nostromo-role-cards.pdf", pages: [2, 2] },
 ];
 

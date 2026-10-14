@@ -1,6 +1,6 @@
 // Textes des trois scénarios : « Sixième sens » (Psychic Agent, par défaut), « Une simple formalité » (jeu de rôle) et « Session disciplinaire ».
 // Les règles sont projetées sur les moniteurs de la salle de briefing : titres courts et puces, comme un support
-// de présentation ; la voix (l'instructeur, le RH) reste au MJ.
+// de présentation ; la voix (l'instructeur, le RH) reste au Superviseur.
 // La partie elle-même est la même ; seuls les panneaux d'accueil, les règles et les rapports de fin changent.
 import type { RuleName } from "../components/RuleScenes";
 import type { Scenario } from "../state/settings";
@@ -30,7 +30,7 @@ export interface ScenarioText {
   name: string;
   description: string;
   homeLine: string;
-  /** Difficulté pour le joueur et durée indicative, affichées sur la carte et dans le guide du MJ. */
+  /** Difficulté pour le joueur et durée indicative, affichées sur la carte et dans le guide du Superviseur. */
   level: string;
   duration: string;
   /** En-tête des panneaux de règles. */
@@ -115,7 +115,7 @@ const RECRUITMENT: ScenarioText = {
   firstPanel: "hr",
   lastPanel: "contract",
   name: "Une simple formalité",
-  description: "Jeu de rôle : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le MJ joue le RH et le Coordinateur.",
+  description: "Jeu de rôle : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le Superviseur joue le RH et le Coordinateur.",
   homeLine: "Recrutement Weyland-Yutani.",
   level: "Intermédiaire",
   duration: "30–45 min",
@@ -285,7 +285,7 @@ const TRAINING_EN: ScenarioText = {
 const RECRUITMENT_EN: ScenarioText = {
   ...RECRUITMENT,
   name: "A Mere Formality",
-  description: "Role-playing: a candidate signs a very well-paid contract, then takes the aptitude test. The GM plays HR and the Coordinator.",
+  description: "Role-playing: a candidate signs a very well-paid contract, then takes the aptitude test. The Supervisor plays HR and the Coordinator.",
   homeLine: "Weyland-Yutani recruitment.",
   level: "Intermediate",
   rulesHeader: "APTITUDE TEST · COORDINATOR",

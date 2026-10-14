@@ -848,13 +848,13 @@ test("scénario « Une simple formalité » : choix au lancement, RH, contrat à
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#scenarioDesc")).toContainText("Psychic Agent en formation");
-  await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-entrainement.pdf");
+  await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-guide-superviseur-entrainement.pdf");
   await page.locator("#scenario-recruitment").click();
   await expect(page.locator("#scenario-recruitment")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#sheetsPdf")).toHaveAttribute("download", "nostromo-fiche-reyes-homme.pdf");
   await expect(page.locator("#sheetsFemPdf")).toHaveAttribute("download", "nostromo-fiche-reyes-femme.pdf");
-  await expect(page.locator("#sheetsMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-recrutement.pdf");
-  await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-mj-recrutement.pdf");
+  await expect(page.locator("#sheetsMjPdf")).toHaveAttribute("download", "nostromo-aide-superviseur-recrutement.pdf");
+  await expect(page.locator("#guidePdf")).toHaveAttribute("download", "nostromo-guide-superviseur-recrutement.pdf");
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).scenario)).toBe("recruitment");
   await expect(page.locator("#scenarioDesc")).toContainText("signe un contrat");
   // « Retour » revient à l'accueil en gardant le choix
@@ -925,8 +925,8 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("href", "fiches/nostromo-fiche-lieutenant-dr-homme.pdf");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-homme.pdf");
   await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-femme.pdf");
-  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-aide-mj-infiltre.pdf");
-  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
+  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-aide-superviseur-infiltre.pdf");
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-guide-superviseur-infiltre.pdf");
   // Les cartes des petits rôles (IA, Xénomorphes) : les mêmes dans chaque scénario
   await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
   await page.locator("#rolesPdfRead").click();
@@ -937,19 +937,19 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await page.locator("#scenario-training").click();
   await expect(page.locator("#rolesPdf")).toHaveAttribute("href", "fiches/nostromo-cartes-roles.pdf");
   await page.locator("#scenario-infiltrated").click();
-  // Le guide du MJ se lit aussi dans l'app : son texte, au style de l'app, sans pages A4 ni en-têtes d'impression
+  // Le guide du Superviseur se lit aussi dans l'app : son texte, au style de l'app, sans pages A4 ni en-têtes d'impression
   await page.locator("#infiltratedGuidePdfRead").click();
   await expect(page.locator("#docViewer")).toHaveClass(/show/);
   await expect(page.locator("#docText")).toContainText("Lieutenant D.R.");
   await expect(page.locator("#docText .page, #docText header.header, #docText footer.footer, #docText img")).toHaveCount(0);
   expect(await page.locator("#docText").evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
-  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-guide-mj-infiltre.pdf");
+  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-guide-superviseur-infiltre.pdf");
   await page.locator("#docClose").click();
   await expect(page.locator("#docViewer")).not.toHaveClass(/show/);
-  // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du MJ
+  // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du Superviseur
   await page.locator("#infiltratedFemPdfRead").click();
   await expect(page.locator("#docText")).toContainText("Agent de renseignement infiltrée");
-  await expect(page.locator("#docText")).not.toContainText("AIDE DU MJ");
+  await expect(page.locator("#docText")).not.toContainText("AIDE DU SUPERVISEUR");
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-femme.pdf");
   await page.locator("#docClose").click();
   await expect(page.locator("#scenarioDesc")).toContainText("Lieutenant D.R.");
@@ -989,7 +989,7 @@ test("version anglaise : choix à l'accueil, retenu au rechargement, documents e
   await expect(page.locator("#trainingPdf")).toHaveAttribute("href", "fiches/nostromo-sheet-psychic-agent-male.pdf");
   await expect(page.locator("#rolesPdf")).toHaveAttribute("href", "fiches/nostromo-role-cards.pdf");
   await page.locator("#trainingGuidePdfRead").click();
-  await expect(page.locator("#docText")).toContainText("GM");
+  await expect(page.locator("#docText")).toContainText("Supervisor");
   await page.locator("#docClose").click();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");

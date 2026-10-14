@@ -1,4 +1,4 @@
-// Liseuse des documents d'un scénario (fiches, guide du MJ) : le texte des pages HTML d'où sont tirés
+// Liseuse des documents d'un scénario (fiches, guide du Superviseur) : le texte des pages HTML d'où sont tirés
 // les PDF (dossier fiches/), remis en forme au style de l'app, sans pages A4.
 import { useEffect, useState } from "preact/hooks";
 import { Overlay } from "../components/Overlay";

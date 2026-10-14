@@ -37,7 +37,7 @@ export const TUTORIAL: TutorialPage[] = [
     scene: "difficulte",
     title: "LA DIFFICULTÉ",
     points: [
-      "Le MJ annonce combien de succès il faut pour réussir.",
+      "Le Superviseur annonce combien de succès il faut pour réussir.",
       "Facile 1 · Moyenne 2 · Difficile 3 · Extrême 4.",
     ],
     example: "Repérer une clause du contrat : Mental, Moyenne (2 succès).",
@@ -121,7 +121,7 @@ export const TUTORIAL_EN: TutorialPage[] = [
     scene: "difficulte",
     title: "DIFFICULTY",
     points: [
-      "The GM announces how many successes are needed to succeed.",
+      "The Supervisor announces how many successes are needed to succeed.",
       "Easy 1 · Average 2 · Hard 3 · Extreme 4.",
     ],
     example: "Spotting a clause in the contract: Mental, Average (2 successes).",
