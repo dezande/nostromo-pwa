@@ -23,7 +23,7 @@
   width: 100%;
   max-width: 720px;
   max-height: calc(100vh - 32px);
-  max-height: calc(100dvh - 32px);
+  max-height: calc(var(--app-h) - 32px);
   overflow: auto;
   padding: 20px;
   border: 1px solid var(--line);
