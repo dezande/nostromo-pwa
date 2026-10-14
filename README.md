@@ -54,7 +54,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   - *Système* : écran toujours allumé, numéro de build et état du mode hors ligne.
 
 - **Sources** (bouton livre de l'accueil) : crédits, inspirations et outils, avec un QR code pour ouvrir
-  depuis un téléphone l'app, son code, Claude Code, le 3D6 Système et cool-retro-term.
+  depuis un téléphone l'app, son code, Claude Code, l'effet Nostromo II, le 3D6 Système et cool-retro-term.
 
 Musique et bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
 
@@ -173,7 +173,7 @@ Les mêmes sources s'affichent dans l'app (bouton livre de l'accueil), à partir
 
 **Inspirations**
 
-- *Nostromo II* : Fred Darevil, Marchand de Trucs. L'effet que l'app accompagne : plan, protocoles et cartes.
+- [*Nostromo II*](https://www.marchanddetrucs.com/magasin-de-magie/nos-produits/nostromo-ii.html) : Fred Darevil, Marchand de Trucs. L'effet que l'app accompagne : plan, protocoles et cartes.
 - [3D6 Système](https://3d6.ovh/) : François Cedelle, licence ORC. Système de jeu des fiches, des guides du MJ
   et du tutoriel.
 - [cool-retro-term](https://github.com/Swordfish90/cool-retro-term) : Swordfish90. Profils des styles d'écran

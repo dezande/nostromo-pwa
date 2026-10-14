@@ -54,6 +54,7 @@ test("l'app, son code et les inspirations avec une adresse ont un QR code", () =
     "https://dezande.github.io/nostromo-pwa/",
     "https://github.com/dezande/nostromo-pwa",
     "https://claude.com/claude-code",
+    "https://www.marchanddetrucs.com/magasin-de-magie/nos-produits/nostromo-ii.html",
     "https://3d6.ovh/",
     "https://github.com/Swordfish90/cool-retro-term",
   ]));
