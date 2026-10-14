@@ -47,7 +47,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   version femme, un pour l'aide du MJ) et guide du MJ pour chaque scénario, plus les cartes des
   petits rôles des spectateurs (format poker, neuf par page A4 : l'IA W.Y.C. montre la carte et dit le
   nombre de déplacements, l'IA Protocole annonce les salles qui ferment, un Xénomorphe par salle pousse
-  le cri quand la sienne ferme, et deux Brutes gardent le Lieutenant D.R. dans le scénario Infiltré). Depuis l'écran de choix du scénario, on les lit directement dans l'app
+  le cri quand la sienne ferme, et deux Brutes gardent le Lieutenant D.R. dans la « Session disciplinaire »). Depuis l'écran de choix du scénario, on les lit directement dans l'app
   (texte remis au style de l'app, aussi hors ligne) ou on télécharge le PDF.
 - **Réglages en onglets** :
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
