@@ -79,7 +79,10 @@ function ScenarioChoice() {
         {(Object.keys(SCENARIOS) as Scenario[]).map(id => (
           <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
             onClick={() => { settings.scenario.value = id; }}>
-            <strong>{SCENARIOS[id].name}</strong>
+            <span class="scenario-head">
+              <strong>{SCENARIOS[id].name}</strong>
+              <small class="scenario-meta" title="Niveau du joueur et durée indicative">{SCENARIOS[id].level} · {SCENARIOS[id].duration}</small>
+            </span>
             <small>{SCENARIOS[id].homeLine}</small>
           </button>
         ))}

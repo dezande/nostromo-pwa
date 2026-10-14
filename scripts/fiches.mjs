@@ -1,4 +1,4 @@
-// Génère les documents imprimables des scénarios « Entraînement », « Recrutement » et « Infiltré » (A4, noir et blanc,
+// Génère les documents imprimables des scénarios « Sixième sens », « Une simple formalité » et « Session disciplinaire » (A4, noir et blanc,
 // règles du 3D6 Système de François Cedelle, licence ORC)
 // à partir des pages HTML de fiches/, dans public/fiches/ :
 //   - le prétiré de chaque scénario (fiches.html : Jordan Reyes ; infiltre.html : Lieutenant D.R. ;
@@ -24,11 +24,11 @@ const pretire = (fiche, nom, scenario, mj) => [
   { pdf: `nostromo-aide-mj-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du MJ (${scenario})` },
 ];
 const documents = [
-  { html: "fiches.html", pages: [5, 6], parts: pretire("jordan-reyes", "Jordan Reyes", "Recrutement", "recrutement") },
+  { html: "fiches.html", pages: [5, 6], parts: pretire("jordan-reyes", "Jordan Reyes", "Une simple formalité", "recrutement") },
   { html: "guide-mj.html", pdf: "nostromo-guide-mj-recrutement.pdf", pages: [2, 4] },
-  { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Infiltré", "infiltre") },
+  { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Session disciplinaire", "infiltre") },
   { html: "guide-mj-infiltre.html", pdf: "nostromo-guide-mj-infiltre.pdf", pages: [2, 4] },
-  { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Entraînement", "entrainement") },
+  { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Sixième sens", "entrainement") },
   { html: "guide-mj-entrainement.html", pdf: "nostromo-guide-mj-entrainement.pdf", pages: [2, 4] },
 ];
 

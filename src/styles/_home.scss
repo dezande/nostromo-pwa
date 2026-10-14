@@ -37,6 +37,9 @@
   gap: 12px;
   h2 { font-size: clamp(20px, 5vw, 32px); }
   .scenario-cards { width: 100%; margin: 0; }
+  // Nom à gauche, niveau du joueur et durée à droite, sur la même ligne
+  .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
+  .alert-card .scenario-meta { color: var(--amber); white-space: nowrap; margin-bottom: 4px; }
   .sheets { margin-top: 0; }
   .sheet-links { justify-content: center; }
 }
@@ -157,6 +160,7 @@
   // Texte affiché par l'app, tampons, passages censurés, zones à remplir
   .screen { padding: 0 4px; border: 1px solid var(--line); color: var(--accent); }
   .stamp { display: inline-block; padding: 0 6px; border: 1px solid var(--amber); color: var(--amber); letter-spacing: .1em; }
+  .sub .stamp { margin-left: 8px; }
   .redact { display: inline-block; width: 5em; height: .9em; vertical-align: middle; background: var(--dim); opacity: .7; }
   .cut { margin: 16px 0 12px; padding: 6px 0; border-top: 1px dashed var(--dim); border-bottom: 1px dashed var(--dim); color: var(--dim); font-size: fs(11px); text-align: center; }
   .signature { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; color: var(--dim); font-size: fs(11px); }

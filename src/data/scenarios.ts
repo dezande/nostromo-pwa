@@ -1,4 +1,4 @@
-// Textes des trois scénarios : « Entraînement » (Psychic Agent, par défaut), « Recrutement » (jeu de rôle) et « Infiltré ».
+// Textes des trois scénarios : « Sixième sens » (Psychic Agent, par défaut), « Une simple formalité » (jeu de rôle) et « Session disciplinaire ».
 // Les règles sont projetées sur les moniteurs de la salle de briefing : titres courts et puces, comme un support
 // de présentation ; la voix (l'instructeur, le RH) reste au MJ.
 // La partie elle-même est la même ; seuls les panneaux d'accueil, les règles et les rapports de fin changent.
@@ -29,6 +29,9 @@ export interface ScenarioText {
   name: string;
   description: string;
   homeLine: string;
+  /** Difficulté pour le joueur et durée indicative, affichées sur la carte et dans le guide du MJ. */
+  level: "Débutant" | "Intermédiaire" | "Confirmé";
+  duration: string;
   /** En-tête des panneaux de règles. */
   rulesHeader: string;
   rulesIntro: string;
@@ -43,9 +46,11 @@ export interface ScenarioText {
 const TRAINING: ScenarioText = {
   firstPanel: "welcome",
   lastPanel: "welcome",
-  name: "Entraînement",
+  name: "Sixième sens",
   description: "Psychic Agent en formation à bord du Nostromo II. Scénario d'origine.",
   homeLine: "Simulation d'intrusion alien pour Psychic Agents.",
+  level: "Débutant",
+  duration: "20–30 min",
   rulesHeader: "ALIEN INTRUSION PROTOCOL",
   rulesIntro: "Protocole établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture.",
   rules: [
@@ -108,9 +113,11 @@ const TRAINING: ScenarioText = {
 const RECRUITMENT: ScenarioText = {
   firstPanel: "hr",
   lastPanel: "contract",
-  name: "Recrutement",
-  description: "Jeu de rôle (3d6) : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le MJ joue le RH et le Coordinateur.",
-  homeLine: "Examen d'aptitude · Recrutement Weyland-Yutani.",
+  name: "Une simple formalité",
+  description: "Jeu de rôle : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le MJ joue le RH et le Coordinateur.",
+  homeLine: "Recrutement Weyland-Yutani.",
+  level: "Intermédiaire",
+  duration: "30–45 min",
   rulesHeader: "EXAMEN D'APTITUDE · COORDINATEUR",
   rulesIntro: "Candidats, regardez l'écran. Déroulement établi par la [[Division scientifique de la]] compagnie. Seul le Coordinateur connaît l'ordre de fermeture.",
   rules: [
@@ -173,9 +180,11 @@ const RECRUITMENT: ScenarioText = {
 const INFILTRATED: ScenarioText = {
   firstPanel: "email",
   lastPanel: "email",
-  name: "Infiltré",
+  name: "Session disciplinaire",
   description: "Vous êtes le Lieutenant D.R., agent de la C.R.F. infiltré. La direction sait tout : pour vous punir, elle vous envoie à l'entraînement.",
-  homeLine: "Session disciplinaire · Agent infiltré.",
+  homeLine: "Agent C.R.F. démasqué.",
+  level: "Confirmé",
+  duration: "30 min",
   rulesHeader: "SESSION DISCIPLINAIRE · ALIEN INTRUSION PROTOCOL",
   rulesIntro: "Session ordonnée par la Direction de la sécurité. Protocole établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture.",
   rules: TRAINING.rules.map(rule => ({

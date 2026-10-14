@@ -31,7 +31,7 @@ async function open(page: Page, settings = FAST) {
   return errors;
 }
 
-/** « Démarrer », puis « Lancer » avec le scénario proposé (le dernier choisi, Entraînement par défaut). */
+/** « Démarrer », puis « Lancer » avec le scénario proposé (le dernier choisi, Sixième sens par défaut). */
 async function launch(page: Page) {
   await page.locator("#startBtn").click();
   await page.locator("#launchBtn").click();
@@ -839,9 +839,9 @@ for (const [layout, width, height] of [["phone", 390, 844], ["tablet", 1024, 768
   });
 }
 
-test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
+test("scénario « Une simple formalité » : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
   const errors = await open(page);
-  // Plus de choix dans les Réglages ; par défaut au lancement : scénario Entraînement.
+  // Plus de choix dans les Réglages ; par défaut au lancement : scénario « Sixième sens ».
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#tab-scenario")).toHaveCount(0);
   await page.locator("#setClose").click();
@@ -916,7 +916,7 @@ test("scénario Recrutement : choix au lancement, RH, contrat à faire défiler 
   expect(errors).toEqual([]);
 });
 
-test("scénario Infiltré : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
+test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
   const errors = await open(page);
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");

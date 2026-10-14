@@ -1,4 +1,4 @@
-// Scénario « Infiltré » : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré sur Nostromo II.
+// Scénario « Session disciplinaire » : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré sur Nostromo II.
 // L'écran montre l'e-mail chiffré qu'il a envoyé à sa base secrète, le QG terrestre de la C.R.F. Il a été intercepté :
 // la direction de la W.Y.C. le transfère au Coordinateur, avec un bandeau qui envoie l'expéditeur à l'entraînement.
 // Viennent ensuite les règles, puis la partie.
