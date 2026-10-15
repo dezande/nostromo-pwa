@@ -272,6 +272,79 @@
   </footer>
 </main>
 
+<!-- ================= AIDE DU SUPERVISEUR, SUITE : répliques des PNJ et script du Coordinateur ================= -->
+<main class="page cues">
+  <div class="title">
+    <h1>RÉPLIQUES DES PNJ</h1>
+    <div class="sub">AIDE DU SUPERVISEUR · SUITE<span class="stamp black"><i class="ic" data-ic="secret"></i>NE PAS MONTRER AU JOUEUR</span></div>
+  </div>
+
+  <div class="row c2">
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="protocole"></i>Kessler, le RH <span class="code">PNJ-01</span></h2>
+      <div class="sub-h">ACCUEIL</div>
+      <ul class="quotes">
+        <li><span>« Bienvenue parmi nous. Asseyez-vous. 48 000 crédits par mois, logement, prime, couverture médicale complète. »</span></li>
+        <li><span>« Quinze ans sur les docks… et un prêteur impatient. La Compagnie prend soin des siens. »</span></li>
+      </ul>
+      <div class="sub-h">CONTRAT</div>
+      <ul class="quotes">
+        <li><span>« Un document standard. Lisez jusqu'en bas, le lecteur l'exige. »</span></li>
+        <li><span>« Rien d'inhabituel. » · « Une clause standard. » · « Une précaution juridique, rien de plus. »</span></li>
+        <li><span>« Nous rapatrions tous nos employés. »</span></li>
+      </ul>
+      <div class="sub-h">EMPREINTE</div>
+      <ul class="quotes">
+        <li><span>« Posez le doigt ici. Gardez-le posé… Voilà. Les détails ? Le Coordinateur vous expliquera. »</span></li>
+      </ul>
+      <div class="sub-h">RELAIS · ÉPILOGUE</div>
+      <ul class="quotes">
+        <li><span>« Je vous attends à la sortie. »</span></li>
+        <li><span>Retenu : « Je vous l'avais dit, une formalité. » · Éliminé : « Candidat suivant. »</span></li>
+      </ul>
+    </section>
+
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="social"></i>Silhouettes de la B-7 <span class="code">FIGURANTS</span></h2>
+      <ul class="quotes">
+        <li><span><b>Pike</b>, le nerveux : « Indisponibilité définitive, ça veut dire quoi ? »</span></li>
+        <li><span><b>Brannigan</b>, le vantard : « Des tests, j'en ai passé cent. On peut abandonner en cours ? »</span></li>
+        <li><span><b>Okoye</b>, la muette, articule sans un son : « Ne demandez rien. »</span></li>
+      </ul>
+      <div class="sub-h"><i class="ic" data-ic="micro"></i>HALVORSEN ESQUIVE</div>
+      <ul class="quotes">
+        <li><span>« Tout est sur l'écran. » · « Écran suivant. » · « Question suivante. »</span></li>
+        <li><span>« Votre question est notée. » · « La compagnie a déjà répondu. »</span></li>
+        <li><span>« Ce point sera abordé pendant l'examen. »</span></li>
+        <li><span>« Ce point n'est pas couvert par la procédure. »</span></li>
+        <li><span>« Je ne suis pas habilité à répondre. » · « Asseyez-vous, Candidat. »</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="micro"></i>Script du Coordinateur Halvorsen <span class="code">du début à la fin · voix plate, au micro</span></h2>
+    <ol class="script">
+      <li><div class="cue">Entrée en B-7<small>Kessler sort</small></div><div class="say">« Candidats. Asseyez-vous. Regardez l'écran. » <span class="do">[moniteur 1]</span> « Déroulement établi par la compagnie. Seul le Coordinateur connaît l'ordre de fermeture. »</div></li>
+      <li><div class="cue">Moniteur 1<small>départ</small></div><div class="say">« Chaque candidat choisit la salle où il commence l'examen. Changement possible jusqu'à la validation. »</div></li>
+      <li><div class="cue">Moniteur 2<small>déplacements</small></div><div class="say">« Avant chaque fermeture, je tire une carte W.Y.C. : elle fixe le nombre de déplacements imposés. Un déplacement : une salle voisine, par une porte, un ascenseur ou un conduit. Arrêt interdit en ascenseur ou conduit. »</div></li>
+      <li><div class="cue">Moniteur 3<small>fermeture</small></div><div class="say">« J'annonce la salle fermée. Un élément de test y est introduit. Tout candidat présent dans cette salle est disqualifié. »</div></li>
+      <li><div class="cue">Moniteur 4<small>fin de l'examen</small></div><div class="say">« Huit fermetures successives. Candidats retenus : ceux présents dans la dernière salle restée ouverte. Restez calmes et suivez les instructions, Candidats. Questions : non autorisées. »</div></li>
+      <li><div class="cue">Départ<small>sur le plan</small></div><div class="say">« Veuillez rejoindre la salle de votre choix. » <span class="do">[il touche une salle]</span> « Validez votre position. » <span class="do">[Valider]</span> « Position enregistrée. L'examen commence. »</div></li>
+      <li><div class="cue">Chaque tour<small>carte W.Y.C.</small></div><div class="say">« Carte W.Y.C. Déplacements autorisés : [nombre]. » <span class="do">[il déplace son pion]</span> « Déplacements terminés. Validez. »</div></li>
+      <li><div class="cue">Chaque tour<small>protocole</small></div><div class="say">« Fermeture en cours : [salle]. » <span class="do">[toucher la salle ; claquement, cri]</span> « Élément de test introduit. » Deux salles : « Double fermeture : [salle] et [salle]. »</div></li>
+      <li><div class="cue">S'il proteste<small>ou négocie</small></div><div class="say">« Le protocole ne prévoit pas de dialogue. » · « Article 6 : mes instructions sont incontestables. » · « Tour suivant. »</div></li>
+      <li><div class="cue">8e fermeture<small>fin</small></div><div class="say">« Fermeture finale. » <span class="do">[un temps]</span> « Examen terminé. Les résultats seront transmis au service RH. » <span class="do">[lire le rapport, sans émotion ; Kessler reprend]</span></div></li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    <span>W.Y.C. · DRH · WY-NOS2-RH/0612</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">SUPERVISEUR 2/2</span>
+  </footer>
+</main>
+
 <script src="pretire.js"></script>
 </body>
 </html>

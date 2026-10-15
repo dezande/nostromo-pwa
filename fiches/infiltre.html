@@ -249,6 +249,76 @@
   </footer>
 </main>
 
+<!-- ================= AIDE DU SUPERVISEUR, SUITE : répliques des PNJ et script du Coordinateur ================= -->
+<main class="page cues">
+  <div class="title">
+    <h1>RÉPLIQUES DES PNJ</h1>
+    <div class="sub">AIDE DU SUPERVISEUR · SUITE<span class="stamp black"><i class="ic" data-ic="secret"></i>NE PAS MONTRER AU JOUEUR</span></div>
+  </div>
+
+  <div class="row c2">
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="epee"></i>Les Brutes <span class="code">SGT VOSS · CPL BREKKE</span></h2>
+      <div class="sub-h">À L'ARRIVÉE</div>
+      <ul class="quotes">
+        <li><span>« Lieutenant D.R. Suivez-nous. »</span></li>
+        <li><span>« Vos affaires. Le NS-X III aussi. »</span></li>
+        <li><span>« Session disciplinaire. Aucune dérogation. »</span></li>
+      </ul>
+      <div class="sub-h">PENDANT LA SESSION</div>
+      <ul class="quotes">
+        <li><span><span class="do">[debout près de lui, bras croisés ; ils ne disent rien]</span></span></li>
+        <li><span>« Les yeux sur l'écran, Agent. »</span></li>
+      </ul>
+      <div class="sub-h">S'IL VEUT PARTIR</div>
+      <ul class="quotes">
+        <li><span>« Restez assis, Agent. »</span></li>
+        <li><span>« Le Coordinateur a été prévenu. »</span></li>
+        <li><span><span class="do">[Physique opposé : Voss 4, Brekke 4]</span></span></li>
+      </ul>
+    </section>
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="social"></i>Silhouettes de la B-7 <span class="code">FIGURANTS</span></h2>
+      <ul class="quotes">
+        <li><span><b>Pike</b>, le nerveux : « Disciplinaire ? Je n'ai rien fait ! »</span></li>
+        <li><span><b>Brannigan</b>, le vantard : « Une punition, ça ? Une promenade. Qui a ordonné la session ? »</span></li>
+        <li><span><b>Okoye</b>, la muette, observe D.R. un peu trop longtemps. Elle a peur, comme les autres.</span></li>
+      </ul>
+      <div class="sub-h"><i class="ic" data-ic="micro"></i>HALVORSEN ESQUIVE</div>
+      <ul class="quotes">
+        <li><span>« Tout est sur l'écran. » · « Écran suivant. » · « Question suivante. »</span></li>
+        <li><span>« Votre question est notée. » · « La compagnie a déjà répondu. »</span></li>
+        <li><span>« Ce point sera abordé pendant la session. »</span></li>
+        <li><span>« Ce point n'est pas couvert par la procédure. »</span></li>
+        <li><span>« Aucune dérogation n'est prévue, Agent. » · « Asseyez-vous, Agent. »</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="micro"></i>Script du Coordinateur Halvorsen <span class="code">du début à la fin · voix plate, au micro</span></h2>
+    <ol class="script">
+      <li><div class="cue">Le terminal<small>copie interceptée</small></div><div class="say"><span class="do">[silence : il laisse D.R. lire son propre rapport, tampon INTERCEPTÉ]</span> S'il réagit : « Session disciplinaire, Agent. Asseyez-vous. »</div></li>
+      <li><div class="cue">Entrée en B-7<small>moniteur 1</small></div><div class="say">« Agents. Regardez l'écran. Session ordonnée par la Direction de la sécurité. Protocole établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture. »</div></li>
+      <li><div class="cue">Moniteur 1<small>départ</small></div><div class="say">« Chaque agent choisit la salle où il commence la session. Changement possible jusqu'à la validation. »</div></li>
+      <li><div class="cue">Moniteur 2<small>déplacements</small></div><div class="say">« Avant chaque fermeture, je tire une carte W.Y.C. : elle fixe le nombre de déplacements imposés. Un déplacement : une salle voisine, par une porte, un ascenseur ou un conduit. Arrêt interdit en ascenseur ou conduit. »</div></li>
+      <li><div class="cue">Moniteur 3<small>fermeture</small></div><div class="say">« J'annonce la salle fermée. Un xénomorphe y est introduit. Tout agent présent dans cette salle est éliminé. »</div></li>
+      <li><div class="cue">Moniteur 4<small>fin de la session</small></div><div class="say">« Huit fermetures successives. Survivants : les agents présents dans la dernière salle restée ouverte. Fiez-vous à votre instinct, Agents. Questions : non autorisées. »</div></li>
+      <li><div class="cue">Départ<small>sur le plan</small></div><div class="say">« Veuillez rejoindre la salle de votre choix. » <span class="do">[il touche une salle]</span> « Validez votre position. » <span class="do">[Valider]</span> « Position enregistrée. La session commence. »</div></li>
+      <li><div class="cue">Chaque tour<small>carte W.Y.C.</small></div><div class="say">« Carte W.Y.C. Déplacements autorisés : [nombre]. » <span class="do">[il déplace son pion]</span> « Déplacements terminés. Validez. »</div></li>
+      <li><div class="cue">Chaque tour<small>protocole</small></div><div class="say">« Fermeture en cours : [salle]. » <span class="do">[toucher la salle ; claquement, cri]</span> « Spécimen introduit. » Deux salles : « Double fermeture : [salle] et [salle]. »</div></li>
+      <li><div class="cue">S'il proteste<small>ou négocie</small></div><div class="say">« Je suis le protocole de la compagnie. » · « Aucune dérogation n'est prévue, Agent. » · « Tour suivant. »</div></li>
+      <li><div class="cue">8e fermeture<small>fin</small></div><div class="say">« Fermeture finale. » <span class="do">[un temps]</span> « Session terminée. Rapport transmis à la Direction de la sécurité. » <span class="do">[lire le rapport, sans émotion ; épilogue]</span></div></li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    <span>W.Y.C. · WY-NOS2-PA/2184</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">SUPERVISEUR 2/2</span>
+  </footer>
+</main>
+
 <script src="pretire.js"></script>
 </body>
 </html>
