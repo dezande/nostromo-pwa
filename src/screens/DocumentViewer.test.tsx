@@ -114,12 +114,12 @@ test("en anglais : explication et jauge traduites", () => {
 test("le PDF proposé suit le réglage miroir pour un document du Superviseur, jamais pour un prétiré", () => {
   const guide = findSheet("trainingGuidePdf")!;
   const pregen = findSheet("trainingPdf")!;
-  expect(pdfFile(guide)).toBe("nostromo-guide-superviseur-entrainement.pdf");
+  expect(pdfFile(guide)).toBe("nostromo-sixieme-sens-guide-superviseur.pdf");
   expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF");
   settings.mirror.value = true;
-  expect(pdfFile(guide)).toBe("nostromo-guide-superviseur-entrainement-miroir.pdf");
+  expect(pdfFile(guide)).toBe("nostromo-sixieme-sens-guide-superviseur-miroir.pdf");
   expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF miroir");
-  expect(pdfFile(pregen)).toBe("nostromo-fiche-psychic-agent-homme.pdf");
+  expect(pdfFile(pregen)).toBe("nostromo-sixieme-sens-fiche-homme.pdf");
   expect(pdfLabel(pregen)).toBe("Prétiré homme en PDF");
 });
 
@@ -127,15 +127,15 @@ test("en anglais : le PDF miroir anglais et son nom accessible", () => {
   lang.value = "en";
   settings.mirror.value = true;
   const aid = localized(SHEETS.recruitment.find(s => s.kind === "aid")!);
-  expect(pdfFile(aid)).toBe("nostromo-supervisor-aid-recruitment-mirrored.pdf");
+  expect(pdfFile(aid)).toBe("nostromo-a-mere-formality-supervisor-aid-mirrored.pdf");
   expect(pdfLabel(aid)).toBe("Supervisor aid as mirrored PDF");
 });
 
 // --- La liseuse
 
 const GUIDE: ScenarioDocument = { id: "trainingGuidePdf", name: "Guide du Superviseur", html: "guide-superviseur-entrainement.html",
-  file: "nostromo-guide-superviseur-entrainement.pdf", mirrorFile: "nostromo-guide-superviseur-entrainement-miroir.pdf" };
-const PREGEN: ScenarioDocument = { id: "trainingPdf", name: "Prétiré homme", html: "psychic-agent.html", pages: ".page.joueur", file: "nostromo-fiche-psychic-agent-homme.pdf" };
+  file: "nostromo-sixieme-sens-guide-superviseur.pdf", mirrorFile: "nostromo-sixieme-sens-guide-superviseur-miroir.pdf" };
+const PREGEN: ScenarioDocument = { id: "trainingPdf", name: "Prétiré homme", html: "psychic-agent.html", pages: ".page.joueur", file: "nostromo-sixieme-sens-fiche-homme.pdf" };
 
 /** Ouvre un document dans la liseuse, la page HTML étant servie par un faux fetch. */
 async function view(doc: ScenarioDocument) {
@@ -150,13 +150,13 @@ test("document du Superviseur : texte en miroir quand le réglage est actif, bou
   expect($("#docText").textContent).toContain("AIDE DU SUPERVISEUR");
   expect($("#docText").classList.contains("mirror")).toBe(false);
   expect($("#docMirror").getAttribute("aria-pressed")).toBe("false");
-  expect($("#docPdf").getAttribute("download")).toBe("nostromo-guide-superviseur-entrainement.pdf");
+  expect($("#docPdf").getAttribute("download")).toBe("nostromo-sixieme-sens-guide-superviseur.pdf");
   act(() => { $("#docMirror").click(); });
   expect(settings.mirror.value).toBe(true);
   expect($("#docText").classList.contains("mirror")).toBe(true);
   expect($("#docMirror").getAttribute("aria-pressed")).toBe("true");
-  expect($("#docPdf").getAttribute("download")).toBe("nostromo-guide-superviseur-entrainement-miroir.pdf");
-  expect($("#docPdf").getAttribute("href")).toBe("fiches/nostromo-guide-superviseur-entrainement-miroir.pdf");
+  expect($("#docPdf").getAttribute("download")).toBe("nostromo-sixieme-sens-guide-superviseur-miroir.pdf");
+  expect($("#docPdf").getAttribute("href")).toBe("fiches/nostromo-sixieme-sens-guide-superviseur-miroir.pdf");
   expect($("#docPdf").getAttribute("aria-label")).toBe("Guide du Superviseur en PDF miroir");
   act(() => { $("#docMirror").click(); });
   expect(settings.mirror.value).toBe(false);
@@ -169,7 +169,7 @@ test("prétiré du joueur : jamais en miroir, pas de bouton, PDF ordinaire même
   expect($("#docText").textContent).toContain("Daniel REYES");
   expect($("#docText").classList.contains("mirror")).toBe(false);
   expect($("#docMirror")).toBeNull();
-  expect($("#docPdf").getAttribute("download")).toBe("nostromo-fiche-psychic-agent-homme.pdf");
+  expect($("#docPdf").getAttribute("download")).toBe("nostromo-sixieme-sens-fiche-homme.pdf");
 });
 
 test("en anglais : nom du bouton miroir traduit", async () => {

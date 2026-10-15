@@ -16,13 +16,14 @@ Modifier le HTML seul ne suffit jamais : il faut regénérer les PDF et vérifie
 
 | Document | FR | EN | PDF (FR / EN) |
 |---|---|---|---|
-| Prétiré Psychic Agent + aide (Sixième sens) | `psychic-agent.html` | `psychic-agent-en.html` | `nostromo-fiche-psychic-agent-{homme,femme}.pdf`, `nostromo-aide-superviseur-entrainement.pdf` / `nostromo-sheet-psychic-agent-{male,female}.pdf`, `nostromo-supervisor-aid-training.pdf` |
-| Prétiré Reyes + aide (Une simple formalité) | `fiches.html` | `fiches-en.html` | `…-reyes-…`, `…-recrutement.pdf` / `…-recruitment.pdf` |
-| Prétiré Lieutenant D.R. + aide (Session disciplinaire) | `infiltre.html` | `infiltre-en.html` | `…-lieutenant-dr-…`, `…-infiltre.pdf` / `…-infiltrated.pdf` |
-| Guides du Superviseur | `guide-superviseur{,-entrainement,-infiltre}.html` | `…-en.html` | `nostromo-guide-superviseur-*.pdf` / `nostromo-supervisor-guide-*.pdf` |
+| Prétiré Psychic Agent + aide (Sixième sens) | `psychic-agent.html` | `psychic-agent-en.html` | `nostromo-sixieme-sens-fiche-{homme,femme}.pdf`, `nostromo-sixieme-sens-aide-superviseur.pdf` / `nostromo-sixth-sense-sheet-{male,female}.pdf`, `nostromo-sixth-sense-supervisor-aid.pdf` |
+| Prétiré Reyes + aide (Une simple formalité) | `fiches.html` | `fiches-en.html` | `nostromo-une-simple-formalite-…` / `nostromo-a-mere-formality-…` |
+| Prétiré Lieutenant D.R. + aide (Session disciplinaire) | `infiltre.html` | `infiltre-en.html` | `nostromo-session-disciplinaire-…` / `nostromo-disciplinary-session-…` |
+| Guides du Superviseur | `guide-superviseur{,-entrainement,-infiltre}.html` | `…-en.html` | `nostromo-<scénario>-guide-superviseur.pdf` / `nostromo-<scenario>-supervisor-guide.pdf` |
 | Cartes des petits rôles | `roles.html` | `roles-en.html` | `nostromo-cartes-roles.pdf` / `nostromo-role-cards.pdf` |
 
-L'aide et le guide du Superviseur existent aussi en PDF miroir (`-miroir.pdf` / `-mirrored.pdf`, pages retournées
+Les PDF d'un scénario portent son titre en préfixe (`sixieme-sens`, `une-simple-formalite`, `session-disciplinaire` ;
+`sixth-sense`, `a-mere-formality`, `disciplinary-session`). L'aide et le guide du Superviseur existent aussi en PDF miroir (`-miroir.pdf` / `-mirrored.pdf`, pages retournées
 sur leur axe vertical par `fiches.mjs`) : le lien PDF de l'app les propose quand le réglage « miroir » est actif.
 La correspondance exacte (pages, titres des PDF) est dans `scripts/fiches.mjs` ; celle entre documents,
 scénarios et boutons de l'app est dans `src/data/sheets.ts` (`SHEETS`, `ROLES`). Un nouveau document se

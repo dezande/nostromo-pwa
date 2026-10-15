@@ -21,17 +21,18 @@ import { chromium } from "@playwright/test";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
-// Les trois PDF d'un prétiré : version homme, version femme, aide du Superviseur.
-const pretire = (fiche, nom, scenario, mj) => [
-  { pdf: `nostromo-fiche-${fiche}-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})` },
-  { pdf: `nostromo-fiche-${fiche}-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})` },
-  { pdf: `nostromo-aide-superviseur-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})`, mirror: true },
+// Les trois PDF d'un prétiré : version homme, version femme, aide du Superviseur. Tous les PDF d'un scénario
+// portent son titre en préfixe (slug), pour qu'ils se rangent ensemble une fois téléchargés.
+const pretire = (slug, nom, scenario) => [
+  { pdf: `nostromo-${slug}-fiche-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})` },
+  { pdf: `nostromo-${slug}-fiche-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})` },
+  { pdf: `nostromo-${slug}-aide-superviseur.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})`, mirror: true },
 ];
 // Les mêmes, pour la version anglaise.
-const pregen = (sheet, name, scenario, gm) => [
-  { pdf: `nostromo-sheet-${sheet}-male.pdf`, from: 1, to: 2, title: `Nostromo II — ${name}, male version (${scenario})` },
-  { pdf: `nostromo-sheet-${sheet}-female.pdf`, from: 3, to: 4, title: `Nostromo II — ${name}, female version (${scenario})` },
-  { pdf: `nostromo-supervisor-aid-${gm}.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})`, mirror: true },
+const pregen = (slug, name, scenario) => [
+  { pdf: `nostromo-${slug}-sheet-male.pdf`, from: 1, to: 2, title: `Nostromo II — ${name}, male version (${scenario})` },
+  { pdf: `nostromo-${slug}-sheet-female.pdf`, from: 3, to: 4, title: `Nostromo II — ${name}, female version (${scenario})` },
+  { pdf: `nostromo-${slug}-supervisor-aid.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})`, mirror: true },
 ];
 // La version miroir d'un PDF du Superviseur : son nom et son titre, dans la langue du document.
 const mirrored = (pdf, title, en) => ({
@@ -40,20 +41,20 @@ const mirrored = (pdf, title, en) => ({
   mirror: true,
 });
 const documents = [
-  { html: "fiches.html", pages: [5, 6], parts: pretire("reyes", "Reyes", "Une simple formalité", "recrutement") },
-  { html: "guide-superviseur.html", pdf: "nostromo-guide-superviseur-recrutement.pdf", pages: [2, 4], mirror: true },
-  { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Session disciplinaire", "infiltre") },
-  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-guide-superviseur-infiltre.pdf", pages: [2, 4], mirror: true },
-  { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Sixième sens", "entrainement") },
-  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-guide-superviseur-entrainement.pdf", pages: [2, 4], mirror: true },
+  { html: "fiches.html", pages: [5, 6], parts: pretire("une-simple-formalite", "Reyes", "Une simple formalité") },
+  { html: "guide-superviseur.html", pdf: "nostromo-une-simple-formalite-guide-superviseur.pdf", pages: [2, 4], mirror: true },
+  { html: "infiltre.html", pages: [5, 6], parts: pretire("session-disciplinaire", "Lieutenant D.R.", "Session disciplinaire") },
+  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-session-disciplinaire-guide-superviseur.pdf", pages: [2, 4], mirror: true },
+  { html: "psychic-agent.html", pages: [5, 6], parts: pretire("sixieme-sens", "Psychic Agent", "Sixième sens") },
+  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-sixieme-sens-guide-superviseur.pdf", pages: [2, 4], mirror: true },
   { html: "roles.html", pdf: "nostromo-cartes-roles.pdf", pages: [2, 2] },
   // Version anglaise : mêmes pages HTML suffixées -en, PDF aux noms anglais.
-  { html: "fiches-en.html", pages: [5, 6], parts: pregen("reyes", "Reyes", "A Mere Formality", "recruitment") },
-  { html: "guide-superviseur-en.html", pdf: "nostromo-supervisor-guide-recruitment.pdf", pages: [2, 4], mirror: true },
-  { html: "infiltre-en.html", pages: [5, 6], parts: pregen("lieutenant-dr", "Lieutenant D.R.", "Disciplinary Session", "infiltrated") },
-  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-supervisor-guide-infiltrated.pdf", pages: [2, 4], mirror: true },
-  { html: "psychic-agent-en.html", pages: [5, 6], parts: pregen("psychic-agent", "Psychic Agent", "Sixth Sense", "training") },
-  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-supervisor-guide-training.pdf", pages: [2, 4], mirror: true },
+  { html: "fiches-en.html", pages: [5, 6], parts: pregen("a-mere-formality", "Reyes", "A Mere Formality") },
+  { html: "guide-superviseur-en.html", pdf: "nostromo-a-mere-formality-supervisor-guide.pdf", pages: [2, 4], mirror: true },
+  { html: "infiltre-en.html", pages: [5, 6], parts: pregen("disciplinary-session", "Lieutenant D.R.", "Disciplinary Session") },
+  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-disciplinary-session-supervisor-guide.pdf", pages: [2, 4], mirror: true },
+  { html: "psychic-agent-en.html", pages: [5, 6], parts: pregen("sixth-sense", "Psychic Agent", "Sixth Sense") },
+  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-sixth-sense-supervisor-guide.pdf", pages: [2, 4], mirror: true },
   { html: "roles-en.html", pdf: "nostromo-role-cards.pdf", pages: [2, 2] },
 ];
 
