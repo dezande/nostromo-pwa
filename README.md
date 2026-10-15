@@ -31,7 +31,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   la langue du navigateur est choisie. Tout est traduit : interface, scénarios, contrat, plan, annonce vocale,
   et les documents à imprimer (pages `fiches/*-en.html`, PDF aux noms anglais générés par `npm run fiches`).
 
-- **Trois scénarios**, au choix au lancement (« Démarrer », puis « Lancer ») ; le dernier choisi est proposé la fois suivante :
+- **Trois scénarios et un mode sans scénario**, au choix au lancement (« Démarrer », puis « Lancer ») ; le dernier choisi est proposé la fois suivante :
   - **Sixième sens** (par défaut ; joueur débutant, 20 à 30 min) : un Psychic Agent en formation sur la base lunaire Nostromo II.
     Panneau « Bienvenue à bord », puis quatre règles, chacune avec une scène animée tirée du vrai plan.
   - **Une simple formalité** (jeu de rôle ; joueur intermédiaire, 30 à 45 min) : un candidat postule à un poste très bien payé. Le RH lui fait lire
@@ -40,6 +40,8 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   - **Session disciplinaire** (joueur confirmé, 30 min environ) : le joueur est le Lieutenant D.R. du livret, agent de la C.R.F. infiltré. Après ses
     archives, il découvre un e-mail de la direction : elle sait tout et l'envoie à l'entraînement
     pour le punir.
+  - **Sans scénario** (tous niveaux, 10 à 15 min) : ni panneaux d'introduction ni règles, la partie commence dès « Lancer » ;
+    pas de documents ni de petits rôles, rapport de fin neutre. Pour rejouer vite avec des joueurs qui connaissent déjà le protocole.
 - **La partie** : choix de la salle de départ, déplacements (5 au plus, sans compteur), « Valider »,
   puis le Coordinateur touche une ou deux salles à fermer. La fermeture est immédiate : croix rouge,
   claquement, annonce vocale, cri du xénomorphe plus ou moins fort selon la distance.
@@ -96,7 +98,7 @@ src/
   App.tsx               assemblage de l'écran
   data/                 données et textes, sans code d'affichage
     ship.ts             salles, liaisons, positions sur le plan
-    scenarios.ts        textes des trois scénarios : règles, rapports de fin
+    scenarios.ts        textes des scénarios : règles, rapports de fin
     contract.ts         contrat du scénario « Une simple formalité » ([[…]] = passage censuré)
     documents.ts        faux numéros de documents
     themes.ts           styles d'écran (inspirés de cool-retro-term)

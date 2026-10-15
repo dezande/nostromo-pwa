@@ -21,6 +21,14 @@ export const ICONS = {
   accueil: <><path d="M3.5 11.5L12 4l8.5 7.5" /><path d="M6 10v9.5h4.5v-5h3v5H18V10" /></>,
   son: <><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" /></>,
   muet: <><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M16 9.5l5 5M21 9.5l-5 5" /></>,
+  // Documents des scénarios : symboles du sexe (mêmes tracés que fiches/pretire.js, et pas d'emoji coloré),
+  // aide du Superviseur (bloc-notes), guide (livre fermé), cartes des rôles (deux cartes), PDF (téléchargement)
+  homme: <><circle cx="10" cy="14" r="6" /><path d="M14.3 9.7L21 3M15 3h6v6" /></>,
+  femme: <><circle cx="12" cy="9" r="6" /><path d="M12 15v7M8.5 19h7" /></>,
+  aide: <><rect x="5" y="4.5" width="14" height="16" /><path d="M9 3v3M15 3v3M8.5 10.5h7M8.5 14h7M8.5 17.5h4" /></>,
+  guide: <><path d="M5 4h12.5v16H5z" /><path d="M8 4v16M11 8.5h4" /></>,
+  roles: <><rect x="3.5" y="7" width="10" height="14" rx="1" /><path d="M8 7V3h10.5v14h-5" /></>,
+  pdf: <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" />,
 };
 
 export type IconName = keyof typeof ICONS;

@@ -65,26 +65,31 @@
   .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
   .alert-card .scenario-meta { color: var(--amber); white-space: nowrap; margin-bottom: 4px; }
   // Écran bas : la carte garde le nom, le niveau et la durée ; la description sous les cartes suffit
-  @media (max-height: 700px) { .alert-card .scenario-line { display: none; } }
+  // et se resserre pour que les quatre choix et les documents tiennent sans défilement
+  @media (max-height: 700px) {
+    gap: 8px;
+    .alert-card { padding: 6px 12px; }
+    .alert-card strong { margin-bottom: 2px; }
+    .alert-card .scenario-meta { margin-bottom: 0; }
+    .alert-card .scenario-line { display: none; }
+  }
   .scenario-desc { display: grid; width: 100%; > p { grid-area: 1 / 1; } }
   .hidden-desc { visibility: hidden; }
   .sheets { width: 100%; margin-top: 0; container-type: inline-size; }
-  // Documents (toujours 4) en grille régulière : 2 colonnes, 4 si la place le permet, 1 sur très petit écran.
-  // Jamais 3 : le dernier document resterait seul sur sa ligne.
+  // Documents (4 du scénario, puis les rôles) en grille régulière : 2 colonnes, 3 si la place le permet, 1 sur très petit écran.
   .sheet-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  @container (min-width: 640px) { .sheet-links { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @container (min-width: 520px) { .sheet-links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   @container (max-width: 300px) { .sheet-links { grid-template-columns: minmax(0, 1fr); } }
   .sheet { min-width: 0; }
   .sheet > .sheet-link:first-child { flex: 1; min-width: 0; white-space: nowrap; }
   .sheet-link { padding: 8px 10px; }
+  @media (max-height: 700px) { .sheet-link { padding-block: 6px; } }
 }
 
 // Choix du scénario : documents à lire dans l'app ou en PDF
 .sheets {
   margin-top: 12px;
-  .set-label { font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
-  // Titre à gauche, cartes des petits rôles à droite
-  .sheets-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 8px; }
+  .set-label { display: block; text-align: left; font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
   .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
   // Un document : « lire dans l'app » (nom) et son PDF, collés
   .sheet { display: inline-flex; }
@@ -101,8 +106,11 @@
   font-size: fs(11px);
   background: none;
   min-height: 0;
-  &::before { content: "▤ "; }
-  &.sheet-pdf::before { content: "⤓ "; }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4em;
+  .ic { width: 1.3em; height: 1.3em; }
 }
 
 // Liseuse de document : en-tête (nom, PDF, Fermer), puis le texte qui défile
@@ -226,7 +234,7 @@
   .screen { padding: 0 4px; border: 1px solid var(--line); color: var(--accent); }
   .stamp { display: inline-block; padding: 0 6px; border: 1px solid var(--amber); color: var(--amber); letter-spacing: .1em; }
   .sub .stamp { margin-left: 8px; }
-  .sex { font-size: 1.5em; line-height: 1; color: var(--accent); }
+  .sex { display: inline-block; width: 1.2em; height: 1.2em; vertical-align: -.2em; color: var(--accent); svg { width: 100%; height: 100%; display: block; } }
   .redact { display: inline-block; width: 5em; height: .9em; vertical-align: middle; background: var(--dim); opacity: .7; }
   .cut { margin: 16px 0 12px; padding: 6px 0; border-top: 1px dashed var(--dim); border-bottom: 1px dashed var(--dim); color: var(--dim); font-size: fs(11px); text-align: center; }
   .signature { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; color: var(--dim); font-size: fs(11px); }
