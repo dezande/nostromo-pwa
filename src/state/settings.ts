@@ -24,9 +24,9 @@ export interface Settings {
 
 /**
  * Scénario : « training » (entraînement Psychic Agent, par défaut), « recruitment » (jeu de rôle)
- * ou « infiltrated » (le Lieutenant D.R. du livret, démasqué par la direction).
+ * « infiltrated » (le Lieutenant D.R. du livret, démasqué par la direction) ou « free » (sans scénario : partie directe).
  */
-export type Scenario = "training" | "recruitment" | "infiltrated";
+export type Scenario = "training" | "recruitment" | "infiltrated" | "free";
 
 export type Layout = "tablet" | "phone";
 

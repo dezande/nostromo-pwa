@@ -1,4 +1,5 @@
-// Textes des trois scénarios : « Sixième sens » (Psychic Agent, par défaut), « Une simple formalité » (jeu de rôle) et « Session disciplinaire ».
+// Textes des scénarios : « Sixième sens » (Psychic Agent, par défaut), « Une simple formalité » (jeu de rôle), « Session disciplinaire »
+// et « Sans scénario » (partie directe, sans panneaux d'introduction ni règles).
 // Les règles sont projetées sur les moniteurs de la salle de briefing : titres courts et puces, comme un support
 // de présentation ; la voix (l'instructeur, le RH) reste au Superviseur.
 // La partie elle-même est la même ; seuls les panneaux d'accueil, les règles et les rapports de fin changent.
@@ -23,8 +24,8 @@ export interface Report {
 }
 
 export interface ScenarioText {
-  /** Premier panneau après « Démarrer », et celui où ramène « Retour » depuis la première règle. */
-  firstPanel: BriefingPanel;
+  /** Premier panneau après « Lancer » (null : la partie commence tout de suite), et celui où ramène « Retour » depuis la première règle. */
+  firstPanel: BriefingPanel | null;
   lastPanel: BriefingPanel;
   /** Choix au lancement : nom et ligne courte sur la carte, description sous les cartes. */
   name: string;
@@ -385,10 +386,67 @@ const INFILTRATED_EN: ScenarioText = {
   },
 };
 
+/** Sans scénario : pas d'introduction ni de règles à l'écran, la partie commence au lancement ; rapports neutres. */
+const FREE: ScenarioText = {
+  ...TRAINING,
+  firstPanel: null,
+  name: "Sans scénario",
+  description: "Partie directe : ni histoire ni règles à l'écran, le plan s'affiche dès le lancement. Pour rejouer vite, avec des joueurs qui connaissent déjà le protocole.",
+  homeLine: "Partie directe, sans introduction.",
+  level: "Tous niveaux",
+  duration: "10–15 min",
+  quitQuestion: "Abandonner la partie en cours ?",
+  win: {
+    header: "RAPPORT DE SIMULATION",
+    title: "AGENT SURVIVANT",
+    stamp: "SIMULATION TERMINÉE",
+    status: "PROTOCOLE TERMINÉ.",
+    lines: [
+      "Position finale : {room}. L'agent a survécu à toutes les fermetures du protocole.",
+    ],
+  },
+  dead: {
+    header: "RAPPORT D'INCIDENT",
+    title: "AGENT ÉLIMINÉ",
+    stamp: "SIMULATION TERMINÉE",
+    lines: [
+      "Fermeture de la salle : {room}. Un spécimen y a été introduit. L'agent s'y trouvait.",
+    ],
+  },
+};
+
+const FREE_EN: ScenarioText = {
+  ...TRAINING_EN,
+  firstPanel: null,
+  name: "No scenario",
+  description: "Straight to the game: no story and no rules on screen, the map appears as soon as you launch. For a quick replay, with players who already know the protocol.",
+  homeLine: "Straight to the game, no introduction.",
+  level: "Any level",
+  duration: "10–15 min",
+  quitQuestion: "Abandon the current game?",
+  win: {
+    header: "SIMULATION REPORT",
+    title: "AGENT SURVIVED",
+    stamp: "SIMULATION COMPLETE",
+    status: "PROTOCOL COMPLETE.",
+    lines: [
+      "Final position: {room}. The agent survived every sealing of the protocol.",
+    ],
+  },
+  dead: {
+    header: "INCIDENT REPORT",
+    title: "AGENT ELIMINATED",
+    stamp: "SIMULATION COMPLETE",
+    lines: [
+      "Room sealed: {room}. A specimen was released into it. The agent was inside.",
+    ],
+  },
+};
+
 /** Textes des scénarios, par langue. */
 export const SCENARIOS: Record<Lang, Record<Scenario, ScenarioText>> = {
-  fr: { training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED },
-  en: { training: TRAINING_EN, recruitment: RECRUITMENT_EN, infiltrated: INFILTRATED_EN },
+  fr: { training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED, free: FREE },
+  en: { training: TRAINING_EN, recruitment: RECRUITMENT_EN, infiltrated: INFILTRATED_EN, free: FREE_EN },
 };
 
 /** Identifiants des scénarios, dans l'ordre du choix au lancement. */

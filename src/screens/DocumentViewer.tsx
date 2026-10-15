@@ -34,13 +34,22 @@ function explainTraits(doc: Document) {
   doc.querySelectorAll<HTMLElement>(".energy .track").forEach(track => { track.innerHTML = "<i></i>".repeat(Number(track.dataset.n)); });
 }
 
+/** Symboles du sexe (mêmes tracés que fiches/pretire.js et les icônes de l'app). */
+const SEX = {
+  homme: '<circle cx="10" cy="14" r="6"/><path d="M14.3 9.7L21 3M15 3h6v6"/>',
+  femme: '<circle cx="12" cy="9" r="6"/><path d="M12 15v7M8.5 19h7"/>',
+};
+
 /** Garde le contenu des pages A4 choisies, sans la mise en page imprimée ; au féminin si demandé (data-f). */
 export function documentText(html: string, { pages = ".page", feminine = false }: Pick<ScenarioDocument, "pages" | "feminine"> = {}): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
   if (feminine) doc.querySelectorAll<HTMLElement>("[data-f]").forEach(el => { el.innerHTML = el.dataset.f!; });
-  // Seules icônes gardées : le symbole du sexe, en texte (U+FE0E : pas d'emoji)
+  // Seules icônes gardées : le symbole du sexe, en SVG de la couleur du style (le caractère ♂/♀ s'affiche en emoji coloré sur iPad)
   doc.querySelectorAll<HTMLElement>(".ic[data-ic=homme], .ic[data-ic=femme]").forEach(el => {
-    el.replaceWith(Object.assign(doc.createElement("span"), { className: "sex", textContent: el.dataset.ic === "femme" ? "♀︎" : "♂︎" }));
+    const sex = Object.assign(doc.createElement("span"), { className: "sex" });
+    sex.setAttribute("aria-hidden", "true"); // le mot (Homme, Femme) est écrit juste avant
+    sex.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">${SEX[el.dataset.ic as keyof typeof SEX]}</svg>`;
+    el.replaceWith(sex);
   });
   doc.querySelectorAll(PRINT_ONLY).forEach(el => el.remove());
   explainTraits(doc);

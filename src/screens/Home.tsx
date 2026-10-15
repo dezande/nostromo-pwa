@@ -1,11 +1,11 @@
 // Écran d'accueil. On y revient par les Réglages (« Retour à l'accueil »), ce qui abandonne la partie.
 // « Démarrer » affiche le choix du scénario, puis « Lancer » démarre la simulation.
 import { Overlay } from "../components/Overlay";
-import { IconButton } from "../components/Icon";
+import { Icon, IconButton, type IconName } from "../components/Icon";
 import { audio } from "../audio/audio";
 import { BOOT, BOOT_EN } from "../data/terminal";
 import { keepAwake } from "../state/device";
-import { showIntro } from "../state/game";
+import { showIntro, startGame } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
 import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, sourcesOpen, tutorial, type ScenarioDocument } from "../state/ui";
 import { settings, type Scenario } from "../state/settings";
@@ -22,7 +22,9 @@ async function startSimulation() {
   choosingScenario.value = false;
   showIntro();
   contractSigned.value = false;
-  briefing.value = scenarioText(settings.scenario.value).firstPanel;
+  const first = scenarioText(settings.scenario.value).firstPanel;
+  // Sans scénario : pas de panneaux, la partie commence tout de suite.
+  if (first) briefing.value = first; else startGame();
 }
 
 export function Home() {
@@ -48,14 +50,14 @@ export function Home() {
   );
 }
 
-/** Sorte de document : son nom (complet, pour la liseuse et les lecteurs d'écran) et le texte court du bouton. */
+/** Sorte de document : son nom (complet, pour la liseuse et les lecteurs d'écran), le texte court et l'icône du bouton. */
 type SheetKind = "male" | "female" | "aid" | "guide" | "roles";
-const SHEET_NAMES = (): Record<SheetKind, { name: string; label: string }> => ({
-  male: { name: tr("Prétiré homme", "Pre-gen (male)"), label: tr("Prétiré H", "Pre-gen M") },
-  female: { name: tr("Prétiré femme", "Pre-gen (female)"), label: tr("Prétiré F", "Pre-gen F") },
-  aid: { name: tr("Aide du Superviseur", "Supervisor aid"), label: tr("Aide", "Aid") },
-  guide: { name: tr("Guide du Superviseur", "Supervisor guide"), label: tr("Guide", "Guide") },
-  roles: { name: tr("Cartes des petits rôles", "Minor role cards"), label: tr("Rôles", "Roles") },
+const SHEET_NAMES = (): Record<SheetKind, { name: string; label: string; icon: IconName }> => ({
+  male: { name: tr("Prétiré homme", "Pre-gen (male)"), label: tr("Prétiré", "Pre-gen"), icon: "homme" },
+  female: { name: tr("Prétiré femme", "Pre-gen (female)"), label: tr("Prétiré", "Pre-gen"), icon: "femme" },
+  aid: { name: tr("Aide du Superviseur", "Supervisor aid"), label: tr("Aide", "Aid"), icon: "aide" },
+  guide: { name: tr("Guide du Superviseur", "Supervisor guide"), label: tr("Guide", "Guide"), icon: "guide" },
+  roles: { name: tr("Cartes des petits rôles", "Minor role cards"), label: tr("Rôles", "Roles"), icon: "roles" },
 });
 
 /**
@@ -65,7 +67,8 @@ const SHEET_NAMES = (): Record<SheetKind, { name: string; label: string }> => ({
 type Sheet = Omit<ScenarioDocument, "name"> & { id: string; kind: SheetKind; en: { html: string; file: string } };
 
 /** Document dans la langue de l'app, avec son nom et le texte court de son bouton. */
-const localized = ({ kind, en, ...sheet }: Sheet): ScenarioDocument & { id: string; label: string } =>
+type LocalizedSheet = ScenarioDocument & { id: string; label: string; icon: IconName };
+const localized = ({ kind, en, ...sheet }: Sheet): LocalizedSheet =>
   ({ ...sheet, ...(lang.value === "en" ? en : {}), ...SHEET_NAMES()[kind] });
 
 /** Documents de chaque scénario. */
@@ -100,23 +103,24 @@ const SHEETS: Record<Scenario, Sheet[]> = {
     { id: "infiltratedGuidePdf", kind: "guide", html: "guide-superviseur-infiltre.html", file: "nostromo-guide-superviseur-infiltre.pdf",
       en: { html: "guide-superviseur-infiltre-en.html", file: "nostromo-supervisor-guide-infiltrated.pdf" } },
   ],
+  free: [],
 };
 
-/** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios. */
+/** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios (pas sans scénario). */
 const ROLES: Sheet = { id: "rolesPdf", kind: "roles", html: "roles.html", file: "nostromo-cartes-roles.pdf",
   en: { html: "roles-en.html", file: "nostromo-role-cards.pdf" } };
 
-/** Un document : « lire dans l'app » (bouton court) et son PDF. */
-function SheetLink({ id, label, ...sheet }: ScenarioDocument & { id: string; label: string }) {
+/** Un document : « lire dans l'app » (icône et nom court) et son PDF. */
+function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
   return (
     <span class="sheet">
       <button type="button" class="sheet-link" id={`${id}Read`} aria-label={tr(`Lire : ${sheet.name}`, `Read: ${sheet.name}`)} onClick={() => { openDocument.value = sheet; }}>
-        {label}
+        <Icon name={icon} />{label}
       </button>
       <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
         download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
         aria-label={tr(`${sheet.name} en PDF`, `${sheet.name} as PDF`)}>
-        PDF
+        <Icon name="pdf" />PDF
       </a>
     </span>
   );
@@ -125,6 +129,7 @@ function SheetLink({ id, label, ...sheet }: ScenarioDocument & { id: string; lab
 /** Choix du scénario au lancement ; le dernier choisi est proposé par défaut. */
 function ScenarioChoice() {
   const current = settings.scenario.value;
+  const none = SHEETS[current].length === 0;
   return (
     <div class="home scenario-choice">
       <h2 id="scenarioTitle">{tr("SCÉNARIO", "SCENARIO")}</h2>
@@ -146,14 +151,12 @@ function ScenarioChoice() {
           ? <p key={id} id="scenarioDesc">{scenarioText(id).description}</p>
           : <p key={id} class="hidden-desc" aria-hidden="true">{scenarioText(id).description}</p>)}
       </div>
-      <div class="sheets" id="sheets">
-        {/* Les cartes des rôles sur la ligne du titre : l'écran tient encore sur un petit téléphone */}
-        <div class="sheets-head">
-          <span class="set-label">Documents (3D6 Système)</span>
-          <SheetLink {...localized(ROLES)} />
-        </div>
+      {/* Documents du scénario, puis les cartes des petits rôles (les mêmes pour tous). Sans scénario : aucun,
+          mais leur place reste réservée (bloc invisible) pour que les cartes ne bougent pas au changement */}
+      <div class={none ? "sheets hidden-desc" : "sheets"} id="sheets" aria-hidden={none || undefined}>
+        <span class="set-label">Documents (3D6 Système)</span>
         <div class="sheet-links">
-          {SHEETS[current].map(sheet => <SheetLink key={sheet.id} {...localized(sheet)} />)}
+          {[...SHEETS[none ? "training" : current], ROLES].map(sheet => <SheetLink key={sheet.id} {...localized(sheet)} />)}
         </div>
       </div>
       <div class="row icon-row home-actions">

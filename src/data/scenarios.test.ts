@@ -3,8 +3,8 @@ import { SCENARIOS, SCENARIO_IDS, scenarioText } from "./scenarios";
 
 const FR = SCENARIOS.fr;
 
-test("trois scénarios, l'entraînement en premier", () => {
-  expect(SCENARIO_IDS).toEqual(["training", "recruitment", "infiltrated"]);
+test("trois scénarios, l'entraînement en premier, puis le mode sans scénario", () => {
+  expect(SCENARIO_IDS).toEqual(["training", "recruitment", "infiltrated", "free"]);
   expect(Object.keys(SCENARIOS.en)).toEqual(SCENARIO_IDS);
 });
 
@@ -26,14 +26,19 @@ test("Session disciplinaire : survie avec un message de la C.R.F.", () => {
   expect(SCENARIOS.en.infiltrated.rules.flatMap(r => r.points).join(" ")).not.toContain("training");
 });
 
+test("Sans scénario : pas de panneau d'introduction", () => {
+  expect(FR.free.firstPanel).toBeNull();
+  expect(SCENARIOS.en.free.firstPanel).toBeNull();
+});
+
 test("aucun texte ne parle de parité", () => {
   const all = JSON.stringify(SCENARIOS).toLowerCase();
   for (const word of ["parité", "pair", "impair", "parity", "even", "odd"]) expect(all).not.toMatch(new RegExp(`\\b${word}\\b`));
 });
 
 test("difficulté croissante pour le joueur, avec une durée indicative", () => {
-  expect(Object.values(FR).map(s => s.level)).toEqual(["Débutant", "Intermédiaire", "Confirmé"]);
-  expect(Object.values(SCENARIOS.en).map(s => s.level)).toEqual(["Beginner", "Intermediate", "Experienced"]);
+  expect(Object.values(FR).map(s => s.level)).toEqual(["Débutant", "Intermédiaire", "Confirmé", "Tous niveaux"]);
+  expect(Object.values(SCENARIOS.en).map(s => s.level)).toEqual(["Beginner", "Intermediate", "Experienced", "Any level"]);
   for (const s of Object.values(FR)) expect(s.duration).toMatch(/\d+.*min/);
 });
 

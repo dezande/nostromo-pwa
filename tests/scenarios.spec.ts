@@ -112,6 +112,9 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du Superviseur
   await page.locator("#infiltratedFemPdfRead").click();
   await expect(page.locator("#docText")).toContainText("Agent de renseignement infiltrée");
+  // Symbole du sexe en SVG de la couleur du style, pas en caractère (emoji coloré sur iPad)
+  await expect(page.locator("#docText .sex svg")).toHaveCount(1);
+  await expect(page.locator("#docText")).not.toContainText("♀");
   await expect(page.locator("#docText")).not.toContainText("AIDE DU SUPERVISEUR");
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-fiche-lieutenant-dr-femme.pdf");
   await page.locator("#docClose").click();
@@ -138,5 +141,27 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await closeRoom(page, "cockpit");
   await page.clock.runFor(2_000);
   await expect(page.locator("#endTitle")).toHaveText("SANCTION APPLIQUÉE");
+  expect(errors).toEqual([]);
+});
+
+test("sans scénario : la partie commence dès le lancement, rapport neutre", async ({ page }) => {
+  const errors = await open(page);
+  await page.locator("#startBtn").click();
+  await expect(page.locator("#scenarioDesc")).not.toContainText("Partie directe");
+  // Ni documents ni cartes des petits rôles ; leur place reste réservée : les cartes ne bougent pas
+  const top = await page.locator("#scenario-training").boundingBox();
+  await page.locator("#scenario-free").click();
+  await expect(page.locator("#scenarioDesc")).toContainText("Partie directe");
+  await expect(page.locator("#sheets")).toBeHidden();
+  expect(await page.locator("#scenario-training").boundingBox()).toEqual(top);
+  await page.locator("#launchBtn").click();
+  await expect(page.locator("#home")).not.toHaveClass(/show/);
+  await expect(page.locator("#welcome")).not.toHaveClass(/show/);
+  await expect(page.locator("#rule1")).not.toHaveClass(/show/);
+  await placeAgent(page, "cockpit");
+  await closeRoom(page, "cockpit");
+  await page.clock.runFor(2_000);
+  await expect(page.locator("#endTitle")).toHaveText("AGENT ÉLIMINÉ");
+  await expect(page.locator("#endStamp")).toHaveText("SIMULATION TERMINÉE");
   expect(errors).toEqual([]);
 });
