@@ -68,8 +68,8 @@ const INTERCEPT_EN: typeof INTERCEPT_FR = {
 };
 
 /** E-mail et bandeau de la direction, par langue. */
-export const EMAIL = { fr: EMAIL_FR, en: EMAIL_EN };
-export const INTERCEPT = { fr: INTERCEPT_FR, en: INTERCEPT_EN };
+const EMAIL = { fr: EMAIL_FR, en: EMAIL_EN };
+const INTERCEPT = { fr: INTERCEPT_FR, en: INTERCEPT_EN };
 
 export function Infiltrated() {
   const panel = briefing.value;

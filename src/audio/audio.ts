@@ -177,11 +177,6 @@ function setMusicVolume(volume: number) {
   if (ctx && music) musicBus.gain.setTargetAtTime(volume, ctx.currentTime, 0.2);
 }
 
-/** Baisse la musique pendant le compte à rebours. */
-function duck(on: boolean) {
-  if (ctx && music) musicBus.gain.setTargetAtTime(on ? musicVolume * 0.35 : musicVolume, ctx.currentTime, 0.3);
-}
-
 function setSfxVolume(volume: number) {
   sfxVolume = volume;
   if (ctx) sfxBus.gain.setTargetAtTime(volume, ctx.currentTime, 0.05);
@@ -189,7 +184,7 @@ function setSfxVolume(volume: number) {
 
 // ---------- bruitages ----------
 
-/** Bip du compte à rebours (aigu pour les 3 dernières secondes). */
+/** Bip : grave quand on touche une salle, aigu quand on valide (ou signe). */
 function beep(high: boolean) {
   const ctx = init();
   const t = ctx.currentTime;
@@ -214,22 +209,6 @@ function tick() {
   o.connect(g);
   o.start(t);
   o.stop(t + 0.04);
-}
-
-function siren(seconds: number) {
-  const ctx = init();
-  const t = ctx.currentTime;
-  const o = osc("sawtooth", 600);
-  const wobble = osc("sine", 2.2);
-  wobble.connect(gain(180, o.frequency));
-  const g = gain(0, sfxBus);
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.07, t + 0.1);
-  g.gain.setValueAtTime(0.07, t + seconds - 0.1);
-  g.gain.linearRampToValueAtTime(0, t + seconds);
-  o.connect(filter("lowpass", 1800)).connect(g);
-  o.start(t); wobble.start(t);
-  o.stop(t + seconds); wobble.stop(t + seconds);
 }
 
 /** Porte blindée qui claque. */
@@ -260,38 +239,6 @@ function slam() {
     ring.gain.exponentialRampToValueAtTime(0.001, t + 1.6);
     n.connect(filter("bandpass", f, 40)).connect(ring);
   }
-}
-
-/** Cri d'alien (plus long à la dernière fermeture). */
-function alien(long: boolean) {
-  const ctx = init();
-  const t = ctx.currentTime + 0.35;
-  const d = long ? 4.2 : 1.8;
-  const o = osc("sawtooth", 260);
-  o.frequency.setValueAtTime(260, t);
-  o.frequency.exponentialRampToValueAtTime(1500, t + d * 0.3);
-  o.frequency.exponentialRampToValueAtTime(700, t + d * 0.55);
-  if (long) o.frequency.exponentialRampToValueAtTime(1900, t + d * 0.75);
-  o.frequency.exponentialRampToValueAtTime(180, t + d);
-  const vibrato = osc("sine", 28);
-  vibrato.connect(gain(90, o.frequency));
-
-  const g = gain(0, sfxBus);
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(0.35, t + 0.15);
-  g.gain.setValueAtTime(0.35, t + d * 0.7);
-  g.gain.linearRampToValueAtTime(0, t + d);
-  o.connect(filter("bandpass", 1400, 3)).connect(g);
-  o.start(t); vibrato.start(t);
-  o.stop(t + d + 0.05); vibrato.stop(t + d + 0.05);
-
-  const hiss = noise(d);
-  const hg = gain(0, sfxBus);
-  hg.gain.setValueAtTime(0, t);
-  hg.gain.linearRampToValueAtTime(0.25, t + 0.2);
-  hg.gain.linearRampToValueAtTime(0, t + d);
-  hiss.connect(filter("highpass", 3000)).connect(hg);
-  hiss.start(t);
 }
 
 // ---------- musique 2 : alerte pendant la partie ----------
@@ -397,11 +344,6 @@ function stopAlert() {
   ambientBus.gain.setTargetAtTime(1, ctx.currentTime, 0.8);
 }
 
-/** La musique d'alerte baisse à 25 % pendant que la voix parle. */
-function alertDuck(on: boolean) {
-  if (ctx && alert) alertBus.gain.setTargetAtTime(on ? 0.25 : 1, ctx.currentTime, 0.15);
-}
-
 /** Aperçu de quelques secondes depuis les Réglages (par-dessus la musique, au volume de la musique). */
 let preview: Alert | null = null;
 function previewAlert(variant: AlertVariant, seconds = 4) {
@@ -416,7 +358,6 @@ function previewAlert(variant: AlertVariant, seconds = 4) {
     if (preview === current) preview = null;
   }, seconds * 1000);
 }
-
 
 /**
  * Cri du xénomorphe à chaque fermeture : sifflement (bruit filtré), grondement grave et cri aigu.
@@ -486,10 +427,9 @@ function victory() {
 }
 
 export const audio = {
-  init, startMusic, stopMusic, setMusicVolume, setSfxVolume, duck,
-  beep, tick, siren, slam, alien, xenomorph, victory,
-  startAlert, stopAlert, alertDuck, previewAlert,
-  get musicVolume() { return musicVolume; },
+  init, startMusic, stopMusic, setMusicVolume, setSfxVolume,
+  beep, tick, slam, xenomorph, victory,
+  startAlert, stopAlert, previewAlert,
   get playing() { return !!music; },
   get state() { return ctx ? ctx.state : "none"; },
   get alertPlaying() { return !!alert; },

@@ -75,7 +75,7 @@ Musique et bruitages sont générés par le navigateur (Web Audio) : aucun fichi
 
 ## Démarrer
 
-Il faut [Node.js](https://nodejs.org) (version 20 ou plus).
+Il faut [Node.js](https://nodejs.org) (version 22.12 ou plus ; la CI utilise la 24, voir `.nvmrc`).
 
 ```sh
 npm install        # une seule fois

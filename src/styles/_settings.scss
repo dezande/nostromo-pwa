@@ -1,7 +1,5 @@
 @use "functions" as *;
 
-.set-title { margin-top: 12px; font-size: fs(11px); letter-spacing: .25em; color: var(--dim); }
-
 // Ligne de réglage : libellé à gauche, contrôle dans une colonne commune à droite.
 // Colonnes : libellé | curseur | valeur (ou case à cocher), alignées d'une ligne à l'autre.
 label.set {

@@ -340,7 +340,6 @@
   }
   // Salles de départ possibles : clignotement doux
   &.pulse { @include room-shape { animation: pulse 1.6s ease-in-out infinite; } }
-  &.closing { @include room-shape { animation: alarm .5s steps(2) infinite; } }
   &.flash { @include room-shape { animation: slam .9s ease-out; } }
 }
 

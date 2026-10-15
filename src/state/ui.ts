@@ -1,6 +1,6 @@
 // Écrans affichés par-dessus le jeu : écran titre, menu, réglages.
 import { batch, signal } from "@preact/signals";
-import { busy, inGame, showIntro } from "./game";
+import { busy, showIntro } from "./game";
 import { terminalOpen } from "./terminal";
 
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
@@ -49,5 +49,3 @@ export function returnHome() {
     homeOpen.value = true;
   });
 }
-
-export { inGame };

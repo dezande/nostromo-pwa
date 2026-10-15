@@ -13,7 +13,7 @@ import { briefing } from "../state/ui";
 import { lang, tr } from "../i18n";
 
 /** Durée d'appui sur le lecteur d'empreinte pour signer. */
-export const HOLD_MS = 1500;
+const HOLD_MS = 1500;
 
 /** Contrat signé pour cette partie (remis à zéro à chaque « Démarrer »). */
 export const contractSigned = signal(false);

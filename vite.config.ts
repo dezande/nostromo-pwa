@@ -72,6 +72,9 @@ const spaFallback = (): Plugin => {
 export default defineConfig({
   // Sur GitHub Pages, le site est servi sous /<nom-du-dépôt>/ (voir .github/workflows/pages.yml).
   base: process.env.BASE_PATH || "/",
+  // Navigateurs visés : l'app doit encore tourner sur des tablettes anciennes (Galaxy Tab 4, Samsung Internet…).
+  // C'est la cible « modules » de Vite 6 ; depuis Vite 7 la cible par défaut exige Chrome 107 / Safari 16.
+  build: { target: ["es2020", "chrome87", "edge88", "firefox78", "safari14"] },
   define: { __BUILD__: JSON.stringify(build) },
   plugins: [
     removeOldServiceWorkerInDev(),

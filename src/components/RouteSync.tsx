@@ -14,7 +14,7 @@ const entry = (): Entry => (history.state as Entry | null) ?? { i: 0, prev: null
 /** Chemin de base du site (« / », ou « /nostromo-pwa/ » sur GitHub Pages), donné par la balise <base>. */
 const base = () => new URL(document.baseURI).pathname;
 /** Adresse du navigateur → adresse de l'app (« /scenario »). */
-export const appPath = (url: string) => {
+const appPath = (url: string) => {
   const path = new URL(url, location.origin).pathname;
   return ("/" + (path.startsWith(base()) ? path.slice(base().length) : path.replace(/^\//, ""))).replace(/(.)\/+$/, "$1");
 };

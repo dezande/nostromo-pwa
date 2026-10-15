@@ -17,5 +17,5 @@
     "resolveJsonModule": true,
     "types": ["vite/client", "vite-plugin-pwa/client", "jest", "node"]
   },
-  "include": ["src", "tests", "vite.config.ts", "playwright.config.ts", "jest.config.js"]
+  "include": ["src", "tests", "vite.config.ts", "playwright.config.ts"]
 }

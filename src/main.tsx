@@ -1,5 +1,6 @@
 import { render } from "preact";
 import "./styles/main.scss";
+import "./i18n"; // en premier : la langue du premier lancement se décide avant que les réglages soient enregistrés
 import "./state/viewport"; // hauteur visible de la fenêtre, pour les navigateurs sans 100dvh
 import "./state/settings"; // applique le style d'écran et lance la musique dès l'ouverture
 import "./state/alert"; // musique d'alerte et voix pendant les 5 minutes
