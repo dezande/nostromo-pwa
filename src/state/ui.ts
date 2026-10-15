@@ -37,9 +37,10 @@ export const briefing = signal<BriefingPanel | null>(null);
 /**
  * Retour à l'accueil (depuis les Réglages, après confirmation) : la partie est abandonnée,
  * le minuteur, la musique d'alerte et la voix s'arrêtent ; la musique d'ambiance revient.
+ * Refusé pendant le compte à rebours ou une transition, sauf `force` (écran de secours après un plantage).
  */
-export function returnHome() {
-  if (busy.value || terminalOpen.value) return;
+export function returnHome(force = false) {
+  if (!force && (busy.value || terminalOpen.value)) return;
   try { if ("speechSynthesis" in window) speechSynthesis.cancel(); } catch { /* indisponible */ }
   showIntro(); // remet la partie à zéro et arrête le minuteur (donc la musique d'alerte)
   batch(() => {

@@ -18,6 +18,29 @@
 #settings, #docViewer, #tutorial, #sources { z-index: 46; }
 #press { z-index: 47; }
 #trans { z-index: 48; }
+#crash { z-index: 49; }
+
+// Écran de secours après un plantage (composant <ErrorScreen>)
+.crash-panel {
+  h2 { color: var(--red); text-shadow: 0 0 18px #f00; }
+  // Message et pile de l'erreur, en petit, pour le diagnostic
+  .crash-details {
+    max-height: 30vh;
+    max-height: calc(var(--app-h) * .3);
+    overflow: auto;
+    margin: 0 0 12px;
+    padding: 8px 10px;
+    border-left: 2px solid var(--red);
+    font: inherit;
+    font-size: fs(10px);
+    line-height: 1.4;
+    color: var(--dim);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    strong { color: var(--ink); font-weight: normal; }
+  }
+  .crash-actions { margin-top: 4px; }
+}
 
 .panel {
   width: 100%;
