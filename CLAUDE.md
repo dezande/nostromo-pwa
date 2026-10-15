@@ -54,6 +54,9 @@ Le README décrit ce que fait l'app et l'organisation des dossiers : le lire ava
 - Message de commit : une ligne de titre en français, puis les raisons. Description de PR en français.
 - La CI (`.github/workflows/tests.yml`) lance typecheck, Jest et Playwright en trois lots ; GitHub Pages
   publie `main` automatiquement.
+- L'Auto-fix de la PR est activé par défaut dans l'app Claude Code : une fois la PR ouverte, l'app la surveille
+  et réveille Claude sur un échec de CI, un conflit avec `main` ou un commentaire de relecture. Inutile de
+  surveiller la CI à la main ni de proposer de le faire.
 
 ## Hooks (vérifications automatiques de Claude Code)
 
