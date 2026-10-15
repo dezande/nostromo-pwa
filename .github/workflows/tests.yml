@@ -23,7 +23,14 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
-      - run: npm run test:unit
+      # Couverture affichée dans le journal (résumé puis détail par fichier) ; rapport HTML en artefact.
+      # Pas de seuil pour l'instant : les chiffres servent d'abord à en choisir un.
+      - run: npm run test:coverage
+      - uses: actions/upload-artifact@v7
+        with:
+          name: couverture-tests-unitaires
+          path: coverage/
+          retention-days: 7
 
   # Tests dans le navigateur, répartis sur plusieurs machines en parallèle (un fichier de tests/ entier par machine).
   e2e:
@@ -59,4 +66,26 @@ jobs:
         with:
           name: rapport-playwright-${{ matrix.shard }}
           path: playwright-report/
+          retention-days: 7
+
+  # Lighthouse sur le build (performance de chargement, accessibilité, bonnes pratiques, SEO), profils
+  # téléphone et ordinateur : voir lighthouserc.cjs. Chrome est déjà installé sur les machines GitHub.
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run lighthouse
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapports-lighthouse
+          path: rapports-lighthouse/
           retention-days: 7
