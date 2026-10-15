@@ -8,13 +8,13 @@ import { audio } from "../audio/audio";
 import { keepAwake, say, sleep } from "./device";
 
 /** Nombre de fermetures d'un entraînement. */
-export const STEP_COUNT = 8;
+const STEP_COUNT = 8;
 
 /** Déplacements au maximum avant une fermeture (les cartes W.Y.C. vont jusqu'à 5). Limite silencieuse. */
 export const MAX_MOVES = 5;
 
 /** Salles fermées au maximum en une fois (comme sur les fiches de protocole). Limite silencieuse. */
-export const MAX_CLOSE = 2;
+const MAX_CLOSE = 2;
 
 /**
  * Phases :
@@ -30,7 +30,7 @@ export const phase = signal<Phase>("intro");
 export const step = signal(0);                         // nombre de fermetures déjà faites
 export const position = signal<RoomId | null>(null);   // salle du pion
 export const startRoom = signal<RoomId | null>(null);  // salle de départ choisie
-export const trail = signal<RoomId[]>([]);             // salles précédentes, pour « Annuler »
+const trail = signal<RoomId[]>([]);             // salles précédentes, pour « Annuler »
 export const moves = signal(0);
 export const closed = signal(new Set<RoomId>());       // salles fermées
 export const toClose = signal(new Set<RoomId>());      // salles choisies par le Coordinateur
@@ -44,8 +44,8 @@ export const ending = signal<{ win: boolean; room: string } | null>(null);
 
 export const inGame = computed(() => ["place", "move", "close"].includes(phase.value));
 
-export const isOpen = (id: RoomId): boolean => !room(id).toxic && !closed.value.has(id);
-export const openRooms = (): RoomId[] => ROOM_IDS.filter(isOpen);
+const isOpen = (id: RoomId): boolean => !room(id).toxic && !closed.value.has(id);
+const openRooms = (): RoomId[] => ROOM_IDS.filter(isOpen);
 
 /** Chemin depuis la dernière validation : salles visitées puis salle actuelle. */
 export const path = computed((): RoomId[] =>
@@ -124,7 +124,7 @@ export function confirmStart() {
 }
 
 /** Déplacements terminés : le Coordinateur va choisir la salle à fermer. */
-export function finishMoves() {
+function finishMoves() {
   if (phase.value !== "move") return;
   batch(() => { phase.value = "close"; toClose.value = new Set(); });
   audio.beep(true);

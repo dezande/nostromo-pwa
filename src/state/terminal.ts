@@ -5,7 +5,7 @@ import { settings } from "./settings";
 import { sleep } from "./device";
 import type { TerminalLine, TerminalScript } from "../data/terminal";
 
-export interface ShownLine extends TerminalLine { typed: string; showResult: boolean; done: boolean; }
+interface ShownLine extends TerminalLine { typed: string; showResult: boolean; done: boolean; }
 export interface TerminalScreen { title: string; lines: ShownLine[]; progress: number; }
 
 /** Contenu affiché : { title, lines: [{ text, typed, result?, warn?, showResult, done }], progress } */

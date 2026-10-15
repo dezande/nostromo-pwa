@@ -10,7 +10,8 @@ const STORAGE_KEY = "nostromo-lang";
 
 /**
  * Langue du premier lancement : français si le navigateur est en français, sinon anglais.
- * Un joueur qui avait déjà des réglages (app d'avant la version anglaise) reste en français.
+ * Un joueur qui avait déjà des réglages (app d'avant la version anglaise) reste en français :
+ * ce module doit donc être évalué avant state/settings, qui enregistre les réglages dès le chargement (voir main.tsx).
  */
 export function defaultLang(languages: readonly string[] = typeof navigator === "undefined" ? [] : navigator.languages?.length ? navigator.languages : [navigator.language]): Lang {
   try { if (localStorage.getItem("nostromo-settings")) return "fr"; } catch { /* navigation privée */ }

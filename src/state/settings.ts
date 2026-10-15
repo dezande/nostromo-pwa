@@ -57,7 +57,7 @@ export const DEFAULTS: Settings = {
 // Anciens noms des réglages (version avant Preact), pour ne pas perdre les choix du joueur.
 const RENAMED: Record<string, keyof Settings> = { vol: "musicVolume", sfx: "sfxVolume", fs: "textSize", scan: "scanlines", wake: "wakeLock" };
 
-export function loadSettings(): Settings {
+function loadSettings(): Settings {
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     for (const [old, name] of Object.entries(RENAMED)) {

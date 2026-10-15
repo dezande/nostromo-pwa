@@ -1,7 +1,7 @@
 // Sources et crédits, affichés dans l'écran « Sources » (bouton de l'accueil).
 // Une adresse avec `qr` est aussi montrée en QR code, pour l'ouvrir depuis un téléphone.
 
-export interface Source {
+interface Source {
   name: string;
   /** Auteur, éditeur ou licence. */
   by: string;

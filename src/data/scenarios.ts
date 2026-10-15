@@ -9,10 +9,10 @@ import type { BriefingPanel } from "../state/ui";
 import { lang, type Lang } from "../i18n";
 
 /** Règle affichée sur un moniteur : titre, scène animée, puces ([[…]] = passage censuré). */
-export interface Rule { id: string; title: string; scene: RuleName; points: string[] }
+interface Rule { id: string; title: string; scene: RuleName; points: string[] }
 
 /** Rapport de fin de partie ; {room} est remplacé par le nom de la salle. */
-export interface Report {
+interface Report {
   header: string;
   title: string;
   status?: string;

@@ -4,7 +4,7 @@ import { signal } from "@preact/signals";
 export type OfflineState = "installing" | "ready" | "update" | "unsupported";
 export const offline = signal<OfflineState>("serviceWorker" in navigator ? "installing" : "unsupported");
 
-/** Infos de build injectées par vite.config.js. */
+/** Infos de build injectées par vite.config.ts. */
 export const BUILD = __BUILD__;
 
 export async function registerServiceWorker() {

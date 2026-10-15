@@ -24,3 +24,14 @@ test("version anglaise : choix à l'accueil, retenu au rechargement, documents e
   await expect(page.locator("#lang-en")).toHaveAttribute("aria-checked", "true");
   expect(errors).toEqual([]);
 });
+
+// Sans réglage enregistré (premier lancement) : la langue du navigateur. Ne passe pas par open(), qui enregistre des réglages.
+test.describe("premier lancement", () => {
+  test.use({ locale: "en-US" });
+  test("navigateur en anglais : l'app s'ouvre en anglais", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+    await expect(page.locator("#home .blink")).toHaveText("ACCESS GRANTED · LEVEL 5");
+    await expect(page.locator("#lang-en")).toHaveAttribute("aria-checked", "true");
+  });
+});

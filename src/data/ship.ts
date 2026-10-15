@@ -86,7 +86,7 @@ export function distanceBetween(from: RoomId, to: RoomId): number {
 }
 
 /** Volume du cri du xénomorphe selon la distance : 1 dans la salle, puis 0,8 / 0,55 / 0,35 / 0,2, minimum 0,1. */
-export const XENO_VOLUMES = [1, 0.8, 0.55, 0.35, 0.2];
+const XENO_VOLUMES = [1, 0.8, 0.55, 0.35, 0.2];
 export const volumeForDistance = (d: number): number => XENO_VOLUMES[d] ?? 0.1;
 
 /** Volume pour une fermeture d'une ou plusieurs salles : la plus proche du pion compte. */

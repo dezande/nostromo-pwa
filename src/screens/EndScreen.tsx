@@ -16,7 +16,7 @@ import { scenarioText } from "../data/scenarios";
 import { tr } from "../i18n";
 
 /** Durée de la « génération du rapport », avant le tampon. */
-export const REPORT_MS = 1500;
+const REPORT_MS = 1500;
 
 export function EndScreen() {
   const end = ending.value;

@@ -6,8 +6,8 @@ import { InfoPanel } from "./InfoPanel";
 import { useTypewriter } from "./useTypewriter";
 import { tr } from "../i18n";
 
-/** Message affiché selon l'étape de la partie (les étapes suivantes viendront plus tard). */
-export function protocolMessage(): string {
+/** Message affiché selon l'étape de la partie. */
+function protocolMessage(): string {
   if (phase.value === "place") {
     if (!position.value) return tr("AGENT, CHOISISSEZ VOTRE SALLE DE DÉPART", "AGENT, CHOOSE YOUR STARTING ROOM");
     const name = roomName(position.value).toUpperCase();

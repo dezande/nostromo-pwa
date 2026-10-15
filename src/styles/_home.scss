@@ -171,7 +171,7 @@
   // Titre du document
   .title { margin: 4px 0 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
   .title h1, .title h2 { margin: 0 0 6px; }
-  .sub, .muted, .code, .meta, .memo-sub { color: var(--dim); font-size: fs(11px); letter-spacing: .08em; }
+  .sub, .code, .meta { color: var(--dim); font-size: fs(11px); letter-spacing: .08em; }
   .code { margin-left: 6px; font-weight: normal; text-transform: none; }
 
   // Encadrés, colonnes (une seule sur téléphone)
@@ -185,7 +185,6 @@
   .row > * { margin-bottom: 0; }
   .box.dashed, .rules { border-style: dashed; }
   .section { margin-bottom: 12px; }
-  .npc-head { display: flex; justify-content: space-between; gap: 8px; color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 4px; }
   .npc-name { color: var(--accent); letter-spacing: .1em; margin-bottom: 6px; }
   .npc-traits { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .npc-traits > div {
@@ -221,7 +220,6 @@
   .perks { margin-bottom: 0; }
   .sub-h { color: var(--dim); font-size: fs(11px); letter-spacing: .12em; margin-bottom: 2px; }
   .gauge { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 6px 0; color: var(--dim); font-size: fs(11px); label { color: var(--accent); } }
-  .squares { display: inline-flex; gap: 3px; i { width: 10px; height: 10px; border: 1px solid var(--accent); } }
 
   // Étapes numérotées du déroulé
   .step { display: flex; gap: 10px; margin-bottom: 10px; }

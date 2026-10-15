@@ -4,7 +4,7 @@
 // Seuls les styles sombres et sans courbure de l'écran sont gardés.
 
 /** Intensité des effets d'écran, de 0 à 1. */
-export interface CrtEffects {
+interface CrtEffects {
   flicker: number;
   noise: number;
   curve: number;

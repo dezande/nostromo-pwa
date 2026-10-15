@@ -34,14 +34,6 @@
   p { margin: 0 0 14px; color: var(--dim); font-size: fs(13px); line-height: 1.5; }
 }
 
-// Compte à rebours
-#count {
-  background: radial-gradient(circle, rgba(70, 5, 8, .75), rgba(3, 5, 5, .92));
-  .lbl { text-align: center; letter-spacing: .35em; font-size: fs(13px); color: #ffb3b3; }
-  .num { text-align: center; font-size: min(38vw, 240px); line-height: 1; color: var(--red); text-shadow: 0 0 30px #f00; }
-  .room-name { text-align: center; margin-top: 8px; min-height: 1.4em; font-size: fs(22px); letter-spacing: .2em; color: #fff; }
-}
-
 // Fin de partie
 .end {
   h2 { letter-spacing: .12em; }
