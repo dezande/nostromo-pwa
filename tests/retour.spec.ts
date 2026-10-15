@@ -62,7 +62,7 @@ test("adresse ouverte directement : document du scénario, puis retour au choix 
   await expect(page.locator("#docViewer")).toHaveClass(/show/);
   await expect(page.locator("#docText")).toContainText("Sixième sens");
   // Les liens relatifs (fiches/…) restent justes depuis cette adresse
-  await expect(page.locator("#docPdf")).toHaveAttribute("href", /fiches\/nostromo-guide-superviseur-entrainement\.pdf$/);
+  await expect(page.locator("#docPdf")).toHaveAttribute("href", /fiches\/nostromo-sixieme-sens-guide-superviseur\.pdf$/);
   await back(page);
   await expect(page.locator("#docViewer")).not.toHaveClass(/show/);
   await expect(page.locator("#startBtn")).toBeVisible();
