@@ -1,7 +1,13 @@
-// Texte d'un document lu dans l'app : extrait d'une page HTML du dossier fiches/, remis en forme.
+// Texte d'un document lu dans l'app : extrait d'une page HTML du dossier fiches/, remis en forme ;
+// et la liseuse elle-même : texte du Superviseur en miroir, bascule sur place, PDF miroir.
+import { act } from "preact/test-utils";
 import { lang } from "../i18n";
+import { settings } from "../state/settings";
+import { openDocument, type ScenarioDocument } from "../state/ui";
+import { $, mount } from "../test/render";
 import { resetState } from "../test/state";
-import { documentText } from "./DocumentViewer";
+import { SHEETS, findSheet, localized } from "../data/sheets";
+import { DocumentViewer, documentText, pdfFile, pdfLabel } from "./DocumentViewer";
 
 const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="pretire.css"></head><body>
 <main class="page joueur">
@@ -39,7 +45,7 @@ const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="
 /** Le texte produit, analysé pour y chercher des éléments. */
 const parse = (text: string) => Object.assign(document.createElement("div"), { innerHTML: text });
 
-beforeEach(resetState);
+beforeEach(() => { resetState(); settings.mirror.value = false; });
 
 test("garde le contenu des pages, sans la mise en page imprimée : en-têtes, pieds, images, code-barres, sommaire, tailles en mm", () => {
   const out = parse(documentText(HTML));
@@ -101,4 +107,74 @@ test("en anglais : explication et jauge traduites", () => {
   expect(out.querySelector(".traits-help")!.textContent).toContain("3 dice");
   expect(out.querySelector(".t-pips")!.getAttribute("aria-label")).toBe("3 out of 5");
   expect(out.querySelector(".t-hint")!.textContent).toBe("success: 1–3");
+});
+
+// --- Le PDF proposé
+
+test("le PDF proposé suit le réglage miroir pour un document du Superviseur, jamais pour un prétiré", () => {
+  const guide = findSheet("trainingGuidePdf")!;
+  const pregen = findSheet("trainingPdf")!;
+  expect(pdfFile(guide)).toBe("nostromo-guide-superviseur-entrainement.pdf");
+  expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF");
+  settings.mirror.value = true;
+  expect(pdfFile(guide)).toBe("nostromo-guide-superviseur-entrainement-miroir.pdf");
+  expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF miroir");
+  expect(pdfFile(pregen)).toBe("nostromo-fiche-psychic-agent-homme.pdf");
+  expect(pdfLabel(pregen)).toBe("Prétiré homme en PDF");
+});
+
+test("en anglais : le PDF miroir anglais et son nom accessible", () => {
+  lang.value = "en";
+  settings.mirror.value = true;
+  const aid = localized(SHEETS.recruitment.find(s => s.kind === "aid")!);
+  expect(pdfFile(aid)).toBe("nostromo-supervisor-aid-recruitment-mirrored.pdf");
+  expect(pdfLabel(aid)).toBe("Supervisor aid as mirrored PDF");
+});
+
+// --- La liseuse
+
+const GUIDE: ScenarioDocument = { id: "trainingGuidePdf", name: "Guide du Superviseur", html: "guide-superviseur-entrainement.html",
+  file: "nostromo-guide-superviseur-entrainement.pdf", mirrorFile: "nostromo-guide-superviseur-entrainement-miroir.pdf" };
+const PREGEN: ScenarioDocument = { id: "trainingPdf", name: "Prétiré homme", html: "psychic-agent.html", pages: ".page.joueur", file: "nostromo-fiche-psychic-agent-homme.pdf" };
+
+/** Ouvre un document dans la liseuse, la page HTML étant servie par un faux fetch. */
+async function view(doc: ScenarioDocument) {
+  globalThis.fetch = jest.fn(async () => ({ ok: true, text: async () => HTML })) as unknown as typeof fetch;
+  openDocument.value = doc;
+  mount(<DocumentViewer />);
+  await act(async () => { await Promise.resolve(); await Promise.resolve(); });
+}
+
+test("document du Superviseur : texte en miroir quand le réglage est actif, bouton sur place pour le changer, PDF miroir", async () => {
+  await view(GUIDE);
+  expect($("#docText").textContent).toContain("AIDE DU SUPERVISEUR");
+  expect($("#docText").classList.contains("mirror")).toBe(false);
+  expect($("#docMirror").getAttribute("aria-pressed")).toBe("false");
+  expect($("#docPdf").getAttribute("download")).toBe("nostromo-guide-superviseur-entrainement.pdf");
+  act(() => { $("#docMirror").click(); });
+  expect(settings.mirror.value).toBe(true);
+  expect($("#docText").classList.contains("mirror")).toBe(true);
+  expect($("#docMirror").getAttribute("aria-pressed")).toBe("true");
+  expect($("#docPdf").getAttribute("download")).toBe("nostromo-guide-superviseur-entrainement-miroir.pdf");
+  expect($("#docPdf").getAttribute("href")).toBe("fiches/nostromo-guide-superviseur-entrainement-miroir.pdf");
+  expect($("#docPdf").getAttribute("aria-label")).toBe("Guide du Superviseur en PDF miroir");
+  act(() => { $("#docMirror").click(); });
+  expect(settings.mirror.value).toBe(false);
+  expect($("#docText").classList.contains("mirror")).toBe(false);
+});
+
+test("prétiré du joueur : jamais en miroir, pas de bouton, PDF ordinaire même si le réglage est actif", async () => {
+  settings.mirror.value = true;
+  await view(PREGEN);
+  expect($("#docText").textContent).toContain("Daniel REYES");
+  expect($("#docText").classList.contains("mirror")).toBe(false);
+  expect($("#docMirror")).toBeNull();
+  expect($("#docPdf").getAttribute("download")).toBe("nostromo-fiche-psychic-agent-homme.pdf");
+});
+
+test("en anglais : nom du bouton miroir traduit", async () => {
+  lang.value = "en";
+  await view(GUIDE);
+  expect($("#docMirror").getAttribute("aria-label")).toBe("Mirrored text");
+  expect($("#docPdf").getAttribute("aria-label")).toBe("Guide du Superviseur as PDF");
 });

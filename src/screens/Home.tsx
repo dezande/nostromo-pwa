@@ -13,6 +13,7 @@ import { SCENARIO_IDS, scenarioText } from "../data/scenarios";
 import { ROLES, SHEETS, localized, type LocalizedSheet } from "../data/sheets";
 import { LANGS, byLang, lang, tr } from "../i18n";
 import { contractSigned } from "./Recruitment";
+import { pdfFile, pdfLabel } from "./DocumentViewer";
 
 async function startSimulation() {
   if (terminalOpen.value) return;
@@ -51,16 +52,17 @@ export function Home() {
   );
 }
 
-/** Un document : « lire dans l'app » (icône et nom court) et son PDF. */
+/** Un document : « lire dans l'app » (icône et nom court) et son PDF (en miroir pour le Superviseur si le réglage est actif). */
 function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
+  const file = pdfFile(sheet);
   return (
     <span class="sheet">
       <button type="button" class="sheet-link" id={`${id}Read`} aria-label={tr(`Lire : ${sheet.name}`, `Read: ${sheet.name}`)} onClick={() => { openDocument.value = { id, ...sheet }; }}>
         <Icon name={icon} />{label}
       </button>
-      <a class="sheet-link sheet-pdf" id={id} href={`fiches/${sheet.file}`} target="_blank" rel="noopener"
-        download={sheet.file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
-        aria-label={tr(`${sheet.name} en PDF`, `${sheet.name} as PDF`)}>
+      <a class="sheet-link sheet-pdf" id={id} href={`fiches/${file}`} target="_blank" rel="noopener"
+        download={file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
+        aria-label={pdfLabel(sheet)}>
         <Icon name="pdf" />PDF
       </a>
     </span>

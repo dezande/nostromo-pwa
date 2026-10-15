@@ -19,6 +19,8 @@ export interface ScenarioDocument {
   pages?: string;
   /** Version femme d'un prétiré : textes au féminin donnés par data-f. */
   feminine?: boolean;
+  /** Document réservé au Superviseur (aide, guide) : son PDF en miroir, pour que les joueurs en face ne le lisent pas. */
+  mirrorFile?: string;
 }
 export const openDocument = signal<ScenarioDocument | null>(null);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »

@@ -146,6 +146,8 @@
   color: var(--ink);
 
   &.doc-status { color: var(--dim); letter-spacing: .15em; }
+  // Miroir (documents du Superviseur) : retourné sur son axe vertical, le défilement reste normal
+  &.mirror { transform: scaleX(-1); }
   p { margin: 0 0 8px; }
   b { color: var(--accent); font-weight: normal; }
   h1, h2, h3, h4 { margin: 0 0 8px; font-weight: normal; letter-spacing: .1em; color: var(--accent); }

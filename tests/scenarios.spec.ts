@@ -102,8 +102,21 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#docText .page, #docText header.header, #docText footer.footer, #docText img")).toHaveCount(0);
   expect(await page.locator("#docText").evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur.pdf");
+  // Miroir (les joueurs en face ne lisent pas) : le texte est retourné, le PDF devient la version miroir, et le texte reste lisible dans sa boîte
+  const transform = () => page.locator("#docText").evaluate(el => getComputedStyle(el).transform);
+  expect(await transform()).toBe("none");
+  await page.locator("#docMirror").click();
+  await expect(page.locator("#docMirror")).toHaveAttribute("aria-pressed", "true");
+  expect(await transform()).toBe("matrix(-1, 0, 0, 1, 0, 0)");
+  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-miroir.pdf");
+  expect(await page.locator("#docText").evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   await page.locator("#docClose").click();
   await expect(page.locator("#docViewer")).not.toHaveClass(/show/);
+  // Le réglage vaut aussi pour les liens PDF du choix du scénario, mais pas pour les prétirés ni les cartes des rôles
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-miroir.pdf");
+  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("href", "fiches/nostromo-session-disciplinaire-aide-superviseur-miroir.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme.pdf");
+  await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
   // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du Superviseur
   await page.locator("#infiltratedFemPdfRead").click();
   await expect(page.locator("#docText")).toContainText("Agent de renseignement infiltrée");
@@ -112,6 +125,8 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#docText")).not.toContainText("♀");
   await expect(page.locator("#docText")).not.toContainText("AIDE DU SUPERVISEUR");
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-femme.pdf");
+  await expect(page.locator("#docMirror")).toHaveCount(0); // pas de miroir pour le joueur
+  expect(await transform()).toBe("none");
   await page.locator("#docClose").click();
   await expect(page.locator("#scenarioDesc")).toContainText("Lieutenant D.R.");
   await page.locator("#launchBtn").click();
