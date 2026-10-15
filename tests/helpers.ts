@@ -16,13 +16,14 @@ export async function silence(page: Page) {
   });
 }
 
-export async function open(page: Page, settings = FAST) {
+/** Ouvre l'app (à l'accueil, ou à une adresse donnée : /scenario, /tutoriel/3…). */
+export async function open(page: Page, settings = FAST, address = "/") {
   const errors: string[] = [];
   page.on("pageerror", e => errors.push(e.message));
   await page.addInitScript(s => localStorage.setItem("nostromo-settings", JSON.stringify(s)), settings);
   await silence(page);
   await page.clock.install();
-  await page.goto("/");
+  await page.goto(address);
   // Écran « touchez pour commencer » si le navigateur bloque le son au chargement.
   await page.clock.runFor(500);
   if (await page.locator("#press").evaluate(e => e.classList.contains("show"))) await page.locator("#press").click();

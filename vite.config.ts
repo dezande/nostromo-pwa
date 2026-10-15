@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { readFileSync, readdirSync } from "node:fs";
+import { copyFileSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 import preact from "@preact/preset-vite";
@@ -57,6 +57,18 @@ const serveFiches = (): Plugin => ({
   },
 });
 
+// Une adresse par écran (/scenario, /intro/regle-2…) : GitHub Pages n'a que index.html et répond 404 aux autres.
+// Sa page 404.html est servie à la place : copie de l'app, qui ouvre alors l'écran demandé (state/routes.ts).
+const spaFallback = (): Plugin => {
+  let outDir = "dist";
+  return {
+    name: "nostromo-404",
+    apply: "build",
+    configResolved(config) { outDir = config.build.outDir; },
+    closeBundle() { copyFileSync(join(outDir, "index.html"), join(outDir, "404.html")); },
+  };
+};
+
 export default defineConfig({
   // Sur GitHub Pages, le site est servi sous /<nom-du-dépôt>/ (voir .github/workflows/pages.yml).
   base: process.env.BASE_PATH || "/",
@@ -64,6 +76,7 @@ export default defineConfig({
   plugins: [
     removeOldServiceWorkerInDev(),
     serveFiches(),
+    spaFallback(),
     preact(),
     VitePWA({
       registerType: "autoUpdate",

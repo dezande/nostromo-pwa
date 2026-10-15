@@ -13,11 +13,15 @@ import { DocumentViewer } from "./screens/DocumentViewer";
 import { Tutorial } from "./screens/Tutorial";
 import { Sources } from "./screens/Sources";
 import { Transition } from "./screens/Transition";
+import { RouteSync } from "./components/RouteSync";
 import { shake } from "./state/game";
+import { LocationProvider } from "preact-iso";
 
 export function App() {
   return (
-    <>
+    <LocationProvider>
+      {/* Une adresse par écran, et le bouton « retour » du navigateur revient en arrière dans l'app */}
+      <RouteSync />
       {/* Effets d'écran cathodique (halo, bruit, scintillement…) par-dessus tout. */}
       <div id="crt" aria-hidden="true" />
 
@@ -44,6 +48,6 @@ export function App() {
       <DocumentViewer />
       <PressStart />
       <Transition />
-    </>
+    </LocationProvider>
   );
 }
