@@ -21,8 +21,9 @@ npx playwright test tests/partie.spec.ts --project=ordinateur     # ou --project
 
 Playwright construit l'app (`vite build`) puis la sert sur le port 4173 ; un serveur déjà là fait échouer
 le lancement (`reuseExistingServer: false`). En local il utilise le Chrome installé ; en CI, le Chromium de
-Playwright, réparti en trois lots. Connu : `tests/partie.spec.ts` échoue par intermittence en local après
-« Lancer », y compris sur `main` ; ne pas chercher la cause dans la modification en cours, regarder la CI.
+Playwright, réparti en trois lots (`CI=1 npx playwright test …` l'utilise aussi en local). Un échec en masse
+juste après « Lancer » (accueil encore affiché) vient de la synchronisation des adresses, voir
+`src/components/RouteSync.test.tsx` ; sinon comparer avec la CI avant de chercher dans la modification en cours.
 
 ## Jest
 
