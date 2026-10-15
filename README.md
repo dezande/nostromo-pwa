@@ -66,6 +66,11 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 - **Sources** (bouton livre de l'accueil) : crédits, inspirations et outils, avec un QR code pour ouvrir
   depuis un téléphone l'app, son code, Claude Code, l'effet Nostromo II, le 3D6 Système et cool-retro-term.
 
+- **Une adresse par écran** : `/scenario`, `/intro/regle-2`, `/partie`, `/fin`, et par-dessus `/reglages`,
+  `/sources`, `/tutoriel/3`, `/scenario/document/…`. Le bouton ou geste « retour » du navigateur revient à l'écran
+  précédent, le rechargement garde l'écran. En partie, « retour » ouvre et ferme le menu pause (Réglages) sans
+  jamais abandonner la partie ; une adresse de partie ou de rapport sans partie en cours ramène à l'accueil.
+
 Musique et bruitages sont générés par le navigateur (Web Audio) : aucun fichier audio.
 
 ## Démarrer
@@ -89,8 +94,8 @@ affichée.
 ## Organisation du code
 
 Le projet est écrit en [TypeScript](https://www.typescriptlang.org) avec [Vite](https://vite.dev),
-[Preact](https://preactjs.com) (composants), [@preact/signals](https://preactjs.com/guide/v10/signals/) (état)
-et [Sass](https://sass-lang.com) (styles).
+[Preact](https://preactjs.com) (composants), [@preact/signals](https://preactjs.com/guide/v10/signals/) (état),
+[preact-iso](https://github.com/preactjs/preact-iso) (adresses) et [Sass](https://sass-lang.com) (styles).
 
 ```
 src/
@@ -99,6 +104,7 @@ src/
   data/                 données et textes, sans code d'affichage
     ship.ts             salles, liaisons, positions sur le plan
     scenarios.ts        textes des scénarios : règles, rapports de fin
+    sheets.ts           documents de chaque scénario (fiches, guides, cartes des rôles)
     contract.ts         contrat du scénario « Une simple formalité » ([[…]] = passage censuré)
     documents.ts        faux numéros de documents
     themes.ts           styles d'écran (inspirés de cool-retro-term)
@@ -108,6 +114,7 @@ src/
     game.ts             partie : pion, déplacements, fermetures, fin
     settings.ts         réglages enregistrés dans le navigateur
     ui.ts               écrans ouverts (accueil, panneaux d'introduction, réglages…)
+    routes.ts           adresse de chaque écran, et écran d'une adresse (synchronisés par components/RouteSync.tsx)
     deckView.ts         pont affiché au format téléphone
     terminal.ts         déroulement des écrans de transition
     device.ts           écran allumé, annonce vocale

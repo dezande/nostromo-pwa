@@ -2,7 +2,7 @@
 import { test, expect } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
-const files = [...readFileSync("src/screens/Home.tsx", "utf8").matchAll(/file: "([^"]+\.pdf)"/g)].map(m => m[1]);
+const files = [...readFileSync("src/data/sheets.ts", "utf8").matchAll(/file: "([^"]+\.pdf)"/g)].map(m => m[1]);
 
 test("les PDF des scénarios existent et sont bien des PDF", async ({ request }) => {
   expect(files.length).toBeGreaterThanOrEqual(6);

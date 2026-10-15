@@ -15,8 +15,12 @@ test("version anglaise : choix à l'accueil, retenu au rechargement, documents e
   await page.locator("#trainingGuidePdfRead").click();
   await expect(page.locator("#docText")).toContainText("Supervisor");
   await page.locator("#docClose").click();
+  await expect.poll(() => new URL(page.url()).pathname).toBe("/scenario");
+  // Le rechargement garde l'écran (son adresse) et la langue
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.locator("#scenario-recruitment strong")).toHaveText("A Mere Formality");
+  await page.locator("#scenarioBack").click();
   await expect(page.locator("#lang-en")).toHaveAttribute("aria-checked", "true");
   expect(errors).toEqual([]);
 });

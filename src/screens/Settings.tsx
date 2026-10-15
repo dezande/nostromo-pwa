@@ -7,9 +7,8 @@ import { audio, type AlertVariant } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
 import { settings, type Layout, type SettingsTab } from "../state/settings";
 import { scenarioText } from "../data/scenarios";
-import { returnHome, settingsOpen } from "../state/ui";
+import { quitAsking, returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
-import { useState } from "preact/hooks";
 import { BUILD, offline, type OfflineState } from "../state/pwa";
 import { LANGS, lang, tr } from "../i18n";
 
@@ -91,7 +90,8 @@ export function Settings() {
  * la question s'affiche au-dessus et seuls « Oui » / « Non » restent, sur la même rangée (« Non » revient aux réglages).
  */
 function SettingsFooter({ tab }: { tab: SettingsTab }) {
-  const [asking, setAsking] = useState(false);
+  const asking = quitAsking.value;
+  const setAsking = (on: boolean) => { quitAsking.value = on; };
   const confirm = inGame.value && asking;
   return (
     <div class={confirm ? "settings-footer confirm" : "settings-footer"} role={confirm ? "alertdialog" : undefined}

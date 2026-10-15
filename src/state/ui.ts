@@ -6,8 +6,12 @@ import { terminalOpen } from "./terminal";
 export const homeOpen = signal(true);       // menu d'accueil (aussi utilisé comme menu pause)
 export const choosingScenario = signal(false); // accueil : choix du scénario avant le lancement
 export const settingsOpen = signal(false);
+/** Réglages en partie : question « Abandonner la partie ? » affichée (après « Accueil »). */
+export const quitAsking = signal(false);
 /** Document d'un scénario (fiche ou guide du Superviseur) : page HTML lue dans l'app, et son PDF. */
 export interface ScenarioDocument {
+  /** Identifiant, dans l'adresse de la liseuse (/scenario/document/…). */
+  id?: string;
   name: string;
   html: string;
   file: string;
@@ -41,6 +45,7 @@ export function returnHome() {
   batch(() => {
     briefing.value = null;
     settingsOpen.value = false;
+    quitAsking.value = false;
     homeOpen.value = true;
   });
 }
