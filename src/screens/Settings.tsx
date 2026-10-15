@@ -56,6 +56,7 @@ export function Settings() {
               <Toggle id="scanChk" label={tr("Lignes horizontales (écran ancien)", "Scanlines (old screen)")} setting={settings.scanlines} />
               <Toggle id="transChk" label={tr("Écrans de transition", "Transition screens")} setting={settings.transitions} />
               <Toggle id="markerChk" label={tr("Repère discret", "Discreet marker")} setting={settings.markerDot} />
+              <Toggle id="mirrorChk" label={tr("Texte du Superviseur en miroir (aide, guide, PDF)", "Mirror the Supervisor's text (aid, guide, PDF)")} setting={settings.mirror} />
             </>
           )}
           {tab === "audio" && (
