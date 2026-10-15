@@ -29,6 +29,8 @@ export const ICONS = {
   guide: <><path d="M5 4h12.5v16H5z" /><path d="M8 4v16M11 8.5h4" /></>,
   roles: <><rect x="3.5" y="7" width="10" height="14" rx="1" /><path d="M8 7V3h10.5v14h-5" /></>,
   pdf: <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" />,
+  // Texte en miroir (liseuse des documents du Superviseur) : un axe et ses deux reflets
+  miroir: <><path d="M12 3v18" stroke-dasharray="2 2" /><path d="M9 7.5L3.5 12 9 16.5z" /><path d="M15 7.5l5.5 4.5-5.5 4.5z" /></>,
 };
 
 export type IconName = keyof typeof ICONS;

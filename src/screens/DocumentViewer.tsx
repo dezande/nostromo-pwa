@@ -1,9 +1,11 @@
 // Liseuse des documents d'un scénario (fiches, guide du Superviseur) : le texte des pages HTML d'où sont tirés
 // les PDF (dossier fiches/), remis en forme au style de l'app, sans pages A4.
+// Les documents du Superviseur peuvent s'afficher en miroir (réglage, ou bouton sur place) : les joueurs en face ne les lisent pas.
 import { useEffect, useState } from "preact/hooks";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
 import { openDocument, type ScenarioDocument } from "../state/ui";
+import { settings } from "../state/settings";
 import { tr } from "../i18n";
 
 /**
@@ -58,10 +60,17 @@ export function documentText(html: string, { pages = ".page", feminine = false }
   return [...doc.querySelectorAll(pages)].map(page => page.innerHTML).join("");
 }
 
+/** PDF d'un document : en miroir pour un document du Superviseur quand le réglage est actif. */
+export const pdfFile = (doc: ScenarioDocument) => (doc.mirrorFile && settings.mirror.value ? doc.mirrorFile : doc.file);
+/** Nom accessible du lien PDF d'un document, avec la mention du miroir le cas échéant. */
+export const pdfLabel = (doc: ScenarioDocument) => pdfFile(doc) === doc.file
+  ? tr(`${doc.name} en PDF`, `${doc.name} as PDF`) : tr(`${doc.name} en PDF miroir`, `${doc.name} as mirrored PDF`);
+
 export function DocumentViewer() {
   const doc = openDocument.value;
   const [text, setText] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
+  const mirror = !!doc?.mirrorFile && settings.mirror.value;
 
   useEffect(() => {
     setText(null);
@@ -83,12 +92,16 @@ export function DocumentViewer() {
         <div class="panel doc-panel">
           <div class="doc-head">
             <h2 id="docTitle">{doc.name}</h2>
-            <a class="sheet-link sheet-pdf" id="docPdf" href={`fiches/${doc.file}`} target="_blank" rel="noopener"
-              download={doc.file} aria-label={tr(`${doc.name} en PDF`, `${doc.name} as PDF`)}>PDF</a>
+            <a class="sheet-link sheet-pdf" id="docPdf" href={`fiches/${pdfFile(doc)}`} target="_blank" rel="noopener"
+              download={pdfFile(doc)} aria-label={pdfLabel(doc)}>PDF</a>
+            {doc.mirrorFile && (
+              <IconButton id="docMirror" icon="miroir" label={tr("Texte en miroir", "Mirrored text")} aria-pressed={mirror}
+                onClick={() => { settings.mirror.value = !settings.mirror.value; }} />
+            )}
             <IconButton id="docClose" icon="annuler" label={tr("Fermer", "Close")} onClick={() => { openDocument.value = null; }} />
           </div>
           {text !== null
-            ? <article id="docText" class="doc-text" dangerouslySetInnerHTML={{ __html: text }} />
+            ? <article id="docText" class={mirror ? "doc-text mirror" : "doc-text"} dangerouslySetInnerHTML={{ __html: text }} />
             : <p class="doc-text doc-status">{failed ? tr("DOCUMENT INDISPONIBLE · UTILISEZ LE PDF", "DOCUMENT UNAVAILABLE · USE THE PDF") : tr("CHARGEMENT…", "LOADING…")}</p>}
         </div>
       )}

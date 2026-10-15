@@ -7,7 +7,9 @@
 //     lisibles en A4 comme réduits en A5 (fiches/pretire.css) ;
 //   - le guide du Superviseur de chaque scénario, de 2 à 4 pages ;
 //   - les cartes des petits rôles des spectateurs (roles.html : IA et Xénomorphes), format poker, 9 par page ;
-//   - la version anglaise de chacun (pages suffixées -en, PDF aux noms anglais).
+//   - la version anglaise de chacun (pages suffixées -en, PDF aux noms anglais) ;
+//   - les documents du Superviseur (aide, guide) aussi en miroir (suffixe -miroir / -mirrored, même nom que dans
+//     src/data/sheets.ts) : posés sur la table, les joueurs en face ne les lisent pas, comme leur texte dans l'app.
 // Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
@@ -23,29 +25,35 @@ const output = join(root, "public", "fiches");
 const pretire = (fiche, nom, scenario, mj) => [
   { pdf: `nostromo-fiche-${fiche}-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})` },
   { pdf: `nostromo-fiche-${fiche}-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})` },
-  { pdf: `nostromo-aide-superviseur-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})` },
+  { pdf: `nostromo-aide-superviseur-${mj}.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})`, mirror: true },
 ];
 // Les mêmes, pour la version anglaise.
 const pregen = (sheet, name, scenario, gm) => [
   { pdf: `nostromo-sheet-${sheet}-male.pdf`, from: 1, to: 2, title: `Nostromo II — ${name}, male version (${scenario})` },
   { pdf: `nostromo-sheet-${sheet}-female.pdf`, from: 3, to: 4, title: `Nostromo II — ${name}, female version (${scenario})` },
-  { pdf: `nostromo-supervisor-aid-${gm}.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})` },
+  { pdf: `nostromo-supervisor-aid-${gm}.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})`, mirror: true },
 ];
+// La version miroir d'un PDF du Superviseur : son nom et son titre, dans la langue du document.
+const mirrored = (pdf, title, en) => ({
+  pdf: pdf.replace(/\.pdf$/, en ? "-mirrored.pdf" : "-miroir.pdf"),
+  title: `${title} ${en ? "(mirrored)" : "(miroir)"}`,
+  mirror: true,
+});
 const documents = [
   { html: "fiches.html", pages: [5, 6], parts: pretire("reyes", "Reyes", "Une simple formalité", "recrutement") },
-  { html: "guide-superviseur.html", pdf: "nostromo-guide-superviseur-recrutement.pdf", pages: [2, 4] },
+  { html: "guide-superviseur.html", pdf: "nostromo-guide-superviseur-recrutement.pdf", pages: [2, 4], mirror: true },
   { html: "infiltre.html", pages: [5, 6], parts: pretire("lieutenant-dr", "Lieutenant D.R.", "Session disciplinaire", "infiltre") },
-  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-guide-superviseur-infiltre.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-guide-superviseur-infiltre.pdf", pages: [2, 4], mirror: true },
   { html: "psychic-agent.html", pages: [5, 6], parts: pretire("psychic-agent", "Psychic Agent", "Sixième sens", "entrainement") },
-  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-guide-superviseur-entrainement.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-guide-superviseur-entrainement.pdf", pages: [2, 4], mirror: true },
   { html: "roles.html", pdf: "nostromo-cartes-roles.pdf", pages: [2, 2] },
   // Version anglaise : mêmes pages HTML suffixées -en, PDF aux noms anglais.
   { html: "fiches-en.html", pages: [5, 6], parts: pregen("reyes", "Reyes", "A Mere Formality", "recruitment") },
-  { html: "guide-superviseur-en.html", pdf: "nostromo-supervisor-guide-recruitment.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-en.html", pdf: "nostromo-supervisor-guide-recruitment.pdf", pages: [2, 4], mirror: true },
   { html: "infiltre-en.html", pages: [5, 6], parts: pregen("lieutenant-dr", "Lieutenant D.R.", "Disciplinary Session", "infiltrated") },
-  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-supervisor-guide-infiltrated.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-supervisor-guide-infiltrated.pdf", pages: [2, 4], mirror: true },
   { html: "psychic-agent-en.html", pages: [5, 6], parts: pregen("psychic-agent", "Psychic Agent", "Sixth Sense", "training") },
-  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-supervisor-guide-training.pdf", pages: [2, 4] },
+  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-supervisor-guide-training.pdf", pages: [2, 4], mirror: true },
   { html: "roles-en.html", pdf: "nostromo-role-cards.pdf", pages: [2, 2] },
 ];
 
@@ -67,6 +75,8 @@ try {
   for (const doc of documents) {
     await page.goto(pathToFileURL(join(source, doc.html)).href, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
+    // Version miroir : chaque page retournée sur son axe vertical (la mise en page, elle, ne bouge pas)
+    await page.addStyleTag({ content: "html.miroir .page { transform: scaleX(-1); }" });
 
     const pages = await page.evaluate(() => [...document.querySelectorAll(".page")]
       .map(el => el.scrollHeight - el.clientHeight));
@@ -84,14 +94,21 @@ try {
       if (depasse > 1) throw new Error(`fiches/${doc.html} : la carte ${i + 1} dépasse de ${depasse} px`);
     });
 
-    for (const part of doc.parts ?? [{ pdf: doc.pdf, from: 1 }]) {
+    const en = doc.html.endsWith("-en.html");
+    for (const part of doc.parts ?? [{ pdf: doc.pdf, from: 1, mirror: doc.mirror }]) {
       const to = part.to ?? pages.length;
-      if (part.title) await page.evaluate(title => { document.title = title; }, part.title);
-      const file = join(output, part.pdf);
-      await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true, pageRanges: `${part.from}-${to}` });
-      const n = to - part.from + 1;
-      console.log(`PDF : ${file} (${n} page${n > 1 ? "s" : ""})`);
+      const title = part.title ?? await page.title();
+      const versions = [{ pdf: part.pdf, title, mirror: false }];
+      if (part.mirror) versions.push(mirrored(part.pdf, title, en));
+      for (const version of versions) {
+        await page.evaluate(({ title, mirror }) => { document.title = title; document.documentElement.classList.toggle("miroir", mirror); }, version);
+        const file = join(output, version.pdf);
+        await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true, pageRanges: `${part.from}-${to}` });
+        const n = to - part.from + 1;
+        console.log(`PDF : ${file} (${n} page${n > 1 ? "s" : ""})`);
+      }
     }
+    await page.evaluate(() => document.documentElement.classList.remove("miroir"));
 
     if (pngDir) {
       const elements = await page.$$(".page");

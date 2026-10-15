@@ -22,6 +22,8 @@ Modifier le HTML seul ne suffit jamais : il faut regénérer les PDF et vérifie
 | Guides du Superviseur | `guide-superviseur{,-entrainement,-infiltre}.html` | `…-en.html` | `nostromo-guide-superviseur-*.pdf` / `nostromo-supervisor-guide-*.pdf` |
 | Cartes des petits rôles | `roles.html` | `roles-en.html` | `nostromo-cartes-roles.pdf` / `nostromo-role-cards.pdf` |
 
+L'aide et le guide du Superviseur existent aussi en PDF miroir (`-miroir.pdf` / `-mirrored.pdf`, pages retournées
+sur leur axe vertical par `fiches.mjs`) : le lien PDF de l'app les propose quand le réglage « miroir » est actif.
 La correspondance exacte (pages, titres des PDF) est dans `scripts/fiches.mjs` ; celle entre documents,
 scénarios et boutons de l'app est dans `src/data/sheets.ts` (`SHEETS`, `ROLES`). Un nouveau document se
 déclare aux deux endroits, et `tests/pdf-links.spec.ts` vérifie que chaque PDF déclaré existe dans le build.

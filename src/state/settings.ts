@@ -20,6 +20,7 @@ export interface Settings {
   markerDot: boolean;           // repère discret sur le plan
   layout: Layout;               // format de l'écran de jeu : tablette ou téléphone
   scenario: Scenario;           // dernier scénario choisi au lancement (entraînement par défaut)
+  mirror: boolean;              // texte du Superviseur (aide, guide) en miroir : les joueurs en face ne le lisent pas
 }
 
 /**
@@ -52,6 +53,7 @@ export const DEFAULTS: Settings = {
   markerDot: true,
   scenario: "training",
   layout: defaultLayout(),
+  mirror: false,
 };
 
 // Anciens noms des réglages (version avant Preact), pour ne pas perdre les choix du joueur.

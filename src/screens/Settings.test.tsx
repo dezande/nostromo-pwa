@@ -61,6 +61,16 @@ test("onglet Affichage : choix du format Tablette / Téléphone", () => {
   expect(settings.layout.value).toBe("tablet");
 });
 
+test("onglet Affichage : texte du Superviseur en miroir, mémorisé", () => {
+  settings.mirror.value = false;
+  expect(($("#mirrorChk") as HTMLInputElement).checked).toBe(false);
+  act(() => { ($("#mirrorChk") as HTMLInputElement).click(); });
+  expect(settings.mirror.value).toBe(true);
+  expect(JSON.parse(localStorage.getItem("nostromo-settings")!).mirror).toBe(true);
+  act(() => { ($("#mirrorChk") as HTMLInputElement).click(); });
+  expect(settings.mirror.value).toBe(false);
+});
+
 test("flèches du clavier pour changer d'onglet", () => {
   const arrow = (tab: string, key: string) => act(() => { $(`#tab-${tab}`).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true })); });
   arrow("display", "ArrowRight");

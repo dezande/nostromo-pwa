@@ -14,6 +14,7 @@ test("valeurs par défaut", () => {
   expect(settings.music.value).toBe(DEFAULTS.music);
   expect(settings.textSize.value).toBe(120);
   expect(settings.alertVariant.value).toBe("siren");
+  expect(settings.mirror.value).toBe(false);
 });
 
 test("reprend les réglages enregistrés", () => {
