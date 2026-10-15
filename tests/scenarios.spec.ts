@@ -165,3 +165,16 @@ test("sans scénario : la partie commence dès le lancement, rapport neutre", as
   await expect(page.locator("#endStamp")).toHaveText("SIMULATION TERMINÉE");
   expect(errors).toEqual([]);
 });
+
+test("choix du scénario en paysage : niveau et durée (ligne orange) restent dans leur carte", async ({ page }) => {
+  const errors = await open(page);
+  await page.locator("#startBtn").click();
+  for (const size of [{ width: 812, height: 375 }, { width: 1024, height: 768 }]) {
+    await page.setViewportSize(size);
+    const inside = await page.locator(".scenario-cards .alert-card").evaluateAll(cards => cards.map(card =>
+      card.querySelector(".scenario-meta")!.getBoundingClientRect().right <= card.getBoundingClientRect().right + 0.5
+      && card.scrollWidth <= card.clientWidth));
+    expect(inside, `${size.width}×${size.height}`).toEqual([true, true, true, true]);
+  }
+  expect(errors).toEqual([]);
+});

@@ -63,7 +63,8 @@
   .scenario-cards { width: 100%; margin: 0; }
   // Nom à gauche, niveau du joueur et durée à droite, sur la même ligne
   .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
-  .alert-card .scenario-meta { color: var(--amber); white-space: nowrap; margin-bottom: 4px; }
+  // Carte étroite (quatre côte à côte en paysage) : la durée passe sous le niveau au lieu de déborder sur la carte voisine
+  .alert-card .scenario-meta { color: var(--amber); margin-bottom: 4px; > span { white-space: nowrap; } }
   // Écran bas : la carte garde le nom, le niveau et la durée ; la description sous les cartes suffit
   // et se resserre pour que les quatre choix et les documents tiennent sans défilement
   @media (max-height: 700px) {

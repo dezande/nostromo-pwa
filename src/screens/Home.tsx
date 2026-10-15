@@ -139,7 +139,7 @@ function ScenarioChoice() {
             onClick={() => { settings.scenario.value = id; }}>
             <span class="scenario-head">
               <strong>{scenarioText(id).name}</strong>
-              <small class="scenario-meta" title={tr("Niveau du joueur et durée indicative", "Player level and approximate duration")}>{scenarioText(id).level} · {scenarioText(id).duration}</small>
+              <small class="scenario-meta" title={tr("Niveau du joueur et durée indicative", "Player level and approximate duration")}><span>{scenarioText(id).level} ·</span> <span>{scenarioText(id).duration}</span></small>
             </span>
             <small class="scenario-line">{scenarioText(id).homeLine}</small>
           </button>
