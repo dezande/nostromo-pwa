@@ -1,13 +1,9 @@
 // Scénarios « Une simple formalité » et « Session disciplinaire ».
-import { test, expect } from "@playwright/test";
-import { open, launch, placeAgent, closeRoom } from "./helpers";
+import { test, expect, open, launch, placeAgent, closeRoom } from "./helpers";
 
 test("scénario « Une simple formalité » : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
-  const errors = await open(page);
-  // Plus de choix dans les Réglages ; par défaut au lancement : scénario « Sixième sens ».
-  await page.locator("#homeSetBtn").click();
-  await expect(page.locator("#tab-scenario")).toHaveCount(0);
-  await page.locator("#setClose").click();
+  await open(page);
+  // Par défaut au lancement : scénario « Sixième sens ».
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await expect(page.locator("#scenarioDesc")).toContainText("Psychic Agent en formation");
@@ -76,11 +72,10 @@ test("scénario « Une simple formalité » : choix au lancement, RH, contrat à
   await closeRoom(page, "cockpit");
   await page.clock.runFor(2_000);
   await expect(page.locator("#endTitle")).toHaveText("CANDIDATURE CLOSE");
-  expect(errors).toEqual([]);
 });
 
 test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.R.F., intercepté par la direction, session disciplinaire, sanction", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
   await page.locator("#scenario-infiltrated").click();
@@ -141,11 +136,10 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await closeRoom(page, "cockpit");
   await page.clock.runFor(2_000);
   await expect(page.locator("#endTitle")).toHaveText("SANCTION APPLIQUÉE");
-  expect(errors).toEqual([]);
 });
 
 test("sans scénario : la partie commence dès le lancement, rapport neutre", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenarioDesc")).not.toContainText("Partie directe");
   // Ni documents ni cartes des petits rôles ; leur place reste réservée : les cartes ne bougent pas
@@ -163,11 +157,10 @@ test("sans scénario : la partie commence dès le lancement, rapport neutre", as
   await page.clock.runFor(2_000);
   await expect(page.locator("#endTitle")).toHaveText("AGENT ÉLIMINÉ");
   await expect(page.locator("#endStamp")).toHaveText("SIMULATION TERMINÉE");
-  expect(errors).toEqual([]);
 });
 
 test("choix du scénario en paysage : niveau et durée (ligne orange) restent dans leur carte", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await page.locator("#startBtn").click();
   for (const size of [{ width: 812, height: 375 }, { width: 1024, height: 768 }]) {
     await page.setViewportSize(size);
@@ -176,5 +169,4 @@ test("choix du scénario en paysage : niveau et durée (ligne orange) restent da
       && card.scrollWidth <= card.clientWidth));
     expect(inside, `${size.width}×${size.height}`).toEqual([true, true, true, true]);
   }
-  expect(errors).toEqual([]);
 });

@@ -1,24 +1,16 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
-import { render } from "preact";
 import { act } from "preact/test-utils";
 import { SOURCES } from "../data/sources";
-import { homeOpen, sourcesOpen } from "../state/ui";
+import { sourcesOpen } from "../state/ui";
+import { $, $$, mount } from "../test/render";
+import { resetState } from "../test/state";
 import { Home } from "./Home";
 import { Sources } from "./Sources";
 
-let root: HTMLElement;
 beforeEach(() => {
-  root = document.createElement("div");
-  document.body.append(root);
-  sourcesOpen.value = false;
-  homeOpen.value = true;
-  act(() => { render(<><Home /><Sources /></>, root); });
+  resetState();
+  mount(<><Home /><Sources /></>);
 });
-afterEach(() => { render(null, root); root.remove(); });
 
-const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
-const all = (sel: string) => [...root.querySelectorAll(sel)] as HTMLElement[];
 const items = SOURCES.flatMap(g => g.items);
 
 test("le bouton de l'accueil ouvre les sources, le bouton Retour les referme", () => {
@@ -26,20 +18,20 @@ test("le bouton de l'accueil ouvre les sources, le bouton Retour les referme", (
   expect($("#sourcesBtn").getAttribute("aria-label")).toBe("Sources et crédits");
   act(() => { $("#sourcesBtn").click(); });
   expect($("#sources").classList.contains("show")).toBe(true);
-  expect(all(".source")).toHaveLength(items.length);
+  expect($$(".source")).toHaveLength(items.length);
   act(() => { $("#sourcesBack").click(); });
   expect($("#sources").classList.contains("show")).toBe(false);
 });
 
 test("chaque adresse est un lien qui s'ouvre à part, et les principales ont un QR code", () => {
   act(() => { sourcesOpen.value = true; });
-  const links = all(".source-url") as HTMLAnchorElement[];
+  const links = $$(".source-url") as HTMLAnchorElement[];
   expect(links.map(a => a.getAttribute("href"))).toEqual(items.filter(s => s.url).map(s => s.url));
   for (const a of links) {
     expect(a.target).toBe("_blank");
     expect(a.rel).toBe("noopener");
   }
-  const qrs = all(".qr");
+  const qrs = $$(".qr");
   expect(qrs).toHaveLength(items.filter(s => s.qr).length);
   for (const qr of qrs) {
     expect(qr.getAttribute("role")).toBe("img");

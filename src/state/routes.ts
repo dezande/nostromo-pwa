@@ -54,7 +54,7 @@ export const currentRoute = computed((): string => {
 /** Écran posé par-dessus, à la fin de l'adresse. */
 type Layer = { kind: "settings" } | { kind: "sources" } | { kind: "tutorial"; page: number } | { kind: "document"; id: string };
 
-function parse(path: string): { base: string; layer: Layer | null } {
+export function parse(path: string): { base: string; layer: Layer | null } {
   const parts = path.split("/").filter(Boolean);
   const last = parts.length - 1;
   let layer: Layer | null = null;

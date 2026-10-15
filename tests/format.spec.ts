@@ -1,6 +1,6 @@
 // Format Tablette / Téléphone : l'écran de jeu tient exactement dans la fenêtre.
-import { test, expect, type Page } from "@playwright/test";
-import { FAST, clickRoom, silence, open, startSimulation, placeAgent } from "./helpers";
+import type { Page } from "@playwright/test";
+import { test, expect, FAST, clickRoom, silence, open, startSimulation, placeAgent } from "./helpers";
 
 // ---------- Format Tablette / Téléphone : l'écran de jeu tient exactement dans la fenêtre ----------
 const FORMATS: [layout: "tablet" | "phone", width: number, height: number][] = [
@@ -37,7 +37,7 @@ for (const [layout, width, height] of FORMATS) {
   test(`format ${layout === "phone" ? "téléphone" : "tablette"} ${width}×${height} : écran de jeu sans défilement`, async ({ page }) => {
     const label = `${layout} ${width}×${height}`;
     await page.setViewportSize({ width, height });
-    const errors = await open(page, { ...FAST, layout });
+    await open(page, { ...FAST, layout });
     await expect(page.locator("html")).toHaveClass(new RegExp(`layout-${layout}`));
     await startSimulation(page);
     await expectNoScroll(page, label);
@@ -69,13 +69,12 @@ for (const [layout, width, height] of FORMATS) {
     await page.clock.runFor(5000);
     await expectNoScroll(page, `${label} après déplacement`);
     for (const sel of [...decks, "#closeBtn"]) await expectInside(page, sel, label);
-    expect(errors).toEqual([]);
   });
 }
 
 test("téléphone : un pont à la fois, bascule automatique quand le pion prend l'ascenseur", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  const errors = await open(page, { ...FAST, layout: "phone" });
+  await open(page, { ...FAST, layout: "phone" });
   await startSimulation(page);
   await expect(page.locator("#deckTab1")).toHaveAttribute("aria-selected", "true");
   await expect(page.locator("#deck1")).toBeVisible();
@@ -91,7 +90,6 @@ test("téléphone : un pont à la fois, bascule automatique quand le pion prend 
   await page.locator("#deckTab1").click();
   await expect(page.locator("#deck1")).toBeVisible();
   await expect(page.locator("#deckTab2 .deck-tab-led")).toHaveCount(1);
-  expect(errors).toEqual([]);
 });
 
 test("tablette : pas d'onglets de ponts, les deux ponts visibles", async ({ page }) => {
@@ -104,7 +102,7 @@ test("tablette : pas d'onglets de ponts, les deux ponts visibles", async ({ page
 });
 
 test("format : choix Tablette / Téléphone dans les Réglages, appliqué et mémorisé", async ({ page }) => {
-  const errors = await open(page, { ...FAST, layout: "tablet" });
+  await open(page, { ...FAST, layout: "tablet" });
   await page.locator("#homeSetBtn").click();
   await page.locator("#tab-display").click();
   await expect(page.locator('.layouts[aria-labelledby="layoutLbl"]')).toHaveAttribute("role", "radiogroup");
@@ -119,7 +117,6 @@ test("format : choix Tablette / Téléphone dans les Réglages, appliqué et mé
   await page.locator("#layout-tablet").click();
   await expect(page.locator("html")).toHaveClass(/layout-tablet/);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).layout)).toBe("tablet");
-  expect(errors).toEqual([]);
 });
 
 for (const [layout, width, height] of [["phone", 390, 844], ["tablet", 1024, 768]] as const) {

@@ -1,5 +1,3 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
 import { settings } from "./settings";
 import { runTerminal, skipTerminal, terminal, terminalOpen } from "./terminal";
 

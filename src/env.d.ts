@@ -9,5 +9,9 @@ declare const __BUILD__: {
 interface Window {
   webkitAudioContext?: typeof AudioContext;
   /** Accès depuis la console et pour les tests automatiques. */
-  nostromo?: { audio: typeof import("./audio/audio").audio };
+  nostromo?: {
+    audio: typeof import("./audio/audio").audio;
+    /** Tests : durée par lettre de la machine à écrire du protocole (0 : texte entier aussitôt). */
+    typingMs?: number;
+  };
 }

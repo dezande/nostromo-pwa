@@ -1,24 +1,22 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
-import { render } from "preact";
 import { act } from "preact/test-utils";
 import { ROOM_IDS } from "../data/ship";
+import { lang } from "../i18n";
 import * as game from "../state/game";
+import { $, $$, mount } from "../test/render";
+import { resetState } from "../test/state";
 import { ShipMap } from "./ShipMap";
 
-let root: HTMLElement;
 beforeEach(() => {
-  root = document.createElement("div");
-  document.body.append(root);
-  act(() => { render(<ShipMap />, root); game.startGame(); });
+  resetState();
+  mount(<ShipMap />);
+  act(() => { game.startGame(); });
 });
-afterEach(() => { render(null, root); root.remove(); });
 
-const roomEl = (id: string) => root.querySelector(`[data-room="${id}"]`) as SVGGElement;
+const roomEl = (id: string) => $(`[data-room="${id}"]`) as unknown as SVGGElement;
 
 test("dessine les 16 salles sur les deux ponts", () => {
-  expect(root.querySelectorAll("#deck1 .room")).toHaveLength(11);
-  expect(root.querySelectorAll("#deck2 .room")).toHaveLength(5);
+  expect($$("#deck1 .room")).toHaveLength(11);
+  expect($$("#deck2 .room")).toHaveLength(5);
   for (const id of ROOM_IDS) expect(roomEl(id)).not.toBeNull();
 });
 
@@ -28,7 +26,7 @@ test("pendant le placement, les salles de départ possibles clignotent", () => {
   act(() => { game.touchRoom("cockpit"); });
   expect(roomEl("entrepot4").classList.contains("pulse")).toBe(true); // on peut encore changer
   act(() => { game.confirmStart(); });
-  expect(root.querySelectorAll(".room.pulse")).toHaveLength(0);
+  expect($$(".room.pulse")).toHaveLength(0);
 });
 
 test("les salles toxiques sont marquées", () => {
@@ -40,27 +38,27 @@ test("toucher une salle pose le pion ; après validation, les salles voisines so
   act(() => { roomEl("cockpit").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
   act(() => { game.confirmStart(); });
   expect(game.position.value).toBe("cockpit");
-  expect(root.querySelector("#pawn")!.getAttribute("visibility")).toBe("visible");
-  expect(root.querySelector("#pawn2")!.getAttribute("visibility")).toBe("hidden");
-  const reach = [...root.querySelectorAll(".room.reach")].map(el => el.getAttribute("data-room")).sort();
+  expect($("#pawn").getAttribute("visibility")).toBe("visible");
+  expect($("#pawn2").getAttribute("visibility")).toBe("hidden");
+  const reach = $$(".room.reach").map(el => el.getAttribute("data-room")).sort();
   expect(reach).toEqual(["infirmerie", "reunion", "vie"]);
 });
 
 test("trace le chemin du pion, avec l'ascenseur entre les ponts", () => {
   act(() => { game.touchRoom("cockpit"); game.confirmStart(); });
-  expect(root.querySelectorAll(".path-line")).toHaveLength(0);
+  expect($$(".path-line")).toHaveLength(0);
   act(() => { game.touchRoom("vie"); game.touchRoom("serre"); });
-  expect(root.querySelectorAll("#deck1 .path-line")).toHaveLength(2); // cockpit → vie, vie → ascenseur
-  expect(root.querySelectorAll("#deck2 .path-line")).toHaveLength(1); // ascenseur → serre
-  expect([...root.querySelectorAll(".path-step text")].map(t => t.textContent)).toEqual(["1", "2"]);
+  expect($$("#deck1 .path-line")).toHaveLength(2); // cockpit → vie, vie → ascenseur
+  expect($$("#deck2 .path-line")).toHaveLength(1); // ascenseur → serre
+  expect($$(".path-step text").map(t => t.textContent)).toEqual(["1", "2"]);
   act(() => { game.undo(); });
-  expect(root.querySelectorAll("#deck2 .path-line")).toHaveLength(0);
+  expect($$("#deck2 .path-line")).toHaveLength(0);
 });
 
 test("les conduits d'aération sont dessinés et mis en avant quand on peut les emprunter", () => {
-  const left = root.querySelector('[data-vent="dortoir1-entrepot1"]')!;
+  const left = $('[data-vent="dortoir1-entrepot1"]');
   expect(left).not.toBeNull();
-  expect(root.querySelector('[data-vent="dortoir2-entrepot2"]')).not.toBeNull();
+  expect($('[data-vent="dortoir2-entrepot2"]')).not.toBeNull();
   expect([...left.querySelectorAll("tspan")].map(t => t.textContent)).toEqual(["PASSAGE", "VENTILATION"]);
   act(() => { game.touchRoom("cockpit"); game.confirmStart(); });
   expect(left.classList.contains("open")).toBe(false);
@@ -68,7 +66,7 @@ test("les conduits d'aération sont dessinés et mis en avant quand on peut les 
   expect(left.classList.contains("open")).toBe(true);
   act(() => { game.touchRoom("entrepot1"); });
   expect(left.classList.contains("open")).toBe(true); // on peut revenir par le même conduit
-  expect(root.querySelectorAll("#deck1 .path-line")).toHaveLength(5); // 2 pas + 3 traits par le conduit
+  expect($$("#deck1 .path-line")).toHaveLength(5); // 2 pas + 3 traits par le conduit
 });
 
 test("une salle fermée porte la croix rouge, comme les salles contaminées", () => {
@@ -90,5 +88,16 @@ test("choix du Coordinateur : salles possibles encadrées, salle choisie en roug
   expect(roomEl("labo").classList.contains("target")).toBe(false);
   act(() => { roomEl("cuisine").dispatchEvent(new MouseEvent("click", { bubbles: true })); });
   expect(roomEl("cuisine").classList.contains("selected")).toBe(true);
-  expect(root.querySelectorAll(".room.selected")).toHaveLength(1);
+  expect($$(".room.selected")).toHaveLength(1);
+});
+
+test("en anglais : titres des ponts, plans, ascenseurs et conduits traduits", () => {
+  expect($$(".deck-head h2").map(h => h.textContent)).toEqual(["PONT 1", "PONT 2"]);
+  act(() => { lang.value = "en"; });
+  expect($$(".deck-head h2").map(h => h.textContent)).toEqual(["DECK 1", "DECK 2"]);
+  expect($("#deck1").getAttribute("aria-label")).toBe("Deck 1 map");
+  expect($("#deck2").getAttribute("aria-label")).toBe("Deck 2 map");
+  expect([...$('[data-vent="dortoir1-entrepot1"]').querySelectorAll("tspan")].map(t => t.textContent)).toEqual(["VENT", "PASSAGE"]);
+  expect($$(".vent-label").map(t => t.textContent)).toContain("LIFTS");
+  expect($$(".vent-label").map(t => t.textContent)).not.toContain("ASCENSEURS");
 });

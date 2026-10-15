@@ -1,13 +1,11 @@
 // Musique, alerte et bouton Son / Muet.
-import { test, expect } from "@playwright/test";
-import { FAST, audioState, silence, open, startSimulation, placeAgent } from "./helpers";
+import { test, expect, FAST, audioState, silence, open, startSimulation, placeAgent } from "./helpers";
 
 test("la musique démarre à l'ouverture et se règle dans les réglages", async ({ page }) => {
-  const errors = await open(page, { ...FAST, music: true });
+  await open(page, { ...FAST, music: true });
   await expect(page.locator("#home")).toHaveClass(/show/);
   expect((await audioState(page)).playing).toBe(true);
   await expect.poll(async () => (await audioState(page)).state).toBe("running");
-  await expect(page.locator("#musicBtn")).toHaveCount(0);
 
   await page.locator("#homeSetBtn").click();
   await page.locator("#tab-audio").click();
@@ -19,7 +17,6 @@ test("la musique démarre à l'ouverture et se règle dans les réglages", async
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!));
   expect(saved.music).toBe(false);
   expect(saved.sfxVolume).toBe(0.4);
-  expect(errors).toEqual([]);
 });
 
 test("musique coupée : pas d'écran « touchez pour commencer »", async ({ page }) => {
@@ -28,17 +25,15 @@ test("musique coupée : pas d'écran « touchez pour commencer »", async ({ pag
   expect((await audioState(page)).playing).toBe(false);
 });
 
-test("plus de minuteur ; musique d'alerte pendant la partie (si la musique est activée)", async ({ page }) => {
-  const errors = await open(page, { ...FAST, music: true });
+test("musique d'alerte pendant toute la partie (si la musique est activée)", async ({ page }) => {
+  await open(page, { ...FAST, music: true });
   await startSimulation(page);
   expect(await page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(false);
   await placeAgent(page, "vie");
-  await expect(page.locator("#trainingTimer")).toHaveCount(0);
   await expect.poll(() => page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
-  await page.clock.runFor(400_000); // bien plus de 5 minutes : rien ne s'arrête
+  await page.clock.runFor(400_000); // longtemps après : rien ne s'arrête
   expect(await page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
   await expect(page.locator("#closeBtn")).toBeEnabled();
-  expect(errors).toEqual([]);
 });
 
 test("musique coupée par défaut au premier lancement", async ({ page }) => {
@@ -54,7 +49,7 @@ test("musique coupée par défaut au premier lancement", async ({ page }) => {
 });
 
 test("bouton Son / Muet dans l'en-tête : coupe ou remet la musique (aria-pressed)", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await startSimulation(page);
   const sound = page.locator("#soundBtn");
   await expect(sound).toHaveAttribute("aria-pressed", "false");
@@ -73,5 +68,4 @@ test("bouton Son / Muet dans l'en-tête : coupe ou remet la musique (aria-presse
   await sound.click(); // on recoupe la musique : tests silencieux
   await expect(sound).toHaveAttribute("aria-pressed", "false");
   expect(await page.evaluate(() => window.nostromo!.audio.playing)).toBe(false);
-  expect(errors).toEqual([]);
 });

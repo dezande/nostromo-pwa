@@ -11,5 +11,5 @@ import { registerServiceWorker } from "./state/pwa";
 render(<App />, document.getElementById("app")!);
 registerServiceWorker();
 
-// Accès depuis la console du navigateur et pour les tests automatiques.
-window.nostromo = { audio };
+// Accès depuis la console du navigateur et pour les tests automatiques (qui ont pu y poser des réglages avant le chargement).
+window.nostromo = { ...window.nostromo, audio };

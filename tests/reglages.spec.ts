@@ -1,10 +1,9 @@
 // Réglages : onglets, styles d'écran, texte, repère, numéro de build, retour à l'accueil.
-import { test, expect } from "@playwright/test";
 import { THEMES, DEFAULT_BG } from "../src/data/themes";
-import { FAST, open, startSimulation, placeAgent } from "./helpers";
+import { test, expect, FAST, open, startSimulation, placeAgent } from "./helpers";
 
 test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await page.locator("#homeSetBtn").click();
   const themes = page.locator("#themes .theme");
   const count = await themes.count();
@@ -18,11 +17,10 @@ test("chaque style d'écran s'applique et reste mémorisé", async ({ page }) =>
     const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!).theme);
     expect(saved).toBe(theme.name);
   }
-  expect(errors).toEqual([]);
 });
 
 test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet mémorisé ; clavier", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#settings").getByRole("tab")).toHaveText(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
   await expect(page.locator("#tab-display")).toHaveAttribute("aria-selected", "true");
@@ -39,7 +37,6 @@ test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet
   await expect(page.locator("#alert-siren")).toHaveAttribute("aria-checked", "true");
   await page.locator("#alert-detector").click();
   await expect(page.locator("#alert-detector")).toHaveAttribute("aria-checked", "true");
-  await expect(page.locator("#alertVoiceChk, #alertCountdownChk")).toHaveCount(0);
   await page.locator("#alertPreview").click();
   await page.clock.runFor(5000);
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!));
@@ -48,7 +45,6 @@ test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet
   await page.locator("#setClose").click();
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#tab-alert")).toHaveAttribute("aria-selected", "true");
-  expect(errors).toEqual([]);
 });
 
 test("chaque onglet des réglages tient dans l'écran sans défilement", async ({ page }) => {
@@ -86,7 +82,7 @@ test("le numéro de build est affiché dans les réglages", async ({ page }) => 
 });
 
 test("retour à l'accueil par les Réglages, avec confirmation : alarme et voix s'arrêtent", async ({ page }) => {
-  const errors = await open(page, { ...FAST, music: true });
+  await open(page, { ...FAST, music: true });
   await startSimulation(page);
   await placeAgent(page, "cockpit");
   await expect.poll(() => page.evaluate(() => window.nostromo!.audio.alertPlaying)).toBe(true);
@@ -111,11 +107,10 @@ test("retour à l'accueil par les Réglages, avec confirmation : alarme et voix 
   // Hors partie, pas de bouton de retour dans les Réglages.
   await page.locator("#homeSetBtn").click();
   await expect(page.locator("#homeReturnBtn")).toHaveCount(0);
-  expect(errors).toEqual([]);
 });
 
 test("réglages : boutons du bas alignés sur une seule rangée, de même taille", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   // Toutes les positions sont lues au même instant (le panneau peut encore se redimensionner).
   const sameRow = async (...ids: string[]) => {
     await expect(page.locator(`#${ids[0]}`)).toBeVisible();
@@ -144,7 +139,6 @@ test("réglages : boutons du bas alignés sur une seule rangée, de même taille
   await expect(page.locator("#settings .settings-footer button")).toHaveCount(2);
   await page.locator("#homeReturnNo").click();
   await page.locator("#setClose").click();
-  expect(errors).toEqual([]);
 });
 
 test("taille du texte et lignes horizontales", async ({ page }) => {

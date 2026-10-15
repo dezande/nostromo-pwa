@@ -1,9 +1,8 @@
 // Version anglaise de l'app.
-import { test, expect } from "@playwright/test";
-import { open } from "./helpers";
+import { test, expect, open } from "./helpers";
 
 test("version anglaise : choix à l'accueil, retenu au rechargement, documents et PDF en anglais", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await expect(page.locator("html")).toHaveAttribute("lang", "fr");
   await page.locator("#lang-en").click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
@@ -22,7 +21,6 @@ test("version anglaise : choix à l'accueil, retenu au rechargement, documents e
   await expect(page.locator("#scenario-recruitment strong")).toHaveText("A Mere Formality");
   await page.locator("#scenarioBack").click();
   await expect(page.locator("#lang-en")).toHaveAttribute("aria-checked", "true");
-  expect(errors).toEqual([]);
 });
 
 // Sans réglage enregistré (premier lancement) : la langue du navigateur. Ne passe pas par open(), qui enregistre des réglages.

@@ -1,29 +1,25 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
-import { render } from "preact";
 import { act } from "preact/test-utils";
 import * as game from "../state/game";
+import { $, mount } from "../test/render";
+import { resetState } from "../test/state";
 import { ProtocolWindow } from "./ProtocolWindow";
 
-let root: HTMLElement;
 beforeEach(() => {
   jest.useFakeTimers();
-  root = document.createElement("div");
-  document.body.append(root);
-  game.showIntro();
+  resetState();
+  mount(<ProtocolWindow />);
 });
-afterEach(() => { render(null, root); root.remove(); jest.useRealTimers(); });
+afterEach(() => jest.useRealTimers());
 
-const text = () => root.querySelector("#infoPanel")!.textContent;
+const text = () => $("#infoPanel").textContent;
 
 test("titre du protocole, en attente tant que la partie n'a pas commencé", () => {
-  act(() => { render(<ProtocolWindow />, root); });
-  expect(root.querySelector("h2")!.textContent).toBe("PROTOCOLE A.I.P.");
+  expect($("h2").textContent).toBe("PROTOCOLE A.I.P.");
   expect(text()).toContain("EN ATTENTE DE DONNÉES");
 });
 
 test("demande la salle de départ, tapée lettre par lettre", () => {
-  act(() => { render(<ProtocolWindow />, root); game.startGame(); });
+  act(() => { game.startGame(); });
   act(() => { jest.advanceTimersByTime(35 * 5); });
   expect(text()).not.toContain("AGENT, CHOISISSEZ VOTRE SALLE DE DÉPART");
   act(() => { jest.advanceTimersByTime(5000); });
@@ -31,7 +27,7 @@ test("demande la salle de départ, tapée lettre par lettre", () => {
 });
 
 test("salle choisie, modifiable, puis position enregistrée après validation", () => {
-  act(() => { render(<ProtocolWindow />, root); game.startGame(); });
+  act(() => { game.startGame(); });
   act(() => { game.touchRoom("cockpit"); });
   act(() => { jest.advanceTimersByTime(5000); });
   expect(text()).toContain("SALLE DE DÉPART : COCKPIT");
@@ -44,7 +40,7 @@ test("salle choisie, modifiable, puis position enregistrée après validation", 
 });
 
 test("pendant les déplacements : aucune indication du nombre de pas", () => {
-  act(() => { render(<ProtocolWindow />, root); game.startGame(); game.touchRoom("vie"); game.confirmStart(); });
+  act(() => { game.startGame(); game.touchRoom("vie"); game.confirmStart(); });
   act(() => { game.touchRoom("dortoir1"); });
   act(() => { jest.advanceTimersByTime(5000); });
   expect(text()).toContain("DÉPLACEMENTS EN COURS");
@@ -60,7 +56,7 @@ test("pendant les déplacements : aucune indication du nombre de pas", () => {
 });
 
 test("guide le Coordinateur pour choisir la salle à fermer", () => {
-  act(() => { render(<ProtocolWindow />, root); game.startGame(); game.touchRoom("vie"); game.confirmStart(); });
+  act(() => { game.startGame(); game.touchRoom("vie"); game.confirmStart(); });
   act(() => { game.validate(); });
   act(() => { jest.advanceTimersByTime(5000); });
   expect(text()).toContain("COORDINATEUR : TOUCHEZ LA SALLE À FERMER");

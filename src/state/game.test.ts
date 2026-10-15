@@ -1,5 +1,3 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
 import { ROOM_IDS, room, type RoomId } from "../data/ship";
 import { audio } from "../audio/audio";
 import { settings } from "./settings";

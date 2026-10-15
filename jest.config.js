@@ -22,8 +22,12 @@ export default {
   globals: {
     __BUILD__: { version: "0.0.0", number: "test", commit: "", date: "2026-01-01" },
   },
-  // Les feuilles de style (ex. police du logo) ne servent à rien dans les tests.
-  moduleNameMapper: { "\\.css$": "<rootDir>/src/test/styleStub.cjs" },
+  moduleNameMapper: {
+    // Les feuilles de style (ex. police du logo) ne servent à rien dans les tests.
+    "\\.css$": "<rootDir>/src/test/styleStub.cjs",
+    // jsdom ne connaît pas Web Audio : le module audio est remplacé par un faux (src/test/audioMock.ts) partout.
+    "(^|/)audio/audio$": "<rootDir>/src/test/audioMock.ts",
+  },
   // Langue de l'app : français par défaut dans les tests.
   setupFiles: ["<rootDir>/src/test/setup.ts"],
   clearMocks: true,
