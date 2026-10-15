@@ -84,7 +84,9 @@ npm run build      # version finale dans dist/
 npm run preview    # sert dist/ pour la tester (avec le mode hors ligne)
 npm run typecheck  # vérification TypeScript
 npm run test:unit  # tests Jest
+npm run test:coverage  # tests Jest avec la couverture (rapport HTML dans coverage/)
 npm run test:e2e   # tests Playwright
+npm run lighthouse # audit Lighthouse du build (rapports dans rapports-lighthouse/), après npm run build
 npm run fiches     # regénère les PDF de public/fiches/ (il faut être en ligne pour la police)
 ```
 
@@ -158,7 +160,10 @@ Il s'affiche dans *Réglages → Système*, avec l'état du mode hors ligne. La 
   désactivée). En local, ils utilisent le Chrome installé.
 
 Sur GitHub, la vérification TypeScript et les deux séries de tests se lancent à chaque pull request
-(`.github/workflows/tests.yml`).
+(`.github/workflows/tests.yml`). Le même workflow mesure la couverture des tests Jest (résumé dans le journal,
+rapport HTML en artefact) et lance [Lighthouse](https://developer.chrome.com/docs/lighthouse) sur le build,
+aux formats téléphone et ordinateur (`lighthouserc.cjs`, rapports en artefact) : performance de chargement,
+accessibilité, bonnes pratiques et SEO. Seule l'accessibilité est exigée (score ≥ 90), le reste avertit.
 
 ## Contribuer
 

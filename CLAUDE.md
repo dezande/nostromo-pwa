@@ -61,7 +61,9 @@ Le README décrit ce que fait l'app et l'organisation des dossiers : le lire ava
 npm run dev          # http://localhost:5173
 npm run typecheck    # tsc --noEmit
 npx jest             # tests unitaires
+npm run test:coverage # tests unitaires avec la couverture (coverage/)
 npm run build        # tsc puis vite build (PWA)
+npm run lighthouse   # audit Lighthouse du build (lighthouserc.cjs, rapports dans rapports-lighthouse/)
 npm run fiches       # regénère les PDF de public/fiches/ (voir le skill fiches)
 ```
 

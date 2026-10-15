@@ -3,3 +3,6 @@ node_modules/
 test-results/
 playwright-report/
 dist/
+coverage/
+.lighthouseci/
+rapports-lighthouse/

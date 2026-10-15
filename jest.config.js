@@ -27,4 +27,15 @@ export default {
   // Langue de l'app : français par défaut dans les tests.
   setupFiles: ["<rootDir>/src/test/setup.ts"],
   clearMocks: true,
+  // Couverture (npm run test:coverage) : le fournisseur v8 lit les sourcemaps de @swc/jest, Babel ne le peut pas.
+  // Mesurée sur le code de l'app seulement : ni les tests ni leurs aides, ni le point d'entrée (main.tsx).
+  coverageProvider: "v8",
+  collectCoverageFrom: [
+    "src/**/*.{ts,tsx}",
+    "!src/test/**",
+    "!src/**/*.test.{ts,tsx}",
+    "!src/env.d.ts",
+    "!src/main.tsx",
+  ],
+  coverageReporters: ["text-summary", "text", "html", "lcov"],
 };
