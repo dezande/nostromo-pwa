@@ -1,12 +1,12 @@
 // Une adresse par écran, et le bouton « retour » du navigateur revient en arrière dans l'app au lieu de la quitter.
-import { test, expect, type Page } from "@playwright/test";
-import { open, placeAgent, closeRoom } from "./helpers";
+import type { Page } from "@playwright/test";
+import { test, expect, open, placeAgent, closeRoom } from "./helpers";
 
 const path = (page: Page) => new URL(page.url()).pathname;
 const back = async (page: Page) => { await page.goBack({ waitUntil: "commit" }); await page.clock.runFor(100); };
 
 test("adresses des panneaux d'introduction, et retour du navigateur jusqu'à l'accueil", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   expect(path(page)).toBe("/");
   await page.locator("#startBtn").click();
   await expect.poll(() => path(page)).toBe("/scenario");
@@ -26,11 +26,10 @@ test("adresses des panneaux d'introduction, et retour du navigateur jusqu'à l'a
   await back(page);
   await expect(page.locator("#startBtn")).toBeVisible();
   expect(path(page)).toBe("/");
-  expect(errors).toEqual([]);
 });
 
 test("en partie : « retour » ouvre et ferme le menu pause sans quitter la partie ; après le rapport, retour à l'accueil", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await page.locator("#startBtn").click();
   await page.locator("#scenario-free").click();
   await page.locator("#launchBtn").click();
@@ -49,18 +48,17 @@ test("en partie : « retour » ouvre et ferme le menu pause sans quitter la part
   await back(page);
   await expect(page.locator("#settings")).not.toHaveClass(/show/);
   await expect(page.locator("#closeBtn")).toBeVisible();
-  await closeRoom(page, "cockpit").catch(() => {}); // l'agent est éliminé : pas de bouton Valider ensuite
+  await closeRoom(page, "cockpit"); // l'agent est éliminé
   await page.clock.runFor(2_000);
   await expect(page.locator("#end")).toHaveClass(/show/);
   await expect.poll(() => path(page)).toBe("/fin");
   await back(page);
   await expect(page.locator("#startBtn")).toBeVisible();
   await expect.poll(() => path(page)).toBe("/");
-  expect(errors).toEqual([]);
 });
 
 test("adresse ouverte directement : document du scénario, puis retour au choix et à l'accueil", async ({ page }) => {
-  const errors = await open(page, undefined, "/scenario/document/trainingGuidePdf");
+  await open(page, undefined, "/scenario/document/trainingGuidePdf");
   await expect(page.locator("#docViewer")).toHaveClass(/show/);
   await expect(page.locator("#docText")).toContainText("Sixième sens");
   // Les liens relatifs (fiches/…) restent justes depuis cette adresse
@@ -69,11 +67,10 @@ test("adresse ouverte directement : document du scénario, puis retour au choix 
   await expect(page.locator("#docViewer")).not.toHaveClass(/show/);
   await expect(page.locator("#startBtn")).toBeVisible();
   expect(path(page)).toBe("/");
-  expect(errors).toEqual([]);
 });
 
 test("adresses directes : tutoriel à la bonne page ; partie ou rapport sans partie en cours → accueil", async ({ page }) => {
-  const errors = await open(page, undefined, "/tutoriel/3");
+  await open(page, undefined, "/tutoriel/3");
   await expect(page.locator("#tutorial")).toHaveClass(/show/);
   await expect(page.locator("#tutorial")).toContainText("03/");
   await page.locator("#tutoClose").click();
@@ -84,5 +81,4 @@ test("adresses directes : tutoriel à la bonne page ; partie ou rapport sans par
     await expect.poll(() => path(page), address).toBe("/");
     await expect(page.locator("#startBtn")).toBeVisible();
   }
-  expect(errors).toEqual([]);
 });

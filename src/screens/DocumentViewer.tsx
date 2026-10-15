@@ -41,7 +41,7 @@ const SEX = {
 };
 
 /** Garde le contenu des pages A4 choisies, sans la mise en page imprimée ; au féminin si demandé (data-f). */
-function documentText(html: string, { pages = ".page", feminine = false }: Pick<ScenarioDocument, "pages" | "feminine"> = {}): string {
+export function documentText(html: string, { pages = ".page", feminine = false }: Pick<ScenarioDocument, "pages" | "feminine"> = {}): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
   if (feminine) doc.querySelectorAll<HTMLElement>("[data-f]").forEach(el => { el.innerHTML = el.dataset.f!; });
   // Seules icônes gardées : le symbole du sexe, en SVG de la couleur du style (le caractère ♂/♀ s'affiche en emoji coloré sur iPad)

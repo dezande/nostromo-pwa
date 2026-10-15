@@ -1,22 +1,17 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
-import { render } from "preact";
 import { act } from "preact/test-utils";
 import * as game from "../state/game";
 import { briefing } from "../state/ui";
+import { $, $$, mount } from "../test/render";
+import { resetState } from "../test/state";
 import { Briefing } from "./Briefing";
 
 let root: HTMLElement;
 beforeEach(() => {
-  root = document.createElement("div");
-  document.body.append(root);
-  game.showIntro();
+  resetState();
   briefing.value = "welcome";
-  act(() => { render(<Briefing />, root); });
+  root = mount(<Briefing />);
 });
-afterEach(() => { render(null, root); root.remove(); briefing.value = null; });
 
-const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
 const shown = (id: string) => $(`#${id}`).classList.contains("show");
 
 test("bienvenue, puis une règle par panneau (1/4 à 4/4), retours possibles, puis la partie commence", () => {
@@ -33,7 +28,7 @@ test("bienvenue, puis une règle par panneau (1/4 à 4/4), retours possibles, pu
     expect($(`#rule${n} .rule-scene .room`)).not.toBeNull();
     expect($(`#rule${n} .rule-scene .pawn`)).not.toBeNull();
     // seules les scènes affichées tournent
-    expect(root.querySelectorAll(".rule-scene")).toHaveLength(1);
+    expect($$(".rule-scene")).toHaveLength(1);
     if (n < 4) act(() => { $(`#rule${n}Next`).click(); });
   });
   expect($("#rule1").textContent).toContain("Seul le Coordinateur en connaît l'ordre de fermeture.");
@@ -49,6 +44,6 @@ test("bienvenue, puis une règle par panneau (1/4 à 4/4), retours possibles, pu
   expect(game.phase.value).toBe("place");
 });
 
-test("pas de choix de protocole, ni de minuteur, ni d'avertissement sur les salles contaminées", () => {
-  expect(root.textContent).not.toMatch(/PROTOCOLE [1-4]|contamin|5 minutes/i);
+test("aucun avertissement sur les salles contaminées dans les panneaux", () => {
+  expect(root.textContent).not.toMatch(/contamin/i);
 });

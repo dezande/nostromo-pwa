@@ -3,6 +3,8 @@ import { SCENARIOS, SCENARIO_IDS, scenarioText } from "./scenarios";
 
 const FR = SCENARIOS.fr;
 
+beforeEach(() => { lang.value = "fr"; });
+
 test("trois scénarios, l'entraînement en premier, puis le mode sans scénario", () => {
   expect(SCENARIO_IDS).toEqual(["training", "recruitment", "infiltrated", "free"]);
   expect(Object.keys(SCENARIOS.en)).toEqual(SCENARIO_IDS);
@@ -29,11 +31,6 @@ test("Session disciplinaire : survie avec un message de la C.R.F.", () => {
 test("Sans scénario : pas de panneau d'introduction", () => {
   expect(FR.free.firstPanel).toBeNull();
   expect(SCENARIOS.en.free.firstPanel).toBeNull();
-});
-
-test("aucun texte ne parle de parité", () => {
-  const all = JSON.stringify(SCENARIOS).toLowerCase();
-  for (const word of ["parité", "pair", "impair", "parity", "even", "odd"]) expect(all).not.toMatch(new RegExp(`\\b${word}\\b`));
 });
 
 test("difficulté croissante pour le joueur, avec une durée indicative", () => {

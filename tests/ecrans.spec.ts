@@ -1,9 +1,9 @@
 // Écrans autour de la partie : transitions, panneaux d'accueil, logo, écran de fin, boutons icône.
-import { test, expect, type Page } from "@playwright/test";
-import { FAST, clickRoom, open, launch, startSimulation, placeAgent, closeRoom } from "./helpers";
+import type { Page } from "@playwright/test";
+import { test, expect, FAST, clickRoom, open, launch, startSimulation, placeAgent, closeRoom } from "./helpers";
 
 test("faux écran de transition au démarrage, puis panneau de bienvenue", async ({ page }) => {
-  const errors = await open(page, { ...FAST, transitions: true });
+  await open(page, { ...FAST, transitions: true });
   await launch(page);
   await expect(page.locator("#trans")).toHaveClass(/show/);
   await expect(page.locator("#transHd")).toHaveText("INITIALISATION DE LA SIMULATION");
@@ -13,7 +13,6 @@ test("faux écran de transition au démarrage, puis panneau de bienvenue", async
   await expect(page.locator("#transLines")).toContainText("CONNEXION AU VAISSEAU-BASE");
 
   await expect(page.locator("#welcome")).toContainText("Votre future mission");
-  expect(errors).toEqual([]);
 });
 
 test("toucher l'écran passe la transition", async ({ page }) => {
@@ -109,7 +108,7 @@ async function checkIconButtons(page: Page, scope: string) {
 }
 
 test("boutons icône seule : nom accessible et icône SVG partout", async ({ page }) => {
-  const errors = await open(page);
+  await open(page);
   await expect(page.locator("#home")).toHaveClass(/show/);
   await checkIconButtons(page, "#home");
   await expect(page.getByRole("button", { name: "Démarrer" })).toBeVisible();
@@ -154,5 +153,4 @@ test("boutons icône seule : nom accessible et icône SVG partout", async ({ pag
   await expect(page.getByRole("button", { name: "Oui" })).toBeVisible();
   await page.getByRole("button", { name: "Non" }).click();
   await page.locator("#setClose").click();
-  expect(errors).toEqual([]);
 });

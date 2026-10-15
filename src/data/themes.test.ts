@@ -19,7 +19,7 @@ describe("couleurs", () => {
 });
 
 describe("styles d'écran", () => {
-  test("15 styles : l'original puis les 14 de cool-retro-term", () => {
+  test("6 styles aux noms distincts : l'original puis 5 de cool-retro-term", () => {
     expect(THEMES).toHaveLength(6);
     expect(THEMES[0].name).toBe("Nostromo (origine)");
     expect(new Set(THEMES.map(t => t.name)).size).toBe(6);

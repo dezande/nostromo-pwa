@@ -1,23 +1,15 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
-import { render } from "preact";
 import { act } from "preact/test-utils";
 import { TUTORIAL } from "../data/tutorial";
 import { homeOpen, tutorial } from "../state/ui";
+import { $, mount } from "../test/render";
+import { resetState } from "../test/state";
 import { Home } from "./Home";
 import { Tutorial } from "./Tutorial";
 
-let root: HTMLElement;
 beforeEach(() => {
-  root = document.createElement("div");
-  document.body.append(root);
-  tutorial.value = null;
-  homeOpen.value = true;
-  act(() => { render(<><Home /><Tutorial /></>, root); });
+  resetState();
+  mount(<><Home /><Tutorial /></>);
 });
-afterEach(() => { render(null, root); root.remove(); });
-
-const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
 
 test("le bouton de l'accueil ouvre le tutoriel sur la première page", () => {
   expect($("#tutorial").classList.contains("show")).toBe(false);

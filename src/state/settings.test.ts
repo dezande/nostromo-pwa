@@ -1,5 +1,3 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
 const KEY = "nostromo-settings";
 
 /** Recharge le module de réglages avec ce qui est enregistré dans le navigateur. */

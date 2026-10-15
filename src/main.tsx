@@ -17,5 +17,5 @@ window.addEventListener("unhandledrejection", e => report(e.reason));
 render(<ErrorBoundary><App /></ErrorBoundary>, document.getElementById("app")!);
 registerServiceWorker();
 
-// Accès depuis la console du navigateur et pour les tests automatiques.
-window.nostromo = { audio };
+// Accès depuis la console du navigateur et pour les tests automatiques (qui ont pu y poser des réglages avant le chargement).
+window.nostromo = { ...window.nostromo, audio };

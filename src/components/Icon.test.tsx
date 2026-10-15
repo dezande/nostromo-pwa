@@ -1,25 +1,17 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
-import { render } from "preact";
 import { act } from "preact/test-utils";
 import { audio } from "../audio/audio";
 import { settings } from "../state/settings";
 import { settingsOpen } from "../state/ui";
+import { $, mount } from "../test/render";
+import { resetState } from "../test/state";
 import { ICONS, IconButton } from "./Icon";
 import { Header } from "./Header";
 
-let root: HTMLElement;
-beforeEach(() => {
-  root = document.createElement("div");
-  document.body.append(root);
-});
-afterEach(() => { render(null, root); root.remove(); });
-
-const $ = (sel: string) => root.querySelector(sel) as HTMLElement;
+beforeEach(resetState);
 
 test("bouton icône seule : nom accessible, infobulle, SVG au trait de la couleur du style", () => {
   const onClick = jest.fn();
-  act(() => { render(<IconButton id="b" icon="valider" label="Valider" onClick={onClick} />, root); });
+  mount(<IconButton id="b" icon="valider" label="Valider" onClick={onClick} />);
   const btn = $("#b");
   expect(btn.getAttribute("aria-label")).toBe("Valider");
   expect(btn.getAttribute("title")).toBe("Valider");
@@ -42,7 +34,7 @@ test("toutes les icônes demandées existent", () => {
 
 test("en-tête : bouton Son / Muet qui coupe ou remet la musique, et Réglages", () => {
   settings.music.value = false;
-  act(() => { render(<Header />, root); });
+  mount(<Header />);
   const sound = $("#soundBtn");
   expect(sound.getAttribute("aria-pressed")).toBe("false");
   expect(sound.getAttribute("aria-label")).toBe("Musique coupée");

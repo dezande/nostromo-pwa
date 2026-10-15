@@ -1,5 +1,3 @@
-jest.mock("../audio/audio", () => require("../test/audioMock"));
-
 import { audio } from "../audio/audio";
 import * as game from "./game";
 import { settings } from "./settings";
