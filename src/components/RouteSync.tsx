@@ -42,6 +42,9 @@ export function RouteSync() {
   // Le navigateur a changé d'adresse : l'écran suit, puis l'adresse est corrigée si l'écran n'a pas pu suivre.
   useEffect(() => {
     const opened = appPath(url);
+    // Adresse que go() vient d'ouvrir : rien à appliquer. L'écran a pu changer entre-temps (deux clics enchaînés,
+    // « Démarrer » puis « Lancer ») : l'appliquer ramènerait à l'écran précédent ; l'effet [path] suit le nouvel écran.
+    const own = opened === shown.current;
     if (shown.current === null) {
       // Adresse ouverte directement : l'accueil devient la première entrée, l'écran demandé la suivante.
       if (opened !== "/" && !history.state) {
@@ -50,7 +53,7 @@ export function RouteSync() {
       }
     }
     shown.current = opened;
-    if (opened === currentRoute.peek()) return;
+    if (own || opened === currentRoute.peek()) return;
     const wasPlaying = currentRoute.peek().startsWith("/partie");
     applyRoute(opened);
     const now = currentRoute.peek();

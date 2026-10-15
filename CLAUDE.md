@@ -42,8 +42,8 @@ Le README décrit ce que fait l'app et l'organisation des dossiers : le lire ava
   pour les parcours dans le navigateur, sur le build, en formats ordinateur et téléphone.
 - En local, lancer seulement les tests liés à la modification : `npx jest <fichier>` et
   `npx playwright test tests/<fichier>.spec.ts --project=ordinateur`. La suite complète tourne en CI.
-- `tests/partie.spec.ts` est instable en local avec le Chrome installé, y compris sur `main` ; la CI avec
-  le Chromium de Playwright fait foi.
+- En cas de doute entre le Chrome installé et la CI, la CI avec le Chromium de Playwright fait foi
+  (`CI=1 npx playwright test …` l'utilise aussi en local).
 - Chaque nouveau comportement arrive avec son test, au même niveau que le code qu'il vérifie.
   Voir le skill `tests` pour les conventions (helpers, horloge simulée, fixture d'erreurs).
 
