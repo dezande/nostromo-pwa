@@ -1,0 +1,73 @@
+---
+name: fiches
+description: Modifier ou créer les documents imprimables de nostromo-pwa (fiches de personnage prétirées, aides et guides du Superviseur, cartes des petits rôles) dans fiches/, regénérer les PDF de public/fiches/ et garder la liseuse de l'app cohérente. À utiliser dès qu'il est question de fiche, prétiré, guide du Superviseur, aide, cartes des rôles, PDF, page A4, version femme, « npm run fiches », ou d'un texte des documents 3D6 Système, même si l'utilisateur ne parle que de « la fiche » ou du « guide ».
+---
+
+# Documents imprimables (fiches/)
+
+Chaque document existe sous trois formes qui doivent rester d'accord :
+1. la page HTML de `fiches/` (source, en français, et sa jumelle `*-en.html`) ;
+2. le PDF de `public/fiches/`, généré par `npm run fiches` et publié avec l'app ;
+3. le texte lu dans l'app par la liseuse (`src/screens/DocumentViewer.tsx`), tiré de la même page HTML.
+
+Modifier le HTML seul ne suffit jamais : il faut regénérer les PDF et vérifier la liseuse.
+
+## Les fichiers
+
+| Document | FR | EN | PDF (FR / EN) |
+|---|---|---|---|
+| Prétiré Psychic Agent + aide (Sixième sens) | `psychic-agent.html` | `psychic-agent-en.html` | `nostromo-fiche-psychic-agent-{homme,femme}.pdf`, `nostromo-aide-superviseur-entrainement.pdf` / `nostromo-sheet-psychic-agent-{male,female}.pdf`, `nostromo-supervisor-aid-training.pdf` |
+| Prétiré Reyes + aide (Une simple formalité) | `fiches.html` | `fiches-en.html` | `…-reyes-…`, `…-recrutement.pdf` / `…-recruitment.pdf` |
+| Prétiré Lieutenant D.R. + aide (Session disciplinaire) | `infiltre.html` | `infiltre-en.html` | `…-lieutenant-dr-…`, `…-infiltre.pdf` / `…-infiltrated.pdf` |
+| Guides du Superviseur | `guide-superviseur{,-entrainement,-infiltre}.html` | `…-en.html` | `nostromo-guide-superviseur-*.pdf` / `nostromo-supervisor-guide-*.pdf` |
+| Cartes des petits rôles | `roles.html` | `roles-en.html` | `nostromo-cartes-roles.pdf` / `nostromo-role-cards.pdf` |
+
+La correspondance exacte (pages, titres des PDF) est dans `scripts/fiches.mjs` ; celle entre documents,
+scénarios et boutons de l'app est dans `src/data/sheets.ts` (`SHEETS`, `ROLES`). Un nouveau document se
+déclare aux deux endroits, et `tests/pdf-links.spec.ts` vérifie que chaque PDF déclaré existe dans le build.
+
+Styles : `fiche.css` (guides), `pretire.css` (prétirés, lisibles en A4 comme en A5), `roles.css` (cartes
+format poker, 9 par page). `pretire.js` dessine au chargement les icônes `<i class="ic" data-ic="nom">`,
+les dés `.die`, les rangs `.rank`, les cases de PE `.track[data-n]`, les codes-barres et les illustrations ;
+la liste des icônes est au début du fichier. `logo.svg` est le logo Weyland Corp des en-têtes.
+
+## Règles de mise en page
+
+- Un document est une suite de `<main class="page">` de hauteur A4 fixe. **Un contenu qui dépasse fait échouer
+  `npm run fiches`** (message : « la page N dépasse le format A4 de X px »), de même qu'une carte de rôle qui
+  déborde de son `.frame`. C'est voulu : on raccourcit le texte ou on répartit autrement, on ne réduit pas la police.
+- Prétirés : pages 1–2 = fiche joueur recto verso version homme, pages 3–4 = version femme (recopiées par
+  `pretire.js` à partir des attributs `data-f="…"` qui donnent le texte au féminin), pages 5 et suivantes =
+  aide du Superviseur. Seules les pages `.page.joueur` sont lues dans l'app pour un prétiré ; les autres pour
+  l'aide (`pages` dans `sheets.ts`).
+- Chaque texte visible a sa version anglaise dans la page `-en.html`, avec la même structure de classes :
+  la liseuse et les tests comptent dessus.
+- Le `<title>` de la page devient le titre du PDF (ou celui de la partie pour un prétiré, voir `fiches.mjs`).
+
+## Ce que la liseuse de l'app fait du HTML
+
+`documentText()` dans `src/screens/DocumentViewer.tsx` garde le contenu des pages choisies et :
+- supprime ce qui ne sert qu'à l'impression (`PRINT_ONLY` : en-têtes, pieds de page, images, sommaire,
+  icônes, illustrations, codes-barres, `.notes`, `.symbol`, `.xeno-head`) ;
+- remplace les symboles ♂/♀ par un SVG (emoji coloré sur iPad sinon) ;
+- ajoute aux caractéristiques une aide et des jauges `.t-pips`, et les cases de PE ;
+- retire les attributs `style` (tailles en mm) et les sous-titres « PAGE n ».
+
+Les classes du HTML que l'app met en forme sont dans `src/styles/_home.scss` (bloc `.doc-text`). Une nouvelle
+classe dans une fiche sans style dans ce bloc s'affiche brute ; une classe retirée des fiches laisse du CSS
+mort. Vérifier dans l'app (`npm run dev`, choix du scénario, bouton « Lire ») sur téléphone et ordinateur.
+
+## Procédure
+
+1. Modifier la page FR et la page EN ensemble.
+2. `npm run fiches` (il faut être en ligne pour la police ; Chromium de Playwright ou Chrome local).
+   Option `-- --png <dossier>` pour enregistrer une capture de chaque page et vérifier la mise en page à l'œil.
+3. Lire le document dans l'app et dans la version anglaise.
+4. Tests : `npx playwright test tests/pdf-links.spec.ts tests/scenarios.spec.ts --project=ordinateur`
+   (les scénarios vérifient le contenu lu dans la liseuse), et `npx jest src/screens` si la liseuse a changé.
+5. Commiter les HTML **et** les PDF regénérés (ils sont versionnés dans `public/fiches/`). Les PDF changent
+   à chaque génération même sans modification visible : ne regénérer que ceux qui ont changé de contenu
+   si le diff doit rester lisible, sinon tous.
+
+Le README cite les documents et le système de jeu (3D6 Système de François Cedelle, licence ORC) : le mettre
+à jour si un document apparaît ou change de nom.
