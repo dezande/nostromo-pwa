@@ -1,0 +1,38 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/apres-edition.mjs\"",
+            "timeout": 120,
+            "statusMessage": "Types et tests Jest du fichier modifié…"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/avant-commit.mjs\"",
+            "timeout": 90,
+            "statusMessage": "npm audit des dépendances avant le commit…"
+          },
+          {
+            "type": "agent",
+            "if": "Bash(git commit*)",
+            "model": "claude-sonnet-5-5",
+            "timeout": 240,
+            "statusMessage": "Relecture du diff avant le commit…",
+            "prompt": "Un commit git va être fait dans le dépôt nostromo-pwa (PWA Preact, application française bilingue FR/EN) : $ARGUMENTS\n\nRelis les changements à committer : `git diff --cached` (et `git diff` si rien n'est indexé ; si la commande ajoute des fichiers avec -a ou -A, relis aussi les modifications non indexées). Cherche seulement des problèmes clairs :\n- bug évident ou régression (condition inversée, variable jamais lue, promesse non attendue) ;\n- texte visible ajouté dans une seule langue : tr(fr, en) incomplet, données sans jumelle _EN ou { fr, en } ;\n- identifiant HTML (id) ou nom accessible renommé sans mise à jour des tests qui s'en servent (src/**/*.test.tsx, tests/*.spec.ts) ;\n- console.log, code commenté ou fichier de débogage oublié ;\n- export ajouté sans usage hors de son fichier.\n\nSi tu trouves un problème clair, refuse le commit en le décrivant en français, avec le fichier et la ligne, pour que le code soit corrigé avant de committer. Sinon, approuve sans commentaire. Ne refuse pas pour une question de style ni pour un doute."
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -55,6 +55,19 @@ Le README décrit ce que fait l'app et l'organisation des dossiers : le lire ava
 - La CI (`.github/workflows/tests.yml`) lance typecheck, Jest et Playwright en trois lots ; GitHub Pages
   publie `main` automatiquement.
 
+## Hooks (vérifications automatiques de Claude Code)
+
+Déclarés dans `.claude/settings.json`, scripts dans `.claude/hooks/` ; ils tournent sans intervention :
+
+- après chaque modification d'un fichier TypeScript : typecheck, puis les tests Jest du fichier modifié ou de
+  son test voisin (`Foo.tsx` → `Foo.test.tsx`). Un échec revient à Claude, qui corrige avant de continuer ;
+- avant un `git commit` : `npm audit` sur les dépendances de production (niveau high ou plus bloque), et une
+  relecture du diff par un agent (bug évident, texte dans une seule langue, `id` renommé sans ses tests,
+  débogage oublié). La relecture se déclenche sur une commande qui commence par `git commit` : indexer
+  d'abord (`git add …`), puis committer dans une commande à part.
+
+Playwright n'est jamais lancé par un hook (trop long) : les specs se lancent à la main ou en CI.
+
 ## Commandes
 
 ```sh
