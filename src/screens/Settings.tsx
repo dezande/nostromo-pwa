@@ -106,7 +106,7 @@ function SettingsFooter({ tab }: { tab: SettingsTab }) {
         )}
         {confirm && (
           <>
-            <IconButton id="homeReturnYes" icon="valider" label={tr("Oui", "Yes")} onClick={returnHome} />
+            <IconButton id="homeReturnYes" icon="valider" label={tr("Oui", "Yes")} onClick={() => returnHome()} />
             <IconButton id="homeReturnNo" icon="retour" label={tr("Non", "No")} onClick={() => setAsking(false)} />
           </>
         )}
