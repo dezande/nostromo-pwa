@@ -209,6 +209,20 @@ ul.gear li > .ic { width: 8mm; height: 8mm; border: 0.9pt solid var(--ink); padd
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 11pt;
 }
+/* Répliques des PNJ (2e page de l'aide) : citations groupées par moment, puis le script du Coordinateur,
+   numéroté du début à la fin de la partie : repère (quand) à gauche, répliques à droite, didascalies entre crochets. */
+.cues .sec { font-size: 9pt; }
+.npc .sub-h { margin-top: 1.8mm; }
+.npc .sub-h:first-of-type { margin-top: 0; }
+.quotes li > span { flex: 1; }
+.script { list-style: none; margin: 0; padding: 0; counter-reset: cue; display: grid; gap: 0.9mm; }
+.script li { counter-increment: cue; display: grid; grid-template-columns: 6mm 31mm 1fr; gap: 2mm; align-items: start; }
+.script li::before { content: counter(cue, decimal-leading-zero); font-weight: 700; font-size: 9pt; letter-spacing: 0.06em; padding-top: 0.3mm; }
+.script .cue { font-weight: 700; font-size: 9pt; letter-spacing: 0.06em; text-transform: uppercase; padding-top: 0.3mm; }
+.script .cue small { display: block; font-weight: 400; font-size: 9pt; letter-spacing: 0; text-transform: none; font-style: italic; }
+.script .say { font-style: italic; }
+.script .do, .quotes .do { font-style: normal; font-size: 9pt; }
+
 .ends { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
 .end { border: 1.2pt solid var(--ink); padding: 1.6mm 2.4mm; display: grid; grid-template-columns: 10mm 1fr; gap: 2.4mm; align-items: start; }
 .end > .ic { width: 10mm; height: 10mm; }

@@ -244,6 +244,76 @@
   </footer>
 </main>
 
+<!-- ================= AIDE DU SUPERVISEUR, SUITE : répliques des PNJ et script du Coordinateur ================= -->
+<main class="page cues">
+  <div class="title">
+    <h1>RÉPLIQUES DES PNJ</h1>
+    <div class="sub">AIDE DU SUPERVISEUR · SUITE<span class="stamp black"><i class="ic" data-ic="secret"></i>NE PAS MONTRER AU JOUEUR</span></div>
+  </div>
+
+  <div class="row c2">
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="radio"></i>IA et spectateurs <span class="code">CARTES DE RÔLE</span></h2>
+      <div class="sub-h">TYCHE · DÉPLACEMENTS</div>
+      <ul class="quotes">
+        <li><span><span class="do">[montre la carte W.Y.C.]</span> « Déplacements autorisés : [nombre]. »</span></li>
+      </ul>
+      <div class="sub-h">CERBÈRE · FERMETURES</div>
+      <ul class="quotes">
+        <li><span><span class="do">[lit la fiche de protocole]</span> « Fermeture en cours : [salle]. »</span></li>
+      </ul>
+      <div class="sub-h">XÉNOMORPHES</div>
+      <ul class="quotes">
+        <li><span><span class="do">[quand leur salle ferme]</span> « HHHHIIIIIAAAAA ! »</span></li>
+      </ul>
+      <div class="sub-h">HALVORSEN LEUR DONNE LA PAROLE</div>
+      <ul class="quotes">
+        <li><span>« TYCHE, carte. » · « CERBÈRE, protocole. »</span></li>
+        <li><span>Sans spectateurs, le Coordinateur dit tout lui-même.</span></li>
+      </ul>
+    </section>
+    <section class="sec npc">
+      <h2><i class="ic" data-ic="social"></i>Silhouettes de la B-7 <span class="code">FIGURANTS</span></h2>
+      <ul class="quotes">
+        <li><span><b>Pike</b>, le nerveux : « Et si on se trompe de salle ? »</span></li>
+        <li><span><b>Brannigan</b>, le vantard : « Je les sens à trois ponts. On peut voir un spécimen avant ? »</span></li>
+        <li><span><b>Okoye</b>, la muette, articule sans un son : « Ne demandez rien. »</span></li>
+      </ul>
+      <div class="sub-h"><i class="ic" data-ic="micro"></i>HALVORSEN ESQUIVE</div>
+      <ul class="quotes">
+        <li><span>« Tout est sur l'écran. » · « Écran suivant. » · « Question suivante. »</span></li>
+        <li><span>« Votre question est notée. » · « La compagnie a déjà répondu. »</span></li>
+        <li><span>« Ce point sera abordé pendant l'entraînement. »</span></li>
+        <li><span>« Ce point n'est pas couvert par la procédure. »</span></li>
+        <li><span>« Je ne suis pas habilité à répondre. » · « Asseyez-vous, Agent. »</span></li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="sec">
+    <h2><i class="ic" data-ic="micro"></i>Script du Coordinateur Halvorsen <span class="code">du début à la fin · voix plate, au micro</span></h2>
+    <ol class="script">
+      <li><div class="cue">Bienvenue<small>moniteur 00</small></div><div class="say">« Bienvenue à bord, Agents. Vous avez été sélectionnés pour le programme Psychic Agents. L'entraînement se déroule en conditions réelles : huit spécimens adultes sont confinés sous le plancher. Votre contrat prévoit les risques. »</div></li>
+      <li><div class="cue">Les règles<small>moniteur 1</small></div><div class="say">« Regardez l'écran. Protocole établi par la compagnie. Seul le Coordinateur en connaît l'ordre de fermeture. »</div></li>
+      <li><div class="cue">Moniteur 1<small>départ</small></div><div class="say">« Chaque agent choisit la salle où il commence l'entraînement. Changement possible jusqu'à la validation. »</div></li>
+      <li><div class="cue">Moniteur 2<small>déplacements</small></div><div class="say">« Avant chaque fermeture, je tire une carte W.Y.C. : elle fixe le nombre de déplacements imposés. Un déplacement : une salle voisine, par une porte, un ascenseur ou un conduit. Arrêt interdit en ascenseur ou conduit. »</div></li>
+      <li><div class="cue">Moniteur 3<small>fermeture</small></div><div class="say">« J'annonce la salle fermée. Un xénomorphe y est introduit. Tout agent présent dans cette salle est éliminé. »</div></li>
+      <li><div class="cue">Moniteur 4<small>fin</small></div><div class="say">« Huit fermetures successives. Survivants : les agents présents dans la dernière salle restée ouverte. Fiez-vous à votre instinct, Agents. Questions : non autorisées. »</div></li>
+      <li><div class="cue">Départ<small>sur le plan</small></div><div class="say">« Veuillez rejoindre la salle de votre choix. » <span class="do">[il touche une salle]</span> « Validez votre position. » <span class="do">[Valider]</span> « Position enregistrée. L'entraînement commence. »</div></li>
+      <li><div class="cue">Chaque tour<small>carte W.Y.C.</small></div><div class="say">« Carte W.Y.C. Déplacements autorisés : [nombre]. » <span class="do">[il déplace son pion]</span> « Déplacements terminés. Validez. »</div></li>
+      <li><div class="cue">Chaque tour<small>protocole</small></div><div class="say">« Fermeture en cours : [salle]. » <span class="do">[toucher la salle ; claquement, cri]</span> « Spécimen introduit. » Deux salles : « Double fermeture : [salle] et [salle]. »</div></li>
+      <li><div class="cue">S'il proteste<small>ou hésite</small></div><div class="say">« Je suis le protocole de la compagnie. » · « Fiez-vous à votre instinct, Agent. » · « Tour suivant. »</div></li>
+      <li><div class="cue">8e fermeture<small>fin</small></div><div class="say">« Fermeture finale. » <span class="do">[un temps]</span> « Entraînement terminé. Votre dossier est transmis. » <span class="do">[lire le rapport ; fiche neuve :]</span> « Agent suivant. »</div></li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    <span>W.Y.C. · WY-NOS2-PA/0417</span>
+    <span>3D6 Système – François Cedelle – licence ORC</span>
+    <span class="side">SUPERVISEUR 2/2</span>
+  </footer>
+</main>
+
 <script src="pretire.js"></script>
 </body>
 </html>
