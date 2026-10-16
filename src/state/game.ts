@@ -45,11 +45,10 @@ export const ending = signal<{ win: boolean; room: string } | null>(null);
 export const inGame = computed(() => ["place", "move", "close"].includes(phase.value));
 
 /**
- * Repère discret : utile au magicien au placement du pion et jusqu'au premier déplacement.
- * Dès le deuxième déplacement de la première manche, il ne sert plus et reste caché jusqu'à la fin.
+ * Repère discret : utile au magicien jusqu'à la première fermeture. Il s'efface au moment où la première
+ * salle est condamnée (le claquement, la secousse) et reste caché jusqu'à la fin de la partie.
  */
-export const markerUseful = computed(() =>
-  phase.value === "place" || (phase.value === "move" && step.value === 0 && moves.value < 2));
+export const markerUseful = computed(() => step.value === 0);
 
 const isOpen = (id: RoomId): boolean => !room(id).toxic && !closed.value.has(id);
 const openRooms = (): RoomId[] => ROOM_IDS.filter(isOpen);
