@@ -25,8 +25,8 @@ Modifier le HTML seul ne suffit jamais : il faut regénérer les PDF et vérifie
 Les PDF d'un scénario portent son titre en préfixe (`sixieme-sens`, `une-simple-formalite`, `session-disciplinaire` ;
 `sixth-sense`, `a-mere-formality`, `disciplinary-session`). L'aide et le guide du Superviseur existent aussi en PDF miroir (`-miroir.pdf` / `-mirrored.pdf`, pages retournées
 sur leur axe vertical par `fiches.mjs`) : le lien PDF de l'app les propose quand le réglage « miroir » est actif.
-Tous les documents sauf les cartes existent aussi en A5, deux pages par feuille A4 paysage recto verso (réglage
-« PDF en A5 ») : le guide en livret (`-livret.pdf` / `-booklet.pdf`, pages imposées pour qu'une feuille pliée se lise
+Tous les documents sauf les cartes existent aussi en A5, deux pages par feuille A4 paysage recto verso (second
+lien « Livret » ou « A5 » à côté du PDF dans l'app) : le guide en livret (`-livret.pdf` / `-booklet.pdf`, pages imposées pour qu'une feuille pliée se lise
 dans l'ordre : recto 4 | 1, verso 2 | 3), les prétirés et l'aide en deux exemplaires par feuille (`-a5.pdf`, chaque
 page deux fois côte à côte, la feuille coupée donne deux fiches). Les documents du Superviseur cumulent les deux
 (`-livret-miroir.pdf`, `-a5-mirrored.pdf`…). L'imposition est faite par `fiches.mjs` dans le navigateur (pages A4

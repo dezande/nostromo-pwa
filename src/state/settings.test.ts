@@ -15,7 +15,6 @@ test("valeurs par défaut", () => {
   expect(settings.textSize.value).toBe(120);
   expect(settings.alertVariant.value).toBe("siren");
   expect(settings.mirror.value).toBe(false);
-  expect(settings.a5.value).toBe(false);
 });
 
 test("reprend les réglages enregistrés", () => {

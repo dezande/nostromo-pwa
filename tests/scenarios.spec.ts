@@ -193,21 +193,28 @@ test("choix du scénario en paysage : icône, nom, niveau et durée (ligne orang
   }
 });
 
-test("réglage A5 : livret pour le guide, deux exemplaires par feuille pour les autres, cumulé au miroir, rien pour les cartes", async ({ page }) => {
-  await open(page, { ...FAST, a5: true, mirror: true });
+test("PDF en A5 à côté du PDF : livret pour le guide, deux exemplaires par feuille pour les autres, en miroir avec le réglage, rien pour les cartes", async ({ page }) => {
+  await open(page, { ...FAST, mirror: true });
   await page.locator("#startBtn").click();
   await page.locator("#scenario-infiltrated").click();
-  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret-miroir.pdf");
-  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("href", "fiches/nostromo-session-disciplinaire-aide-superviseur-a5-miroir.pdf");
-  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme-a5.pdf");
-  await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-femme-a5.pdf");
-  await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
-  // Sans le miroir : le livret et la feuille A5 à l'endroit, et la liseuse propose le même PDF
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-miroir.pdf");
+  await expect(page.locator("#infiltratedGuidePdfA5")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret-miroir.pdf");
+  await expect(page.locator("#infiltratedGuidePdfA5")).toHaveText("Livret");
+  await expect(page.locator("#infiltratedMjPdfA5")).toHaveAttribute("href", "fiches/nostromo-session-disciplinaire-aide-superviseur-a5-miroir.pdf");
+  await expect(page.locator("#infiltratedPdfA5")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme-a5.pdf");
+  await expect(page.locator("#infiltratedPdfA5")).toHaveText("A5");
+  await expect(page.locator("#infiltratedFemPdfA5")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-femme-a5.pdf");
+  await expect(page.locator("#rolesPdfA5")).toHaveCount(0);
+  // La liseuse propose les deux PDF ; sans le miroir, le livret à l'endroit
   await page.locator("#infiltratedGuidePdfRead").click();
-  await expect(page.locator("#docPdf")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret miroir");
+  await expect(page.locator("#docA5")).toHaveText("Livret");
+  await expect(page.locator("#docA5")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret miroir");
   await page.locator("#docMirror").click();
-  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret.pdf");
-  await expect(page.locator("#docPdf")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret");
+  await expect(page.locator("#docA5")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret.pdf");
+  await expect(page.locator("#docA5")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret");
   await page.locator("#docClose").click();
-  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-aide-superviseur-a5.pdf");
+  await expect(page.locator("#infiltratedMjPdfA5")).toHaveAttribute("download", "nostromo-session-disciplinaire-aide-superviseur-a5.pdf");
+  // Les cartes n'ont que leur PDF, et la liseuse non plus
+  await page.locator("#rolesPdfRead").click();
+  await expect(page.locator("#docA5")).toHaveCount(0);
 });
