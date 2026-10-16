@@ -4,7 +4,6 @@
 .briefing { background: var(--bg); }
 
 .briefing-panel {
-  max-width: 680px;
   line-height: 1.6;
 
   .briefing-corp { color: var(--dim); font-size: fs(11px); letter-spacing: .25em; }
@@ -17,8 +16,8 @@
 
 
   .briefing-sign { color: var(--accent); letter-spacing: .1em; }
-  // Bonne respiration entre le dernier paragraphe et les boutons
-  .briefing-actions { margin-top: 40px; }
+  // Bonne respiration entre le dernier paragraphe et les boutons (en padding : la marge haute, automatique, pousse les boutons au pied de la fenêtre)
+  .briefing-actions { padding-top: 40px; }
 }
 
 // ---------- Panneaux de règles : une règle par panneau ----------
@@ -35,10 +34,15 @@
   }
 }
 
-// Scène animée faite avec le vrai plan
+// Scène animée faite avec le vrai plan. Dans la colonne du panneau, c'est elle qui rétrécit quand l'écran
+// est bas (téléphone avec les barres du navigateur) : le texte et les boutons restent entiers, sans défilement.
+// Le SVG, étiré à la hauteur de la boîte, redessine la scène à l'échelle.
 .rule-scene-box {
   display: flex;
   justify-content: center;
+  flex: 0 1 auto;
+  min-height: 90px;
+  overflow: hidden;
   padding: 6px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -74,10 +78,14 @@
     p { font-size: fs(11px); margin-bottom: 8px; }
     .rule-points li { font-size: fs(11px); margin-bottom: 2px; }
     .briefing-intro { margin-top: 8px; }
-    .briefing-actions { margin-top: 12px; }
+    .briefing-actions { padding-top: 12px; }
   }
 }
 @media (max-height: 700px) {
   .briefing-panel { line-height: 1.32; }
   .rule-scene { max-height: 28vh; }
+}
+// Téléphone bas (barres du navigateur) : la référence de document, décorative, laisse sa place à la scène
+@media (max-height: 600px) {
+  .rule-panel .doc-ref { display: none; }
 }

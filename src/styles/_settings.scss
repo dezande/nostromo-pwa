@@ -18,6 +18,15 @@ label.set {
   &.toggle .set-label { grid-column: 1 / 3; }
 }
 
+// Bruitages : cinq cases sur deux colonnes, pour que l'onglet Audio tienne sur un téléphone.
+.sound-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  .set-group { grid-column: 1 / 3; padding: 10px 0 2px; font-size: fs(11px); letter-spacing: .15em; color: var(--dim); }
+  label.set { grid-template-columns: minmax(0, 1fr) auto; .set-label { grid-column: 1; } input[type="checkbox"] { grid-column: 2; } }
+}
+
 // Choix du format de l'écran de jeu : Tablette / Téléphone
 .layout-picker {
   display: flex;
@@ -86,7 +95,6 @@ label.set {
 .settings-panel {
   display: flex;
   flex-direction: column;
-  max-width: 760px;
 }
 
 .tabs {
@@ -108,7 +116,10 @@ label.set {
   &[aria-selected="true"] { color: var(--accent); border-color: var(--accent); background: var(--room-hi); }
   &:focus-visible { outline: 2px solid var(--amber); outline-offset: -2px; }
 }
-.tab-panel { min-height: 0; }
+// Les onglets se superposent dans une même cellule : la hauteur est celle du plus haut, quel que soit l'onglet actif.
+.tab-panels { display: grid; min-height: 0; }
+.tab-panel { grid-area: 1 / 1; min-height: 0; }
+.tab-panel.hidden-tab { visibility: hidden; }
 
 // Choix de l'alerte : cartes
 .alert-cards {

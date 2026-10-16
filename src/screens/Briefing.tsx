@@ -37,16 +37,18 @@ export function Briefing() {
           {lang.value === "en" ? (
             <>
               <h2>WELCOME ABOARD, AGENTS.</h2>
-              <p>You have been selected to join the Weyland-Yutani Corporation's Psychic Agents program. Your future mission: to sense the presence of xenomorph creatures hidden aboard our colony ships.</p>
-              <p>The Nostromo II base ship replicates one of the company's medium-sized cargo vessels. Training takes place under real conditions. Eight adult specimens are confined beneath the ship's floor.</p>
-              <p>Your contract covers the risks of this training. The company thanks you for your commitment.</p>
+              {/* Une convocation : la session valide la candidature, sans un mot sur ce qui attend les agents */}
+              <p>You have been selected for the Weyland-Yutani Corporation's Psychic Agents program. Your future mission: to sense the presence of xenomorph creatures hidden aboard our colony ships.</p>
+              <p>Before any assignment, a training session validates each application. You are expected on stardate 2122.06.03 at 08:00, briefing room B-7, Nostromo II lunar base.</p>
+              <p>Bring your agent file. The company thanks you for your commitment.</p>
             </>
           ) : (
             <>
               <h2>BIENVENUE À BORD, AGENTS.</h2>
-              <p>Vous avez été sélectionnés pour rejoindre le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
-              <p>Le vaisseau-base Nostromo II reproduit un cargo de taille moyenne de la compagnie. L'entraînement se déroule en conditions réelles. Huit spécimens adultes sont confinés sous le plancher du vaisseau.</p>
-              <p>Votre contrat prévoit les risques liés à cet entraînement. La compagnie vous remercie de votre engagement.</p>
+              {/* Une convocation : la session valide la candidature, sans un mot sur ce qui attend les agents */}
+              <p>Vous avez été retenus pour le programme Psychic Agents de la Weyland-Yutani Corporation. Votre future mission : ressentir la présence de créatures xénomorphes infiltrées à bord de nos vaisseaux de colonisation.</p>
+              <p>Avant toute affectation, une session d'entraînement valide chaque candidature. Vous êtes attendus à la date stellaire 2122.06.03, 08:00, salle de briefing B-7, base lunaire Nostromo II.</p>
+              <p>Munissez-vous de votre dossier d'agent. La compagnie vous remercie de votre engagement.</p>
             </>
           )}
           <div class="row icon-row briefing-actions">

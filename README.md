@@ -45,7 +45,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 - **La partie** : choix de la salle de départ, déplacements (5 au plus, sans compteur), « Valider »,
   puis le Coordinateur touche une ou deux salles à fermer. La fermeture est immédiate : croix rouge,
   claquement, annonce vocale, cri du xénomorphe plus ou moins fort selon la distance.
-  Huit fermetures, ou une seule salle encore ouverte, et c'est la fin : un rapport de la compagnie
+  Huit fermetures, ou une seule salle encore ouverte, et c'est la fin (accord de victoire, ou de défaite si le pion est pris) : un rapport de la compagnie
   propre à chaque scénario, avec de faux numéros de document.
 - **Documents à imprimer** (PDF noir et blanc, système de jeu de rôle
   [3D6 Système](https://3d6.ovh/) de François Cedelle, licence ORC) : fiches de personnage prétirées
@@ -65,7 +65,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
     onglets), six styles d'écran rétro sombres, taille du texte, lignes horizontales, écrans de
     transition, repère discret (effacé à la première fermeture), texte du Superviseur en miroir ;
-  - *Audio* : musique (coupée par défaut), volumes, annonce vocale ;
+  - *Audio* : musique (coupée par défaut), volumes, annonce vocale, et une case par bruitage (bips, clics, claquement, cri, victoire, défaite) ;
   - *Alerte* : musique jouée pendant la partie (sirène, klaxon ou détecteur) ;
   - *Système* : écran toujours allumé, numéro de build et état du mode hors ligne.
 

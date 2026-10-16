@@ -73,6 +73,16 @@ test("la musique suit la case Musique", () => {
   expect(audio.stopMusic).toHaveBeenCalled();
 });
 
+test("chaque bruitage suit sa case", () => {
+  const { settings, audio } = loadWith({ soundSlam: false });
+  expect(settings.soundBeep.value).toBe(true);
+  expect(audio.setSoundEnabled).toHaveBeenCalledWith("slam", false);
+  expect(audio.setSoundEnabled).toHaveBeenCalledWith("xenomorph", true);
+  settings.soundXenomorph.value = false;
+  expect(audio.setSoundEnabled).toHaveBeenLastCalledWith("xenomorph", false);
+  expect(JSON.parse(localStorage.getItem(KEY)!).soundXenomorph).toBe(false);
+});
+
 test("format par défaut : téléphone si l'écran est étroit et en portrait, sinon tablette", () => {
   const { defaultLayout } = loadWith(null);
   expect(defaultLayout(390, 844)).toBe("phone");

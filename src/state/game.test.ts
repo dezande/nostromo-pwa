@@ -217,6 +217,8 @@ describe("fermetures", () => {
     place("cockpit");
     await closeRooms("cockpit");
     expect(game.phase.value).toBe("dead");
+    expect(audio.defeat).toHaveBeenCalled();
+    expect(audio.victory).not.toHaveBeenCalled();
     expect(game.ending.value).toMatchObject({ win: false });
   });
 
@@ -226,6 +228,8 @@ describe("fermetures", () => {
     for (let i = 0; i < 8; i++) await closeRooms(others[i]);
     expect(game.step.value).toBe(8);
     expect(game.phase.value).toBe("win");
+    expect(audio.victory).toHaveBeenCalled();
+    expect(audio.defeat).not.toHaveBeenCalled();
     expect(game.ending.value!.room).toBe("Serre hydroponique");
   });
 

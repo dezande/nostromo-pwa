@@ -1,11 +1,12 @@
 // Réglages, en onglets : Affichage, Audio, Alerte, Système.
 // Le dernier onglet ouvert est mémorisé ; navigation au clavier avec les flèches.
+import type { ComponentChildren } from "preact";
 import type { Signal } from "@preact/signals";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
-import { audio, type AlertVariant } from "../audio/audio";
+import { audio, type AlertVariant, type SoundName } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
-import { settings, type Layout, type SettingsTab } from "../state/settings";
+import { SOUND_SETTINGS, settings, type Layout, type SettingsTab } from "../state/settings";
 import { scenarioText } from "../data/scenarios";
 import { quitAsking, returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
@@ -46,9 +47,10 @@ export function Settings() {
           ))}
         </div>
 
-        <div class="tab-panel" role="tabpanel" id={`panel-${tab}`} aria-labelledby={`tab-${tab}`}>
-          {tab === "display" && (
-            <>
+        {/* Les quatre onglets sont rendus superposés, seul l'actif est visible : le panneau garde
+            la hauteur du plus haut et ne saute pas quand on change d'onglet. */}
+        <div class="tab-panels">
+          <TabPanel id="display" active={tab}>
               <LangPicker />
               <LayoutPicker />
               <ThemePicker />
@@ -57,30 +59,36 @@ export function Settings() {
               <Toggle id="transChk" label={tr("Écrans de transition", "Transition screens")} setting={settings.transitions} />
               <Toggle id="markerChk" label={tr("Repère discret", "Discreet marker")} setting={settings.markerDot} />
               <Toggle id="mirrorChk" label={tr("Texte du Superviseur en miroir (aide, guide, PDF)", "Mirror the Supervisor's text (aid, guide, PDF)")} setting={settings.mirror} />
-            </>
-          )}
-          {tab === "audio" && (
-            <>
+          </TabPanel>
+          <TabPanel id="audio" active={tab}>
               <Toggle id="musicChk" label={tr("Musique", "Music")} setting={settings.music} />
               <Slider id="volRange" label={tr("Volume de la musique", "Music volume")} setting={settings.musicVolume} min={0} max={100} scale={100} unit="%" />
               <Slider id="sfxRange" label={tr("Volume des effets sonores", "Sound effects volume")} setting={settings.sfxVolume} min={0} max={100} scale={100} unit="%" />
               <Toggle id="voiceChk" label={tr("Annonce vocale du nom de la salle", "Spoken room name announcement")} setting={settings.voice} />
+              <SoundToggles />
               <p class="note">{tr("Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.",
                 "Music and sound effects generated live by the browser (Web Audio), with no files and no copyright.")}</p>
-            </>
-          )}
-          {tab === "alert" && <AlertSettings />}
-          {tab === "system" && (
-            <>
-              <Toggle id="wakeChk" label={tr("Écran toujours allumé", "Keep screen on")} setting={settings.wakeLock} />
-              <VersionInfo />
-            </>
-          )}
+          </TabPanel>
+          <TabPanel id="alert" active={tab}><AlertSettings /></TabPanel>
+          <TabPanel id="system" active={tab}>
+            <Toggle id="wakeChk" label={tr("Écran toujours allumé", "Keep screen on")} setting={settings.wakeLock} />
+            <VersionInfo />
+          </TabPanel>
         </div>
 
         <SettingsFooter tab={tab} />
       </div>
     </Overlay>
+  );
+}
+
+/** Contenu d'un onglet ; caché (mais toujours en page, pour la hauteur) quand ce n'est pas l'onglet actif. */
+function TabPanel({ id, active, children }: { id: SettingsTab; active: SettingsTab; children: ComponentChildren }) {
+  const shown = id === active;
+  return (
+    <div class={shown ? "tab-panel" : "tab-panel hidden-tab"} role="tabpanel" id={`panel-${id}`} aria-labelledby={`tab-${id}`} aria-hidden={!shown}>
+      {children}
+    </div>
   );
 }
 
@@ -141,6 +149,25 @@ function AlertSettings() {
         ))}
       </div>
     </>
+  );
+}
+
+/** Bruitages, un par un : chaque case coupe un son sans toucher au volume des effets. */
+const SOUNDS = (): { id: SoundName; chk: string; label: string }[] => [
+  { id: "beep", chk: "beepChk", label: tr("Bips des touches", "Key beeps") },
+  { id: "tick", chk: "tickChk", label: tr("Clics du terminal", "Terminal clicks") },
+  { id: "slam", chk: "slamChk", label: tr("Claquement des portes", "Door slam") },
+  { id: "xenomorph", chk: "xenoChk", label: tr("Cri du xénomorphe", "Xenomorph scream") },
+  { id: "victory", chk: "victoryChk", label: tr("Accord de victoire", "Victory chord") },
+  { id: "defeat", chk: "defeatChk", label: tr("Accord de défaite", "Defeat chord") },
+];
+
+function SoundToggles() {
+  return (
+    <div class="sound-grid" role="group" aria-label={tr("Bruitages", "Sound effects")}>
+      <span class="set-group">{tr("BRUITAGES", "SOUND EFFECTS")}</span>
+      {SOUNDS().map(s => <Toggle key={s.id} id={s.chk} label={s.label} setting={settings[SOUND_SETTINGS[s.id]]} />)}
+    </div>
   );
 }
 

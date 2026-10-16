@@ -17,6 +17,9 @@ const shown = (id: string) => $(`#${id}`).classList.contains("show");
 test("bienvenue, puis une règle par panneau (1/4 à 4/4), retours possibles, puis la partie commence", () => {
   expect(shown("welcome")).toBe(true);
   expect($("#welcome").textContent).toContain("BIENVENUE À BORD, AGENTS.");
+  // Une convocation qui valide la candidature, sans annoncer de risque
+  expect($("#welcome").textContent).toContain("valide chaque candidature");
+  expect($("#welcome").textContent).not.toMatch(/risque|spécimen/i);
   act(() => { $("#welcomeNext").click(); });
   const titles = ["POSITION DE DÉPART", "DÉPLACEMENTS", "FERMETURE", "FIN DE L'ENTRAÎNEMENT"];
   titles.forEach((title, i) => {

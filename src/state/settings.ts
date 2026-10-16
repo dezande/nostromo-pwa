@@ -1,6 +1,6 @@
 // Réglages du joueur : un signal par réglage, enregistrés dans le navigateur (localStorage).
 import { signal, effect, type Signal } from "@preact/signals";
-import { audio, type AlertVariant } from "../audio/audio";
+import { audio, type AlertVariant, type SoundName } from "../audio/audio";
 import { THEMES, findTheme, themeName, themeVars, DEFAULT_BG } from "../data/themes";
 
 const STORAGE_KEY = "nostromo-settings";
@@ -10,6 +10,12 @@ export interface Settings {
   musicVolume: number;
   sfxVolume: number;
   voice: boolean;
+  soundBeep: boolean;           // bruitages, un par un : bips des touches…
+  soundTick: boolean;           // … clics du terminal
+  soundSlam: boolean;           // … claquement des portes
+  soundXenomorph: boolean;      // … cri du xénomorphe
+  soundVictory: boolean;        // … accord de victoire
+  soundDefeat: boolean;         // … accord de défaite
   theme: string;
   textSize: number;
   scanlines: boolean;
@@ -43,6 +49,12 @@ export const DEFAULTS: Settings = {
   musicVolume: 0.6,   // 0 → 1
   sfxVolume: 1,       // 0 → 1
   voice: true,        // annonce vocale du nom de la salle
+  soundBeep: true,
+  soundTick: true,
+  soundSlam: true,
+  soundXenomorph: true,
+  soundVictory: true,
+  soundDefeat: true,
   theme: THEMES[0].name, // nom du style d'écran
   textSize: 120,      // en %
   scanlines: true,    // lignes horizontales
@@ -104,3 +116,12 @@ effect(() => {
 effect(() => audio.setMusicVolume(settings.musicVolume.value));
 effect(() => audio.setSfxVolume(settings.sfxVolume.value));
 effect(() => (settings.music.value ? audio.startMusic() : audio.stopMusic()));
+
+// Chaque bruitage suit sa case.
+type SoundSetting = "soundBeep" | "soundTick" | "soundSlam" | "soundXenomorph" | "soundVictory" | "soundDefeat";
+export const SOUND_SETTINGS: Record<SoundName, SoundSetting> = {
+  beep: "soundBeep", tick: "soundTick", slam: "soundSlam", xenomorph: "soundXenomorph", victory: "soundVictory", defeat: "soundDefeat",
+};
+for (const [sound, key] of Object.entries(SOUND_SETTINGS) as [SoundName, SoundSetting][]) {
+  effect(() => audio.setSoundEnabled(sound, settings[key].value));
+}

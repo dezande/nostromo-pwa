@@ -33,6 +33,7 @@ const INTERCEPT_FR = {
   to: "Coordinateur, base lunaire Nostromo II",
   notes: [
     "Message intercepté et décrypté.",
+    "Expéditeur identifié : Dominique RASK, Psychic Agent en formation, matricule PA-2184-[[0417]], base lunaire Nostromo II.",
     "L'expéditeur participera à la prochaine session d'entraînement, sans dérogation. NS-X III retiré.",
     "Aucune autre sanction ne sera notifiée. [[En cas de survie, procédure 7-B.]]",
   ],
@@ -61,6 +62,7 @@ const INTERCEPT_EN: typeof INTERCEPT_FR = {
   to: "Coordinator, Nostromo II lunar base",
   notes: [
     "Message intercepted and decrypted.",
+    "Sender identified: Dominique RASK, Psychic Agent in training, serial no. PA-2184-[[0417]], Nostromo II lunar base.",
     "The sender will take part in the next training session, no exemptions. NS-X III withdrawn.",
     "No other sanction will be notified. [[If the sender survives, procedure 7-B.]]",
   ],
@@ -79,6 +81,8 @@ export function Infiltrated() {
       <Monitor label={tr("TERMINAL DU COORDINATEUR · COPIE INTERCEPTÉE", "COORDINATOR'S TERMINAL · INTERCEPTED COPY")}
         status={tr("IMPRIMER / TRANSMETTRE : INTERDIT", "PRINT / FORWARD: FORBIDDEN")}>
         <div class="panel briefing-panel email-panel">
+          {/* Une seule zone qui défile : bandeau de la direction, en-têtes et corps ; les boutons restent au pied */}
+          <div class="email-scroll" id="emailScroll" tabIndex={0} aria-label={tr("E-mail intercepté", "Intercepted e-mail")}>
           <div class="email-intercept" id="emailIntercepted">
             <span class="email-stamp">{intercept.stamp}</span>
             <div class="email-intercept-head">{tr("TRANSFÉRÉ PAR :", "FORWARDED BY:")} {intercept.forwardedBy} · {tr("À :", "TO:")} {intercept.to}</div>
@@ -92,10 +96,11 @@ export function Infiltrated() {
             <dt>{tr("OBJET", "SUBJECT")}</dt><dd class="email-subject" id="emailSubject">{email.subject}</dd>
             <dt>{tr("P.J.", "ATT.")}</dt><dd>{email.attachments.map(a => <span key={a} class="email-attachment">▤ {a}</span>)}</dd>
           </dl>
-          <div class="contract-scroll email-body" id="emailBody" tabIndex={0} aria-label={tr("Corps de l'e-mail", "E-mail body")}>
+          <div class="contract-scroll email-body" id="emailBody">
             {email.body.map((p, i) => <p key={i}><Redact text={p} /></p>)}
           </div>
           <div class="email-foot">{intercept.footer}</div>
+          </div>
           <div class="row icon-row briefing-actions">
             <IconButton id="emailNext" icon="continuer" label={tr("Continuer", "Continue")} primary onClick={() => { briefing.value = 1; }} />
           </div>

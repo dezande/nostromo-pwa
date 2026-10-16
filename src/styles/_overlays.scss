@@ -39,22 +39,35 @@
     overflow-wrap: anywhere;
     strong { color: var(--ink); font-weight: normal; }
   }
-  .crash-actions { margin-top: 4px; }
+  .crash-actions { padding-top: 4px; }
 }
 
+// Un seul gabarit pour toutes les fenêtres : même largeur et même hauteur (l'écran moins la marge),
+// comme un terminal fixe, pour que le cadre ne saute pas d'un écran à l'autre. Le contenu défile au besoin.
+// La liseuse de document (.doc-panel) garde son propre gabarit, plus large.
 .panel {
   width: 100%;
   max-width: 720px;
-  max-height: calc(100vh - 32px);
-  max-height: calc(var(--app-h) - 32px);
+  height: calc(100vh - 32px);
+  height: calc(var(--app-h) - 32px);
   overflow: auto;
   padding: 20px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
+  // Colonne : la rangée de boutons qui termine la fenêtre est repoussée au pied, quelle que soit la longueur du texte.
+  display: flex;
+  flex-direction: column;
+  > .briefing-actions, > .settings-footer, > .crash-actions { margin-top: auto; }
 
   h2 { margin: 0 0 6px; letter-spacing: .2em; font-size: fs(16px); }
   p { margin: 0 0 14px; color: var(--dim); font-size: fs(13px); line-height: 1.5; }
+}
+
+// Petits écrans : marge réduite autour des fenêtres, qui gagnent 16 px
+@media (max-height: 800px), (max-width: 480px) {
+  .overlay { padding: 8px; }
+  .panel { height: calc(var(--app-h) - 16px); }
 }
 
 // Fin de partie

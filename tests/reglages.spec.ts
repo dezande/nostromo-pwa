@@ -47,6 +47,22 @@ test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet
   await expect(page.locator("#tab-alert")).toHaveAttribute("aria-selected", "true");
 });
 
+test("le panneau des réglages garde la même hauteur quel que soit l'onglet", async ({ page }) => {
+  await open(page);
+  await page.locator("#homeSetBtn").click();
+  await page.evaluate(() => document.fonts.ready); // une police qui arrive en cours de mesure changerait la hauteur
+  const height = async () => (await page.locator("#settings .panel").boundingBox())!.height;
+  const first = await height();
+  for (const tab of ["audio", "alert", "system", "display"]) {
+    await page.locator(`#tab-${tab}`).click();
+    expect(await height(), tab).toBe(first);
+  }
+  // Seul l'onglet actif est visible, les autres ne sont pas accessibles
+  await expect(page.locator("#panel-display")).toBeVisible();
+  await expect(page.locator("#panel-audio")).toBeHidden();
+  await expect(page.locator("#musicChk")).toBeHidden();
+});
+
 test("chaque onglet des réglages tient dans l'écran sans défilement", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();
@@ -72,6 +88,22 @@ test("repère discret sur certaines salles, masquable dans les réglages", async
   await page.locator("#markerChk").uncheck();
   await page.locator("#setClose").click();
   await expect(page.locator(".marker-dot")).toHaveCount(0);
+});
+
+test("une case par bruitage dans l'onglet Audio, mémorisée", async ({ page }) => {
+  await open(page);
+  await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-audio").click();
+  for (const id of ["beepChk", "tickChk", "slamChk", "xenoChk", "victoryChk", "defeatChk"]) await expect(page.locator(`#${id}`)).toBeChecked();
+  await page.locator("#slamChk").uncheck();
+  await page.locator("#xenoChk").uncheck();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!));
+  expect(saved).toMatchObject({ soundSlam: false, soundXenomorph: false, soundBeep: true });
+  // Les cases gardent leur état quand on rouvre les réglages
+  await page.locator("#setClose").click();
+  await page.locator("#homeSetBtn").click();
+  await expect(page.locator("#slamChk")).not.toBeChecked();
+  await expect(page.locator("#beepChk")).toBeChecked();
 });
 
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
