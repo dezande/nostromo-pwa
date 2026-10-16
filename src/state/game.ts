@@ -199,6 +199,7 @@ export async function closeRooms() {
   const name = roomName(agent);
   if (dead) {
     phase.value = "dead";
+    audio.defeat();
     showEnding(false, name);
   } else if (finished) {
     phase.value = "win";

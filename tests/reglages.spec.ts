@@ -74,6 +74,22 @@ test("repère discret sur certaines salles, masquable dans les réglages", async
   await expect(page.locator(".marker-dot")).toHaveCount(0);
 });
 
+test("une case par bruitage dans l'onglet Audio, mémorisée", async ({ page }) => {
+  await open(page);
+  await page.locator("#homeSetBtn").click();
+  await page.locator("#tab-audio").click();
+  for (const id of ["beepChk", "tickChk", "slamChk", "xenoChk", "victoryChk", "defeatChk"]) await expect(page.locator(`#${id}`)).toBeChecked();
+  await page.locator("#slamChk").uncheck();
+  await page.locator("#xenoChk").uncheck();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nostromo-settings")!));
+  expect(saved).toMatchObject({ soundSlam: false, soundXenomorph: false, soundBeep: true });
+  // Les cases gardent leur état quand on rouvre les réglages
+  await page.locator("#setClose").click();
+  await page.locator("#homeSetBtn").click();
+  await expect(page.locator("#slamChk")).not.toBeChecked();
+  await expect(page.locator("#beepChk")).toBeChecked();
+});
+
 test("le numéro de build est affiché dans les réglages", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();

@@ -3,9 +3,9 @@
 import type { Signal } from "@preact/signals";
 import { Overlay } from "../components/Overlay";
 import { IconButton } from "../components/Icon";
-import { audio, type AlertVariant } from "../audio/audio";
+import { audio, type AlertVariant, type SoundName } from "../audio/audio";
 import { THEMES, mix, fontStack } from "../data/themes";
-import { settings, type Layout, type SettingsTab } from "../state/settings";
+import { SOUND_SETTINGS, settings, type Layout, type SettingsTab } from "../state/settings";
 import { scenarioText } from "../data/scenarios";
 import { quitAsking, returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
@@ -65,6 +65,7 @@ export function Settings() {
               <Slider id="volRange" label={tr("Volume de la musique", "Music volume")} setting={settings.musicVolume} min={0} max={100} scale={100} unit="%" />
               <Slider id="sfxRange" label={tr("Volume des effets sonores", "Sound effects volume")} setting={settings.sfxVolume} min={0} max={100} scale={100} unit="%" />
               <Toggle id="voiceChk" label={tr("Annonce vocale du nom de la salle", "Spoken room name announcement")} setting={settings.voice} />
+              <SoundToggles />
               <p class="note">{tr("Musique et bruitages générés en direct par le navigateur (Web Audio), sans fichier ni droits d'auteur.",
                 "Music and sound effects generated live by the browser (Web Audio), with no files and no copyright.")}</p>
             </>
@@ -141,6 +142,25 @@ function AlertSettings() {
         ))}
       </div>
     </>
+  );
+}
+
+/** Bruitages, un par un : chaque case coupe un son sans toucher au volume des effets. */
+const SOUNDS = (): { id: SoundName; chk: string; label: string }[] => [
+  { id: "beep", chk: "beepChk", label: tr("Bips des touches", "Key beeps") },
+  { id: "tick", chk: "tickChk", label: tr("Clics du terminal", "Terminal clicks") },
+  { id: "slam", chk: "slamChk", label: tr("Claquement des portes", "Door slam") },
+  { id: "xenomorph", chk: "xenoChk", label: tr("Cri du xénomorphe", "Xenomorph scream") },
+  { id: "victory", chk: "victoryChk", label: tr("Accord de victoire", "Victory chord") },
+  { id: "defeat", chk: "defeatChk", label: tr("Accord de défaite", "Defeat chord") },
+];
+
+function SoundToggles() {
+  return (
+    <div class="sound-grid" role="group" aria-label={tr("Bruitages", "Sound effects")}>
+      <span class="set-group">{tr("BRUITAGES", "SOUND EFFECTS")}</span>
+      {SOUNDS().map(s => <Toggle key={s.id} id={s.chk} label={s.label} setting={settings[SOUND_SETTINGS[s.id]]} />)}
+    </div>
   );
 }
 

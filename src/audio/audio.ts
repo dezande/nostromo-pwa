@@ -16,6 +16,14 @@ let music: Music | null = null; // musique en cours
 let musicVolume = 0.6;
 let sfxVolume = 1;
 
+/** Bruitages que le joueur peut couper un par un dans les Réglages (le volume des effets reste commun). */
+export type SoundName = "beep" | "tick" | "slam" | "xenomorph" | "victory" | "defeat";
+const enabled: Record<SoundName, boolean> = { beep: true, tick: true, slam: true, xenomorph: true, victory: true, defeat: true };
+
+function setSoundEnabled(name: SoundName, on: boolean) {
+  enabled[name] = on;
+}
+
 /** Crée le contexte audio, ou le relance s'il a été suspendu par le navigateur. */
 function init(): AudioContext {
   if (ctx) {
@@ -186,6 +194,7 @@ function setSfxVolume(volume: number) {
 
 /** Bip : grave quand on touche une salle, aigu quand on valide (ou signe). */
 function beep(high: boolean) {
+  if (!enabled.beep) return;
   const ctx = init();
   const t = ctx.currentTime;
   const o = osc("square", high ? 1320 : 880);
@@ -200,6 +209,7 @@ function beep(high: boolean) {
 
 /** Petit clic du terminal. */
 function tick() {
+  if (!enabled.tick) return;
   const ctx = init();
   const t = ctx.currentTime;
   const o = osc("square", 2400 + Math.random() * 800);
@@ -213,6 +223,7 @@ function tick() {
 
 /** Porte blindée qui claque. */
 function slam() {
+  if (!enabled.slam) return;
   const ctx = init();
   const t = ctx.currentTime;
   const n = noise(1.2);
@@ -364,6 +375,7 @@ function previewAlert(variant: AlertVariant, seconds = 4) {
  * `volume` (0 → 1) dépend de la distance entre le pion et la salle fermée.
  */
 function xenomorph(volume: number) {
+  if (!enabled.xenomorph) return;
   const ctx = init();
   const t = ctx.currentTime + 0.2;
   const out = gain(Math.max(0, Math.min(1, volume)), sfxBus);
@@ -411,6 +423,7 @@ function xenomorph(volume: number) {
 
 /** Petit accord de victoire. */
 function victory() {
+  if (!enabled.victory) return;
   const ctx = init();
   const t = ctx.currentTime;
   [261.63, 329.63, 392, 523.25].forEach((f, i) => {
@@ -426,9 +439,35 @@ function victory() {
   });
 }
 
+/**
+ * Accord de défaite, quand le pion est éliminé : le miroir de la victoire.
+ * Accord mineur descendant (do, la♭, mi♭, do grave) en dents de scie assourdies, qui s'affaisse
+ * d'un demi-ton en s'éteignant, par-dessus un battement grave qui ralentit.
+ */
+function defeat() {
+  if (!enabled.defeat) return;
+  const ctx = init();
+  const t = ctx.currentTime;
+  [523.25, 415.3, 311.13, 130.81].forEach((f, i) => {
+    const start = t + i * 0.22;
+    const o = osc("sawtooth", f);
+    o.frequency.setValueAtTime(f, start);
+    o.frequency.exponentialRampToValueAtTime(f / 1.06, t + 3.5); // glisse d'un demi-ton vers le bas
+    const g = gain(0, sfxBus);
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(0.12, start + 0.08);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 3.6);
+    o.connect(filter("lowpass", 1200, 1)).connect(g);
+    o.start(start);
+    o.stop(t + 3.7);
+  });
+  // Trois coups sourds de plus en plus espacés, comme un cœur qui s'arrête.
+  [0.9, 1.7, 2.8].forEach(d => kick(sfxBus, t + d, 80, 35, 0.7, 0.3));
+}
+
 export const audio = {
-  init, startMusic, stopMusic, setMusicVolume, setSfxVolume,
-  beep, tick, slam, xenomorph, victory,
+  init, startMusic, stopMusic, setMusicVolume, setSfxVolume, setSoundEnabled,
+  beep, tick, slam, xenomorph, victory, defeat,
   startAlert, stopAlert, previewAlert,
   get playing() { return !!music; },
   get state() { return ctx ? ctx.state : "none"; },
