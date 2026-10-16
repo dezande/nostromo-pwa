@@ -64,7 +64,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 - **Réglages en onglets** :
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
     onglets), six styles d'écran rétro sombres, taille du texte, lignes horizontales, écrans de
-    transition, repère discret, texte du Superviseur en miroir ;
+    transition, repère discret (effacé dès le deuxième déplacement), texte du Superviseur en miroir ;
   - *Audio* : musique (coupée par défaut), volumes, annonce vocale ;
   - *Alerte* : musique jouée pendant la partie (sirène, klaxon ou détecteur) ;
   - *Système* : écran toujours allumé, numéro de build et état du mode hors ligne.

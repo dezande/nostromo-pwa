@@ -69,6 +69,22 @@ test("les conduits d'aération sont dessinés et mis en avant quand on peut les 
   expect($$("#deck1 .path-line")).toHaveLength(5); // 2 pas + 3 traits par le conduit
 });
 
+test("le repère discret s'efface au deuxième déplacement et ne revient plus", () => {
+  expect($$(".marker-dot")).toHaveLength(7);
+  act(() => { game.touchRoom("cockpit"); game.confirmStart(); });
+  expect($$(".marker-dot")).toHaveLength(7); // juste avant le premier déplacement
+  act(() => { game.touchRoom("vie"); });
+  expect($$(".marker-dot")).toHaveLength(7);
+  act(() => { game.touchRoom("serre"); });
+  expect($$(".marker-dot")).toHaveLength(0);
+  act(() => { game.undo(); });
+  expect($$(".marker-dot")).toHaveLength(7); // « Annuler » revient avant le deuxième déplacement
+  act(() => { game.touchRoom("serre"); game.validate(); });
+  expect($$(".marker-dot")).toHaveLength(0); // fermeture
+  act(() => { game.step.value = 1; game.phase.value = "move"; });
+  expect($$(".marker-dot")).toHaveLength(0); // manches suivantes
+});
+
 test("une salle fermée porte la croix rouge, comme les salles contaminées", () => {
   expect(roomEl("cuisine").querySelectorAll(".toxic-cross")).toHaveLength(0);
   expect(roomEl("labo").querySelectorAll(".toxic-cross")).toHaveLength(2);
