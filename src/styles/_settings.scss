@@ -117,7 +117,10 @@ label.set {
   &[aria-selected="true"] { color: var(--accent); border-color: var(--accent); background: var(--room-hi); }
   &:focus-visible { outline: 2px solid var(--amber); outline-offset: -2px; }
 }
-.tab-panel { min-height: 0; }
+// Les onglets se superposent dans une même cellule : la hauteur est celle du plus haut, quel que soit l'onglet actif.
+.tab-panels { display: grid; min-height: 0; }
+.tab-panel { grid-area: 1 / 1; min-height: 0; }
+.tab-panel.hidden-tab { visibility: hidden; }
 
 // Choix de l'alerte : cartes
 .alert-cards {

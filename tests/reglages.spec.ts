@@ -47,6 +47,22 @@ test("réglages en onglets : Affichage, Audio, Alerte, Système ; dernier onglet
   await expect(page.locator("#tab-alert")).toHaveAttribute("aria-selected", "true");
 });
 
+test("le panneau des réglages garde la même hauteur quel que soit l'onglet", async ({ page }) => {
+  await open(page);
+  await page.locator("#homeSetBtn").click();
+  await page.evaluate(() => document.fonts.ready); // une police qui arrive en cours de mesure changerait la hauteur
+  const height = async () => (await page.locator("#settings .panel").boundingBox())!.height;
+  const first = await height();
+  for (const tab of ["audio", "alert", "system", "display"]) {
+    await page.locator(`#tab-${tab}`).click();
+    expect(await height(), tab).toBe(first);
+  }
+  // Seul l'onglet actif est visible, les autres ne sont pas accessibles
+  await expect(page.locator("#panel-display")).toBeVisible();
+  await expect(page.locator("#panel-audio")).toBeHidden();
+  await expect(page.locator("#musicChk")).toBeHidden();
+});
+
 test("chaque onglet des réglages tient dans l'écran sans défilement", async ({ page }) => {
   await open(page);
   await page.locator("#homeSetBtn").click();

@@ -28,13 +28,16 @@ const tabs = () => $$('[role="tab"]').map(t => t.textContent);
 /** Une partie commence : salle de départ validée, accueil fermé. */
 const play = () => act(() => { game.startGame(); game.touchRoom("cockpit"); game.confirmStart(); homeOpen.value = false; });
 
-test("quatre onglets, un seul panneau visible à la fois", () => {
+test("quatre onglets, un seul panneau visible à la fois ; les autres restent en page, cachés", () => {
   expect(tabs()).toEqual(["AFFICHAGE", "AUDIO", "ALERTE", "SYSTÈME"]);
-  expect($("#themes")).not.toBeNull();
-  expect($("#musicChk")).toBeNull();
+  const hidden = (id: string) => $(`#panel-${id}`).classList.contains("hidden-tab");
+  expect(hidden("display")).toBe(false);
+  expect(hidden("audio")).toBe(true);
+  expect($("#panel-audio").getAttribute("aria-hidden")).toBe("true");
+  expect($("#musicChk")).not.toBeNull(); // rendu quand même : le panneau garde la hauteur du plus haut onglet
   act(() => { $("#tab-audio").click(); });
-  expect($("#musicChk")).not.toBeNull();
-  expect($("#themes")).toBeNull();
+  expect(hidden("audio")).toBe(false);
+  expect(hidden("display")).toBe(true);
   expect(settings.settingsTab.value).toBe("audio");
   act(() => { $("#tab-system").click(); });
   expect($("#versionInfo").textContent).toContain("BUILD");
