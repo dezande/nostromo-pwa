@@ -22,12 +22,13 @@ test("scénario « Une simple formalité » : choix au lancement, RH, contrat à
   // « Retour » revient à l'accueil en gardant le choix
   await page.locator("#scenarioBack").click();
   await expect(page.locator("#startBtn")).toBeVisible();
-  // Le choix du scénario tient dans l'écran (téléphones et ordinateurs portables)
+  // Le choix du scénario tient dans l'écran (téléphones et ordinateurs portables) ; la mise en page suit le
+  // changement de taille avec un léger retard, d'où l'attente
   await page.locator("#startBtn").click();
   for (const size of [{ width: 375, height: 667 }, { width: 1280, height: 720 }]) {
     await page.setViewportSize(size);
-    const fits = await page.locator(".scenario-choice").evaluate(el => el.scrollHeight <= el.clientHeight + 1 && el.getBoundingClientRect().bottom <= innerHeight + 1);
-    expect(fits, `${size.width}×${size.height}`).toBe(true);
+    await expect.poll(() => page.locator(".scenario-choice").evaluate(el => el.scrollHeight <= el.clientHeight + 1 && el.getBoundingClientRect().bottom <= innerHeight + 1),
+      { message: `${size.width}×${size.height}` }).toBe(true);
   }
   await page.locator("#scenarioBack").click();
   await launch(page);

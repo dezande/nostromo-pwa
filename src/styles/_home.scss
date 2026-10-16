@@ -63,8 +63,14 @@
   .scenario-cards { width: 100%; margin: 0; }
   // Nom à gauche, niveau du joueur et durée à droite, sur la même ligne
   .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
-  // Icône du scénario dans le fil du nom : un nom long passe à la ligne sous l'icône, sans jamais déborder de la carte
-  .alert-card strong { min-width: 0; overflow-wrap: anywhere; .ic { vertical-align: -.3em; margin-right: .4em; } }
+  // Icône du scénario dans le fil du nom : un nom long passe à la ligne sous l'icône, sans jamais déborder de la carte.
+  // Sa boîte ne dépasse pas la hauteur du texte (le dessin déborde dessus) : la ligne du nom garde sa hauteur,
+  // sinon les quatre choix ne tiennent plus dans un téléphone bas (375×667) sans défilement
+  .alert-card strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    .ic { width: 1.2em; height: 1em; vertical-align: middle; margin-right: .4em; svg { width: 1.3em; height: 1.3em; margin-top: -.15em; } }
+  }
   // Carte étroite (quatre côte à côte en paysage) : la durée passe sous le niveau au lieu de déborder sur la carte voisine
   .alert-card .scenario-meta { color: var(--amber); margin-bottom: 4px; > span { white-space: nowrap; } }
   // Écran bas : la carte garde le nom, le niveau et la durée ; la description sous les cartes suffit
