@@ -44,6 +44,25 @@ test("les panneaux d'accueil tiennent dans l'écran sans défilement (téléphon
   }
 });
 
+test("règles 1 à 4 sans défilement sur un téléphone bas (barres du navigateur) : la scène rétrécit, pas le texte", async ({ page }) => {
+  await open(page);
+  await launch(page);
+  await page.locator("#welcomeNext").click();
+  for (const size of [{ width: 375, height: 553 }, { width: 360, height: 600 }]) {
+    await page.setViewportSize(size);
+    for (const [id, next] of [["rule1", "#rule1Next"], ["rule2", "#rule2Next"], ["rule3", "#rule3Next"], ["rule4", ""]] as const) {
+      await expect(page.locator(`#${id}`)).toHaveClass(/show/);
+      const fits = await page.locator(`#${id} .panel`).evaluate(el => ({
+        scroll: el.scrollHeight <= el.clientHeight + 1,
+        scene: el.querySelector(".rule-scene-box")!.getBoundingClientRect().height >= 90,
+      }));
+      expect(fits, `${id} à ${size.width}×${size.height}`).toEqual({ scroll: true, scene: true });
+      if (next) await page.locator(next).click();
+    }
+    for (const n of [4, 3, 2]) await page.locator(`#rule${n}Back`).click();
+  }
+});
+
 test("toutes les fenêtres ont le même gabarit : réglages, sources, tutoriel, choix du scénario, panneaux d'intro", async ({ page }) => {
   await open(page);
   await page.evaluate(() => document.fonts.ready);
