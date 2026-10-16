@@ -1,5 +1,5 @@
-// Chaque document du choix du scénario (accueil) existe dans le build : PDF (français et anglais, et en miroir
-// pour les documents du Superviseur) et page HTML
+// Chaque document du choix du scénario (accueil) existe dans le build : PDF (français et anglais, en miroir
+// pour les documents du Superviseur, en A5 pour tous sauf les cartes, et les deux ensemble) et page HTML
 // lue dans l'app, servis tels quels (pas la page de l'app à leur place). Et 404.html, qui ouvre l'écran
 // demandé sur GitHub Pages, est bien une copie de index.html.
 import { test, expect } from "@playwright/test";
@@ -7,11 +7,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { ROLES, SHEETS } from "../src/data/sheets";
 
 const sheets = [...Object.values(SHEETS).flat(), ROLES];
-const pdfs = sheets.flatMap(s => [s.file, s.en.file, s.mirrorFile, s.en.mirrorFile]).filter((f): f is string => !!f);
+const pdfs = sheets.flatMap(s => [s.file, s.mirrorFile, s.a5?.file, s.a5?.mirrorFile, s.en.file, s.en.mirrorFile, s.en.a5?.file, s.en.a5?.mirrorFile])
+  .filter((f): f is string => !!f);
 const pages = [...new Set(sheets.flatMap(s => [s.html, s.en.html]))];
 
 test("les PDF des documents, en français et en anglais, existent et sont bien des PDF", async ({ request }) => {
-  expect(pdfs.length).toBeGreaterThanOrEqual(38); // 13 documents × 2 langues, + 6 documents du Superviseur × 2 langues en miroir
+  // 13 documents × 2 langues, + 6 documents du Superviseur × 2 langues en miroir, + 12 documents × 2 langues en A5,
+  // + 6 documents du Superviseur × 2 langues en A5 miroir
+  expect(pdfs.length).toBeGreaterThanOrEqual(74);
   expect(new Set(pdfs).size).toBe(pdfs.length);
   for (const file of pdfs) {
     const res = await request.get(`fiches/${file}`);

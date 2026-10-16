@@ -9,10 +9,14 @@
 //   - les cartes des petits rôles des spectateurs (roles.html : IA et Xénomorphes), format poker, 9 par page ;
 //   - la version anglaise de chacun (pages suffixées -en, PDF aux noms anglais) ;
 //   - les documents du Superviseur (aide, guide) aussi en miroir (suffixe -miroir / -mirrored, même nom que dans
-//     src/data/sheets.ts) : posés sur la table, les joueurs en face ne les lisent pas, comme leur texte dans l'app.
+//     src/data/sheets.ts) : posés sur la table, les joueurs en face ne les lisent pas, comme leur texte dans l'app ;
+//   - chaque document sauf les cartes aussi en A5, deux pages par feuille A4 paysage à imprimer recto verso
+//     (retournée sur le bord court) : le guide en livret (-livret / -booklet : une feuille pliée en deux, pages
+//     dans l'ordre de lecture), les prétirés et l'aide en deux exemplaires par feuille (-a5 : recto = page 1
+//     deux fois, verso = page 2 deux fois ; coupée en deux, la feuille donne deux fiches A5 recto verso).
 // Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
-// Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page)
+// Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page et de chaque feuille A5)
 import { mkdir } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join, resolve } from "node:path";
@@ -23,40 +27,112 @@ const source = join(root, "fiches");
 const output = join(root, "public", "fiches");
 // Les trois PDF d'un prétiré : version homme, version femme, aide du Superviseur. Tous les PDF d'un scénario
 // portent son titre en préfixe (slug), pour qu'ils se rangent ensemble une fois téléchargés.
+// a5 : "copies" (deux exemplaires de chaque page par feuille) ou "booklet" (livret).
 const pretire = (slug, nom, scenario) => [
-  { pdf: `nostromo-${slug}-fiche-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})` },
-  { pdf: `nostromo-${slug}-fiche-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})` },
-  { pdf: `nostromo-${slug}-aide-superviseur.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})`, mirror: true },
+  { pdf: `nostromo-${slug}-fiche-homme.pdf`, from: 1, to: 2, title: `Nostromo II — ${nom}, version homme (${scenario})`, a5: "copies" },
+  { pdf: `nostromo-${slug}-fiche-femme.pdf`, from: 3, to: 4, title: `Nostromo II — ${nom}, version femme (${scenario})`, a5: "copies" },
+  { pdf: `nostromo-${slug}-aide-superviseur.pdf`, from: 5, title: `Nostromo II — Aide du Superviseur (${scenario})`, mirror: true, a5: "copies" },
 ];
 // Les mêmes, pour la version anglaise.
 const pregen = (slug, name, scenario) => [
-  { pdf: `nostromo-${slug}-sheet-male.pdf`, from: 1, to: 2, title: `Nostromo II — ${name}, male version (${scenario})` },
-  { pdf: `nostromo-${slug}-sheet-female.pdf`, from: 3, to: 4, title: `Nostromo II — ${name}, female version (${scenario})` },
-  { pdf: `nostromo-${slug}-supervisor-aid.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})`, mirror: true },
+  { pdf: `nostromo-${slug}-sheet-male.pdf`, from: 1, to: 2, title: `Nostromo II — ${name}, male version (${scenario})`, a5: "copies" },
+  { pdf: `nostromo-${slug}-sheet-female.pdf`, from: 3, to: 4, title: `Nostromo II — ${name}, female version (${scenario})`, a5: "copies" },
+  { pdf: `nostromo-${slug}-supervisor-aid.pdf`, from: 5, title: `Nostromo II — Supervisor Aid (${scenario})`, mirror: true, a5: "copies" },
 ];
-// La version miroir d'un PDF du Superviseur : son nom et son titre, dans la langue du document.
-const mirrored = (pdf, title, en) => ({
-  pdf: pdf.replace(/\.pdf$/, en ? "-mirrored.pdf" : "-miroir.pdf"),
-  title: `${title} ${en ? "(mirrored)" : "(miroir)"}`,
-  mirror: true,
-});
 const documents = [
   { html: "fiches.html", pages: [5, 6], parts: pretire("une-simple-formalite", "Reyes", "Une simple formalité") },
-  { html: "guide-superviseur.html", pdf: "nostromo-une-simple-formalite-guide-superviseur.pdf", pages: [2, 4], mirror: true },
+  { html: "guide-superviseur.html", pdf: "nostromo-une-simple-formalite-guide-superviseur.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "infiltre.html", pages: [5, 6], parts: pretire("session-disciplinaire", "Lieutenant D.R.", "Session disciplinaire") },
-  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-session-disciplinaire-guide-superviseur.pdf", pages: [2, 4], mirror: true },
+  { html: "guide-superviseur-infiltre.html", pdf: "nostromo-session-disciplinaire-guide-superviseur.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "psychic-agent.html", pages: [5, 6], parts: pretire("sixieme-sens", "Psychic Agent", "Sixième sens") },
-  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-sixieme-sens-guide-superviseur.pdf", pages: [2, 4], mirror: true },
+  { html: "guide-superviseur-entrainement.html", pdf: "nostromo-sixieme-sens-guide-superviseur.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "roles.html", pdf: "nostromo-cartes-roles.pdf", pages: [2, 2] },
   // Version anglaise : mêmes pages HTML suffixées -en, PDF aux noms anglais.
   { html: "fiches-en.html", pages: [5, 6], parts: pregen("a-mere-formality", "Reyes", "A Mere Formality") },
-  { html: "guide-superviseur-en.html", pdf: "nostromo-a-mere-formality-supervisor-guide.pdf", pages: [2, 4], mirror: true },
+  { html: "guide-superviseur-en.html", pdf: "nostromo-a-mere-formality-supervisor-guide.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "infiltre-en.html", pages: [5, 6], parts: pregen("disciplinary-session", "Lieutenant D.R.", "Disciplinary Session") },
-  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-disciplinary-session-supervisor-guide.pdf", pages: [2, 4], mirror: true },
+  { html: "guide-superviseur-infiltre-en.html", pdf: "nostromo-disciplinary-session-supervisor-guide.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "psychic-agent-en.html", pages: [5, 6], parts: pregen("sixth-sense", "Psychic Agent", "Sixth Sense") },
-  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-sixth-sense-supervisor-guide.pdf", pages: [2, 4], mirror: true },
+  { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-sixth-sense-supervisor-guide.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "roles-en.html", pdf: "nostromo-role-cards.pdf", pages: [2, 2] },
 ];
+
+// Suffixes des variantes d'un PDF, dans la langue du document (les mêmes que dans src/data/sheets.ts).
+const SUFFIX = {
+  fr: { copies: "a5", booklet: "livret", mirror: "miroir" },
+  en: { copies: "a5", booklet: "booklet", mirror: "mirrored" },
+};
+/**
+ * Les variantes d'une partie : A4, puis miroir, A5 et A5 miroir selon ce que la partie permet.
+ * Chaque variante connaît son nom de fichier, son titre et ce qu'il faut faire à la page pour l'obtenir.
+ */
+function variants(part, title, en) {
+  const suffix = SUFFIX[en ? "en" : "fr"];
+  const out = [];
+  for (const a5 of part.a5 ? [null, part.a5] : [null]) {
+    for (const mirror of part.mirror ? [false, true] : [false]) {
+      const tags = [a5 && suffix[a5], mirror && suffix.mirror].filter(Boolean);
+      out.push({
+        pdf: part.pdf.replace(/\.pdf$/, tags.map(t => `-${t}`).join("") + ".pdf"),
+        title: tags.length ? `${title} (${tags.join(", ")})` : title,
+        a5, mirror,
+      });
+    }
+  }
+  return out;
+}
+
+// Feuilles A4 paysage de deux pages réduites en A5 (71 %). En miroir, c'est la feuille entière qui est retournée :
+// vue dans un miroir, elle redonne exactement la feuille ordinaire, livret compris.
+const IMPOSITION_CSS = `
+  html.a5 { --a5: 0.7071; }
+  html.a5 .sheet { width: 297mm; height: 210mm; display: flex; overflow: hidden; break-after: page; break-inside: avoid; }
+  html.a5 .sheet:last-of-type { break-after: auto; }
+  html.a5 .slot { width: 148.5mm; height: 210mm; overflow: hidden; flex: none; }
+  html.a5 .sheet .page { transform: scale(var(--a5)); transform-origin: top left; break-after: auto; }
+  html.a5.miroir .sheet { transform: scaleX(-1); }
+  html.a5.miroir .sheet .page { transform: scale(var(--a5)); }
+`;
+/**
+ * Dans le navigateur : remplace les pages A4 (de from à to) par des feuilles A5.
+ * Livret : n pages (complétées à un multiple de 4 par des pages blanches) sur n/4 feuilles, chaque feuille
+ * portant au recto [dernière | première] et au verso [deuxième | avant-dernière] de ce qui reste, pour qu'une
+ * fois pliées et emboîtées les pages se lisent dans l'ordre. Copies : une feuille par page, la page deux fois.
+ */
+function impose({ from, to, booklet }) {
+  const all = [...document.querySelectorAll(".page")];
+  const chosen = all.slice(from - 1, to);
+  all.forEach(p => p.remove());
+  const pairs = [];
+  if (booklet) {
+    const pages = [...chosen];
+    while (pages.length % 4) {
+      const blank = document.createElement("main");
+      blank.className = "page";
+      pages.push(blank);
+    }
+    const n = pages.length;
+    for (let s = 0; s < n / 4; s += 1) {
+      pairs.push([pages[n - 1 - 2 * s], pages[2 * s]]);
+      pairs.push([pages[2 * s + 1], pages[n - 2 - 2 * s]]);
+    }
+  } else {
+    chosen.forEach(p => pairs.push([p, p.cloneNode(true)]));
+  }
+  for (const pair of pairs) {
+    const sheet = document.createElement("section");
+    sheet.className = "sheet";
+    for (const p of pair) {
+      const slot = document.createElement("div");
+      slot.className = "slot";
+      slot.append(p);
+      sheet.append(slot);
+    }
+    document.body.append(sheet);
+  }
+  document.documentElement.classList.add("a5");
+  return pairs.length;
+}
 
 const pngIndex = process.argv.indexOf("--png");
 const pngDir = pngIndex > -1 ? resolve(process.argv[pngIndex + 1]) : null;
@@ -73,11 +149,26 @@ const browser = await launch();
 try {
   const page = await browser.newPage({ viewport: { width: 794, height: 1123 } });
   await page.emulateMedia({ media: "print" });
-  for (const doc of documents) {
+  /** (Re)charge une page HTML de fiches/, avec les styles des variantes (inertes tant que leur classe n'est pas posée). */
+  async function open(doc) {
     await page.goto(pathToFileURL(join(source, doc.html)).href, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
     // Version miroir : chaque page retournée sur son axe vertical (la mise en page, elle, ne bouge pas)
-    await page.addStyleTag({ content: "html.miroir .page { transform: scaleX(-1); }" });
+    await page.addStyleTag({ content: "html.miroir .page { transform: scaleX(-1); }" + IMPOSITION_CSS });
+  }
+  /** Enregistre le PDF d'une variante : titre, miroir, puis impression (A4 portrait, ou A4 paysage pour les feuilles A5). */
+  async function print(version, pageRanges) {
+    await page.evaluate(({ title, mirror }) => {
+      document.title = title;
+      document.documentElement.classList.toggle("miroir", mirror);
+    }, version);
+    const file = join(output, version.pdf);
+    await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true, pageRanges });
+    return file;
+  }
+
+  for (const doc of documents) {
+    await open(doc);
 
     const pages = await page.evaluate(() => [...document.querySelectorAll(".page")]
       .map(el => el.scrollHeight - el.clientHeight));
@@ -96,16 +187,13 @@ try {
     });
 
     const en = doc.html.endsWith("-en.html");
-    for (const part of doc.parts ?? [{ pdf: doc.pdf, from: 1, mirror: doc.mirror }]) {
-      const to = part.to ?? pages.length;
-      const title = part.title ?? await page.title();
-      const versions = [{ pdf: part.pdf, title, mirror: false }];
-      if (part.mirror) versions.push(mirrored(part.pdf, title, en));
-      for (const version of versions) {
-        await page.evaluate(({ title, mirror }) => { document.title = title; document.documentElement.classList.toggle("miroir", mirror); }, version);
-        const file = join(output, version.pdf);
-        await page.pdf({ path: file, format: "A4", printBackground: true, preferCSSPageSize: true, pageRanges: `${part.from}-${to}` });
-        const n = to - part.from + 1;
+    const parts = doc.parts ?? [{ pdf: doc.pdf, from: 1, mirror: doc.mirror, a5: doc.a5 }];
+    for (const part of parts) {
+      part.to ??= pages.length;
+      part.title ??= await page.title();
+      for (const version of variants(part, part.title, en).filter(v => !v.a5)) {
+        const file = await print(version, `${part.from}-${part.to}`);
+        const n = part.to - part.from + 1;
         console.log(`PDF : ${file} (${n} page${n > 1 ? "s" : ""})`);
       }
     }
@@ -117,6 +205,26 @@ try {
         const png = join(pngDir, `${doc.html.replace(/\.html$/, "")}-p${i + 1}.png`);
         await el.screenshot({ path: png });
         console.log(`PNG : ${png}`);
+      }
+    }
+
+    // Feuilles A5 : l'imposition remanie la page, qu'on recharge pour chaque partie.
+    for (const part of parts.filter(p => p.a5)) {
+      await open(doc);
+      await page.addStyleTag({ content: "@page { size: A4 landscape; margin: 0; }" });
+      const sheets = await page.evaluate(impose, { from: part.from, to: part.to, booklet: part.a5 === "booklet" });
+      for (const version of variants(part, part.title, en).filter(v => v.a5)) {
+        const file = await print(version);
+        console.log(`PDF : ${file} (${sheets} feuille${sheets > 1 ? "s" : ""} A4 paysage)`);
+      }
+      if (pngDir) {
+        await page.evaluate(() => document.documentElement.classList.remove("miroir"));
+        const elements = await page.$$(".sheet");
+        for (const [i, el] of elements.entries()) {
+          const png = join(pngDir, `${part.pdf.replace(/\.pdf$/, "")}-${SUFFIX[en ? "en" : "fr"][part.a5]}-f${i + 1}.png`);
+          await el.screenshot({ path: png });
+          console.log(`PNG : ${png}`);
+        }
       }
     }
   }

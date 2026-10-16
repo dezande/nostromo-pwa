@@ -57,6 +57,7 @@ export function Settings() {
               <Toggle id="transChk" label={tr("Écrans de transition", "Transition screens")} setting={settings.transitions} />
               <Toggle id="markerChk" label={tr("Repère discret", "Discreet marker")} setting={settings.markerDot} />
               <Toggle id="mirrorChk" label={tr("Texte du Superviseur en miroir (aide, guide, PDF)", "Mirror the Supervisor's text (aid, guide, PDF)")} setting={settings.mirror} />
+              <Toggle id="a5Chk" label={tr("PDF en A5 (guide en livret, fiches en deux exemplaires par feuille)", "A5 PDFs (guide as a booklet, sheets two per page)")} setting={settings.a5} />
             </>
           )}
           {tab === "audio" && (

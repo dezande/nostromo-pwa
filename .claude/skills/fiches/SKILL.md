@@ -25,6 +25,12 @@ Modifier le HTML seul ne suffit jamais : il faut regénérer les PDF et vérifie
 Les PDF d'un scénario portent son titre en préfixe (`sixieme-sens`, `une-simple-formalite`, `session-disciplinaire` ;
 `sixth-sense`, `a-mere-formality`, `disciplinary-session`). L'aide et le guide du Superviseur existent aussi en PDF miroir (`-miroir.pdf` / `-mirrored.pdf`, pages retournées
 sur leur axe vertical par `fiches.mjs`) : le lien PDF de l'app les propose quand le réglage « miroir » est actif.
+Tous les documents sauf les cartes existent aussi en A5, deux pages par feuille A4 paysage recto verso (réglage
+« PDF en A5 ») : le guide en livret (`-livret.pdf` / `-booklet.pdf`, pages imposées pour qu'une feuille pliée se lise
+dans l'ordre : recto 4 | 1, verso 2 | 3), les prétirés et l'aide en deux exemplaires par feuille (`-a5.pdf`, chaque
+page deux fois côte à côte, la feuille coupée donne deux fiches). Les documents du Superviseur cumulent les deux
+(`-livret-miroir.pdf`, `-a5-mirrored.pdf`…). L'imposition est faite par `fiches.mjs` dans le navigateur (pages A4
+réduites à 71 % dans des feuilles `.sheet`), sans toucher aux pages HTML : une page qui tient en A4 tient en A5.
 La correspondance exacte (pages, titres des PDF) est dans `scripts/fiches.mjs` ; celle entre documents,
 scénarios et boutons de l'app est dans `src/data/sheets.ts` (`SHEETS`, `ROLES`). Un nouveau document se
 déclare aux deux endroits, et `tests/pdf-links.spec.ts` vérifie que chaque PDF déclaré existe dans le build.
@@ -64,7 +70,8 @@ mort. Vérifier dans l'app (`npm run dev`, choix du scénario, bouton « Lire »
 
 1. Modifier la page FR et la page EN ensemble.
 2. `npm run fiches` (il faut être en ligne pour la police ; Chromium de Playwright ou Chrome local).
-   Option `-- --png <dossier>` pour enregistrer une capture de chaque page et vérifier la mise en page à l'œil.
+   Option `-- --png <dossier>` pour enregistrer une capture de chaque page, et de chaque feuille A5 (livret, deux
+   exemplaires), pour vérifier la mise en page à l'œil.
 3. Lire le document dans l'app et dans la version anglaise.
 4. Tests : `npx playwright test tests/pdf-links.spec.ts tests/scenarios.spec.ts --project=ordinateur`
    (les scénarios vérifient le contenu lu dans la liseuse), et `npx jest src/screens` si la liseuse a changé.
