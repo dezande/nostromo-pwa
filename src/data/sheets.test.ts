@@ -3,6 +3,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { ROLES, SHEETS } from "./sheets";
+import "../../fiches/scenes.js"; // pose nostromoScenes : les dessins disponibles
 
 const all = [...Object.values(SHEETS).flat(), ROLES];
 
@@ -24,7 +25,7 @@ const fiche = (name: string) => readFileSync(resolve(__dirname, "../../fiches", 
 const scenes = (html: string) => [...fiche(html).matchAll(/data-illu="([^"]+)"/g)].map(m => m[1]);
 
 test("chaque guide a ses scènes clés, les mêmes dessins dans le même ordre en anglais, tous définis dans scenes.js", () => {
-  const drawings = fiche("scenes.js").match(/const DESSINS = \{([^}]*)\}/)![1].split(",").map(s => s.trim()).filter(Boolean);
+  const drawings = nostromoScenes.NOMS;
   for (const guide of all.filter(s => s.kind === "guide")) {
     const fr = scenes(guide.html);
     expect(fr.length).toBeGreaterThanOrEqual(4);

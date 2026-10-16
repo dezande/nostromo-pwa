@@ -1,5 +1,7 @@
-// Texte d'un document lu dans l'app : extrait d'une page HTML du dossier fiches/, remis en forme ;
+// Texte d'un document lu dans l'app : extrait d'une page HTML du dossier fiches/, remis en forme, scènes clés dessinées ;
 // et la liseuse elle-même : texte du Superviseur en miroir, bascule sur place, PDF miroir, lien du PDF en A5 (livret).
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { act } from "preact/test-utils";
 import { lang } from "../i18n";
 import { settings } from "../state/settings";
@@ -25,6 +27,7 @@ const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="
       <dt>AFFECTATION</dt><dd><span class="redact" style="--w:40mm"></span></dd>
     </dl>
     <div class="idcode"><span class="barcode" data-code="WYC21840612"></span></div>
+    <div class="illu" data-illu="oeuf"></div>
   </section>
   <section class="sec">
     <div class="traits">
@@ -38,7 +41,10 @@ const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="
   <header class="header"><img src="logo.svg" alt=""></header>
   <h1>AIDE DU SUPERVISEUR</h1>
   <div class="box"><div class="toc">Sommaire <span class="dots"></span> 2</div></div>
-  <section class="box"><h3>Scènes clés</h3><div class="scenes"><figure><div class="illu" data-illu="plan"></div><figcaption>3 · Sur le plan</figcaption></figure></div></section>
+  <section class="box"><h3>Scènes clés</h3><div class="scenes">
+    <figure><div class="illu" data-illu="plan"></div><figcaption>3 · Sur le plan</figcaption></figure>
+    <figure><div class="illu" data-illu="rapport" data-label="APTITUDE VALIDÉE"></div><figcaption>4 · Le rapport</figcaption></figure>
+  </div></section>
   <p>Réservé au Superviseur.</p>
 </main>
 </body></html>`;
@@ -48,18 +54,53 @@ const parse = (text: string) => Object.assign(document.createElement("div"), { i
 
 beforeEach(() => { resetState(); settings.mirror.value = false; });
 
-test("garde le contenu des pages, sans la mise en page imprimée : en-têtes, pieds, images, code-barres, sommaire, scènes clés, tailles en mm", () => {
+test("garde le contenu des pages, sans la mise en page imprimée : en-têtes, pieds, images, code-barres, sommaire, illustrations des prétirés, tailles en mm", () => {
   const out = parse(documentText(HTML));
   expect(out.textContent).toContain("Daniel REYES");
   expect(out.textContent).toContain("AIDE DU SUPERVISEUR");
   expect(out.textContent).toContain("Réservé au Superviseur.");
   expect(out.querySelector(".page, header.header, footer.footer, img, .barcode, .toc, .dots")).toBeNull();
-  expect(out.querySelector(".scenes, .illu")).toBeNull(); // les scènes clés sont dessinées par scenes.js, à l'impression seulement
-  expect(out.textContent).not.toContain("Scènes clés");
+  expect(out.querySelector(".illu[data-illu=oeuf]")).toBeNull(); // dessinée par pretire.js, à l'impression seulement
   expect(out.querySelector("[style]")).toBeNull();
   expect(out.textContent).not.toContain("PAGE 1 / 2"); // numéro de page du PDF
   expect(out.textContent).toContain("DOSSIER DE CANDIDATURE");
   expect(out.textContent).not.toContain("Pied de page imprimé");
+});
+
+// --- Scènes clés des guides
+
+test("scènes clés : chaque vignette reçoit son dessin SVG (le même que dans le PDF), avec les mots de son libellé", () => {
+  const out = parse(documentText(HTML));
+  expect(out.textContent).toContain("Scènes clés");
+  expect(out.querySelectorAll(".scenes figure")).toHaveLength(2);
+  const svgs = out.querySelectorAll(".scenes .illu svg");
+  expect(svgs).toHaveLength(2);
+  svgs.forEach(svg => expect(svg.getAttribute("viewBox")).toBe("0 0 160 80"));
+  expect(out.querySelector(".illu[data-illu=rapport] text")!.textContent).toBe("APTITUDE VALIDÉE");
+  expect(out.querySelector(".illu[data-illu=plan] pattern")).not.toBeNull(); // les hachures des salles fermées
+  expect(out.textContent).toContain("4 · Le rapport");
+  expect(out.querySelector("[style]")).toBeNull();
+});
+
+test("scènes clés : les dessins n'ont que deux couleurs, #000 et #fff, que le CSS de la liseuse repeint aux couleurs du style", () => {
+  const out = parse(documentText(HTML));
+  const colors = new Set<string>();
+  out.querySelectorAll(".scenes svg, .scenes svg *").forEach(el => {
+    for (const attr of ["fill", "stroke"]) { const v = el.getAttribute(attr); if (v && !v.startsWith("url(")) colors.add(v); }
+  });
+  expect([...colors].sort()).toEqual(["#000", "#fff", "none"]);
+});
+
+test("les six guides (FR et EN) : autant de dessins que de vignettes, aucune restée vide", () => {
+  for (const guide of Object.values(SHEETS).flat().filter(s => s.kind === "guide")) {
+    for (const html of [guide.html, guide.en.html]) {
+      const out = parse(documentText(readFileSync(resolve(__dirname, "../../fiches", html), "utf8")));
+      const figures = out.querySelectorAll(".scenes figure").length;
+      expect(figures).toBeGreaterThanOrEqual(4);
+      expect(out.querySelectorAll(".scenes figure .illu svg")).toHaveLength(figures);
+      expect(out.querySelector(".illu:empty")).toBeNull();
+    }
+  }
 });
 
 test("seulement les pages demandées : la fiche du joueur, ou l'aide du Superviseur", () => {

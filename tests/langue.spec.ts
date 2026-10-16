@@ -13,6 +13,8 @@ test("version anglaise : choix à l'accueil, retenu au rechargement, documents e
   await expect(page.locator("#rolesPdf")).toHaveAttribute("href", "fiches/nostromo-role-cards.pdf");
   await page.locator("#trainingGuidePdfRead").click();
   await expect(page.locator("#docText")).toContainText("Supervisor");
+  await expect(page.locator("#docText .scenes .illu svg")).toHaveCount(4); // les scènes clés, avec leurs mots en anglais
+  await expect(page.locator("#docText .illu[data-illu=rapport] text")).toHaveText("APTITUDE CONFIRMED");
   await page.locator("#docClose").click();
   await expect.poll(() => new URL(page.url()).pathname).toBe("/scenario");
   // Le rechargement garde l'écran (son adresse) et la langue

@@ -54,7 +54,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   petits rôles des spectateurs (format poker, neuf par page A4 : l'IA W.Y.C. TYCHE montre la carte et dit le
   nombre de déplacements, l'IA Protocole CERBÈRE annonce les salles qui ferment, un Xénomorphe par salle pousse
   le cri quand la sienne ferme, et deux Brutes (Sgt Voss, Cpl Brekke) gardent le Lieutenant D.R. dans la « Session disciplinaire »). Depuis l'écran de choix du scénario, on les lit directement dans l'app
-  (texte remis au style de l'app, aussi hors ligne) ou on télécharge le PDF. L'aide et le guide du Superviseur
+  (texte remis au style de l'app, scènes clés dessinées comprises, aussi hors ligne) ou on télécharge le PDF. L'aide et le guide du Superviseur
   peuvent s'afficher **en miroir** (réglage *Affichage*, ou bouton dans la liseuse) : posés sur la table, les joueurs
   en face ne les lisent pas facilement ; le PDF téléchargé est alors lui aussi en miroir. À côté du PDF, un
   second lien donne la version **A5** à imprimer sur des feuilles A4 paysage recto verso (retournées sur

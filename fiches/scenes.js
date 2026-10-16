@@ -1,10 +1,15 @@
-// Scènes clés des guides du Superviseur : vignettes dessinées en traits noirs (SVG), insérées au chargement
-// dans chaque <div class="illu" data-illu="nom" data-label="…"></div> de la bande .scenes.
+// Scènes clés des guides du Superviseur : vignettes dessinées en traits (SVG), pour chaque
+// <div class="illu" data-illu="nom" data-label="…"></div> de la bande .scenes des guides (fiches/guide-superviseur*.html).
 // Même style que les illustrations des prétirés (pretire.js) : encre noire, fonds blancs, hachures pour les ombres.
 // Les mots qui apparaissent dans un dessin (écran, tampon, plaque) viennent de data-label, pour que la page
 // anglaise affiche les siens ; le dessin, lui, est le même dans les deux langues.
+// Une seule source pour deux usages : chargé par la balise <script> d'un guide, il dessine la page au chargement,
+// noir sur blanc pour le PDF ; importé par l'app (src/screens/DocumentViewer.tsx), il expose `nostromoScenes` et la
+// liseuse repeint les dessins aux couleurs du style d'écran par CSS (src/styles/_home.scss, bloc .scenes).
+// Script classique et non module : les guides s'ouvrent en file:// (scripts/fiches.mjs), où un module ne se charge pas.
 (() => {
   const SVG = 'xmlns="http://www.w3.org/2000/svg"';
+  // Deux couleurs seulement, #000 (encre) et #fff (papier) : la liseuse les reconnaît pour les repeindre. Ne pas en ajouter.
   let uid = 0;
 
   // Toute vignette a le même cadre (2:1) et le même trait ; le contenu est dessiné par-dessus.
@@ -190,5 +195,18 @@
 
   const DESSINS = { bienvenue, moniteurs, plan, rapport, accueil, contrat, intercepte, decouvert };
 
-  for (const el of document.querySelectorAll("[data-illu]")) el.innerHTML = DESSINS[el.dataset.illu](el.dataset.label ?? "");
+  /** SVG d'une scène avec les mots de son libellé ; null si le nom est inconnu (illustration d'un prétiré, par exemple). */
+  const scene = (nom, label = "") => (Object.prototype.hasOwnProperty.call(DESSINS, nom) ? DESSINS[nom](label) : null);
+  /** Dessine chaque <div data-illu> connu sous la racine donnée : le document d'un guide, ou celui que la liseuse analyse. */
+  function dessiner(racine) {
+    for (const el of racine.querySelectorAll("[data-illu]")) {
+      const svg = scene(el.dataset.illu, el.dataset.label ?? "");
+      if (svg !== null) el.innerHTML = svg;
+    }
+  }
+
+  globalThis.nostromoScenes = { NOMS: Object.keys(DESSINS), scene, dessiner };
+  // Chargé par la balise <script> d'un guide : la page se dessine tout de suite. Importé par l'app (Vite) ou par Jest,
+  // currentScript est null : c'est la liseuse qui appelle dessiner() sur le document qu'elle analyse.
+  if (document.currentScript) dessiner(document);
 })();
