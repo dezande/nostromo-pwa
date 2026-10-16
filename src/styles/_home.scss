@@ -93,6 +93,14 @@
   .sheet > .sheet-link:first-child { flex: 1; min-width: 0; white-space: nowrap; }
   .sheet-link { padding: 8px 10px; }
   @media (max-height: 700px) { .sheet-link { padding-block: 6px; } }
+  // En dessous de 400 px, trois boutons par document (nom, PDF, A5 ou livret) ne tiennent pas en deux colonnes :
+  // marges réduites, le bouton PDF garde son icône de téléchargement seule (son nom accessible ne change pas), et le nom
+  // perd son icône, sauf les deux prétirés que ♂ et ♀ distinguent.
+  @container (max-width: 400px) {
+    .sheet-link { padding-inline: 6px; }
+    .sheet-pdf .txt { display: none; }
+    .sheet:not(.sheet-homme):not(.sheet-femme) > .sheet-link:first-child .ic { display: none; }
+  }
 }
 
 // Choix du scénario : documents à lire dans l'app ou en PDF
@@ -100,10 +108,11 @@
   margin-top: 12px;
   .set-label { display: block; text-align: left; font-size: fs(11px); color: var(--dim); letter-spacing: .1em; }
   .sheet-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-  // Un document : « lire dans l'app » (nom) et son PDF, collés
+  // Un document : « lire dans l'app » (nom), son PDF et son PDF en A5 (livret), collés
   .sheet { display: inline-flex; }
   .sheet > .sheet-link:first-child { border-radius: 6px 0 0 6px; }
-  .sheet > .sheet-pdf { border-left: none; border-radius: 0 6px 6px 0; }
+  .sheet > .sheet-pdf { border-left: none; border-radius: 0; }
+  .sheet > .sheet-pdf:last-child { border-radius: 0 6px 6px 0; }
 }
 
 .sheet-link {

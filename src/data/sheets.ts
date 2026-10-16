@@ -1,7 +1,7 @@
 // Documents des scénarios (3D6 Système) : fiches prétirées, aide et guide du Superviseur, cartes des petits rôles.
 // Chacun se lit dans l'app (page HTML du dossier fiches/) ou se télécharge en PDF (public/fiches).
 // Les documents du Superviseur (aide, guide) existent aussi en PDF miroir, comme leur texte dans l'app (réglage « miroir »).
-// Tous sauf les cartes existent aussi en A5 (réglage « A5 ») : le guide en livret, les autres en deux exemplaires par feuille A4.
+// Tous sauf les cartes existent aussi en A5 (second lien à côté du PDF) : le guide en livret, les autres en deux exemplaires par feuille A4.
 import type { IconName } from "../components/Icon";
 import type { Scenario } from "../state/settings";
 import type { ScenarioDocument } from "../state/ui";
