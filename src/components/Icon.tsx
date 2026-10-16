@@ -29,6 +29,12 @@ export const ICONS = {
   guide: <><path d="M5 4h12.5v16H5z" /><path d="M8 4v16M11 8.5h4" /></>,
   roles: <><rect x="3.5" y="7" width="10" height="14" rx="1" /><path d="M8 7V3h10.5v14h-5" /></>,
   pdf: <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" />,
+  // Scénarios, sur les cartes du choix au lancement : partie directe (avance rapide), sixième sens (œil),
+  // contrat signé (document et paraphe), e-mail de la direction (enveloppe)
+  direct: <><path d="M4 5.5v13L12 12z" /><path d="M12.5 5.5v13L20.5 12z" /></>,
+  oeil: <><path d="M2.5 12c2.5-4 5.7-6 9.5-6s7 2 9.5 6c-2.5 4-5.7 6-9.5 6s-7-2-9.5-6z" /><circle cx="12" cy="12" r="3" /></>,
+  contrat: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4" /><path d="M8.5 16c1.5-3 2.5 2 4 0s2 2 3.5 0" /></>,
+  courriel: <><rect x="3" y="5.5" width="18" height="13" /><path d="M3 7.5l9 6 9-6" /></>,
   // Texte en miroir (liseuse des documents du Superviseur) : un axe et ses deux reflets
   miroir: <><path d="M12 3v18" stroke-dasharray="2 2" /><path d="M9 7.5L3.5 12 9 16.5z" /><path d="M15 7.5l5.5 4.5-5.5 4.5z" /></>,
 };

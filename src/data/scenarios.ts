@@ -3,6 +3,7 @@
 // Les règles sont projetées sur les moniteurs de la salle de briefing : titres courts et puces, comme un support
 // de présentation ; la voix (l'instructeur, le RH) reste au Superviseur.
 // La partie elle-même est la même ; seuls les panneaux d'accueil, les règles et les rapports de fin changent.
+import type { IconName } from "../components/Icon";
 import type { RuleName } from "../components/RuleScenes";
 import type { Scenario } from "../state/settings";
 import type { BriefingPanel } from "../state/ui";
@@ -27,7 +28,8 @@ export interface ScenarioText {
   /** Premier panneau après « Lancer » (null : la partie commence tout de suite), et celui où ramène « Retour » depuis la première règle. */
   firstPanel: BriefingPanel | null;
   lastPanel: BriefingPanel;
-  /** Choix au lancement : nom et ligne courte sur la carte, description sous les cartes. */
+  /** Choix au lancement : icône et nom sur la carte, ligne courte dessous, description sous les cartes. */
+  icon: IconName;
   name: string;
   description: string;
   homeLine: string;
@@ -48,6 +50,7 @@ export interface ScenarioText {
 const TRAINING: ScenarioText = {
   firstPanel: "welcome",
   lastPanel: "welcome",
+  icon: "oeil",
   name: "Sixième sens",
   description: "Psychic Agent en formation à bord du Nostromo II. Scénario d'origine.",
   homeLine: "Simulation d'intrusion alien pour Psychic Agents.",
@@ -115,6 +118,7 @@ const TRAINING: ScenarioText = {
 const RECRUITMENT: ScenarioText = {
   firstPanel: "hr",
   lastPanel: "contract",
+  icon: "contrat",
   name: "Une simple formalité",
   description: "Jeu de rôle : un candidat signe un contrat très bien payé, puis passe l'examen d'aptitude. Le Superviseur joue le RH et le Coordinateur.",
   homeLine: "Recrutement Weyland-Yutani.",
@@ -182,6 +186,7 @@ const RECRUITMENT: ScenarioText = {
 const INFILTRATED: ScenarioText = {
   firstPanel: "email",
   lastPanel: "email",
+  icon: "courriel",
   name: "Session disciplinaire",
   description: "Vous êtes le Lieutenant D.R., agent infiltré de la C.R.F. (Civil Resistance Force). La direction sait tout : pour vous punir, elle vous envoie à l'entraînement.",
   homeLine: "Agent C.R.F. démasqué.",
@@ -221,6 +226,7 @@ const INFILTRATED: ScenarioText = {
 
 const TRAINING_EN: ScenarioText = {
   ...TRAINING,
+  icon: "oeil",
   name: "Sixth Sense",
   description: "Psychic Agent in training aboard Nostromo II. The original scenario.",
   homeLine: "Alien intrusion simulation for Psychic Agents.",
@@ -285,6 +291,7 @@ const TRAINING_EN: ScenarioText = {
 
 const RECRUITMENT_EN: ScenarioText = {
   ...RECRUITMENT,
+  icon: "contrat",
   name: "A Mere Formality",
   description: "Role-playing: a candidate signs a very well-paid contract, then takes the aptitude test. The Supervisor plays HR and the Coordinator.",
   homeLine: "Weyland-Yutani recruitment.",
@@ -350,6 +357,7 @@ const RECRUITMENT_EN: ScenarioText = {
 
 const INFILTRATED_EN: ScenarioText = {
   ...INFILTRATED,
+  icon: "courriel",
   name: "Disciplinary Session",
   description: "You are Lieutenant D.R., undercover agent of the C.R.F. (Civil Resistance Force). Management knows everything: as punishment, they send you to training.",
   homeLine: "C.R.F. agent exposed.",
@@ -390,6 +398,7 @@ const INFILTRATED_EN: ScenarioText = {
 const FREE: ScenarioText = {
   ...TRAINING,
   firstPanel: null,
+  icon: "direct",
   name: "Sans scénario",
   description: "Partie directe : ni histoire ni règles à l'écran, le plan s'affiche dès le lancement. Pour rejouer vite, avec des joueurs qui connaissent déjà le protocole.",
   homeLine: "Partie directe, sans introduction.",
@@ -418,6 +427,7 @@ const FREE: ScenarioText = {
 const FREE_EN: ScenarioText = {
   ...TRAINING_EN,
   firstPanel: null,
+  icon: "direct",
   name: "No scenario",
   description: "Straight to the game: no story and no rules on screen, the map appears as soon as you launch. For a quick replay, with players who already know the protocol.",
   homeLine: "Straight to the game, no introduction.",
@@ -443,13 +453,13 @@ const FREE_EN: ScenarioText = {
   },
 };
 
-/** Textes des scénarios, par langue. */
+/** Textes des scénarios, par langue ; l'ordre des clés est celui des cartes au lancement, du plus simple au plus complexe. */
 export const SCENARIOS: Record<Lang, Record<Scenario, ScenarioText>> = {
-  fr: { training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED, free: FREE },
-  en: { training: TRAINING_EN, recruitment: RECRUITMENT_EN, infiltrated: INFILTRATED_EN, free: FREE_EN },
+  fr: { free: FREE, training: TRAINING, recruitment: RECRUITMENT, infiltrated: INFILTRATED },
+  en: { free: FREE_EN, training: TRAINING_EN, recruitment: RECRUITMENT_EN, infiltrated: INFILTRATED_EN },
 };
 
-/** Identifiants des scénarios, dans l'ordre du choix au lancement. */
+/** Identifiants des scénarios, dans l'ordre du choix au lancement (du plus simple au plus complexe). */
 export const SCENARIO_IDS = Object.keys(SCENARIOS.fr) as Scenario[];
 
 /** Textes d'un scénario dans la langue de l'app. */
