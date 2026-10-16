@@ -1,7 +1,7 @@
 // Plan du vaisseau-base : pont 1 (vaisseau vu de dessus) et pont 2.
 import { ROOM_IDS, VENTS, crossLines, markerPosition, room, roomLines, roomName, pathSegments, pawnPosition, type RoomId, type VentCorridor } from "../data/ship";
 import { settings } from "../state/settings";
-import { reachable, closable, closed, flashing, path, phase, position, toClose, touchRoom } from "../state/game";
+import { reachable, closable, closed, flashing, markerUseful, path, phase, position, toClose, touchRoom } from "../state/game";
 import { pawnDeck, phoneDeck } from "../state/deckView";
 import { ProtocolWindow } from "./ProtocolWindow";
 import { DeckReadout, SystemPanel } from "./SystemPanel";
@@ -206,7 +206,7 @@ function Room({ id }: { id: RoomId }) {
       {lines.map((text, i) => <text key={i} x={cx} y={top + i * 12}>{text.toUpperCase()}</text>)}
       {/* Croix rouge : salles contaminées et salles fermées (elle reste) */}
       {(r.toxic || closed.value.has(id)) && <ToxicCross id={id} />}
-      {r.marker && settings.markerDot.value && <circle class="marker-dot" cx={markerPosition(id)[0]} cy={markerPosition(id)[1]} r="1.8" />}
+      {r.marker && settings.markerDot.value && markerUseful.value && <circle class="marker-dot" cx={markerPosition(id)[0]} cy={markerPosition(id)[1]} r="1.8" />}
     </g>
   );
 }
