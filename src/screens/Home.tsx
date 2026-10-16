@@ -81,7 +81,7 @@ function ScenarioChoice() {
           <button key={id} class="alert-card" id={`scenario-${id}`} role="radio" aria-checked={current === id}
             onClick={() => { settings.scenario.value = id; }}>
             <span class="scenario-head">
-              <strong>{scenarioText(id).name}</strong>
+              <strong><Icon name={scenarioText(id).icon} />{scenarioText(id).name}</strong>
               <small class="scenario-meta" title={tr("Niveau du joueur et durée indicative", "Player level and approximate duration")}><span>{scenarioText(id).level} ·</span> <span>{scenarioText(id).duration}</span></small>
             </span>
             <small class="scenario-line">{scenarioText(id).homeLine}</small>

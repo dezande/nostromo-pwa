@@ -7,8 +7,9 @@ description: Ajouter, retirer ou remanier un scénario de nostromo-pwa (textes d
 
 La partie est la même pour tous les scénarios ; un scénario ne change que l'habillage : panneaux
 d'introduction, quatre règles sur les moniteurs, question d'abandon, rapports de fin, documents imprimables.
-Quatre existent : `training` (Sixième sens, par défaut), `recruitment` (Une simple formalité : RH et contrat),
-`infiltrated` (Session disciplinaire : e-mail intercepté), `free` (sans scénario : aucun panneau).
+Quatre existent, dans l'ordre des cartes (du plus simple au plus complexe) : `free` (sans scénario : aucun panneau),
+`training` (Sixième sens, par défaut), `recruitment` (Une simple formalité : RH et contrat),
+`infiltrated` (Session disciplinaire : e-mail intercepté).
 
 ## Tout ce qu'un scénario touche
 
@@ -18,9 +19,10 @@ Parcourir la liste entière ; un oubli se voit surtout en anglais ou dans un tes
    mémorisé dans les réglages ; un identifiant supprimé doit être ramené à `training` au chargement
    (voir le traitement des anciens réglages dans `loadSettings`).
 2. **`src/data/scenarios.ts`** : un objet `ScenarioText` en français et son jumeau `_EN`, ajoutés tous deux à
-   `SCENARIOS`. L'ordre des clés de `SCENARIOS.fr` est l'ordre des cartes au lancement. Champs à ne pas
-   oublier : `firstPanel` et `lastPanel` (panneau après « Lancer » et panneau où revient « Retour » depuis la
-   règle 1 ; `null` pour commencer la partie tout de suite), `name`, `homeLine`, `description`, `level`,
+   `SCENARIOS`. L'ordre des clés de `SCENARIOS.fr` est l'ordre des cartes au lancement, du plus simple au plus
+   complexe. Champs à ne pas oublier : `firstPanel` et `lastPanel` (panneau après « Lancer » et panneau où
+   revient « Retour » depuis la règle 1 ; `null` pour commencer la partie tout de suite), `icon` (une icône
+   propre au scénario, à ajouter dans `ICONS` de `src/components/Icon.tsx`), `name`, `homeLine`, `description`, `level`,
    `duration`, `rulesHeader`, `rulesIntro`, quatre `rules` (chacune avec une `scene` parmi `start`, `moves`,
    `close`, `end`), `rulesSign`, `quitQuestion`, `win` et `dead` (chaque rapport contient `{room}`).
    `[[…]]` dans un texte affiche un passage censuré sans mettre le texte caché dans la page.
@@ -38,7 +40,8 @@ Parcourir la liste entière ; un oubli se voit surtout en anglais ou dans un tes
 6. **README** : la liste des scénarios (niveau, durée, résumé) et les documents à imprimer.
 7. **Tests** :
    - `src/data/scenarios.test.ts` : l'ordre des identifiants, « 4 règles et deux rapports avec {room} »,
-     la parité FR/EN (mêmes panneaux, mêmes scènes, noms différents), les niveaux et durées ;
+     la parité FR/EN (mêmes panneaux, mêmes scènes, même icône, noms différents), les niveaux et durées,
+     une icône différente par scénario ;
    - `src/state/routes` (si un panneau s'ajoute) et `tests/retour.spec.ts` : adresse du panneau,
      retour du navigateur ;
    - `tests/scenarios.spec.ts` : un parcours complet du scénario (choix, panneaux, partie, titre du rapport)
