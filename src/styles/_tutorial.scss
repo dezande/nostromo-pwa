@@ -13,16 +13,18 @@
     font-size: fs(12px);
     span { color: var(--accent); font-size: fs(9px); letter-spacing: .2em; margin-right: 6px; }
   }
-  // Repères de progression : un point par page
+  // Repères de progression : un point par page, au pied de la fenêtre juste au-dessus des boutons
+  // (c'est eux, et non les boutons, qui prennent la marge automatique)
   .tuto-dots {
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-top: 18px;
+    margin-top: auto;
+    padding-top: 18px;
     span { width: 6px; height: 6px; border: 1px solid var(--dim); border-radius: 50%; }
     span.on { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 6px var(--accent); }
   }
-  .briefing-actions { margin-top: 14px; justify-content: center; }
+  .briefing-actions { margin-top: 0; padding-top: 14px; justify-content: center; }
   .tuto-credit { margin-top: 12px; text-align: center; color: var(--dim); opacity: .7; font-size: fs(9px); letter-spacing: .1em; }
 }
 
@@ -84,8 +86,8 @@
   .tuto-panel {
     .tuto-title { margin-top: 8px; font-size: fs(13px); }
     .tuto-example { font-size: fs(11px); margin-top: 6px; }
-    .tuto-dots { margin-top: 10px; }
-    .briefing-actions { margin-top: 10px; }
+    .tuto-dots { padding-top: 10px; }
+    .briefing-actions { padding-top: 10px; }
     .tuto-credit { margin-top: 8px; }
   }
   .tuto-scene { margin-top: 8px; padding: 4px; }

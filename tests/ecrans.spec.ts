@@ -44,6 +44,58 @@ test("les panneaux d'accueil tiennent dans l'écran sans défilement (téléphon
   }
 });
 
+test("toutes les fenêtres ont le même gabarit : réglages, sources, tutoriel, choix du scénario, panneaux d'intro", async ({ page }) => {
+  await open(page);
+  await page.evaluate(() => document.fonts.ready);
+  // Hauteur de la fenêtre entière (cadre « moniteur » compris quand il y en a un) et largeur de l'écran
+  const box = async (selector: string) => (await page.locator(selector).boundingBox())!;
+  const height = async (selector: string) => Math.round((await box(selector)).height);
+  const width = async (selector: string) => Math.round((await box(selector)).width);
+  const desktop = page.viewportSize()!.width >= 800;
+  await page.locator("#homeSetBtn").click();
+  const ref = await height("#settings .panel");
+  if (desktop) expect(await width("#settings .panel")).toBe(720);
+  await page.locator("#setClose").click();
+  await page.locator("#sourcesBtn").click();
+  expect(await height("#sources .monitor"), "sources").toBe(ref);
+  if (desktop) expect(await width("#sources .panel"), "sources").toBe(720);
+  await page.locator("#sourcesClose").click();
+  await page.locator("#tutoBtn").click();
+  expect(await height("#tutorial .monitor"), "tutoriel").toBe(ref);
+  await page.locator("#tutoClose").click();
+  await page.locator("#startBtn").click();
+  expect(await height(".scenario-choice"), "choix du scénario").toBe(ref);
+  if (desktop) expect(await width(".scenario-choice"), "choix du scénario").toBe(720);
+  await page.locator("#launchBtn").click();
+  expect(await height("#welcome .monitor"), "bienvenue").toBe(ref);
+  if (desktop) expect(await width("#welcome .panel"), "bienvenue").toBe(720);
+  await page.locator("#welcomeNext").click();
+  expect(await height("#rule1 .monitor"), "règle 1").toBe(ref);
+});
+
+test("les boutons sont au pied de chaque fenêtre, quelle que soit la longueur du texte", async ({ page }) => {
+  await open(page);
+  // Écart entre le bas de la rangée de boutons et le bas de la fenêtre : la marge intérieure, pas plus
+  const gap = (panel: string, row: string) => page.locator(panel).evaluate((el, row) => {
+    const pad = parseFloat(getComputedStyle(el).paddingBottom);
+    return Math.round(el.getBoundingClientRect().bottom - el.querySelector(row)!.getBoundingClientRect().bottom - pad);
+  }, row);
+  await page.locator("#homeSetBtn").click();
+  expect(await gap("#settings .panel", ".settings-footer"), "réglages").toBeLessThanOrEqual(1);
+  await page.locator("#setClose").click();
+  await page.locator("#tutoBtn").click();
+  expect(await gap("#tutorial .panel", ".tuto-credit"), "tutoriel").toBeLessThanOrEqual(1); // les boutons, puis la ligne de crédit
+  // Les points de progression du tutoriel descendent avec les boutons, juste au-dessus
+  const dotsToActions = await page.locator("#tutorial .panel").evaluate(el =>
+    el.querySelector(".briefing-actions")!.getBoundingClientRect().top - el.querySelector(".tuto-dots")!.getBoundingClientRect().bottom);
+  expect(dotsToActions).toBeLessThanOrEqual(15);
+  await page.locator("#tutoClose").click();
+  await page.locator("#startBtn").click();
+  expect(await gap(".scenario-choice", ".home-actions"), "choix du scénario").toBeLessThanOrEqual(1);
+  await page.locator("#launchBtn").click();
+  expect(await gap("#welcome .panel", ".briefing-actions"), "bienvenue").toBeLessThanOrEqual(1);
+});
+
 test("logo Weyland Corp en filigrane : transition, bienvenue, et discret sur l'écran de jeu", async ({ page }) => {
   await open(page, { ...FAST, transitions: true });
   await launch(page);

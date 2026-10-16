@@ -4,7 +4,6 @@
 .briefing { background: var(--bg); }
 
 .briefing-panel {
-  max-width: 680px;
   line-height: 1.6;
 
   .briefing-corp { color: var(--dim); font-size: fs(11px); letter-spacing: .25em; }
@@ -17,8 +16,8 @@
 
 
   .briefing-sign { color: var(--accent); letter-spacing: .1em; }
-  // Bonne respiration entre le dernier paragraphe et les boutons
-  .briefing-actions { margin-top: 40px; }
+  // Bonne respiration entre le dernier paragraphe et les boutons (en padding : la marge haute, automatique, pousse les boutons au pied de la fenêtre)
+  .briefing-actions { padding-top: 40px; }
 }
 
 // ---------- Panneaux de règles : une règle par panneau ----------
@@ -74,7 +73,7 @@
     p { font-size: fs(11px); margin-bottom: 8px; }
     .rule-points li { font-size: fs(11px); margin-bottom: 2px; }
     .briefing-intro { margin-top: 8px; }
-    .briefing-actions { margin-top: 12px; }
+    .briefing-actions { padding-top: 12px; }
   }
 }
 @media (max-height: 700px) {

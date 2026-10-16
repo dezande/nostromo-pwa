@@ -11,7 +11,7 @@
   overflow: hidden;
 
   .contract-title { margin: 6px 0 10px; letter-spacing: .08em; }
-  .briefing-actions.contract-actions { margin-top: 10px; }
+  .briefing-actions.contract-actions { padding-top: 10px; }
 }
 
 .contract-scroll {
@@ -156,7 +156,7 @@
   }
   .email-body { flex: 0 1 auto; }
   .email-foot { margin-top: 8px; color: var(--red); font-size: fs(9px); letter-spacing: .15em; text-align: center; }
-  .briefing-actions { margin-top: 10px; }
+  .briefing-actions { padding-top: 10px; }
 }
 
 // Fin : message d'une autre source sous le rapport

@@ -29,7 +29,7 @@
   .source-url:hover, .source-url:focus-visible { color: var(--accent); }
 
   .source-note { margin-top: 14px; color: var(--dim); font-size: fs(11px); font-style: italic; }
-  .briefing-actions { margin-top: 12px; justify-content: center; }
+  .briefing-actions { padding-top: 12px; justify-content: center; }
 }
 
 // QR code : modules sombres sur fond clair, aux couleurs du style d'écran

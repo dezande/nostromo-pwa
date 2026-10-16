@@ -4,10 +4,13 @@
 // Un cadre plat et épais autour du panneau, une étiquette, un voyant. Aucune courbure ni reflet :
 // seulement un léger dégradé de luminosité, fixe, sur l'écran.
 .monitor {
-  --chrome: 64px; // hauteur prise par le cadre (étiquette, voyant, marges)
+  display: flex;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
-  max-width: 744px;
+  max-width: 746px; // 720 px d'écran (.panel) + marges et bordure du cadre
+  height: calc(100vh - 32px);
+  height: calc(var(--app-h) - 32px); // même hauteur totale que les fenêtres sans cadre (.panel)
   padding: 8px 12px 6px;
   border-radius: 20px;
   background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, #1b1f21), #0b0d0e);
@@ -17,17 +20,16 @@
     inset 0 1px 0 #ffffff14,
     inset 0 -2px 0 #0008;
 
+  // L'écran prend la place que laissent l'étiquette et le voyant
   > .panel {
-    max-height: calc(100vh - 32px - var(--chrome));
-    max-height: calc(var(--app-h) - 32px - var(--chrome));
+    flex: 1;
+    min-height: 0;
+    height: auto;
     border-radius: 12px;
     border-color: #000;
     box-shadow: inset 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
     background-image: linear-gradient(180deg, #ffffff06, transparent 40%);
   }
-  // Panneaux dont la hauteur est fixée (contrat, e-mail) : on retire aussi le cadre
-  > .contract-panel { height: calc(var(--app-h) - 32px - var(--chrome)); }
-
   .monitor-top, .monitor-foot {
     display: flex;
     align-items: center;
@@ -58,14 +60,10 @@
 // Petits écrans : cadre plus fin
 @media (max-height: 800px), (max-width: 480px) {
   .monitor {
-    --chrome: 46px;
+    height: calc(var(--app-h) - 16px);
     padding: 5px 6px 4px;
     border-radius: 14px;
-    > .panel {
-      max-height: calc(var(--app-h) - 16px - var(--chrome));
-      border-radius: 9px;
-    }
-    > .contract-panel { height: calc(var(--app-h) - 16px - var(--chrome)); }
+    > .panel { border-radius: 9px; }
     .monitor-top { margin-bottom: 4px; font-size: fs(8px); }
     .monitor-foot { margin-top: 4px; font-size: fs(8px); }
   }

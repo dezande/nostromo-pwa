@@ -54,13 +54,19 @@
 // Choix du scénario, après « Démarrer »
 .home.scenario-choice {
   max-width: 720px;
-  max-height: calc(var(--app-h) - 32px);
+  height: calc(var(--app-h) - 32px); // même gabarit que les fenêtres (.panel)
   overflow: auto;
   // Marge intérieure : le contour de la carte choisie (décalé de 2px) n'est pas rogné par le défilement
   padding: 6px;
   gap: 12px;
+  container-type: inline-size;
   h2 { font-size: clamp(20px, 5vw, 32px); }
-  .scenario-cards { width: 100%; margin: 0; }
+  .home-actions { margin-top: auto; } // les boutons au pied, comme dans les fenêtres (.panel)
+  @media (max-height: 800px), (max-width: 480px) { height: calc(var(--app-h) - 16px); }
+  // Quatre cartes sur une ligne quand elles tiennent, sinon deux par ligne (jamais trois et une seule), une sur très petit écran.
+  .scenario-cards { width: 100%; margin: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @container (min-width: 624px) { .scenario-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @container (max-width: 300px) { .scenario-cards { grid-template-columns: minmax(0, 1fr); } }
   // Nom à gauche, niveau du joueur et durée à droite, sur la même ligne
   .scenario-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; column-gap: 8px; }
   // Icône du scénario dans le fil du nom : un nom long passe à la ligne sous l'icône, sans jamais déborder de la carte.
@@ -84,19 +90,21 @@
   }
   .scenario-desc { display: grid; width: 100%; > p { grid-area: 1 / 1; } }
   .hidden-desc { visibility: hidden; }
-  .sheets { width: 100%; margin-top: 0; container-type: inline-size; }
+  // Les seuils ci-dessous sont en em de cette police : ils suivent le réglage « Taille du texte ».
+  .sheets { width: 100%; margin-top: 0; container-type: inline-size; font-size: fs(11px); }
   // Documents (4 du scénario, puis les rôles) en grille régulière : 2 colonnes, 3 si la place le permet, 1 sur très petit écran.
+  // Un document entier (nom avec icône, PDF, A5 ou Livret) fait environ 18 em : trois colonnes à partir de 56 em.
   .sheet-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  @container (min-width: 520px) { .sheet-links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @container (max-width: 300px) { .sheet-links { grid-template-columns: minmax(0, 1fr); } }
+  @container (min-width: 56em) { .sheet-links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @container (max-width: 23em) { .sheet-links { grid-template-columns: minmax(0, 1fr); } }
   .sheet { min-width: 0; }
   .sheet > .sheet-link:first-child { flex: 1; min-width: 0; white-space: nowrap; }
   .sheet-link { padding: 8px 10px; }
   @media (max-height: 700px) { .sheet-link { padding-block: 6px; } }
-  // En dessous de 400 px, trois boutons par document (nom, PDF, A5 ou livret) ne tiennent pas en deux colonnes :
-  // marges réduites, le bouton PDF garde son icône de téléchargement seule (son nom accessible ne change pas), et le nom
-  // perd son icône, sauf les deux prétirés que ♂ et ♀ distinguent.
-  @container (max-width: 400px) {
+  // En dessous de 37 em (deux documents entiers), trois boutons par document (nom, PDF, A5 ou livret) ne tiennent pas en
+  // deux colonnes : marges réduites, le bouton PDF garde son icône de téléchargement seule (son nom accessible ne change
+  // pas), et le nom perd son icône, sauf les deux prétirés que ♂ et ♀ distinguent.
+  @container (max-width: 37em) {
     .sheet-link { padding-inline: 6px; }
     .sheet-pdf .txt { display: none; }
     .sheet:not(.sheet-homme):not(.sheet-femme) > .sheet-link:first-child .ic { display: none; }

@@ -182,6 +182,22 @@ test("sans scénario : la partie commence dès le lancement, rapport neutre", as
   await expect(page.locator("#endStamp")).toHaveText("SIMULATION TERMINÉE");
 });
 
+test("cartes des scénarios : quatre par ligne quand elles tiennent, sinon deux par ligne, jamais trois et une", async ({ page }) => {
+  await open(page);
+  await page.locator("#startBtn").click();
+  const perRow = () => page.locator(".scenario-cards .alert-card").evaluateAll(cards => {
+    const rows = new Map<number, number>();
+    for (const c of cards) { const top = Math.round(c.getBoundingClientRect().top); rows.set(top, (rows.get(top) ?? 0) + 1); }
+    return [...rows.values()];
+  });
+  await page.setViewportSize({ width: 1024, height: 768 });
+  expect(await perRow()).toEqual([4]);
+  await page.setViewportSize({ width: 600, height: 800 }); // trois tiendraient : on en met deux par ligne
+  expect(await perRow()).toEqual([2, 2]);
+  await page.setViewportSize({ width: 375, height: 667 });
+  expect(await perRow()).toEqual([2, 2]);
+});
+
 test("choix du scénario en paysage : icône, nom, niveau et durée (ligne orange) restent dans leur carte", async ({ page }) => {
   await open(page);
   await page.locator("#startBtn").click();
