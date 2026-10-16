@@ -56,11 +56,15 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   le cri quand la sienne ferme, et deux Brutes (Sgt Voss, Cpl Brekke) gardent le Lieutenant D.R. dans la « Session disciplinaire »). Depuis l'écran de choix du scénario, on les lit directement dans l'app
   (texte remis au style de l'app, aussi hors ligne) ou on télécharge le PDF. L'aide et le guide du Superviseur
   peuvent s'afficher **en miroir** (réglage *Affichage*, ou bouton dans la liseuse) : posés sur la table, les joueurs
-  en face ne les lisent pas facilement ; le PDF téléchargé est alors lui aussi en miroir.
+  en face ne les lisent pas facilement ; le PDF téléchargé est alors lui aussi en miroir. Avec le réglage
+  **PDF en A5**, le lien PDF donne la version à imprimer sur des feuilles A4 paysage recto verso (retournées sur
+  le bord court) : le guide du Superviseur en **livret** (une feuille pliée en deux, pages dans l'ordre), les
+  fiches et l'aide en **deux exemplaires par feuille** (page 1 deux fois au recto, page 2 deux fois au verso :
+  la feuille coupée en deux donne deux fiches A5). Les cartes des rôles gardent leur format.
 - **Réglages en onglets** :
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
     onglets), six styles d'écran rétro sombres, taille du texte, lignes horizontales, écrans de
-    transition, repère discret, texte du Superviseur en miroir ;
+    transition, repère discret, texte du Superviseur en miroir, PDF en A5 ;
   - *Audio* : musique (coupée par défaut), volumes, annonce vocale ;
   - *Alerte* : musique jouée pendant la partie (sirène, klaxon ou détecteur) ;
   - *Système* : écran toujours allumé, numéro de build et état du mode hors ligne.

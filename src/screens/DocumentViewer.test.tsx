@@ -1,5 +1,5 @@
 // Texte d'un document lu dans l'app : extrait d'une page HTML du dossier fiches/, remis en forme ;
-// et la liseuse elle-même : texte du Superviseur en miroir, bascule sur place, PDF miroir.
+// et la liseuse elle-même : texte du Superviseur en miroir, bascule sur place, PDF miroir ou A5 selon les réglages.
 import { act } from "preact/test-utils";
 import { lang } from "../i18n";
 import { settings } from "../state/settings";
@@ -45,7 +45,7 @@ const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="
 /** Le texte produit, analysé pour y chercher des éléments. */
 const parse = (text: string) => Object.assign(document.createElement("div"), { innerHTML: text });
 
-beforeEach(() => { resetState(); settings.mirror.value = false; });
+beforeEach(() => { resetState(); settings.mirror.value = false; settings.a5.value = false; });
 
 test("garde le contenu des pages, sans la mise en page imprimée : en-têtes, pieds, images, code-barres, sommaire, tailles en mm", () => {
   const out = parse(documentText(HTML));
@@ -129,6 +129,40 @@ test("en anglais : le PDF miroir anglais et son nom accessible", () => {
   const aid = localized(SHEETS.recruitment.find(s => s.kind === "aid")!);
   expect(pdfFile(aid)).toBe("nostromo-a-mere-formality-supervisor-aid-mirrored.pdf");
   expect(pdfLabel(aid)).toBe("Supervisor aid as mirrored PDF");
+});
+
+test("le PDF proposé suit le réglage A5 : livret pour le guide, deux exemplaires par feuille pour les autres, jamais pour les cartes", () => {
+  settings.a5.value = true;
+  const guide = findSheet("trainingGuidePdf")!;
+  const pregen = findSheet("trainingFemPdf")!;
+  const aid = findSheet("trainingMjPdf")!;
+  expect(pdfFile(guide)).toBe("nostromo-sixieme-sens-guide-superviseur-livret.pdf");
+  expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF livret");
+  expect(pdfFile(pregen)).toBe("nostromo-sixieme-sens-fiche-femme-a5.pdf");
+  expect(pdfLabel(pregen)).toBe("Prétiré femme en PDF A5");
+  expect(pdfFile(aid)).toBe("nostromo-sixieme-sens-aide-superviseur-a5.pdf");
+  expect(pdfFile(findSheet("rolesPdf")!)).toBe("nostromo-cartes-roles.pdf");
+  // Les deux réglages ensemble : le livret ou la feuille A5 du Superviseur en miroir, le prétiré toujours à l'endroit
+  settings.mirror.value = true;
+  expect(pdfFile(guide)).toBe("nostromo-sixieme-sens-guide-superviseur-livret-miroir.pdf");
+  expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF livret miroir");
+  expect(pdfFile(aid)).toBe("nostromo-sixieme-sens-aide-superviseur-a5-miroir.pdf");
+  expect(pdfLabel(aid)).toBe("Aide du Superviseur en PDF A5 miroir");
+  expect(pdfFile(pregen)).toBe("nostromo-sixieme-sens-fiche-femme-a5.pdf");
+});
+
+test("en anglais : le livret et la feuille A5 anglais, et leur nom accessible", () => {
+  lang.value = "en";
+  settings.a5.value = true;
+  const guide = localized(SHEETS.recruitment.find(s => s.kind === "guide")!);
+  const pregen = localized(SHEETS.recruitment.find(s => s.kind === "male")!);
+  expect(pdfFile(guide)).toBe("nostromo-a-mere-formality-supervisor-guide-booklet.pdf");
+  expect(pdfLabel(guide)).toBe("Supervisor guide as booklet PDF");
+  expect(pdfFile(pregen)).toBe("nostromo-a-mere-formality-sheet-male-a5.pdf");
+  expect(pdfLabel(pregen)).toBe("Pre-gen (male) as A5 PDF");
+  settings.mirror.value = true;
+  expect(pdfFile(guide)).toBe("nostromo-a-mere-formality-supervisor-guide-booklet-mirrored.pdf");
+  expect(pdfLabel(guide)).toBe("Supervisor guide as mirrored booklet PDF");
 });
 
 // --- La liseuse

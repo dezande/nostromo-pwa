@@ -60,11 +60,25 @@ export function documentText(html: string, { pages = ".page", feminine = false }
   return [...doc.querySelectorAll(pages)].map(page => page.innerHTML).join("");
 }
 
-/** PDF d'un document : en miroir pour un document du Superviseur quand le réglage est actif. */
-export const pdfFile = (doc: ScenarioDocument) => (doc.mirrorFile && settings.mirror.value ? doc.mirrorFile : doc.file);
-/** Nom accessible du lien PDF d'un document, avec la mention du miroir le cas échéant. */
-export const pdfLabel = (doc: ScenarioDocument) => pdfFile(doc) === doc.file
-  ? tr(`${doc.name} en PDF`, `${doc.name} as PDF`) : tr(`${doc.name} en PDF miroir`, `${doc.name} as mirrored PDF`);
+/** Variantes du PDF d'un document selon les réglages : A5 si le document en a une, miroir pour un document du Superviseur. */
+const pdfVariants = (doc: ScenarioDocument) => {
+  const a5 = settings.a5.value ? doc.a5 : undefined;
+  const mirror = settings.mirror.value && !!(a5 ?? doc).mirrorFile;
+  return { a5, mirror };
+};
+/** PDF d'un document : en A5 (livret pour un guide), en miroir pour un document du Superviseur, selon les réglages. */
+export const pdfFile = (doc: ScenarioDocument) => {
+  const { a5, mirror } = pdfVariants(doc);
+  const version = a5 ?? doc;
+  return mirror ? version.mirrorFile! : version.file;
+};
+/** Nom accessible du lien PDF d'un document, avec la mention du format (livret, A5) et du miroir le cas échéant. */
+export const pdfLabel = (doc: ScenarioDocument) => {
+  const { a5, mirror } = pdfVariants(doc);
+  const format = a5 ? (a5.booklet ? tr(" livret", "booklet ") : tr(" A5", "A5 ")) : "";
+  const mirrored = mirror ? tr(" miroir", "mirrored ") : "";
+  return tr(`${doc.name} en PDF${format}${mirrored}`, `${doc.name} as ${mirrored}${format}PDF`);
+};
 
 export function DocumentViewer() {
   const doc = openDocument.value;

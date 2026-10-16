@@ -71,6 +71,16 @@ test("onglet Affichage : texte du Superviseur en miroir, mémorisé", () => {
   expect(settings.mirror.value).toBe(false);
 });
 
+test("onglet Affichage : PDF en A5 (livret, deux exemplaires par feuille), mémorisé", () => {
+  settings.a5.value = false;
+  expect(($("#a5Chk") as HTMLInputElement).checked).toBe(false);
+  act(() => { ($("#a5Chk") as HTMLInputElement).click(); });
+  expect(settings.a5.value).toBe(true);
+  expect(JSON.parse(localStorage.getItem("nostromo-settings")!).a5).toBe(true);
+  act(() => { ($("#a5Chk") as HTMLInputElement).click(); });
+  expect(settings.a5.value).toBe(false);
+});
+
 test("flèches du clavier pour changer d'onglet", () => {
   const arrow = (tab: string, key: string) => act(() => { $(`#tab-${tab}`).dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true })); });
   arrow("display", "ArrowRight");

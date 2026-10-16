@@ -21,6 +21,11 @@ export interface ScenarioDocument {
   feminine?: boolean;
   /** Document réservé au Superviseur (aide, guide) : son PDF en miroir, pour que les joueurs en face ne le lisent pas. */
   mirrorFile?: string;
+  /**
+   * Version A5 du PDF (deux pages par feuille A4 paysage, recto verso) : en livret pour un guide (`booklet`),
+   * sinon chaque page en deux exemplaires sur une feuille à couper en deux. Et son miroir pour un document du Superviseur.
+   */
+  a5?: { file: string; mirrorFile?: string; booklet?: boolean };
 }
 export const openDocument = signal<ScenarioDocument | null>(null);
 export const pressToStart = signal(false);  // « touchez l'écran pour commencer »

@@ -1,5 +1,5 @@
 // Scénarios « Une simple formalité » et « Session disciplinaire ».
-import { test, expect, open, launch, placeAgent, closeRoom } from "./helpers";
+import { test, expect, open, launch, placeAgent, closeRoom, FAST } from "./helpers";
 
 test("scénario « Une simple formalité » : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
   await open(page);
@@ -184,4 +184,23 @@ test("choix du scénario en paysage : niveau et durée (ligne orange) restent da
       && card.scrollWidth <= card.clientWidth));
     expect(inside, `${size.width}×${size.height}`).toEqual([true, true, true, true]);
   }
+});
+
+test("réglage A5 : livret pour le guide, deux exemplaires par feuille pour les autres, cumulé au miroir, rien pour les cartes", async ({ page }) => {
+  await open(page, { ...FAST, a5: true, mirror: true });
+  await page.locator("#startBtn").click();
+  await page.locator("#scenario-infiltrated").click();
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret-miroir.pdf");
+  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("href", "fiches/nostromo-session-disciplinaire-aide-superviseur-a5-miroir.pdf");
+  await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme-a5.pdf");
+  await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-femme-a5.pdf");
+  await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
+  // Sans le miroir : le livret et la feuille A5 à l'endroit, et la liseuse propose le même PDF
+  await page.locator("#infiltratedGuidePdfRead").click();
+  await expect(page.locator("#docPdf")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret miroir");
+  await page.locator("#docMirror").click();
+  await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret.pdf");
+  await expect(page.locator("#docPdf")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret");
+  await page.locator("#docClose").click();
+  await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-aide-superviseur-a5.pdf");
 });
