@@ -12,7 +12,7 @@ import { tr } from "../i18n";
  * Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page,
  * icônes, dessins et code-barres des prétirés (tracés par fiches/pretire.js), icônes des cartes de rôle.
  */
-const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu, .barcode, .notes, .symbol, .xeno-head";
+const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .box:has(.scenes), .ic, .illu, .barcode, .notes, .symbol, .xeno-head";
 
 /** Caractéristiques d'un prétiré, lisibles à l'écran : comment s'en servir, jauge sur 5, cases de PE. */
 function explainTraits(doc: Document) {

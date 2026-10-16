@@ -295,3 +295,10 @@ table.mastery td.c { text-align: center; white-space: nowrap; }
 .npc-traits div { border-left: 0.6pt solid var(--ink); padding: 0.3mm 0; }
 .npc-traits div:first-child { border-left: 0; }
 .npc-traits b { display: block; font-size: 9pt; }
+
+/* Scènes clés du déroulé : bande de vignettes dessinées par scenes.js, numérotées comme les étapes */
+.scenes { display: flex; justify-content: space-evenly; gap: 2mm; }
+.scenes figure { margin: 0; width: 34mm; }
+.scenes .illu { height: 17mm; border: 0.7pt solid var(--ink); }
+.scenes .illu svg { display: block; width: 100%; height: 100%; }
+.scenes figcaption { margin-top: 0.6mm; font-size: 6.8pt; letter-spacing: 0.04em; text-align: center; white-space: nowrap; overflow: hidden; }

@@ -38,6 +38,7 @@ const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="
   <header class="header"><img src="logo.svg" alt=""></header>
   <h1>AIDE DU SUPERVISEUR</h1>
   <div class="box"><div class="toc">Sommaire <span class="dots"></span> 2</div></div>
+  <section class="box"><h3>Scènes clés</h3><div class="scenes"><figure><div class="illu" data-illu="plan"></div><figcaption>3 · Sur le plan</figcaption></figure></div></section>
   <p>Réservé au Superviseur.</p>
 </main>
 </body></html>`;
@@ -47,12 +48,14 @@ const parse = (text: string) => Object.assign(document.createElement("div"), { i
 
 beforeEach(() => { resetState(); settings.mirror.value = false; });
 
-test("garde le contenu des pages, sans la mise en page imprimée : en-têtes, pieds, images, code-barres, sommaire, tailles en mm", () => {
+test("garde le contenu des pages, sans la mise en page imprimée : en-têtes, pieds, images, code-barres, sommaire, scènes clés, tailles en mm", () => {
   const out = parse(documentText(HTML));
   expect(out.textContent).toContain("Daniel REYES");
   expect(out.textContent).toContain("AIDE DU SUPERVISEUR");
   expect(out.textContent).toContain("Réservé au Superviseur.");
   expect(out.querySelector(".page, header.header, footer.footer, img, .barcode, .toc, .dots")).toBeNull();
+  expect(out.querySelector(".scenes, .illu")).toBeNull(); // les scènes clés sont dessinées par scenes.js, à l'impression seulement
+  expect(out.textContent).not.toContain("Scènes clés");
   expect(out.querySelector("[style]")).toBeNull();
   expect(out.textContent).not.toContain("PAGE 1 / 2"); // numéro de page du PDF
   expect(out.textContent).toContain("DOSSIER DE CANDIDATURE");

@@ -38,7 +38,10 @@ déclare aux deux endroits, et `tests/pdf-links.spec.ts` vérifie que chaque PDF
 Styles : `fiche.css` (guides), `pretire.css` (prétirés, lisibles en A4 comme en A5), `roles.css` (cartes
 format poker, 9 par page). `pretire.js` dessine au chargement les icônes `<i class="ic" data-ic="nom">`,
 les dés `.die`, les rangs `.rank`, les cases de PE `.track[data-n]`, les codes-barres et les illustrations ;
-la liste des icônes est au début du fichier. `logo.svg` est le logo Weyland Corp des en-têtes.
+la liste des icônes est au début du fichier. `scenes.js` dessine de même la bande « Scènes clés » des guides
+(`<div class="illu" data-illu="nom" data-label="…">` dans `.scenes`, page 2) : les mots d'un dessin (écran, tampon)
+viennent de `data-label`, traduit dans la page `-en.html` ; `sheets.test.ts` vérifie que FR et EN ont les mêmes
+dessins. `logo.svg` est le logo Weyland Corp des en-têtes.
 
 ## Règles de mise en page
 
@@ -57,7 +60,7 @@ la liste des icônes est au début du fichier. `logo.svg` est le logo Weyland Co
 
 `documentText()` dans `src/screens/DocumentViewer.tsx` garde le contenu des pages choisies et :
 - supprime ce qui ne sert qu'à l'impression (`PRINT_ONLY` : en-têtes, pieds de page, images, sommaire,
-  icônes, illustrations, codes-barres, `.notes`, `.symbol`, `.xeno-head`) ;
+  icônes, illustrations, scènes clés, codes-barres, `.notes`, `.symbol`, `.xeno-head`) ;
 - remplace les symboles ♂/♀ par un SVG (emoji coloré sur iPad sinon) ;
 - ajoute aux caractéristiques une aide et des jauges `.t-pips`, et les cases de PE ;
 - retire les attributs `style` (tailles en mm) et les sous-titres « PAGE n ».
