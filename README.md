@@ -50,7 +50,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
 - **Documents à imprimer** (PDF noir et blanc, système de jeu de rôle
   [3D6 Système](https://3d6.ovh/) de François Cedelle, licence ORC) : fiches de personnage prétirées
   (recto verso et illustrées, lisibles en A4 comme en A5 ; un PDF pour la version homme, un pour la
-  version femme, un pour l'aide du Superviseur : PNJ, pense-bête, puis les répliques de chaque PNJ et le script complet du Coordinateur) et guide du Superviseur pour chaque scénario, plus les cartes des
+  version femme, un pour l'aide du Superviseur : PNJ, pense-bête, puis les répliques de chaque PNJ et le script complet du Coordinateur) et guide du Superviseur pour chaque scénario (avec ses scènes clés dessinées), plus les cartes des
   petits rôles des spectateurs (format poker, neuf par page A4 : l'IA W.Y.C. TYCHE montre la carte et dit le
   nombre de déplacements, l'IA Protocole CERBÈRE annonce les salles qui ferment, un Xénomorphe par salle pousse
   le cri quand la sienne ferme, et deux Brutes (Sgt Voss, Cpl Brekke) gardent le Lieutenant D.R. dans la « Session disciplinaire »). Depuis l'écran de choix du scénario, on les lit directement dans l'app
