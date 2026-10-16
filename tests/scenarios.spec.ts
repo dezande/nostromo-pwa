@@ -104,6 +104,9 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#docViewer")).toHaveClass(/show/);
   await expect(page.locator("#docText")).toContainText("Lieutenant D.R.");
   await expect(page.locator("#docText .page, #docText header.header, #docText footer.footer, #docText img")).toHaveCount(0);
+  // Les scènes clés sont dessinées (cinq vignettes pour ce guide), dans la couleur du texte
+  await expect(page.locator("#docText .scenes .illu svg")).toHaveCount(5);
+  expect(await page.locator("#docText .scenes svg").first().evaluate(el => getComputedStyle(el).stroke === getComputedStyle(el).color)).toBe(true);
   expect(await page.locator("#docText").evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur.pdf");
   // Miroir (les joueurs en face ne lisent pas) : le texte est retourné, le PDF devient la version miroir, et le texte reste lisible dans sa boîte

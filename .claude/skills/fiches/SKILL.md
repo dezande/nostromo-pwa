@@ -41,7 +41,9 @@ les dés `.die`, les rangs `.rank`, les cases de PE `.track[data-n]`, les codes-
 la liste des icônes est au début du fichier. `scenes.js` dessine de même la bande « Scènes clés » des guides
 (`<div class="illu" data-illu="nom" data-label="…">` dans `.scenes`, page 2) : les mots d'un dessin (écran, tampon)
 viennent de `data-label`, traduit dans la page `-en.html` ; `sheets.test.ts` vérifie que FR et EN ont les mêmes
-dessins. `logo.svg` est le logo Weyland Corp des en-têtes.
+dessins. Ce script est aussi importé par la liseuse de l'app (`fiches/scenes.d.ts` donne ses types) : une seule
+source pour les dessins du PDF et de l'écran, où le CSS les repeint aux couleurs du style. `logo.svg` est le logo
+Weyland Corp des en-têtes.
 
 ## Règles de mise en page
 
@@ -60,7 +62,9 @@ dessins. `logo.svg` est le logo Weyland Corp des en-têtes.
 
 `documentText()` dans `src/screens/DocumentViewer.tsx` garde le contenu des pages choisies et :
 - supprime ce qui ne sert qu'à l'impression (`PRINT_ONLY` : en-têtes, pieds de page, images, sommaire,
-  icônes, illustrations, scènes clés, codes-barres, `.notes`, `.symbol`, `.xeno-head`) ;
+  icônes, illustrations des prétirés, codes-barres, `.notes`, `.symbol`, `.xeno-head`) ;
+- dessine les scènes clés des guides avec `fiches/scenes.js`, les mêmes que dans le PDF (le CSS de `.scenes` les
+  repeint : trait dans la couleur du texte, papier dans celle du panneau) ;
 - remplace les symboles ♂/♀ par un SVG (emoji coloré sur iPad sinon) ;
 - ajoute aux caractéristiques une aide et des jauges `.t-pips`, et les cases de PE ;
 - retire les attributs `style` (tailles en mm) et les sous-titres « PAGE n ».

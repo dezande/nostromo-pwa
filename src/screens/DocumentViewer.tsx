@@ -7,12 +7,14 @@ import { IconButton } from "../components/Icon";
 import { openDocument, type ScenarioDocument } from "../state/ui";
 import { settings } from "../state/settings";
 import { tr } from "../i18n";
+import "../../fiches/scenes.js"; // pose nostromoScenes : les scènes clés des guides, dessinées par le même script que les PDF
 
 /**
  * Ce qui ne sert qu'à l'impression : en-têtes et pieds de page, logo, sommaire avec numéros de page,
- * icônes, dessins et code-barres des prétirés (tracés par fiches/pretire.js), icônes des cartes de rôle.
+ * icônes, dessins et code-barres des prétirés (tracés par fiches/pretire.js, donc restés vides ici), icônes des cartes de rôle.
+ * Les scènes clés des guides, elles, viennent d'être dessinées : leurs .illu ne sont plus vides.
  */
-const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .box:has(.scenes), .ic, .illu, .barcode, .notes, .symbol, .xeno-head";
+const PRINT_ONLY = "header.header, footer.footer, img, .dots, .box:has(.toc), .ic, .illu:empty, .barcode, .notes, .symbol, .xeno-head";
 
 /** Caractéristiques d'un prétiré, lisibles à l'écran : comment s'en servir, jauge sur 5, cases de PE. */
 function explainTraits(doc: Document) {
@@ -53,6 +55,8 @@ export function documentText(html: string, { pages = ".page", feminine = false }
     sex.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square">${SEX[el.dataset.ic as keyof typeof SEX]}</svg>`;
     el.replaceWith(sex);
   });
+  // Scènes clés des guides : les mêmes dessins que dans le PDF, repeints aux couleurs du style par le CSS (.doc-text .scenes)
+  nostromoScenes.dessiner(doc);
   doc.querySelectorAll(PRINT_ONLY).forEach(el => el.remove());
   explainTraits(doc);
   doc.querySelectorAll(".title .sub").forEach(el => { if (/PAGE \d/.test(el.textContent || "")) el.remove(); });

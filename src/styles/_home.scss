@@ -259,6 +259,23 @@
   }
   .step .body { flex: 1; min-width: 0; }
 
+  // Scènes clés des guides (fiches/scenes.js) : les dessins, noir sur blanc dans le PDF, prennent les couleurs du style :
+  // trait, aplats et lettres dans la couleur du texte, le « papier » dans celle du panneau plutôt que transparent,
+  // pour que les formes cachent ce qu'elles recouvrent (le doigt sur la tablette, la tête devant l'écran).
+  // Une grille : deux vignettes par rangée sur téléphone, toute la bande sur ordinateur.
+  .scenes { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+  .scenes figure { margin: 0; min-width: 0; }
+  .scenes .illu { border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .scenes svg {
+    display: block; width: 100%; height: auto; stroke: currentColor;
+    [stroke="#000"] { stroke: currentColor; }
+    [fill="#000"] { fill: currentColor; }
+    [fill="#fff"] { fill: var(--panel); }
+    [stroke="#fff"] { stroke: var(--panel); }
+    text { font-family: var(--font); }
+  }
+  .scenes figcaption { margin-top: 4px; color: var(--dim); font-size: fs(11px); letter-spacing: .08em; text-align: center; }
+
   // Texte affiché par l'app, tampons, passages censurés, zones à remplir
   .screen { padding: 0 4px; border: 1px solid var(--line); color: var(--accent); }
   .stamp { display: inline-block; padding: 0 6px; border: 1px solid var(--amber); color: var(--amber); letter-spacing: .1em; }
