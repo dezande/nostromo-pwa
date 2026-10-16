@@ -141,6 +141,7 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#emailSubject")).toHaveText("Nostromo II – rapport d'infiltration");
   await expect(page.locator("#email")).toContainText("QG terrestre de la Civil Resistance Force");
   await expect(page.locator("#emailIntercepted")).toContainText("INTERCEPTÉ");
+  await expect(page.locator("#emailIntercepted")).toContainText("Dominique RASK, Psychic Agent en formation"); // nom, prénom et poste de couverture
   await expect(page.locator("#emailIntercepted")).toContainText("prochaine session d'entraînement, sans dérogation");
   await expect(page.locator("#email .redacted").first()).toBeVisible();
   // L'e-mail tient dans l'écran (seul son corps peut défiler).

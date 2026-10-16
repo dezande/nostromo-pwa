@@ -33,6 +33,7 @@ const INTERCEPT_FR = {
   to: "Coordinateur, base lunaire Nostromo II",
   notes: [
     "Message intercepté et décrypté.",
+    "Expéditeur identifié : Dominique RASK, Psychic Agent en formation, matricule PA-2184-[[0417]], base lunaire Nostromo II.",
     "L'expéditeur participera à la prochaine session d'entraînement, sans dérogation. NS-X III retiré.",
     "Aucune autre sanction ne sera notifiée. [[En cas de survie, procédure 7-B.]]",
   ],
@@ -61,6 +62,7 @@ const INTERCEPT_EN: typeof INTERCEPT_FR = {
   to: "Coordinator, Nostromo II lunar base",
   notes: [
     "Message intercepted and decrypted.",
+    "Sender identified: Dominique RASK, Psychic Agent in training, serial no. PA-2184-[[0417]], Nostromo II lunar base.",
     "The sender will take part in the next training session, no exemptions. NS-X III withdrawn.",
     "No other sanction will be notified. [[If the sender survives, procedure 7-B.]]",
   ],
