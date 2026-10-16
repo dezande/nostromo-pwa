@@ -13,7 +13,7 @@ import { SCENARIO_IDS, scenarioText } from "../data/scenarios";
 import { ROLES, SHEETS, localized, type LocalizedSheet } from "../data/sheets";
 import { LANGS, byLang, lang, tr } from "../i18n";
 import { contractSigned } from "./Recruitment";
-import { pdfFile, pdfLabel } from "./DocumentViewer";
+import { pdfButton, pdfFile, pdfLabel } from "./DocumentViewer";
 
 async function startSimulation() {
   if (terminalOpen.value) return;
@@ -52,7 +52,7 @@ export function Home() {
   );
 }
 
-/** Un document : « lire dans l'app » (icône et nom court) et son PDF (en miroir pour le Superviseur si le réglage est actif). */
+/** Un document : « lire dans l'app » (icône et nom court) et son PDF (en miroir pour le Superviseur, en A5 ou en livret, selon les réglages). */
 function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
   const file = pdfFile(sheet);
   return (
@@ -63,7 +63,7 @@ function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
       <a class="sheet-link sheet-pdf" id={id} href={`fiches/${file}`} target="_blank" rel="noopener"
         download={file /* nom du fichier téléchargé (sans valeur, Preact écrirait download="true") */}
         aria-label={pdfLabel(sheet)}>
-        <Icon name="pdf" />PDF
+        <Icon name="pdf" />{pdfButton(sheet)}
       </a>
     </span>
   );

@@ -7,7 +7,7 @@ import { openDocument, type ScenarioDocument } from "../state/ui";
 import { $, mount } from "../test/render";
 import { resetState } from "../test/state";
 import { SHEETS, findSheet, localized } from "../data/sheets";
-import { DocumentViewer, documentText, pdfFile, pdfLabel } from "./DocumentViewer";
+import { DocumentViewer, documentText, pdfButton, pdfFile, pdfLabel } from "./DocumentViewer";
 
 const HTML = `<!doctype html><html lang="fr"><head><link rel="stylesheet" href="pretire.css"></head><body>
 <main class="page joueur">
@@ -138,10 +138,16 @@ test("le PDF proposé suit le réglage A5 : livret pour le guide, deux exemplair
   const aid = findSheet("trainingMjPdf")!;
   expect(pdfFile(guide)).toBe("nostromo-sixieme-sens-guide-superviseur-livret.pdf");
   expect(pdfLabel(guide)).toBe("Guide du Superviseur en PDF livret");
+  expect(pdfButton(guide)).toBe("Livret");
   expect(pdfFile(pregen)).toBe("nostromo-sixieme-sens-fiche-femme-a5.pdf");
   expect(pdfLabel(pregen)).toBe("Prétiré femme en PDF A5");
+  expect(pdfButton(pregen)).toBe("PDF A5");
   expect(pdfFile(aid)).toBe("nostromo-sixieme-sens-aide-superviseur-a5.pdf");
   expect(pdfFile(findSheet("rolesPdf")!)).toBe("nostromo-cartes-roles.pdf");
+  expect(pdfButton(findSheet("rolesPdf")!)).toBe("PDF");
+  settings.a5.value = false;
+  expect(pdfButton(guide)).toBe("PDF");
+  settings.a5.value = true;
   // Les deux réglages ensemble : le livret ou la feuille A5 du Superviseur en miroir, le prétiré toujours à l'endroit
   settings.mirror.value = true;
   expect(pdfFile(guide)).toBe("nostromo-sixieme-sens-guide-superviseur-livret-miroir.pdf");
@@ -158,6 +164,7 @@ test("en anglais : le livret et la feuille A5 anglais, et leur nom accessible", 
   const pregen = localized(SHEETS.recruitment.find(s => s.kind === "male")!);
   expect(pdfFile(guide)).toBe("nostromo-a-mere-formality-supervisor-guide-booklet.pdf");
   expect(pdfLabel(guide)).toBe("Supervisor guide as booklet PDF");
+  expect(pdfButton(guide)).toBe("Booklet");
   expect(pdfFile(pregen)).toBe("nostromo-a-mere-formality-sheet-male-a5.pdf");
   expect(pdfLabel(pregen)).toBe("Pre-gen (male) as A5 PDF");
   settings.mirror.value = true;

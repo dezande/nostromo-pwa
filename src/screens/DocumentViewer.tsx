@@ -72,6 +72,11 @@ export const pdfFile = (doc: ScenarioDocument) => {
   const version = a5 ?? doc;
   return mirror ? version.mirrorFile! : version.file;
 };
+/** Texte du bouton PDF : « PDF », ou le format quand le réglage A5 est actif, pour qu'on voie ce qu'on télécharge. */
+export const pdfButton = (doc: ScenarioDocument) => {
+  const { a5 } = pdfVariants(doc);
+  return a5 ? (a5.booklet ? tr("Livret", "Booklet") : "PDF A5") : "PDF";
+};
 /** Nom accessible du lien PDF d'un document, avec la mention du format (livret, A5) et du miroir le cas échéant. */
 export const pdfLabel = (doc: ScenarioDocument) => {
   const { a5, mirror } = pdfVariants(doc);
@@ -107,7 +112,7 @@ export function DocumentViewer() {
           <div class="doc-head">
             <h2 id="docTitle">{doc.name}</h2>
             <a class="sheet-link sheet-pdf" id="docPdf" href={`fiches/${pdfFile(doc)}`} target="_blank" rel="noopener"
-              download={pdfFile(doc)} aria-label={pdfLabel(doc)}>PDF</a>
+              download={pdfFile(doc)} aria-label={pdfLabel(doc)}>{pdfButton(doc)}</a>
             {doc.mirrorFile && (
               <IconButton id="docMirror" icon="miroir" label={tr("Texte en miroir", "Mirrored text")} aria-pressed={mirror}
                 onClick={() => { settings.mirror.value = !settings.mirror.value; }} />

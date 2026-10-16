@@ -202,8 +202,13 @@ test("réglage A5 : livret pour le guide, deux exemplaires par feuille pour les 
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme-a5.pdf");
   await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-femme-a5.pdf");
   await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
+  // Les boutons disent ce qu'ils téléchargent
+  await expect(page.locator("#infiltratedGuidePdf")).toHaveText("Livret");
+  await expect(page.locator("#infiltratedPdf")).toHaveText("PDF A5");
+  await expect(page.locator("#rolesPdf")).toHaveText("PDF");
   // Sans le miroir : le livret et la feuille A5 à l'endroit, et la liseuse propose le même PDF
   await page.locator("#infiltratedGuidePdfRead").click();
+  await expect(page.locator("#docPdf")).toHaveText("Livret");
   await expect(page.locator("#docPdf")).toHaveAttribute("aria-label", "Guide du Superviseur en PDF livret miroir");
   await page.locator("#docMirror").click();
   await expect(page.locator("#docPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur-livret.pdf");
