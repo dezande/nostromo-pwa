@@ -3,9 +3,12 @@ import { test, expect, open, launch, placeAgent, closeRoom } from "./helpers";
 
 test("scénario « Une simple formalité » : choix au lancement, RH, contrat à faire défiler et signé par empreinte, puis examen", async ({ page }) => {
   await open(page);
-  // Par défaut au lancement : scénario « Sixième sens ».
+  // Par défaut au lancement : scénario « Sixième sens », deuxième carte (le mode sans scénario, le plus simple, est en tête) ; chaque carte a son icône.
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenario-training")).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator(".scenario-cards .alert-card")).toHaveCount(4);
+  expect(await page.locator(".scenario-cards .alert-card").evaluateAll(cards => cards.map(c => c.id))).toEqual(["scenario-free", "scenario-training", "scenario-recruitment", "scenario-infiltrated"]);
+  await expect(page.locator(".scenario-cards .alert-card strong .ic svg")).toHaveCount(4);
   await expect(page.locator("#scenarioDesc")).toContainText("Psychic Agent en formation");
   await expect(page.locator("#trainingGuidePdf")).toHaveAttribute("download", "nostromo-sixieme-sens-guide-superviseur.pdf");
   await page.locator("#scenario-recruitment").click();
@@ -157,12 +160,13 @@ test("sans scénario : la partie commence dès le lancement, rapport neutre", as
   await open(page);
   await page.locator("#startBtn").click();
   await expect(page.locator("#scenarioDesc")).not.toContainText("Partie directe");
-  // Ni documents ni cartes des petits rôles ; leur place reste réservée : les cartes ne bougent pas
-  const top = await page.locator("#scenario-training").boundingBox();
+  // Ni documents ni cartes des petits rôles ; leur place reste réservée : aucune carte ne bouge ni ne change de taille
+  const cards = page.locator(".scenario-cards .alert-card");
+  const boxes = await cards.evaluateAll(els => els.map(el => el.getBoundingClientRect().toJSON()));
   await page.locator("#scenario-free").click();
   await expect(page.locator("#scenarioDesc")).toContainText("Partie directe");
   await expect(page.locator("#sheets")).toBeHidden();
-  expect(await page.locator("#scenario-training").boundingBox()).toEqual(top);
+  expect(await cards.evaluateAll(els => els.map(el => el.getBoundingClientRect().toJSON()))).toEqual(boxes);
   await page.locator("#launchBtn").click();
   await expect(page.locator("#home")).not.toHaveClass(/show/);
   await expect(page.locator("#welcome")).not.toHaveClass(/show/);
@@ -174,14 +178,16 @@ test("sans scénario : la partie commence dès le lancement, rapport neutre", as
   await expect(page.locator("#endStamp")).toHaveText("SIMULATION TERMINÉE");
 });
 
-test("choix du scénario en paysage : niveau et durée (ligne orange) restent dans leur carte", async ({ page }) => {
+test("choix du scénario en paysage : icône, nom, niveau et durée (ligne orange) restent dans leur carte", async ({ page }) => {
   await open(page);
   await page.locator("#startBtn").click();
-  for (const size of [{ width: 812, height: 375 }, { width: 1024, height: 768 }]) {
+  for (const size of [{ width: 812, height: 375 }, { width: 1024, height: 768 }, { width: 375, height: 667 }]) {
     await page.setViewportSize(size);
-    const inside = await page.locator(".scenario-cards .alert-card").evaluateAll(cards => cards.map(card =>
-      card.querySelector(".scenario-meta")!.getBoundingClientRect().right <= card.getBoundingClientRect().right + 0.5
-      && card.scrollWidth <= card.clientWidth));
+    const inside = await page.locator(".scenario-cards .alert-card").evaluateAll(cards => cards.map(card => {
+      const box = card.getBoundingClientRect();
+      return [...card.querySelectorAll(".scenario-meta, strong, strong .ic")].every(el => el.getBoundingClientRect().right <= box.right + 0.5)
+        && card.scrollWidth <= card.clientWidth;
+    }));
     expect(inside, `${size.width}×${size.height}`).toEqual([true, true, true, true]);
   }
 });

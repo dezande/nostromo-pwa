@@ -28,7 +28,7 @@ test("bouton icône seule : nom accessible, infobulle, SVG au trait de la couleu
 
 test("toutes les icônes demandées existent", () => {
   expect(Object.keys(ICONS).sort()).toEqual(
-    ["accueil", "aide", "annuler", "continuer", "demarrer", "femme", "guide", "homme", "miroir", "muet", "pasArriere", "pdf", "reglages", "retour", "roles", "son", "sources", "tuto", "valider"],
+    ["accueil", "aide", "annuler", "continuer", "contrat", "courriel", "demarrer", "direct", "femme", "guide", "homme", "miroir", "muet", "oeil", "pasArriere", "pdf", "reglages", "retour", "roles", "son", "sources", "tuto", "valider"],
   );
 });
 

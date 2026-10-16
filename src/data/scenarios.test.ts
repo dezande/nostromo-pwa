@@ -5,9 +5,15 @@ const FR = SCENARIOS.fr;
 
 beforeEach(() => { lang.value = "fr"; });
 
-test("trois scénarios, l'entraînement en premier, puis le mode sans scénario", () => {
-  expect(SCENARIO_IDS).toEqual(["training", "recruitment", "infiltrated", "free"]);
+test("du plus simple au plus complexe : le mode sans scénario, puis les trois scénarios par niveau", () => {
+  expect(SCENARIO_IDS).toEqual(["free", "training", "recruitment", "infiltrated"]);
   expect(Object.keys(SCENARIOS.en)).toEqual(SCENARIO_IDS);
+});
+
+test("une icône différente par scénario, la même dans les deux langues", () => {
+  const icons = SCENARIO_IDS.map(id => FR[id].icon);
+  expect(new Set(icons).size).toBe(SCENARIO_IDS.length);
+  expect(SCENARIO_IDS.map(id => SCENARIOS.en[id].icon)).toEqual(icons);
 });
 
 test.each(Object.entries({ ...FR, ...Object.fromEntries(Object.entries(SCENARIOS.en).map(([k, v]) => [`${k} (en)`, v])) }))(
@@ -34,8 +40,8 @@ test("Sans scénario : pas de panneau d'introduction", () => {
 });
 
 test("difficulté croissante pour le joueur, avec une durée indicative", () => {
-  expect(Object.values(FR).map(s => s.level)).toEqual(["Débutant", "Intermédiaire", "Confirmé", "Tous niveaux"]);
-  expect(Object.values(SCENARIOS.en).map(s => s.level)).toEqual(["Beginner", "Intermediate", "Experienced", "Any level"]);
+  expect(Object.values(FR).map(s => s.level)).toEqual(["Tous niveaux", "Débutant", "Intermédiaire", "Confirmé"]);
+  expect(Object.values(SCENARIOS.en).map(s => s.level)).toEqual(["Any level", "Beginner", "Intermediate", "Experienced"]);
   for (const s of Object.values(FR)) expect(s.duration).toMatch(/\d+.*min/);
 });
 
