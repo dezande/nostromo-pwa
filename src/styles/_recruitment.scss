@@ -137,12 +137,13 @@
   .email-intercept-note { margin-top: 2px; }
 }
 
-// L'e-mail tient dans l'écran ; seul son corps défile si besoin.
+// L'e-mail tient dans l'écran : bandeau, en-têtes et corps défilent ensemble dans une seule zone
+// (le bandeau de la direction prendrait sinon la moitié d'un téléphone) ; les boutons restent au pied.
 .email-panel {
   display: flex;
   flex-direction: column;
-  max-height: calc(var(--app-h) - 32px);
   overflow: hidden;
+  .email-scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
   .email-head {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -154,7 +155,7 @@
     .email-subject { color: var(--accent); }
     .email-attachment { display: inline-block; margin-right: 10px; color: var(--dim); }
   }
-  .email-body { flex: 0 1 auto; }
+  .email-body { flex: none; overflow: visible; } // le corps ne défile plus seul : il garde son cadre
   .email-foot { margin-top: 8px; color: var(--red); font-size: fs(9px); letter-spacing: .15em; text-align: center; }
   .briefing-actions { padding-top: 10px; }
 }
@@ -170,5 +171,5 @@
 }
 
 @media (max-height: 800px), (max-width: 480px) {
-  .email-panel { max-height: calc(var(--app-h) - 16px); .email-head { font-size: fs(10px); } }
+  .email-panel .email-head { font-size: fs(10px); }
 }
