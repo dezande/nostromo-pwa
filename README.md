@@ -62,7 +62,7 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   fiches et l'aide en **deux exemplaires par feuille** (page 1 deux fois au recto, page 2 deux fois au verso :
   la feuille coupée en deux donne deux fiches A5). Les cartes des rôles gardent leur format. Un dernier lien,
   **Livret complet**, télécharge toutes les feuilles A5 du scénario en un seul PDF (guide en livret, prétirés homme et
-  femme, aide), avec un signet par document ; en miroir avec le réglage, pour le guide et l'aide.
+  femme, aide), avec un signet par document, jamais en miroir.
 - **Réglages en onglets** :
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
     onglets), six styles d'écran rétro sombres, taille du texte, lignes horizontales, écrans de

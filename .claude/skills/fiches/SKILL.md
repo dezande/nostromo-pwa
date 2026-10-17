@@ -37,9 +37,9 @@ scénarios et boutons de l'app est dans `src/data/sheets.ts` (`SHEETS`, `ROLES`)
 déclare aux deux endroits, et `tests/pdf-links.spec.ts` vérifie que chaque PDF déclaré existe dans le build.
 Le livret complet de chaque scénario (`BOOKLET` et `scenarios` dans `fiches.mjs`, `BOOKLETS` dans `sheets.ts`, lien
 `#bookletPdf` de l'accueil, sans lecture dans l'app) est assemblé en fin de script avec pdf-lib à partir des PDF A5 qui
-viennent d'être générés : le guide en livret, le prétiré homme, le prétiré femme, l'aide, avec un signet par document.
-Son miroir (`-miroir` / `-mirrored`) prend le guide et l'aide dans leur version miroir. Un nouveau scénario s'ajoute à
-`scenarios` dans `fiches.mjs` et à `BOOKLETS` ; `pdf-links.spec.ts` vérifie les pages et les signets.
+viennent d'être générés : le guide en livret, le prétiré homme, le prétiré femme, l'aide, avec un signet par document,
+jamais en miroir. Un nouveau scénario s'ajoute à `scenarios` dans `fiches.mjs` et à `BOOKLETS` ; `pdf-links.spec.ts`
+vérifie les pages et les signets.
 
 Styles : `fiche.css` (guides), `pretire.css` (prétirés, lisibles en A4 comme en A5), `roles.css` (cartes
 format poker, 9 par page). `pretire.js` dessine au chargement les icônes `<i class="ic" data-ic="nom">`,

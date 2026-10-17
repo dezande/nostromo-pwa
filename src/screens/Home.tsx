@@ -80,20 +80,17 @@ function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
 }
 
 /**
- * Le livret complet du scénario : toutes ses feuilles A5 en un seul PDF (guide en livret, prétirés, aide), en miroir
- * pour le guide et l'aide quand le réglage est actif. Rien à lire dans l'app : chaque document s'y lit déjà.
+ * Le livret complet du scénario : toutes ses feuilles A5 en un seul PDF (guide en livret, prétirés, aide), jamais en
+ * miroir, quel que soit le réglage. Rien à lire dans l'app : chaque document s'y lit déjà.
  */
 function BookletLink({ scenario }: { scenario: Scenario }) {
   const booklet = BOOKLETS[scenario];
   if (!booklet) return null;
-  const mirror = settings.mirror.value;
-  const file = mirror ? byLang(booklet).mirrorFile : byLang(booklet).file;
+  const { file } = byLang(booklet);
   return (
     <span class="sheet sheet-livret">
       <a class="sheet-link" id="bookletPdf" href={`fiches/${file}`} target="_blank" rel="noopener" download={file}
-        aria-label={mirror
-          ? tr("Livret complet du scénario en PDF A5 miroir", "Full scenario booklet as mirrored A5 PDF")
-          : tr("Livret complet du scénario en PDF A5", "Full scenario booklet as A5 PDF")}>
+        aria-label={tr("Livret complet du scénario en PDF A5", "Full scenario booklet as A5 PDF")}>
         <Icon name="pdf" />{tr("Livret complet", "Full booklet")}
       </a>
     </span>

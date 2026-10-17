@@ -130,9 +130,9 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("href", "fiches/nostromo-session-disciplinaire-aide-superviseur-miroir.pdf");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme.pdf");
   await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
-  // Le livret complet suit le réglage : guide et aide retournés, les prétirés non
-  await expect(page.locator("#bookletPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-livret-complet-miroir.pdf");
-  await expect(page.locator("#bookletPdf")).toHaveAttribute("aria-label", "Livret complet du scénario en PDF A5 miroir");
+  // Le livret complet ignore le réglage : tout s'y lit à l'endroit
+  await expect(page.locator("#bookletPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-livret-complet.pdf");
+  await expect(page.locator("#bookletPdf")).toHaveAttribute("aria-label", "Livret complet du scénario en PDF A5");
   // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du Superviseur
   await page.locator("#infiltratedFemPdfRead").click();
   await expect(page.locator("#docText")).toContainText("Agent de renseignement infiltrée");

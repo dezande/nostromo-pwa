@@ -84,17 +84,15 @@ export const SHEETS: Record<Scenario, Sheet[]> = {
 export const ROLES: Sheet = { id: "rolesPdf", kind: "roles", html: "roles.html", file: "nostromo-cartes-roles.pdf",
   en: { html: "roles-en.html", file: "nostromo-role-cards.pdf" } };
 
-/** Livret complet d'un scénario : un seul PDF, dans une langue, avec sa version miroir (guide et aide retournés). */
-type Booklet = { file: string; mirrorFile: string };
-/** Nom du livret complet et de son miroir d'après le préfixe des PDF du scénario (scripts/fiches.mjs les génère sous ces noms). */
-const booklet = (slug: string, language: "fr" | "en"): Booklet => {
-  const file = `nostromo-${slug}-${language === "en" ? "full-booklet" : "livret-complet"}.pdf`;
-  return { file, mirrorFile: suffixed(file, language === "en" ? "mirrored" : "miroir") };
-};
+/** Livret complet d'un scénario : un seul PDF, dans une langue. */
+type Booklet = { file: string };
+/** Nom du livret complet d'après le préfixe des PDF du scénario (scripts/fiches.mjs le génère sous ce nom). */
+const booklet = (slug: string, language: "fr" | "en"): Booklet =>
+  ({ file: `nostromo-${slug}-${language === "en" ? "full-booklet" : "livret-complet"}.pdf` });
 /**
  * Le livret complet de chaque scénario : toutes ses feuilles A5 (guide en livret, prétirés homme et femme, aide en deux
- * exemplaires) en un seul PDF à imprimer d'un coup, avec un signet par document. Pas de lecture dans l'app : chaque
- * document s'y lit déjà. Rien sans scénario.
+ * exemplaires) en un seul PDF à imprimer d'un coup, avec un signet par document. Jamais en miroir : tout se lit à
+ * l'endroit. Pas de lecture dans l'app : chaque document s'y lit déjà. Rien sans scénario.
  */
 export const BOOKLETS: Record<Scenario, { fr: Booklet; en: Booklet } | null> = {
   training: { fr: booklet("sixieme-sens", "fr"), en: booklet("sixth-sense", "en") },

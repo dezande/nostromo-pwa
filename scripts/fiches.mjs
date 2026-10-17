@@ -14,9 +14,9 @@
 //     (retournée sur le bord court) : le guide en livret (-livret / -booklet : une feuille pliée en deux, pages
 //     dans l'ordre de lecture), les prétirés et l'aide en deux exemplaires par feuille (-a5 : recto = page 1
 //     deux fois, verso = page 2 deux fois ; coupée en deux, la feuille donne deux fiches A5 recto verso) ;
-//   - le livret complet de chaque scénario (-livret-complet / -full-booklet, et son miroir) : toutes ses feuilles A5
-//     en un seul PDF, le guide en livret puis les deux prétirés et l'aide en deux exemplaires, avec un signet par
-//     document ; assemblé avec pdf-lib à partir des PDF A5 qui précèdent.
+//   - le livret complet de chaque scénario (-livret-complet / -full-booklet) : toutes ses feuilles A5 en un seul PDF,
+//     le guide en livret puis les deux prétirés et l'aide en deux exemplaires, avec un signet par document, jamais en
+//     miroir (tout se lit à l'endroit) ; assemblé avec pdf-lib à partir des PDF A5 qui précèdent.
 // Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page et de chaque feuille A5)
@@ -62,9 +62,8 @@ const documents = [
 ];
 
 // Le livret complet de chaque scénario : ses feuilles A5 dans l'ordre d'impression (guide en livret, prétiré homme,
-// prétiré femme, aide), par langue. Les noms des parties sont ceux des PDF A5 générés plus haut (après le préfixe du
-// scénario) ; en miroir, les parties du Superviseur (guide, aide) sont prises dans leur version miroir.
-// Les noms des fichiers sont ceux de src/data/sheets.ts (BOOKLETS).
+// prétiré femme, aide), par langue. Les noms des parties sont ceux des PDF A5 ordinaires générés plus haut (après le
+// préfixe du scénario). Les noms des fichiers sont ceux de src/data/sheets.ts (BOOKLETS).
 const BOOKLET = {
   fr: { pdf: slug => `nostromo-${slug}-livret-complet.pdf`, title: name => `Nostromo II — Livret complet (${name})`,
     parts: ["guide-superviseur-livret", "fiche-homme-a5", "fiche-femme-a5", "aide-superviseur-a5"] },
@@ -164,7 +163,7 @@ async function launch() {
 await mkdir(output, { recursive: true });
 if (pngDir) await mkdir(pngDir, { recursive: true });
 
-/** Les PDF A5 générés (nom → fichier et titre), pour assembler ensuite les livrets complets. */
+/** Les PDF A5 ordinaires générés (nom → fichier et titre), pour assembler ensuite les livrets complets. */
 const generated = new Map();
 
 const browser = await launch();
@@ -238,7 +237,7 @@ try {
       for (const version of variants(part, part.title, en).filter(v => v.a5)) {
         const file = await print(version);
         console.log(`PDF : ${file} (${sheets} feuille${sheets > 1 ? "s" : ""} A4 paysage)`);
-        generated.set(version.pdf, { file, title: version.title });
+        if (!version.mirror) generated.set(version.pdf, { file, title: version.title });
       }
       if (pngDir) {
         await page.evaluate(() => document.documentElement.classList.remove("miroir"));
@@ -284,23 +283,20 @@ const bookmark = title => title.replace(/^Nostromo II — /, "").replace(/( \([^
 for (const lang of ["fr", "en"]) {
   const { pdf, title, parts } = BOOKLET[lang];
   for (const [slug, name] of scenarios[lang]) {
-    for (const mirror of [false, true]) {
-      const doc = await PDFDocument.create();
-      doc.setTitle(mirror ? `${title(name)} (${SUFFIX[lang].mirror})` : title(name));
-      doc.setLanguage(lang);
-      const items = [];
-      for (const part of parts) {
-        const plain = `nostromo-${slug}-${part}.pdf`;
-        const chosen = mirror ? generated.get(plain.replace(/\.pdf$/, `-${SUFFIX[lang].mirror}.pdf`)) ?? generated.get(plain) : generated.get(plain);
-        if (!chosen) throw new Error(`livret complet de ${slug} : ${plain} n'a pas été généré`);
-        const src = await PDFDocument.load(await readFile(chosen.file));
-        items.push({ title: bookmark(chosen.title), page: doc.getPageCount() });
-        for (const p of await doc.copyPages(src, src.getPageIndices())) doc.addPage(p);
-      }
-      addOutline(doc, items);
-      const file = join(output, mirror ? pdf(slug).replace(/\.pdf$/, `-${SUFFIX[lang].mirror}.pdf`) : pdf(slug));
-      await writeFile(file, await doc.save());
-      console.log(`PDF : ${file} (${doc.getPageCount()} pages, ${items.length} signets)`);
+    const doc = await PDFDocument.create();
+    doc.setTitle(title(name));
+    doc.setLanguage(lang);
+    const items = [];
+    for (const part of parts) {
+      const chosen = generated.get(`nostromo-${slug}-${part}.pdf`);
+      if (!chosen) throw new Error(`livret complet de ${slug} : nostromo-${slug}-${part}.pdf n'a pas été généré`);
+      const src = await PDFDocument.load(await readFile(chosen.file));
+      items.push({ title: bookmark(chosen.title), page: doc.getPageCount() });
+      for (const p of await doc.copyPages(src, src.getPageIndices())) doc.addPage(p);
     }
+    addOutline(doc, items);
+    const file = join(output, pdf(slug));
+    await writeFile(file, await doc.save());
+    console.log(`PDF : ${file} (${doc.getPageCount()} pages, ${items.length} signets)`);
   }
 }
