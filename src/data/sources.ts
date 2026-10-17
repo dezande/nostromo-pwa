@@ -16,6 +16,9 @@ export interface SourceGroup {
   items: Source[];
 }
 
+/** Le changelog sur GitHub, aussi lié depuis Réglages → Système. */
+export const CHANGELOG_URL = "https://github.com/dezande/nostromo-pwa/blob/main/CHANGELOG.md";
+
 export const SOURCES: SourceGroup[] = [
   {
     title: "Cette app",
@@ -24,6 +27,7 @@ export const SOURCES: SourceGroup[] = [
         url: "https://dezande.github.io/nostromo-pwa/", qr: true },
       { name: "Code source", by: "GitHub · dezande/nostromo-pwa", use: "Le code de l'app et des fiches",
         url: "https://github.com/dezande/nostromo-pwa", qr: true },
+      { name: "Nouveautés", by: "GitHub · CHANGELOG.md", use: "Ce qui change à chaque version", url: CHANGELOG_URL },
       { name: "Claude Code", by: "Anthropic", use: "Assistant IA qui a écrit le code, les textes et les fiches avec l'auteur",
         url: "https://claude.com/claude-code", qr: true },
     ],
@@ -62,6 +66,7 @@ export const SOURCES_EN: SourceGroup[] = [
         url: "https://dezande.github.io/nostromo-pwa/", qr: true },
       { name: "Source code", by: "GitHub · dezande/nostromo-pwa", use: "The code of the app and the sheets",
         url: "https://github.com/dezande/nostromo-pwa", qr: true },
+      { name: "What's new", by: "GitHub · CHANGELOG.md", use: "What changes with each version", url: CHANGELOG_URL },
       { name: "Claude Code", by: "Anthropic", use: "AI assistant that wrote the code, the texts and the sheets with the author",
         url: "https://claude.com/claude-code", qr: true },
     ],

@@ -10,6 +10,7 @@ import { SOUND_SETTINGS, settings, type Layout, type SettingsTab } from "../stat
 import { scenarioText } from "../data/scenarios";
 import { quitAsking, returnHome, settingsOpen } from "../state/ui";
 import { inGame } from "../state/game";
+import { CHANGELOG_URL } from "../data/sources";
 import { BUILD, offline, type OfflineState } from "../state/pwa";
 import { LANGS, lang, tr } from "../i18n";
 
@@ -73,6 +74,10 @@ export function Settings() {
           <TabPanel id="system" active={tab}>
             <Toggle id="wakeChk" label={tr("Écran toujours allumé", "Keep screen on")} setting={settings.wakeLock} />
             <VersionInfo />
+            <a id="changelogLink" class="source-url" href={CHANGELOG_URL} target="_blank" rel="noopener"
+               aria-label={tr("Nouveautés de l'app, sur GitHub", "What's new in the app, on GitHub")}>
+              {tr("Nouveautés", "What's new")}
+            </a>
           </TabPanel>
         </div>
 
