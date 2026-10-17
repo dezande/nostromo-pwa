@@ -2,7 +2,8 @@
 // Les clauses inquiétantes sont noyées dans le jargon ; le contrat ne dit jamais clairement que l'examen est mortel.
 // [[…]] : passage censuré (voir src/components/Redacted.tsx).
 
-export const CONTRACT_REF = "WY-RH/2122-0612";
+// Même année que les matricules des fiches prétirées (PA-2184-0417, WY-C-2184-0612) et que la Session disciplinaire.
+export const CONTRACT_REF = "WY-RH/2184-0612";
 
 export interface Article { title: string; paragraphs: string[] }
 

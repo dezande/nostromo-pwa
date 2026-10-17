@@ -13,8 +13,8 @@ export const reportNumber = (win: boolean) => `${win ? "ENT" : "INC"}-${digits(3
 
 export const DOC_REFS = {
   get welcome() {
-    return tr(`RÉF. WY-NOS2-TR/0417 · DOSSIER AGENT N° ${AGENT_ID} · DATE STELLAIRE 2122.06.03`,
-      `REF. WY-NOS2-TR/0417 · AGENT FILE NO. ${AGENT_ID} · STARDATE 2122.06.03`);
+    return tr(`RÉF. WY-NOS2-TR/0417 · DOSSIER AGENT N° ${AGENT_ID} · DATE STELLAIRE 2184.06.03`,
+      `REF. WY-NOS2-TR/0417 · AGENT FILE NO. ${AGENT_ID} · STARDATE 2184.06.03`);
   },
   /** Fiche de règle n (1 à 4) du protocole. */
   rule: (n: number) => tr(`RÉF. WY-NOS2-AIP/113-0${n} · CLASSIFICATION : INTERNE`, `REF. WY-NOS2-AIP/113-0${n} · CLASSIFICATION: INTERNAL`),
