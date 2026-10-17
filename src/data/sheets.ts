@@ -2,6 +2,7 @@
 // Chacun se lit dans l'app (page HTML du dossier fiches/) ou se télécharge en PDF (public/fiches).
 // Les documents du Superviseur (aide, guide) existent aussi en PDF miroir, comme leur texte dans l'app (réglage « miroir »).
 // Tous sauf les cartes existent aussi en A5 (second lien à côté du PDF) : le guide en livret, les autres en deux exemplaires par feuille A4.
+// Le livret complet d'un scénario (BOOKLETS) rassemble ses feuilles A5 en un seul PDF, avec un signet par document.
 import type { IconName } from "../components/Icon";
 import type { Scenario } from "../state/settings";
 import type { ScenarioDocument } from "../state/ui";
@@ -82,6 +83,23 @@ export const SHEETS: Record<Scenario, Sheet[]> = {
 /** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios (pas sans scénario). */
 export const ROLES: Sheet = { id: "rolesPdf", kind: "roles", html: "roles.html", file: "nostromo-cartes-roles.pdf",
   en: { html: "roles-en.html", file: "nostromo-role-cards.pdf" } };
+
+/** Livret complet d'un scénario : un seul PDF, dans une langue. */
+type Booklet = { file: string };
+/** Nom du livret complet d'après le préfixe des PDF du scénario (scripts/fiches.mjs le génère sous ce nom). */
+const booklet = (slug: string, language: "fr" | "en"): Booklet =>
+  ({ file: `nostromo-${slug}-${language === "en" ? "full-booklet" : "livret-complet"}.pdf` });
+/**
+ * Le livret complet de chaque scénario : toutes ses feuilles A5 (guide en livret, prétirés homme et femme, aide en deux
+ * exemplaires) en un seul PDF à imprimer d'un coup, avec un signet par document. Jamais en miroir : tout se lit à
+ * l'endroit. Pas de lecture dans l'app : chaque document s'y lit déjà. Rien sans scénario.
+ */
+export const BOOKLETS: Record<Scenario, { fr: Booklet; en: Booklet } | null> = {
+  training: { fr: booklet("sixieme-sens", "fr"), en: booklet("sixth-sense", "en") },
+  recruitment: { fr: booklet("une-simple-formalite", "fr"), en: booklet("a-mere-formality", "en") },
+  infiltrated: { fr: booklet("session-disciplinaire", "fr"), en: booklet("disciplinary-session", "en") },
+  free: null,
+};
 
 /** Document d'après son identifiant (adresse /scenario/document/…), dans la langue de l'app. */
 export function findSheet(id: string): LocalizedSheet | null {

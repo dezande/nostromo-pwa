@@ -92,7 +92,7 @@
   .hidden-desc { visibility: hidden; }
   // Les seuils ci-dessous sont en em de cette police : ils suivent le réglage « Taille du texte ».
   .sheets { width: 100%; margin-top: 0; container-type: inline-size; font-size: fs(11px); }
-  // Documents (4 du scénario, puis les rôles) en grille régulière : 2 colonnes, 3 si la place le permet, 1 sur très petit écran.
+  // Documents (4 du scénario, les rôles, puis le livret complet) en grille régulière : 2 colonnes, 3 si la place le permet, 1 sur très petit écran.
   // Un document entier (nom avec icône, PDF, A5 ou Livret) fait environ 18 em : trois colonnes à partir de 56 em.
   .sheet-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @container (min-width: 56em) { .sheet-links { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
@@ -121,6 +121,8 @@
   .sheet > .sheet-link:first-child { border-radius: 6px 0 0 6px; }
   .sheet > .sheet-pdf { border-left: none; border-radius: 0; }
   .sheet > .sheet-pdf:last-child { border-radius: 0 6px 6px 0; }
+  // Le livret complet : un seul bouton, arrondi des deux côtés
+  .sheet > .sheet-link:only-child { border-radius: 6px; }
 }
 
 .sheet-link {
