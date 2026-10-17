@@ -13,14 +13,18 @@
 //   - chaque document sauf les cartes aussi en A5, deux pages par feuille A4 paysage à imprimer recto verso
 //     (retournée sur le bord court) : le guide en livret (-livret / -booklet : une feuille pliée en deux, pages
 //     dans l'ordre de lecture), les prétirés et l'aide en deux exemplaires par feuille (-a5 : recto = page 1
-//     deux fois, verso = page 2 deux fois ; coupée en deux, la feuille donne deux fiches A5 recto verso).
+//     deux fois, verso = page 2 deux fois ; coupée en deux, la feuille donne deux fiches A5 recto verso) ;
+//   - un PDF « tout en un » par langue (nostromo-tous-les-documents.pdf / nostromo-all-documents.pdf) : les pages A4
+//     ordinaires de tous les documents, scénario par scénario dans l'ordre de l'app puis les cartes, avec un signet
+//     par scénario et par document ; assemblé avec pdf-lib à partir des PDF qui précèdent.
 // Le <title> de la page HTML devient le titre du PDF (ou celui de la partie, pour un prétiré).
 // Chaque page A4 est un élément .page de hauteur fixe : un contenu qui dépasse fait échouer le script.
 // Usage : npm run fiches [-- --png <dossier>]   (--png : enregistre aussi une capture de chaque page et de chaque feuille A5)
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join, resolve } from "node:path";
 import { chromium } from "@playwright/test";
+import { PDFDocument, PDFHexString, PDFName, PDFNumber } from "pdf-lib";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = join(root, "fiches");
@@ -55,6 +59,18 @@ const documents = [
   { html: "psychic-agent-en.html", pages: [5, 6], parts: pregen("sixth-sense", "Psychic Agent", "Sixth Sense") },
   { html: "guide-superviseur-entrainement-en.html", pdf: "nostromo-sixth-sense-supervisor-guide.pdf", pages: [2, 4], mirror: true, a5: "booklet" },
   { html: "roles-en.html", pdf: "nostromo-role-cards.pdf", pages: [2, 2] },
+];
+
+// Le PDF « tout en un » de chaque langue : les scénarios dans l'ordre de l'app (src/data/scenarios.ts), puis les cartes.
+// Les documents d'un scénario sont ceux dont le nom porte son préfixe, dans l'ordre où ils sont générés
+// (fiche homme, fiche femme, aide, guide). Les noms des fichiers sont ceux de src/data/sheets.ts (ALL_DOCUMENTS).
+const compilations = [
+  { pdf: "nostromo-tous-les-documents.pdf", title: "Nostromo II — Tous les documents (3D6 Système)", lang: "fr",
+    scenarios: [["sixieme-sens", "Sixième sens"], ["une-simple-formalite", "Une simple formalité"], ["session-disciplinaire", "Session disciplinaire"]],
+    roles: "nostromo-cartes-roles.pdf" },
+  { pdf: "nostromo-all-documents.pdf", title: "Nostromo II — All documents (3D6 Système)", lang: "en",
+    scenarios: [["sixth-sense", "Sixth Sense"], ["a-mere-formality", "A Mere Formality"], ["disciplinary-session", "Disciplinary Session"]],
+    roles: "nostromo-role-cards.pdf" },
 ];
 
 // Suffixes des variantes d'un PDF, dans la langue du document (les mêmes que dans src/data/sheets.ts).
@@ -145,6 +161,9 @@ async function launch() {
 await mkdir(output, { recursive: true });
 if (pngDir) await mkdir(pngDir, { recursive: true });
 
+/** Les PDF A4 ordinaires générés (nom → fichier et titre), à assembler ensuite dans les PDF « tout en un ». */
+const generated = new Map();
+
 const browser = await launch();
 try {
   const page = await browser.newPage({ viewport: { width: 794, height: 1123 } });
@@ -195,6 +214,7 @@ try {
         const file = await print(version, `${part.from}-${part.to}`);
         const n = part.to - part.from + 1;
         console.log(`PDF : ${file} (${n} page${n > 1 ? "s" : ""})`);
+        if (!version.mirror) generated.set(version.pdf, { file, title: version.title });
       }
     }
     await page.evaluate(() => document.documentElement.classList.remove("miroir"));
@@ -230,4 +250,63 @@ try {
   }
 } finally {
   await browser.close();
+}
+
+/**
+ * Signets du PDF assemblé : un par scénario (ouvert), contenant un par document, chacun vers sa première page.
+ * pdf-lib ne connaît pas les signets : on écrit le dictionnaire /Outlines du PDF à la main (chaîne First/Last,
+ * Prev/Next, Parent, Count positif pour une entrée dépliée).
+ */
+function addOutline(doc, items) {
+  const ctx = doc.context;
+  const root = ctx.obj({ Type: "Outlines" });
+  const rootRef = ctx.register(root);
+  const build = (entries, parentRef, parentDict) => {
+    const refs = entries.map(() => ctx.nextRef());
+    let count = entries.length;
+    entries.forEach((entry, i) => {
+      const dict = ctx.obj({ Title: PDFHexString.fromText(entry.title), Parent: parentRef, Dest: [doc.getPage(entry.page).ref, "Fit"] });
+      if (i > 0) dict.set(PDFName.of("Prev"), refs[i - 1]);
+      if (i < entries.length - 1) dict.set(PDFName.of("Next"), refs[i + 1]);
+      ctx.assign(refs[i], dict);
+      if (entry.children?.length) count += build(entry.children, refs[i], dict);
+    });
+    parentDict.set(PDFName.of("First"), refs[0]);
+    parentDict.set(PDFName.of("Last"), refs[refs.length - 1]);
+    parentDict.set(PDFName.of("Count"), PDFNumber.of(count));
+    return count;
+  };
+  build(items, rootRef, root);
+  doc.catalog.set(PDFName.of("Outlines"), rootRef);
+  doc.catalog.set(PDFName.of("PageMode"), PDFName.of("UseOutlines")); // le lecteur ouvre le panneau des signets
+}
+
+/** Titre d'un signet de document : le titre de son PDF sans la marque ni le scénario, « Reyes, version homme ». */
+const bookmark = title => title.replace(/^Nostromo II — /, "").replace(/ \([^()]*\)$/, "");
+
+for (const { pdf, title, lang, scenarios, roles } of compilations) {
+  const doc = await PDFDocument.create();
+  doc.setTitle(title);
+  doc.setLanguage(lang);
+  const items = [];
+  const append = async (file) => {
+    const first = doc.getPageCount();
+    const src = await PDFDocument.load(await readFile(file));
+    for (const p of await doc.copyPages(src, src.getPageIndices())) doc.addPage(p);
+    return first;
+  };
+  for (const [slug, name] of scenarios) {
+    const parts = [...generated].filter(([pdfName]) => pdfName.startsWith(`nostromo-${slug}-`));
+    if (parts.length === 0) throw new Error(`${pdf} : aucun document pour le scénario ${slug}`);
+    const children = [];
+    for (const [, { file, title: partTitle }] of parts) children.push({ title: bookmark(partTitle), page: await append(file) });
+    items.push({ title: name, page: children[0].page, children });
+  }
+  const cards = generated.get(roles);
+  if (!cards) throw new Error(`${pdf} : ${roles} n'a pas été généré`);
+  items.push({ title: bookmark(cards.title), page: await append(cards.file) });
+  addOutline(doc, items);
+  const file = join(output, pdf);
+  await writeFile(file, await doc.save());
+  console.log(`PDF : ${file} (${doc.getPageCount()} pages, ${items.length} signets)`);
 }

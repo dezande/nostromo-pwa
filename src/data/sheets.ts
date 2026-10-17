@@ -2,6 +2,7 @@
 // Chacun se lit dans l'app (page HTML du dossier fiches/) ou se télécharge en PDF (public/fiches).
 // Les documents du Superviseur (aide, guide) existent aussi en PDF miroir, comme leur texte dans l'app (réglage « miroir »).
 // Tous sauf les cartes existent aussi en A5 (second lien à côté du PDF) : le guide en livret, les autres en deux exemplaires par feuille A4.
+// Un PDF « tout en un » par langue rassemble les pages A4 de tous les documents, avec des signets (ALL_DOCUMENTS).
 import type { IconName } from "../components/Icon";
 import type { Scenario } from "../state/settings";
 import type { ScenarioDocument } from "../state/ui";
@@ -82,6 +83,12 @@ export const SHEETS: Record<Scenario, Sheet[]> = {
 /** Cartes des petits rôles des spectateurs (IA, Xénomorphes) : les mêmes pour tous les scénarios (pas sans scénario). */
 export const ROLES: Sheet = { id: "rolesPdf", kind: "roles", html: "roles.html", file: "nostromo-cartes-roles.pdf",
   en: { html: "roles-en.html", file: "nostromo-role-cards.pdf" } };
+
+/**
+ * Tous les documents en un seul PDF (pages A4 ordinaires, scénario par scénario puis les cartes, un signet par
+ * document), par langue : les noms que scripts/fiches.mjs donne aux PDF assemblés.
+ */
+export const ALL_DOCUMENTS = { fr: "nostromo-tous-les-documents.pdf", en: "nostromo-all-documents.pdf" };
 
 /** Document d'après son identifiant (adresse /scenario/document/…), dans la langue de l'app. */
 export function findSheet(id: string): LocalizedSheet | null {

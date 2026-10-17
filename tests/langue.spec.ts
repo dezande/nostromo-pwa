@@ -11,6 +11,8 @@ test("version anglaise : choix à l'accueil, retenu au rechargement, documents e
   await expect(page.locator("#scenario-recruitment strong")).toHaveText("A Mere Formality");
   await expect(page.locator("#trainingPdf")).toHaveAttribute("href", "fiches/nostromo-sixth-sense-sheet-male.pdf");
   await expect(page.locator("#rolesPdf")).toHaveAttribute("href", "fiches/nostromo-role-cards.pdf");
+  await expect(page.locator("#allPdf")).toHaveAttribute("href", "fiches/nostromo-all-documents.pdf");
+  await expect(page.locator("#allPdf")).toHaveAttribute("aria-label", "All documents in a single PDF");
   await page.locator("#trainingGuidePdfRead").click();
   await expect(page.locator("#docText")).toContainText("Supervisor");
   await expect(page.locator("#docText .scenes .illu svg")).toHaveCount(4); // les scènes clés, avec leurs mots en anglais

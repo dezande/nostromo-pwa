@@ -10,7 +10,7 @@ import { runTerminal, terminalOpen } from "../state/terminal";
 import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, sourcesOpen, tutorial } from "../state/ui";
 import { settings } from "../state/settings";
 import { SCENARIO_IDS, scenarioText } from "../data/scenarios";
-import { ROLES, SHEETS, localized, type LocalizedSheet } from "../data/sheets";
+import { ALL_DOCUMENTS, ROLES, SHEETS, localized, type LocalizedSheet } from "../data/sheets";
 import { LANGS, byLang, lang, tr } from "../i18n";
 import { contractSigned } from "./Recruitment";
 import { a5Button, a5File, a5Label, pdfFile, pdfLabel } from "./DocumentViewer";
@@ -79,6 +79,19 @@ function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
   );
 }
 
+/** Tous les documents (tous les scénarios, cartes comprises) en un seul PDF à télécharger, jamais en miroir. */
+function AllDocumentsLink() {
+  const file = byLang(ALL_DOCUMENTS);
+  return (
+    <span class="sheet sheet-tout">
+      <a class="sheet-link" id="allPdf" href={`fiches/${file}`} target="_blank" rel="noopener" download={file}
+        aria-label={tr("Tous les documents en un seul PDF", "All documents in a single PDF")}>
+        <Icon name="pdf" />{tr("Tout en un", "All in one")}
+      </a>
+    </span>
+  );
+}
+
 /** Choix du scénario au lancement ; le dernier choisi est proposé par défaut. */
 function ScenarioChoice() {
   const current = settings.scenario.value;
@@ -104,12 +117,13 @@ function ScenarioChoice() {
           ? <p key={id} id="scenarioDesc">{scenarioText(id).description}</p>
           : <p key={id} class="hidden-desc" aria-hidden="true">{scenarioText(id).description}</p>)}
       </div>
-      {/* Documents du scénario, puis les cartes des petits rôles (les mêmes pour tous). Sans scénario : aucun,
-          mais leur place reste réservée (bloc invisible) pour que les cartes ne bougent pas au changement */}
+      {/* Documents du scénario, puis les cartes des petits rôles (les mêmes pour tous) et le PDF qui rassemble tout.
+          Sans scénario : aucun, mais leur place reste réservée (bloc invisible) pour que les cartes ne bougent pas au changement */}
       <div class={none ? "sheets hidden-desc" : "sheets"} id="sheets" aria-hidden={none || undefined}>
         <span class="set-label">Documents (3D6 Système)</span>
         <div class="sheet-links">
           {[...SHEETS[none ? "training" : current], ROLES].map(sheet => <SheetLink key={sheet.id} {...localized(sheet)} />)}
+          <AllDocumentsLink />
         </div>
       </div>
       <div class="row icon-row home-actions">

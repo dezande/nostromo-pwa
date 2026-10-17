@@ -89,8 +89,11 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#infiltratedFemPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-femme.pdf");
   await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-aide-superviseur.pdf");
   await expect(page.locator("#infiltratedGuidePdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-guide-superviseur.pdf");
-  // Les cartes des petits rôles (IA, Xénomorphes) : les mêmes dans chaque scénario
+  // Les cartes des petits rôles (IA, Xénomorphes) : les mêmes dans chaque scénario, comme le PDF tout en un (sans lecture dans l'app)
   await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
+  await expect(page.locator("#allPdf")).toHaveAttribute("download", "nostromo-tous-les-documents.pdf");
+  await expect(page.locator("#allPdf")).toHaveAttribute("href", "fiches/nostromo-tous-les-documents.pdf");
+  await expect(page.locator("#allPdfRead")).toHaveCount(0);
   await page.locator("#rolesPdfRead").click();
   await expect(page.locator("#docText")).toContainText("IA PROTOCOLE");
   await expect(page.locator("#docText")).toContainText("Entrepôt 4");
@@ -124,6 +127,7 @@ test("scénario « Session disciplinaire » : e-mail du Lieutenant D.R. à la C.
   await expect(page.locator("#infiltratedMjPdf")).toHaveAttribute("href", "fiches/nostromo-session-disciplinaire-aide-superviseur-miroir.pdf");
   await expect(page.locator("#infiltratedPdf")).toHaveAttribute("download", "nostromo-session-disciplinaire-fiche-homme.pdf");
   await expect(page.locator("#rolesPdf")).toHaveAttribute("download", "nostromo-cartes-roles.pdf");
+  await expect(page.locator("#allPdf")).toHaveAttribute("download", "nostromo-tous-les-documents.pdf");
   // Le prétiré en version femme : seulement la fiche joueur, accordée au féminin, sans l'aide du Superviseur
   await page.locator("#infiltratedFemPdfRead").click();
   await expect(page.locator("#docText")).toContainText("Agent de renseignement infiltrée");
