@@ -61,8 +61,8 @@ Les PDF et les polices des styles d'écran se téléchargent la première fois q
   le bord court) : le guide du Superviseur en **livret** (une feuille pliée en deux, pages dans l'ordre), les
   fiches et l'aide en **deux exemplaires par feuille** (page 1 deux fois au recto, page 2 deux fois au verso :
   la feuille coupée en deux donne deux fiches A5). Les cartes des rôles gardent leur format. Un dernier lien,
-  **Tout en un**, télécharge un seul PDF avec les pages A4 de tous les documents de tous les scénarios, cartes
-  comprises, avec un signet par scénario et par document.
+  **Livret complet**, télécharge toutes les feuilles A5 du scénario en un seul PDF (guide en livret, prétirés homme et
+  femme, aide), avec un signet par document ; en miroir avec le réglage, pour le guide et l'aide.
 - **Réglages en onglets** :
   - *Affichage* : format tablette (deux ponts côte à côte) ou téléphone (un pont à la fois, avec
     onglets), six styles d'écran rétro sombres, taille du texte, lignes horizontales, écrans de

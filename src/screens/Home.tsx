@@ -8,9 +8,9 @@ import { keepAwake } from "../state/device";
 import { showIntro, startGame } from "../state/game";
 import { runTerminal, terminalOpen } from "../state/terminal";
 import { briefing, choosingScenario, homeOpen, openDocument, settingsOpen, sourcesOpen, tutorial } from "../state/ui";
-import { settings } from "../state/settings";
+import { settings, type Scenario } from "../state/settings";
 import { SCENARIO_IDS, scenarioText } from "../data/scenarios";
-import { ALL_DOCUMENTS, ROLES, SHEETS, localized, type LocalizedSheet } from "../data/sheets";
+import { BOOKLETS, ROLES, SHEETS, localized, type LocalizedSheet } from "../data/sheets";
 import { LANGS, byLang, lang, tr } from "../i18n";
 import { contractSigned } from "./Recruitment";
 import { a5Button, a5File, a5Label, pdfFile, pdfLabel } from "./DocumentViewer";
@@ -79,14 +79,22 @@ function SheetLink({ id, label, icon, ...sheet }: LocalizedSheet) {
   );
 }
 
-/** Tous les documents (tous les scénarios, cartes comprises) en un seul PDF à télécharger, jamais en miroir. */
-function AllDocumentsLink() {
-  const file = byLang(ALL_DOCUMENTS);
+/**
+ * Le livret complet du scénario : toutes ses feuilles A5 en un seul PDF (guide en livret, prétirés, aide), en miroir
+ * pour le guide et l'aide quand le réglage est actif. Rien à lire dans l'app : chaque document s'y lit déjà.
+ */
+function BookletLink({ scenario }: { scenario: Scenario }) {
+  const booklet = BOOKLETS[scenario];
+  if (!booklet) return null;
+  const mirror = settings.mirror.value;
+  const file = mirror ? byLang(booklet).mirrorFile : byLang(booklet).file;
   return (
-    <span class="sheet sheet-tout">
-      <a class="sheet-link" id="allPdf" href={`fiches/${file}`} target="_blank" rel="noopener" download={file}
-        aria-label={tr("Tous les documents en un seul PDF", "All documents in a single PDF")}>
-        <Icon name="pdf" />{tr("Tout en un", "All in one")}
+    <span class="sheet sheet-livret">
+      <a class="sheet-link" id="bookletPdf" href={`fiches/${file}`} target="_blank" rel="noopener" download={file}
+        aria-label={mirror
+          ? tr("Livret complet du scénario en PDF A5 miroir", "Full scenario booklet as mirrored A5 PDF")
+          : tr("Livret complet du scénario en PDF A5", "Full scenario booklet as A5 PDF")}>
+        <Icon name="pdf" />{tr("Livret complet", "Full booklet")}
       </a>
     </span>
   );
@@ -117,13 +125,13 @@ function ScenarioChoice() {
           ? <p key={id} id="scenarioDesc">{scenarioText(id).description}</p>
           : <p key={id} class="hidden-desc" aria-hidden="true">{scenarioText(id).description}</p>)}
       </div>
-      {/* Documents du scénario, puis les cartes des petits rôles (les mêmes pour tous) et le PDF qui rassemble tout.
+      {/* Documents du scénario, puis les cartes des petits rôles (les mêmes pour tous) et le livret complet du scénario.
           Sans scénario : aucun, mais leur place reste réservée (bloc invisible) pour que les cartes ne bougent pas au changement */}
       <div class={none ? "sheets hidden-desc" : "sheets"} id="sheets" aria-hidden={none || undefined}>
         <span class="set-label">Documents (3D6 Système)</span>
         <div class="sheet-links">
           {[...SHEETS[none ? "training" : current], ROLES].map(sheet => <SheetLink key={sheet.id} {...localized(sheet)} />)}
-          <AllDocumentsLink />
+          <BookletLink scenario={none ? "training" : current} />
         </div>
       </div>
       <div class="row icon-row home-actions">

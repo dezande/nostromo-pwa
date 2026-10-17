@@ -21,7 +21,7 @@ Modifier le HTML seul ne suffit jamais : il faut regénérer les PDF et vérifie
 | Prétiré Lieutenant D.R. + aide (Session disciplinaire) | `infiltre.html` | `infiltre-en.html` | `nostromo-session-disciplinaire-…` / `nostromo-disciplinary-session-…` |
 | Guides du Superviseur | `guide-superviseur{,-entrainement,-infiltre}.html` | `…-en.html` | `nostromo-<scénario>-guide-superviseur.pdf` / `nostromo-<scenario>-supervisor-guide.pdf` |
 | Cartes des petits rôles | `roles.html` | `roles-en.html` | `nostromo-cartes-roles.pdf` / `nostromo-role-cards.pdf` |
-| Tout en un (assemblé à partir des PDF ci-dessus) | — | — | `nostromo-tous-les-documents.pdf` / `nostromo-all-documents.pdf` |
+| Livret complet d'un scénario (assemblé à partir des PDF A5 ci-dessus) | — | — | `nostromo-<scénario>-livret-complet.pdf` / `nostromo-<scenario>-full-booklet.pdf` |
 
 Les PDF d'un scénario portent son titre en préfixe (`sixieme-sens`, `une-simple-formalite`, `session-disciplinaire` ;
 `sixth-sense`, `a-mere-formality`, `disciplinary-session`). L'aide et le guide du Superviseur existent aussi en PDF miroir (`-miroir.pdf` / `-mirrored.pdf`, pages retournées
@@ -35,11 +35,11 @@ réduites à 71 % dans des feuilles `.sheet`), sans toucher aux pages HTML : une
 La correspondance exacte (pages, titres des PDF) est dans `scripts/fiches.mjs` ; celle entre documents,
 scénarios et boutons de l'app est dans `src/data/sheets.ts` (`SHEETS`, `ROLES`). Un nouveau document se
 déclare aux deux endroits, et `tests/pdf-links.spec.ts` vérifie que chaque PDF déclaré existe dans le build.
-Le PDF « tout en un » de chaque langue (`compilations` dans `fiches.mjs`, `ALL_DOCUMENTS` dans `sheets.ts`, lien
-`#allPdf` de l'accueil, sans lecture dans l'app) est assemblé en fin de script avec pdf-lib à partir des PDF A4 ordinaires
-qui viennent d'être générés : les scénarios dans l'ordre de l'app, puis les cartes, avec un signet par scénario et par
-document. Il n'existe ni en miroir ni en A5. Un document ajouté à un scénario y entre tout seul (préfixe du scénario) ;
-un nouveau scénario s'ajoute à `compilations`, et `pdf-links.spec.ts` compte ses signets.
+Le livret complet de chaque scénario (`BOOKLET` et `scenarios` dans `fiches.mjs`, `BOOKLETS` dans `sheets.ts`, lien
+`#bookletPdf` de l'accueil, sans lecture dans l'app) est assemblé en fin de script avec pdf-lib à partir des PDF A5 qui
+viennent d'être générés : le guide en livret, le prétiré homme, le prétiré femme, l'aide, avec un signet par document.
+Son miroir (`-miroir` / `-mirrored`) prend le guide et l'aide dans leur version miroir. Un nouveau scénario s'ajoute à
+`scenarios` dans `fiches.mjs` et à `BOOKLETS` ; `pdf-links.spec.ts` vérifie les pages et les signets.
 
 Styles : `fiche.css` (guides), `pretire.css` (prétirés, lisibles en A4 comme en A5), `roles.css` (cartes
 format poker, 9 par page). `pretire.js` dessine au chargement les icônes `<i class="ic" data-ic="nom">`,

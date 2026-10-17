@@ -2,7 +2,7 @@
 // Chacun se lit dans l'app (page HTML du dossier fiches/) ou se télécharge en PDF (public/fiches).
 // Les documents du Superviseur (aide, guide) existent aussi en PDF miroir, comme leur texte dans l'app (réglage « miroir »).
 // Tous sauf les cartes existent aussi en A5 (second lien à côté du PDF) : le guide en livret, les autres en deux exemplaires par feuille A4.
-// Un PDF « tout en un » par langue rassemble les pages A4 de tous les documents, avec des signets (ALL_DOCUMENTS).
+// Le livret complet d'un scénario (BOOKLETS) rassemble ses feuilles A5 en un seul PDF, avec un signet par document.
 import type { IconName } from "../components/Icon";
 import type { Scenario } from "../state/settings";
 import type { ScenarioDocument } from "../state/ui";
@@ -84,11 +84,24 @@ export const SHEETS: Record<Scenario, Sheet[]> = {
 export const ROLES: Sheet = { id: "rolesPdf", kind: "roles", html: "roles.html", file: "nostromo-cartes-roles.pdf",
   en: { html: "roles-en.html", file: "nostromo-role-cards.pdf" } };
 
+/** Livret complet d'un scénario : un seul PDF, dans une langue, avec sa version miroir (guide et aide retournés). */
+type Booklet = { file: string; mirrorFile: string };
+/** Nom du livret complet et de son miroir d'après le préfixe des PDF du scénario (scripts/fiches.mjs les génère sous ces noms). */
+const booklet = (slug: string, language: "fr" | "en"): Booklet => {
+  const file = `nostromo-${slug}-${language === "en" ? "full-booklet" : "livret-complet"}.pdf`;
+  return { file, mirrorFile: suffixed(file, language === "en" ? "mirrored" : "miroir") };
+};
 /**
- * Tous les documents en un seul PDF (pages A4 ordinaires, scénario par scénario puis les cartes, un signet par
- * document), par langue : les noms que scripts/fiches.mjs donne aux PDF assemblés.
+ * Le livret complet de chaque scénario : toutes ses feuilles A5 (guide en livret, prétirés homme et femme, aide en deux
+ * exemplaires) en un seul PDF à imprimer d'un coup, avec un signet par document. Pas de lecture dans l'app : chaque
+ * document s'y lit déjà. Rien sans scénario.
  */
-export const ALL_DOCUMENTS = { fr: "nostromo-tous-les-documents.pdf", en: "nostromo-all-documents.pdf" };
+export const BOOKLETS: Record<Scenario, { fr: Booklet; en: Booklet } | null> = {
+  training: { fr: booklet("sixieme-sens", "fr"), en: booklet("sixth-sense", "en") },
+  recruitment: { fr: booklet("une-simple-formalite", "fr"), en: booklet("a-mere-formality", "en") },
+  infiltrated: { fr: booklet("session-disciplinaire", "fr"), en: booklet("disciplinary-session", "en") },
+  free: null,
+};
 
 /** Document d'après son identifiant (adresse /scenario/document/…), dans la langue de l'app. */
 export function findSheet(id: string): LocalizedSheet | null {
