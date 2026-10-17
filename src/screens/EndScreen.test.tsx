@@ -64,7 +64,7 @@ test("survie : statut, {room} remplacé par la salle en majuscules et mise en é
   expect($("#endPanel").classList.contains("win")).toBe(true);
   expect($("#endTitle").textContent).toBe("AGENT SURVIVANT");
   expect($("#endText").textContent).toBe(report.status);
-  expect($$(".end-line")).toHaveLength(report.lines.length + 1); // statut + lignes
+  expect($$(".end-line")).toHaveLength(report.lines.length + 2); // statut + lignes + ordre de mission
   expect($("#endRef").textContent).toMatch(/ENT-\d{3}-[A-Z]/);
   const room = $(".end-room");
   expect(room.textContent).toBe("SERRE HYDROPONIQUE");
@@ -73,7 +73,7 @@ test("survie : statut, {room} remplacé par la salle en majuscules et mise en é
   expect(room.parentElement!.textContent).toBe(withRoom.replace("{room}", "SERRE HYDROPONIQUE"));
   act(() => { jest.advanceTimersByTime(REPORT_MS + 10); });
   expect($("#endStamp").textContent).toBe("APTITUDE VALIDÉE");
-  expect(shownLines()).toBe(report.lines.length + 1);
+  expect(shownLines()).toBe(report.lines.length + 2);
 });
 
 test("un nouveau numéro de rapport à chaque fin de partie", () => {
@@ -93,6 +93,26 @@ test("Session disciplinaire : message d'une autre source affiché à part, sous 
   expect($("#endNote").textContent).toContain(report.note!.from);
   expect($("#endNote").textContent).toContain(`« ${report.note!.text} »`);
   expect($$(".end-line")).toHaveLength(report.lines.length + 2); // statut + lignes + message
+});
+
+test("Une simple formalité : la note de la Division scientifique est jointe au rapport, ses passages censurés en barres", () => {
+  settings.scenario.value = "recruitment";
+  const note = SCENARIOS.fr.recruitment.win.note!;
+  end(true);
+  const shown = $("#endNote");
+  expect(shown.textContent).toContain(note.from);
+  expect(shown.textContent).toContain("spécimens XX-121 vivants");
+  expect(shown.textContent).not.toContain("appât");
+  expect($$("#endNote .redacted")).toHaveLength(2);
+  expect(shown.textContent).toMatch(/ « .*█+.* »$/);
+});
+
+test("Sixième sens : l'ordre de mission suit le rapport gagnant ; le rapport d'incident n'a pas de note", () => {
+  end(true);
+  expect($("#endNote").textContent).toContain(SCENARIOS.fr.training.win.note!.from);
+  act(() => { ending.value = null; });
+  end(false);
+  expect($("#endNote")).toBeNull();
 });
 
 test("Continuer efface le rapport et ramène à l'accueil", () => {

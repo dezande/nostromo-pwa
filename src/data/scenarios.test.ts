@@ -34,9 +34,18 @@ test("Session disciplinaire : survie avec un message de la C.R.F.", () => {
   expect(SCENARIOS.en.infiltrated.rules.flatMap(r => r.points).join(" ")).not.toContain("training");
 });
 
-test("Sans scénario : pas de panneau d'introduction", () => {
+test("Sans scénario : pas de panneau d'introduction, et un rapport neutre sans note", () => {
   expect(FR.free.firstPanel).toBeNull();
   expect(SCENARIOS.en.free.firstPanel).toBeNull();
+  expect(FR.free.win.note).toBeUndefined();
+  expect(SCENARIOS.en.free.win.note).toBeUndefined();
+});
+
+test("les trois scénarios joignent une note au rapport gagnant : ordre de mission, note de la Division scientifique, message C.R.F.", () => {
+  expect(FR.training.win.note?.from).toContain("ORDRE DE MISSION");
+  expect(FR.recruitment.win.note?.from).toContain("DIVISION SCIENTIFIQUE");
+  expect(FR.recruitment.win.note?.text).toMatch(/\[\[.+\]\]/); // un passage censuré
+  expect(FR.infiltrated.win.note?.from).toContain("C.R.F.");
 });
 
 test("difficulté croissante pour le joueur, avec une durée indicative", () => {
@@ -51,6 +60,9 @@ test("version anglaise : mêmes panneaux et scènes, textes traduits", () => {
     expect([en.firstPanel, en.lastPanel, en.duration]).toEqual([fr.firstPanel, fr.lastPanel, fr.duration]);
     expect(en.rules.map(r => r.scene)).toEqual(fr.rules.map(r => r.scene));
     expect(en.name).not.toBe(fr.name);
+    // Une note dans une langue en appelle une dans l'autre, avec autant de passages censurés
+    expect(en.win.note === undefined).toBe(fr.win.note === undefined);
+    expect(en.win.note?.text.split("[[").length).toBe(fr.win.note?.text.split("[[").length);
   }
 });
 

@@ -20,7 +20,7 @@ interface Report {
   lines: string[];
   /** Tampon apposé en bas du rapport. */
   stamp: string;
-  /** Message d'une autre source, affiché à part sous le rapport. */
+  /** Message d'une autre source, affiché à part sous le rapport ([[…]] = passage censuré). */
   note?: { from: string; text: string };
 }
 
@@ -102,6 +102,7 @@ const TRAINING: ScenarioText = {
       "Position finale : {room}. Vos capacités de Psychic Agent sont confirmées : vous avez ressenti chaque présence xénomorphe à bord du vaisseau-base.",
       "La compagnie vous remercie de votre engagement. Votre dossier est transmis pour une première mission.",
     ],
+    note: { from: "ORDRE DE MISSION · PROGRAMME PSYCHIC AGENTS", text: "Affectation : cargo de colonisation USCSS Theseus, départ 2184.06.05. L'équipage n'est pas informé de la nature de votre mission ni de votre qualité d'agent. Vous êtes le seul détecteur à bord." },
   },
   dead: {
     header: "RAPPORT D'INCIDENT",
@@ -170,6 +171,8 @@ const RECRUITMENT: ScenarioText = {
       "Position finale : {room}. Votre sang-froid a été noté avec intérêt par le Coordinateur.",
       "Le Service des ressources humaines prendra contact avec vous pour votre affectation. Bienvenue à la Weyland-Yutani.",
     ],
+    // La vérité, jointe au rapport : le candidat apprend ce qu'étaient les « éléments de test » et le sort des autres
+    note: { from: "NOTE DE LA DIVISION SCIENTIFIQUE · DIFFUSION RESTREINTE", text: "Candidat retenu : à informer. Les éléments de test de l'examen étaient des spécimens XX-121 vivants ; les autres candidats de la session ne seront pas rapatriés [[dépouilles réservées à l'étude des hôtes]]. Affectation : secteur non cartographié, [[en qualité d'appât]]." },
   },
   dead: {
     header: "RAPPORT D'INCIDENT",
@@ -276,6 +279,7 @@ const TRAINING_EN: ScenarioText = {
       "Final position: {room}. Your Psychic Agent abilities are confirmed: you sensed every xenomorph presence aboard the base ship.",
       "The company thanks you for your commitment. Your file is being forwarded for a first mission.",
     ],
+    note: { from: "MISSION ORDERS · PSYCHIC AGENTS PROGRAM", text: "Assignment: colony freighter USCSS Theseus, departure 2184.06.05. The crew has not been informed of the nature of your mission or of your status as an agent. You are the only detector aboard." },
   },
   dead: {
     header: "INCIDENT REPORT",
@@ -342,6 +346,7 @@ const RECRUITMENT_EN: ScenarioText = {
       "Final position: {room}. Your composure was noted with interest by the Coordinator.",
       "The Human Resources Department will contact you about your assignment. Welcome to Weyland-Yutani.",
     ],
+    note: { from: "SCIENCE DIVISION MEMO · RESTRICTED", text: "Retained candidate: to be informed. The test elements were live XX-121 specimens; the other candidates of this session will not be repatriated [[remains reserved for host studies]]. Assignment: uncharted sector, [[as bait]]." },
   },
   dead: {
     header: "INCIDENT REPORT",

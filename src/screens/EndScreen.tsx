@@ -25,13 +25,13 @@ export function EndScreen() {
   // Nouveau numéro de rapport à chaque fin de partie
   const number = useMemo(() => (end ? reportNumber(end.win) : ""), [end]);
 
-  // Lignes du rapport : statut, texte, message d'une autre source
+  // Lignes du rapport : statut, texte, message d'une autre source (lui aussi caviardé le cas échéant)
   const lines = report ? [
     ...(report.status ? [<p key="s" id="endText" class="end-status">{report.status}</p>] : []),
     ...report.lines.map((line, i) => (
       <p key={i} id={!report.status && i === 0 ? "endText" : undefined}><WithRoom line={line} room={end!.room} /></p>
     )),
-    ...(report.note ? [<div key="n" class="end-note" id="endNote"><span class="end-note-from">{report.note.from}</span> {tr(`« ${report.note.text} »`, `“${report.note.text}”`)}</div>] : []),
+    ...(report.note ? [<div key="n" class="end-note" id="endNote"><span class="end-note-from">{report.note.from}</span> {tr("« ", "“")}<Redact text={report.note.text} />{tr(" »", "”")}</div>] : []),
   ] : [];
 
   // Impression ligne à ligne, puis tampon
