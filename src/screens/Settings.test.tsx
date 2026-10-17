@@ -43,6 +43,18 @@ test("quatre onglets, un seul panneau visible à la fois ; les autres restent en
   expect($("#versionInfo").textContent).toContain("BUILD");
 });
 
+test("onglet Système : lien « Nouveautés » vers le changelog sur GitHub, ouvert à part", () => {
+  act(() => { $("#tab-system").click(); });
+  const link = $("#changelogLink") as HTMLAnchorElement;
+  expect(link.getAttribute("href")).toBe("https://github.com/dezande/nostromo-pwa/blob/main/CHANGELOG.md");
+  expect(link.target).toBe("_blank");
+  expect(link.rel).toBe("noopener");
+  expect(link.textContent).toBe("Nouveautés");
+  expect(link.getAttribute("aria-label")).toBe("Nouveautés de l'app, sur GitHub");
+  act(() => { lang.value = "en"; });
+  expect(link.textContent).toBe("What's new");
+});
+
 test("onglet Alerte : trois fonds sonores et écoute", () => {
   act(() => { $("#tab-alert").click(); });
   expect($$(".alert-card strong").map(e => e.textContent)).toEqual(["Sirène", "Klaxon", "Détecteur"]);

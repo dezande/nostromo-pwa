@@ -156,8 +156,8 @@ public/icons/           icônes de l'app
 ## Version
 
 Le numéro de build est calculé au moment du `build` : nombre de commits Git et identifiant du commit.
-Il s'affiche dans *Réglages → Système*, avec l'état du mode hors ligne. La version se change dans
-`package.json`.
+Il s'affiche dans *Réglages → Système*, avec l'état du mode hors ligne et un lien « Nouveautés ». La version
+se change dans `package.json`. Ce qui change à chaque PR est noté dans [CHANGELOG.md](CHANGELOG.md).
 
 ## Tests
 

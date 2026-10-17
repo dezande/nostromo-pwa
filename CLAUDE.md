@@ -52,6 +52,8 @@ Le README décrit ce que fait l'app et l'organisation des dossiers : le lire ava
 - Une branche par tâche à partir de `main`, une PR vers `main`, jamais de push direct sur `main`, jamais de
   PR empilées. Avant la PR, mettre la branche à jour avec `main` et relancer typecheck, Jest et le build.
 - Message de commit : une ligne de titre en français, puis les raisons. Description de PR en français.
+- Toute PR ajoute sa ligne dans la section « Non publié » de `CHANGELOG.md` : ce que l'utilisateur voit
+  changer, en une ligne, avec le lien vers la PR. La ligne descend dans une section datée à la fusion.
 - La CI (`.github/workflows/tests.yml`) lance typecheck, Jest et Playwright en trois lots ; GitHub Pages
   publie `main` automatiquement.
 - L'Auto-fix de la PR est activé par défaut dans l'app Claude Code : une fois la PR ouverte, l'app la surveille
